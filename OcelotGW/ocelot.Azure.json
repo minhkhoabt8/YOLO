@@ -1,0 +1,96 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "",
+          "Port": "80"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "SwaggerKey": "auth"
+    },
+    {
+      "DownstreamPathTemplate": "/metadata/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "",
+          "Port": "80"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/metadata/{everything}",
+      "SwaggerKey": "metadata"
+    },
+    {
+      "DownstreamPathTemplate": "/notification/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "",
+          "Port": "80"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/notification/{everything}",
+      "SwaggerKey": "notification"
+    },
+    {
+      "DownstreamPathTemplate": "/document/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "",
+          "Port": "80"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/document/{everything}",
+      "SwaggerKey": "document"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "auth",
+      "Config": [
+        {
+          "Name": "Auth API",
+          "Version": "v1",
+          "Url": ""
+        }
+      ]
+    },
+    {
+      "Key": "metadata",
+      "Config": [
+        {
+          "Name": "Metadata API",
+          "Version": "v1",
+          "Url": ""
+        }
+      ]
+    },
+    
+    {
+      "Key": "document",
+      "Config": [
+        {
+          "Name": "Document API",
+          "Version": "v1",
+          "Url": ""
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": ""
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "81"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "SwaggerKey": "auth"
+    },
+    {
+      "DownstreamPathTemplate": "/metadata/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "82"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/metadata/{everything}",
+      "SwaggerKey": "metadata"
+    },
+    
+    {
+      "DownstreamPathTemplate": "/document/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "88"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/document/{everything}",
+      "SwaggerKey": "document"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "auth",
+      "Config": [
+        {
+          "Name": "Auth API",
+          "Version": "v1",
+          "Url": "http://localhost:81/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "metadata",
+      "Config": [
+        {
+          "Name": "Metadata API",
+          "Version": "v1",
+          "Url": "http://localhost:82/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "document",
+      "Config": [
+        {
+          "Name": "Document API",
+          "Version": "v1",
+          "Url": "http://localhost:88/swagger/v1/swagger.json"
+        }
+      ]
+    }
+   
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:80"
+  }
+}
