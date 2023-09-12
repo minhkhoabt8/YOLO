@@ -35,7 +35,6 @@ namespace Auth.Infracstructure.UOW
                 _singletonRepositories[typeof(T).Name] =
                     _serviceProvider.GetService(typeof(T)) ?? throw new InvalidOperationException();
             }
-
             return (T)_singletonRepositories[typeof(T).Name];
         }
     }
