@@ -1,5 +1,11 @@
-﻿using Auth.Infracstructure.Services.Implementations;
+﻿using Auth.Core.Data;
+using Auth.Infracstructure.Mappers;
+using Auth.Infracstructure.Repositories.Implementations;
+using Auth.Infracstructure.Repositories.Interfaces;
+using Auth.Infracstructure.Services.Implementations;
 using Auth.Infracstructure.Services.Interfaces;
+using Auth.Infracstructure.UOW;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -12,7 +18,12 @@ public static class ServiceExtensions
 {
     public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        
+        services.AddDbContext<YoloAuthContext>(opt =>
+        {
+            opt.UseSqlServer(configuration.GetConnectionString("AuthConnection"),
+                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
+            );
+        });
     }
 
     public static void AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
@@ -85,16 +96,17 @@ public static class ServiceExtensions
     public static void AddServices(this IServiceCollection services)
     {
         services.AddScoped<ISampleServices, SampleServices>();
+        services.AddScoped<IAccountService, AccountService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)
     {
-        
+        services.AddScoped<IAccountRepository, AccountRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)
     {
-       
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static void AddServiceFilters(this IServiceCollection services)
@@ -109,7 +121,7 @@ public static class ServiceExtensions
 
     public static void AddAutoMapper(this IServiceCollection services)
     {
-       
+        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfiles)));
     }
 
     public static void AddEvents(this IServiceCollection services)

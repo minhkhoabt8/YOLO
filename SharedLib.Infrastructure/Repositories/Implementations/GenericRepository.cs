@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
@@ -58,6 +59,24 @@ public class GenericRepository<TEntity, TContext> :
 
         return Task.FromResult(dbSet.AsEnumerable());
     }
+
+    public virtual Task<IEnumerable<TEntity>> GetAllAsync(string include, bool trackChanges = false)
+    {
+        IQueryable<TEntity> dbSet = _context.Set<TEntity>();
+
+        if (!trackChanges)
+        {
+            dbSet = dbSet.AsNoTracking();
+        }
+
+        if (!string.IsNullOrEmpty(include))
+        {
+            dbSet = dbSet.Include(include);
+        }
+
+        return Task.FromResult(dbSet.AsEnumerable());
+    }
+
 
     public virtual void Update(TEntity obj)
     {
