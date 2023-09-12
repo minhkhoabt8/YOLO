@@ -10,7 +10,6 @@ namespace Auth.Core.Entities
     {
         public string MyName { get; set; }
         public string MyAge { get; set; }
-
         public string MyFavourite { get; set; }
     }
 }
