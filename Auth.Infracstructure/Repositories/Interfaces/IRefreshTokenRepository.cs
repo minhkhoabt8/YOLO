@@ -7,5 +7,5 @@ public interface IRefreshTokenRepository :
     IAddAsync<RefreshToken>
 {
     Task<RefreshToken?> FindByTokenAsync(string token);
-    Task<RefreshToken?> FindByTokenIncludeAccountAsync(string? token);
+    Task<RefreshToken?> FindByTokenIncludeAccountAsync(string token);
 }

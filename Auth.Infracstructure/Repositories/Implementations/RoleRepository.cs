@@ -18,11 +18,11 @@ namespace Auth.Infrastructure.Repositories.Implementations
             return _context.Roles.FirstOrDefaultAsync(r => r.Name.ToLower() == roleName.ToLower());
         }
 
-        public async Task<Role> GetAccountRolesAsync(string accountID)
+        public async Task<Role?> GetAccountRolesAsync(string accountID)
         {
-            var account = await _context.Accounts.Include(acc => acc.Role).FirstAsync(acc => acc.Id == accountID);
+            var account = await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Id == accountID);
 
-            return account.Role;
+            return account?.Role;
         }
     }
 }

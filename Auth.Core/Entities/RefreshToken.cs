@@ -15,7 +15,7 @@ namespace Auth.Core.Entities
         public DateTime Expires { get; set; }
         public bool IsExpired => DateTime.Now >= Expires;
         public int ExpiresIn => (int)Expires.Subtract(DateTime.Now).TotalSeconds;
-        public Account Account { get; set; }
+        public virtual Account Account { get; set; }
         public string AccountId { get; set; }
         public bool IsRevoked { get; set; } = false;
         public string? ReplacedBy { get; set; }

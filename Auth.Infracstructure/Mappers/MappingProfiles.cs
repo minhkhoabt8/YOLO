@@ -15,7 +15,8 @@ namespace Auth.Infrastructure.Mappers
 
             //Account
             CreateMap<Account, AccountReadDTO>();
-            CreateMap<Role, RoleReadDTO>();
+            CreateMap<AccountWriteDTO, Account>();
+
         }
     }
 }

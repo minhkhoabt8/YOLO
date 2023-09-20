@@ -6,5 +6,6 @@ namespace Auth.Infrastructure.Services.Interfaces
     {
         Task<LoginOutputDTO> LoginAsync(LoginInputDTO inputDTO);
         Task<LoginOutputDTO> LoginWithRefreshTokenAsync(string? token);
+        Task<LoginOutputDTO> LoginWithOtpAsync(LoginInputDTO input, string? code);
     }
 }

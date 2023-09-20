@@ -12,6 +12,6 @@ namespace Auth.Infrastructure.DTOs.Account
         public string Include { get; set; }
         public bool? ShowInactive { get; set; } = false;
         public string SearchText { get; set; }
-        public int? RoleID { get; set; }
+        public string? RoleId { get; set; }
     }
 }

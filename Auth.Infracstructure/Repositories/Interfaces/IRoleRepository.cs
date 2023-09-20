@@ -17,6 +17,6 @@ namespace Auth.Infrastructure.Repositories.Interfaces
         IDelete<Role>
     {
         Task<Role?> FindByNameIgnoreCaseAsync(string roleName);
-        Task<Role> GetAccountRolesAsync(string accountID);
+        Task<Role?> GetAccountRolesAsync(string accountID);
     }
 }

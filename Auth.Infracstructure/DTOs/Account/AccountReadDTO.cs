@@ -18,16 +18,18 @@ namespace Auth.Infrastructure.DTOs.Account
 
         public string Name { get; set; }
 
-        //public string RoleId { get; set; }
-
         public string Email { get; set; }
 
         public string Phone { get; set; }
+
+        public string Otp { get; set; }
 
         public bool IsActive { get; set; }
 
         public bool IsDelete { get; set; }
 
         public RoleReadDTO Role { get; set; }
+
     }
+
 }

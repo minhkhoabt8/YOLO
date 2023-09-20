@@ -1,9 +1,12 @@
 ﻿using Auth.Core.Entities;
 using Auth.Core.Exceptions;
+using Auth.Infrastructure.DTOs.Account;
 using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Linq.Dynamic.Core.Tokenizer;
 
 namespace Auth.Infrastructure.Services.Implementations
 {
@@ -106,6 +109,44 @@ namespace Auth.Infrastructure.Services.Implementations
                 RefreshToken = refreshToken.Token,
                 RefreshTokenExpires = refreshToken.ExpiresIn
             };
+        }
+
+        public async Task<LoginOutputDTO> LoginWithOtpAsync(LoginInputDTO input, string? code)
+        {
+            
+            var account = await _unitOfWork.AccountRepository.LoginAsync(input);
+
+            if (account == null)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            if (string.IsNullOrEmpty(code) || account.Otp != code)
+            {
+                throw new InvalidOtpException();
+            }
+
+            account.IsActive = true;
+
+            var refreshToken = _tokenService.GenerateRefreshToken(account);
+
+            await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
+
+            await _unitOfWork.CommitAsync();
+
+            return new LoginOutputDTO
+            {
+                UserId = account!.Id,
+                FullName = account!.Name,
+                UserName = account!.Username,
+                Role = account!.Role.Name,
+                Token = await _tokenService.GenerateTokenAsync(account),
+                //TokenExpires = 60 * 60 * 4, // 4 hours
+                TokenExpires = 12000,
+                RefreshToken = refreshToken.Token,
+                RefreshTokenExpires = refreshToken.ExpiresIn
+            };
+
         }
     }
 }

@@ -10,5 +10,7 @@ namespace Auth.Infrastructure.Repositories.Interfaces
         IFindAsync<Account>
     {
         Task<Account?> LoginAsync(LoginInputDTO inputDTO);
+
+        Task<Account?> FindAccountByUsernameAsync(string username);
     }
 }

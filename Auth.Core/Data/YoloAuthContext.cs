@@ -31,6 +31,7 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.RoleId).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(20);
+            entity.Property(e=>e.Otp).HasMaxLength(6);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
@@ -47,6 +48,7 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.AccountId).HasMaxLength(50);
             entity.Property(e => e.ReplacedBy).HasMaxLength(50);
             entity.Property(e => e.CreatedAt).HasMaxLength(50);
+
             entity.HasOne(rt => rt.Account).WithMany(a => a.RefreshTokens)
                 .HasForeignKey(rt => rt.Id)
                 .OnDelete(DeleteBehavior.ClientSetNull)

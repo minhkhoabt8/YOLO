@@ -1,4 +1,5 @@
 ﻿using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Role;
 using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -51,9 +52,24 @@ public class AcccountController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> GetAccount(string id)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Create new account
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+    public async Task<IActionResult> CreateAccount([FromForm] AccountWriteDTO input)
+    {
+        var accountDTOs = await _accountService.CreateAccountAsync(input);
+
+        return ResponseFactory.Created(accountDTOs);
+    }
 }

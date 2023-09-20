@@ -6,6 +6,7 @@ namespace Auth.Infrastructure.Services.Interfaces
     public interface IAccountService
     {
         Task<IEnumerable<AccountReadDTO>> GetAllAccountsAsync();
-       
+        Task<AccountReadDTO> CreateAccountAsync(AccountWriteDTO writeDTO);
+
     }
 }

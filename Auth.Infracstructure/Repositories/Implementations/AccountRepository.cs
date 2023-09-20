@@ -13,6 +13,12 @@ namespace Auth.Infrastructure.Repositories.Implementations
         public AccountRepository(YoloAuthContext context) : base(context)
         {
         }
+
+        public async Task<Account?> FindAccountByUsernameAsync(string username)
+        {
+            return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Username == username);
+        }
+
         public async Task<Account?> LoginAsync(LoginInputDTO inputDTO)
         {
             return await _context.Accounts.Include(acc=>acc.Role).FirstOrDefaultAsync(acc => acc.Username == inputDTO.Username && acc.Password == inputDTO.Password);

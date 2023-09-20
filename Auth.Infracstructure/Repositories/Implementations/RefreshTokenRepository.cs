@@ -17,7 +17,7 @@ public class RefreshTokenRepository : GenericRepository<RefreshToken, YoloAuthCo
         return _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == token);
     }
 
-    public Task<RefreshToken?> FindByTokenIncludeAccountAsync(string? token)
+    public Task<RefreshToken?> FindByTokenIncludeAccountAsync(string token)
     {
         return _context.RefreshTokens.Include(rt => rt.Account).ThenInclude(acc => acc.Role)
             .FirstOrDefaultAsync(rt => rt.Token == token);
