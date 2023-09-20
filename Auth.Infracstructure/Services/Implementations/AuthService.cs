@@ -53,7 +53,7 @@ namespace Auth.Infrastructure.Services.Implementations
             };
         }
 
-        //TODO: Implement LoginWithRefreshTokenAsync
+       
         public async Task<LoginOutputDTO> LoginWithRefreshTokenAsync(string? token)
         {
             if (string.IsNullOrEmpty(token))

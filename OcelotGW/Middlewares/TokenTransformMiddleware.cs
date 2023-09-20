@@ -38,18 +38,18 @@ public class TokenTransformMiddleware
             }
 
 
-            // Not DMS token
-            if (!jwtToken.Issuer.StartsWith("DMS"))
+            // Not YOLO token
+            if (!jwtToken.Issuer.StartsWith("YOLO"))
             {
                 var client = _httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtString);
 
-                var response = await client.PostAsync($"{_configuration["BaseAddresses:DMSGateway"]}/auth/map-token",
+                var response = await client.PostAsync($"{_configuration["BaseAddresses:YOLOGateway"]}/auth/map-token",
                     null);
 
-                var dmsToken = await response.Content.ReadAsStringAsync();
+                var yoloToken = await response.Content.ReadAsStringAsync();
 
-                context.Request.Headers["Authorization"] = $"Bearer {dmsToken}";
+                context.Request.Headers["Authorization"] = $"Bearer {yoloToken}";
             }
         }
 

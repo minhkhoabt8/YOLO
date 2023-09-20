@@ -1,5 +1,6 @@
 ﻿using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Core.Exceptions;
 using SharedLib.Filters;
@@ -9,6 +10,7 @@ namespace Auth.API.Controllers;
 
 [ApiController]
 [Route("auth")]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
@@ -17,6 +19,7 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
     }
+
     /// <summary>
     /// Login
     /// </summary>
@@ -39,7 +42,6 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-    [ServiceFilter(typeof(AutoValidateModelState))]
     public async Task<IActionResult> Refresh(string? token)
     {
 

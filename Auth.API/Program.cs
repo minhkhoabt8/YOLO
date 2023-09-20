@@ -22,8 +22,6 @@ builder.Host.UseSerilog((ctx, lc) =>
 // Add services to the container.
 
 builder.Services.AddCors();
-builder.Services.AddHangfire(builder.Configuration);
-builder.Services.AddHealthChecks(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddNewtonsoftJson(opt =>
@@ -58,6 +56,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseHttpsRedirection();
 app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();

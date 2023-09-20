@@ -27,7 +27,5 @@ namespace SharedLib.Infrastructure.Services.Implementations
             _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Email)?.Value ?? null;
 
         public bool IsAuthenticated => _contextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
-
-        public bool IsDMSService => AccountID == JWTTokenService.SYSTEM_ACCOUNT_ID;
     }
 }
