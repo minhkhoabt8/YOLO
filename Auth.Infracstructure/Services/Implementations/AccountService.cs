@@ -13,11 +13,13 @@ namespace Auth.Infrastructure.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ISmsService _smsService;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, ISmsService smsService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _smsService = smsService;
         }
 
         public async Task<IEnumerable<AccountReadDTO>> GetAllAccountsAsync()
@@ -50,8 +52,8 @@ namespace Auth.Infrastructure.Services.Implementations
 
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
-            //TODO: call Send SMS
-
+            //call Send SMS
+            await _smsService.SendSmsAsync(newAccount.Phone, newAccount.Otp);
 
             await _unitOfWork.CommitAsync();
 

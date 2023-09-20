@@ -15,12 +15,14 @@ namespace Auth.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
+        private readonly ISmsService _smsService;
 
-        public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService)
+        public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, ISmsService smsService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _tokenService = tokenService;
+            _smsService = smsService;
         }
 
         public async Task<LoginOutputDTO> LoginAsync(LoginInputDTO inputDTO)
@@ -49,7 +51,6 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = account!.Username,
                 Role = account!.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(account),
-                //TokenExpires = 60 * 60 * 4, // 4 hours
                 TokenExpires = 12000,
                 RefreshToken = refreshToken.Token ,
                 RefreshTokenExpires = refreshToken.ExpiresIn
@@ -104,7 +105,6 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = refreshToken!.Account.Username,
                 Role = refreshToken!.Account.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(refreshToken.Account),
-                //TokenExpires = 60 * 60 * 4, // 4 hours
                 TokenExpires = 12000,
                 RefreshToken = newRefreshToken.Token,
                 RefreshTokenExpires = newRefreshToken.ExpiresIn
@@ -141,12 +141,48 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = account!.Username,
                 Role = account!.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(account),
-                //TokenExpires = 60 * 60 * 4, // 4 hours
                 TokenExpires = 12000,
                 RefreshToken = refreshToken.Token,
                 RefreshTokenExpires = refreshToken.ExpiresIn
             };
 
+        }
+
+
+        public async Task<string> ResendOtpAsync(LoginInputDTO input)
+        {
+            var account = await _unitOfWork.AccountRepository.LoginAsync(input);
+
+            if (account == null)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            account.Otp = GenerateOtp();
+
+            ////call Send SMS
+            await _smsService.SendSmsAsync(account.Phone, account.Otp);
+
+            await _unitOfWork.CommitAsync();
+
+            return account.Otp;
+        }
+
+
+        private string GenerateOtp()
+        {
+            const string chars = "0123456789";
+
+            char[] password = new char[6];
+
+            Random random = new Random();
+
+            for (int i = 0; i < 6; i++)
+            {
+                password[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(password);
         }
     }
 }

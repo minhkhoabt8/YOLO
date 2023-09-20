@@ -65,4 +65,19 @@ public class AuthController : ControllerBase
         return ResponseFactory.Ok(result);
     }
 
+
+    /// <summary>
+    /// Resend OTP
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("resend")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    public async Task<IActionResult> ResendOtp(LoginInputDTO input)
+    {
+        var result = await _authService.ResendOtpAsync(input);
+
+        return ResponseFactory.Ok(result);
+    }
+
 }
