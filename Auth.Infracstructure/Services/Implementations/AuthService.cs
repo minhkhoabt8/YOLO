@@ -106,8 +106,8 @@ namespace Auth.Infrastructure.Services.Implementations
                 Token = await _tokenService.GenerateTokenAsync(refreshToken.Account),
                 //TokenExpires = 60 * 60 * 4, // 4 hours
                 TokenExpires = 12000,
-                RefreshToken = refreshToken.Token,
-                RefreshTokenExpires = refreshToken.ExpiresIn
+                RefreshToken = newRefreshToken.Token,
+                RefreshTokenExpires = newRefreshToken.ExpiresIn
             };
         }
 

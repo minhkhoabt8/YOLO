@@ -42,19 +42,20 @@ public partial class YoloAuthContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_RefreshToken");
+
             entity.Property(e => e.Id).HasMaxLength(50);
-            entity.Property(e => e.Token).HasMaxLength(50);
-            entity.Property(e => e.Expires).HasMaxLength(50);
             entity.Property(e => e.AccountId).HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.Expires).HasColumnType("datetime");
             entity.Property(e => e.ReplacedBy).HasMaxLength(50);
-            entity.Property(e => e.CreatedAt).HasMaxLength(50);
+            entity.Property(e => e.Token).HasMaxLength(150);
 
-            entity.HasOne(rt => rt.Account).WithMany(a => a.RefreshTokens)
-                .HasForeignKey(rt => rt.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_RefreshToken_Accounts");
-
+            entity.HasOne(d => d.Account).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_RefreshTokens_Accounts");
         });
+
 
         modelBuilder.Entity<Role>(entity =>
         {
