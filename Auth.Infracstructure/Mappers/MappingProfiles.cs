@@ -1,19 +1,19 @@
 ﻿using Auth.Core.Entities;
-using Auth.Infracstructure.DTOs.Account;
-using Auth.Infracstructure.DTOs.Role;
+using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Role;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Auth.Infracstructure.Mappers
+namespace Auth.Infrastructure.Mappers
 {
     public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {
+            // Role
+            CreateMap<Role, RoleReadDTO>();
+            CreateMap<RoleWriteDTO, Role>();
+
+            //Account
             CreateMap<Account, AccountReadDTO>();
             CreateMap<Role, RoleReadDTO>();
         }

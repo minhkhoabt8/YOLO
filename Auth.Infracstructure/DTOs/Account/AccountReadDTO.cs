@@ -1,12 +1,12 @@
 ﻿using Auth.Core.Entities;
-using Auth.Infracstructure.DTOs.Role;
+using Auth.Infrastructure.DTOs.Role;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth.Infracstructure.DTOs.Account
+namespace Auth.Infrastructure.DTOs.Account
 {
     public class AccountReadDTO
     {

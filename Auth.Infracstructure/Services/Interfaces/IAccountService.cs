@@ -1,14 +1,11 @@
-﻿using Auth.Infracstructure.DTOs.Account;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Infrastructure.DTOs.Account;
 
-namespace Auth.Infracstructure.Services.Interfaces
+
+namespace Auth.Infrastructure.Services.Interfaces
 {
     public interface IAccountService
     {
         Task<IEnumerable<AccountReadDTO>> GetAllAccountsAsync();
+       
     }
 }

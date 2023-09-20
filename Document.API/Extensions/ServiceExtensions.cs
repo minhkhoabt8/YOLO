@@ -1,29 +1,18 @@
-﻿using Auth.Core.Data;
-using Auth.Infrastructure.Services.Implementations;
-using Auth.Infrastructure.Repositories.Implementations;
-using Auth.Infrastructure.Repositories.Interfaces;
-using Auth.Infrastructure.Services.Interfaces;
-using Auth.Infrastructure.UOW;
+﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
-using SharedLib.Filters;
-using SharedLib.Infrastructure.Services.Implementations;
-using SharedLib.Infrastructure.Services.Interfaces;
 using System.Reflection;
-using Auth.Infrastructure.Mappers;
+using System.Text;
 
-namespace Auth.API.Extensions;
+
+namespace Document.API.Extensions;
 
 public static class ServiceExtensions
 {
     public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<YoloAuthContext>(opt =>
-        {
-            opt.UseSqlServer(configuration.GetConnectionString("AuthConnection"),
-                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
-            );
-        });
+        
     }
 
     public static void AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
@@ -95,32 +84,22 @@ public static class ServiceExtensions
 
     public static void AddServices(this IServiceCollection services)
     {
-       
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IRoleService, RoleService>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<Infrastructure.Services.Interfaces.ITokenService, Infrastructure.Services.Implementations.JWTTokenService>();
-        services.AddScoped<IUserContextService, UserContextService>();
-        services
-            .AddScoped<SharedLib.Infrastructure.Services.Interfaces.ITokenService,
-                SharedLib.Infrastructure.Services.Implementations.JWTTokenService>();
+        
     }
 
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        
     }
 
     public static void AddUOW(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+       
     }
 
     public static void AddServiceFilters(this IServiceCollection services)
     {
-        services.AddScoped<AutoValidateModelState>();
+        
     }
 
     public static void AddMassTransit(this IServiceCollection services, IConfiguration conf)
@@ -130,7 +109,7 @@ public static class ServiceExtensions
 
     public static void AddAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfiles)));
+       
     }
 
     public static void AddEvents(this IServiceCollection services)

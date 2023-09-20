@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Document.API", "Document.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Core", "Auth.Core\Auth.Core.csproj", "{F3C22F3A-F00A-474C-9014-1878CB9911C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Infracstructure", "Auth.Infracstructure\Auth.Infracstructure.csproj", "{230CA7AE-0C83-4C69-8A8A-971498589C1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth.Infrastructure", "Auth.Infracstructure\Auth.Infrastructure.csproj", "{230CA7AE-0C83-4C69-8A8A-971498589C1B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Document.Core", "Document.Core\Document.Core.csproj", "{A47455D0-3B8F-462A-A81D-3CE989FF802B}"
 EndProject
@@ -37,11 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Metadata.Infrastructure", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{EFBC44B9-BF9F-4C58-BACB-7B3196CA26BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib.API", "SharedLib.API\SharedLib.API.csproj", "{3EF4F229-04B6-4FED-AB70-CDF89886D1DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib.API", "SharedLib.API\SharedLib.API.csproj", "{3EF4F229-04B6-4FED-AB70-CDF89886D1DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib.Core", "SharedLib.Core\SharedLib.Core.csproj", "{520C5EF1-18AB-49BE-972C-750444CA313D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib.Core", "SharedLib.Core\SharedLib.Core.csproj", "{520C5EF1-18AB-49BE-972C-750444CA313D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLib.Infrastructure", "SharedLib.Infrastructure\SharedLib.Infrastructure.csproj", "{626BC529-2FDF-44E4-9A07-E0460642C1E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib.Infrastructure", "SharedLib.Infrastructure\SharedLib.Infrastructure.csproj", "{626BC529-2FDF-44E4-9A07-E0460642C1E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

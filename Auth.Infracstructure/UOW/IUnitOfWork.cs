@@ -1,14 +1,14 @@
-﻿using Auth.Infracstructure.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Infrastructure.Repositories.Interfaces;
 
-namespace Auth.Infracstructure.UOW
+
+namespace Auth.Infrastructure.UOW
 {
     public interface IUnitOfWork
     {
         IAccountRepository AccountRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IRefreshTokenRepository RefreshTokenRepository { get; }
+
+        Task<int> CommitAsync();
     }
 }

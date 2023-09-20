@@ -1,12 +1,8 @@
 ﻿using Auth.Core.Data;
-using Auth.Infracstructure.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Auth.Infrastructure.Repositories.Interfaces;
 
-namespace Auth.Infracstructure.UOW
+
+namespace Auth.Infrastructure.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -22,7 +18,8 @@ namespace Auth.Infracstructure.UOW
         }
 
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
-
+        public IRoleRepository RoleRepository => GetSingletonRepository<IRoleRepository>();
+        public IRefreshTokenRepository RefreshTokenRepository => GetSingletonRepository<IRefreshTokenRepository>();
         public Task<int> CommitAsync()
         {
             return _context.SaveChangesAsync();

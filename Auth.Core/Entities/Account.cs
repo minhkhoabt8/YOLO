@@ -24,4 +24,6 @@ public partial class Account
     public bool? IsDelete { get; set; }
 
     public virtual Role Role { get; set; } = null!;
+    public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 }
+

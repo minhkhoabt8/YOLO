@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Core\Auth.Core.csproj" />
-    <ProjectReference Include="..\Auth.Infracstructure\Auth.Infracstructure.csproj" />
+    <ProjectReference Include="..\Auth.Infracstructure\Auth.Infrastructure.csproj" />
     <ProjectReference Include="..\SharedLib.API\SharedLib.API.csproj" />
   </ItemGroup>
 

@@ -17,8 +17,9 @@ public partial class YoloAuthContext : DbContext
     }
 
     public virtual DbSet<Account> Accounts { get; set; }
-
     public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -35,6 +36,22 @@ public partial class YoloAuthContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Accounts_Roles");
+        });
+
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.Token).HasMaxLength(50);
+            entity.Property(e => e.Expires).HasMaxLength(50);
+            entity.Property(e => e.AccountId).HasMaxLength(50);
+            entity.Property(e => e.ReplacedBy).HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).HasMaxLength(50);
+            entity.HasOne(rt => rt.Account).WithMany(a => a.RefreshTokens)
+                .HasForeignKey(rt => rt.Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RefreshToken_Accounts");
+
         });
 
         modelBuilder.Entity<Role>(entity =>

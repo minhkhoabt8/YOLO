@@ -1,8 +1,8 @@
-﻿
-using Auth.Infracstructure.DTOs.Account;
-using Auth.Infracstructure.Services.Implementations;
-using Auth.Infracstructure.Services.Interfaces;
+﻿using Auth.Infrastructure.DTOs.Authentication;
+using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using SharedLib.Core.Exceptions;
+using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
 
 namespace Auth.API.Controllers;
@@ -11,41 +11,40 @@ namespace Auth.API.Controllers;
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    private readonly ISampleServices _sampleServices;
-    private readonly IAccountService _accountService;
+    private readonly IAuthService _authService;
 
-    public AuthController(ISampleServices sampleServices, IAccountService accountService)
+    public AuthController(IAuthService authService)
     {
-        _sampleServices = sampleServices;
-        _accountService = accountService;
+        _authService = authService;
     }
-
-
-
-
     /// <summary>
-    /// Get Sample
+    /// Login
     /// </summary>
+    /// <param name="input"></param>
     /// <returns></returns>
-    [HttpGet("sample")]
-    public async Task<IActionResult> GetSample()
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    public async Task<IActionResult> Login(LoginInputDTO input)
     {
-        
-        var result = _sampleServices.GetSampleInfo();
-
-        return Ok(result);
+        var result = await _authService.LoginAsync(input);
+        return ResponseFactory.Ok(result);
     }
 
     /// <summary>
-    /// Get all accounts
+    /// Refresh token
     /// </summary>
     /// <returns></returns>
-    [HttpGet("account/all")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AccountReadDTO>>))]
-    public async Task<IActionResult> GetAll()
+    [HttpPost("refresh")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    public async Task<IActionResult> Refresh(string? token)
     {
-        var accountDTOs = await _accountService.GetAllAccountsAsync();
 
-        return ResponseFactory.Ok(accountDTOs);
+        var result = await _authService.LoginWithRefreshTokenAsync(token);
+
+        return ResponseFactory.Ok(result);
     }
 }
