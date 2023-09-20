@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib.Core", "SharedLib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib.Infrastructure", "SharedLib.Infrastructure\SharedLib.Infrastructure.csproj", "{626BC529-2FDF-44E4-9A07-E0460642C1E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth.Tests", "Auth.Tests\Auth.Tests.csproj", "{84D794E6-A369-427A-9D94-F4D2B245AC15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{626BC529-2FDF-44E4-9A07-E0460642C1E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{626BC529-2FDF-44E4-9A07-E0460642C1E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{626BC529-2FDF-44E4-9A07-E0460642C1E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84D794E6-A369-427A-9D94-F4D2B245AC15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84D794E6-A369-427A-9D94-F4D2B245AC15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84D794E6-A369-427A-9D94-F4D2B245AC15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84D794E6-A369-427A-9D94-F4D2B245AC15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{3EF4F229-04B6-4FED-AB70-CDF89886D1DB} = {EFBC44B9-BF9F-4C58-BACB-7B3196CA26BF}
 		{520C5EF1-18AB-49BE-972C-750444CA313D} = {EFBC44B9-BF9F-4C58-BACB-7B3196CA26BF}
 		{626BC529-2FDF-44E4-9A07-E0460642C1E3} = {EFBC44B9-BF9F-4C58-BACB-7B3196CA26BF}
+		{84D794E6-A369-427A-9D94-F4D2B245AC15} = {9C7FD3A9-6EF9-4B30-8B47-89881D802D8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {335E15B0-30C8-417D-97A2-97A797FE5B2C}
