@@ -1,29 +1,24 @@
-﻿using Auth.Core.Data;
-using Auth.Infrastructure.Services.Implementations;
-using Auth.Infrastructure.Repositories.Implementations;
-using Auth.Infrastructure.Repositories.Interfaces;
-using Auth.Infrastructure.Services.Interfaces;
-using Auth.Infrastructure.UOW;
+﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SharedLib.Filters;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Reflection;
-using Auth.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Metadata.Core.Data;
 
-namespace Auth.API.Extensions;
+namespace Metadata.API.Extensions;
 
 public static class ServiceExtensions
 {
     public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<YoloAuthContext>(opt =>
+        services.AddDbContext<YoloMetadataContext>(opt =>
         {
-            opt.UseSqlServer(configuration.GetConnectionString("AuthConnection"),
+            opt.UseSqlServer(configuration.GetConnectionString("MetatdataConnection"),
                 b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
             );
         });
@@ -45,7 +40,7 @@ public static class ServiceExtensions
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "YOLO Auth",
+                Title = "YOLO Metatdata",
                 Version = "v1.0.0",
                 Description = "YOLO Project",
             });
@@ -114,27 +109,17 @@ public static class ServiceExtensions
     public static void AddServices(this IServiceCollection services)
     {
        
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IRoleService, RoleService>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<Infrastructure.Services.Interfaces.ITokenService, Infrastructure.Services.Implementations.JWTTokenService>();
-        services.AddScoped<IUserContextService, UserContextService>();
-        services
-            .AddScoped<SharedLib.Infrastructure.Services.Interfaces.ITokenService,
-                SharedLib.Infrastructure.Services.Implementations.JWTTokenService>();
-        services.AddScoped<ISmsService, SmsService>();
+        
     }
 
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IAccountRepository, AccountRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        
     }
 
     public static void AddUOW(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+      
     }
 
     public static void AddServiceFilters(this IServiceCollection services)
@@ -149,7 +134,7 @@ public static class ServiceExtensions
 
     public static void AddAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfiles)));
+       
     }
 
     public static void AddEvents(this IServiceCollection services)
