@@ -47,6 +47,7 @@
   "SwaggerEndPoints": [
     {
       "Key": "auth",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Auth API",
@@ -57,6 +58,7 @@
     },
     {
       "Key": "metadata",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Metadata API",
@@ -68,6 +70,7 @@
 
     {
       "Key": "document",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Document API",
