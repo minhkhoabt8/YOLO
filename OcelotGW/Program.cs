@@ -30,7 +30,7 @@ var app = builder.Build();
 app.UseMiddleware<RequestResponseLoggingMiddleware>();
 app.UseMiddleware<TokenTransformMiddleware>();
 app.UseSwagger();
-app.UseSwaggerForOcelotUI();
+app.UseSwaggerForOcelotUI(opt => { opt.PathToSwaggerGenerator = "/swagger/docs"; });
 app.UseRouting();
 app.UseCors(opt => opt.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 app.UseWebSockets();
