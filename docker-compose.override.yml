@@ -16,6 +16,8 @@ services:
   auth.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      - auth-sqlserver
     ports:
       - "8001:80"
     volumes:
@@ -24,7 +26,6 @@ services:
   document.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
- 
     ports:
       - "8003:80"
     volumes:
@@ -33,8 +34,30 @@ services:
   metadata.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+    depends_on:
+      - metadata-sqlserver
     ports:
       - "8002:80"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  auth-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=admin
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./sqlserver-data/auth:/var/opt/mssql
+  metadata-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=admin
+      - MSSQL_PID=Developer
+    ports:
+      - "1434:1433"
+    volumes:
+      - ./sqlserver-data/metadata:/var/opt/mssql
