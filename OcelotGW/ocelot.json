@@ -6,7 +6,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "81"
+          "Port": "8001"
         }
       ],
       "UpstreamHttpMethod": [
@@ -20,7 +20,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "82"
+          "Port": "8002"
         }
       ],
       "UpstreamHttpMethod": [
@@ -35,7 +35,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "88"
+          "Port": "8003"
         }
       ],
       "UpstreamHttpMethod": [
@@ -50,34 +50,37 @@
       "Config": [
         {
           "Name": "Auth API",
+          "TransformByOcelotConfig": false,
           "Version": "v1",
-          "Url": "http://localhost:81/swagger/v1/swagger.json"
+          "Url": "http://localhost:8001/swagger/v1/swagger.json"
         }
       ]
     },
     {
       "Key": "metadata",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Metadata API",
           "Version": "v1",
-          "Url": "http://localhost:82/swagger/v1/swagger.json"
+          "Url": "http://localhost:8002/swagger/v1/swagger.json"
         }
       ]
     },
     {
       "Key": "document",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Document API",
           "Version": "v1",
-          "Url": "http://localhost:88/swagger/v1/swagger.json"
+          "Url": "http://localhost:8003/swagger/v1/swagger.json"
         }
       ]
     }
    
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:80"
+    "BaseUrl": "http://localhost:8000"
   }
 }

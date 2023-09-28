@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "ocelotgw": "StartDebugging",
+        "auth.api": "StartDebugging",
+        "document.api": "StartDebugging",
+        "metadata.api": "StartDebugging"
+      }
+    }
+  }
+}

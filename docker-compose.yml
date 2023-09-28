@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  ocelotgw:
+    image: ${DOCKER_REGISTRY-}ocelotgw
+    build:
+      context: .
+      dockerfile: OcelotGW/Dockerfile
+
+  auth.api:
+    image: ${DOCKER_REGISTRY-}authapi
+    build:
+      context: .
+      dockerfile: Auth.API/Dockerfile
+
+
+  document.api:
+    image: ${DOCKER_REGISTRY-}documentapi
+    build:
+      context: .
+      dockerfile: Document.API/Dockerfile
+
+
+  metadata.api:
+    image: ${DOCKER_REGISTRY-}metadataapi
+    build:
+      context: .
+      dockerfile: Metadata.API/Dockerfile
+

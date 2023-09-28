@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "dms-auth",
+          "Host": "auth.api",
           "Port": "80"
         }
       ],
@@ -19,7 +19,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "dms-metadata",
+          "Host": "metadata.api",
           "Port": "80"
         }
       ],
@@ -28,83 +28,13 @@
       "UpstreamPathTemplate": "/metadata/{everything}",
       "SwaggerKey": "metadata"
     },
-    {
-      "DownstreamPathTemplate": "/content/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "dms-content",
-          "Port": "80"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/content/{everything}",
-      "SwaggerKey": "content"
-    },
-    {
-      "DownstreamPathTemplate": "/notification/hubs/{everything}",
-      "DownstreamScheme": "ws",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "dms-notification",
-          "Port": "80"
-        }
-      ],
-      "LoadBalancerOptions": {
-        "Type": "CookieStickySessions",
-        "Key": "ASP.NET_SessionId",
-        "Expiry": 1800000
-      },
-      "UpstreamPathTemplate": "/notification/hubs/{everything}"
-    },
-    {
-      "DownstreamPathTemplate": "/notification/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "dms-notification",
-          "Port": "80"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/notification/{everything}",
-      "SwaggerKey": "notification"
-    },
-    {
-      "DownstreamPathTemplate": "/workflow/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "dms-workflow",
-          "Port": "80"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/workflow/{everything}",
-      "SwaggerKey": "workflow"
-    },
-    {
-      "DownstreamPathTemplate": "/monitoring/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "dms-monitoring",
-          "Port": "80"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/monitoring/{everything}"
-    },
+    
     {
       "DownstreamPathTemplate": "/document/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "dms-document",
+          "Host": "document.api",
           "Port": "80"
         }
       ],
@@ -117,37 +47,40 @@
   "SwaggerEndPoints": [
     {
       "Key": "auth",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Auth API",
           "Version": "v1",
-          "Url": ""
+          "Url": "http://auth.api/swagger/v1/swagger.json"
         }
       ]
     },
     {
       "Key": "metadata",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Metadata API",
           "Version": "v1",
-          "Url": ""
+          "Url": "http://metadata.api/swagger/v1/swagger.json"
         }
       ]
     },
-   
+
     {
       "Key": "document",
+      "TransformByOcelotConfig": false,
       "Config": [
         {
           "Name": "Document API",
           "Version": "v1",
-          "Url": ""
+          "Url": "http://document.api/swagger/v1/swagger.json"
         }
       ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:8000"
+    "BaseUrl": "http://ocelotgw"
   }
 }

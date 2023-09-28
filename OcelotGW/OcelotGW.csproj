@@ -5,9 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<UserSecretsId>44ef7e64-67c0-48e9-89be-2c3761982ff4</UserSecretsId>
+	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="MMLib.SwaggerForOcelot" Version="6.0.0" />
     <PackageReference Include="Ocelot" Version="18.0.0" />
     <PackageReference Include="Ocelot.Provider.Polly" Version="18.0.0" />

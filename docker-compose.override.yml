@@ -1,0 +1,40 @@
+version: '3.4'
+
+services:
+  ocelotgw:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - "8000:80"
+    depends_on:
+      - auth.api
+      - document.api
+      - metadata.api
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  auth.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - "8001:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  document.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+ 
+    ports:
+      - "8003:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  metadata.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - "8002:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
