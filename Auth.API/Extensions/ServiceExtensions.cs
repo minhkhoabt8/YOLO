@@ -14,6 +14,7 @@ using Auth.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace Auth.API.Extensions;
 

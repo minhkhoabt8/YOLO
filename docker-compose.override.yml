@@ -1,6 +1,30 @@
 version: '3.4'
 
 services:
+  auth-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=sa
+      # - SA_USERNAME=sa
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./sqlserver-data/auth:/var/opt/mssql
+  metadata-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=sa
+      # - SA_USERNAME=sa
+    ports:
+      - "1434:1433"
+    volumes:
+      - ./sqlserver-data/metadata:/var/opt/mssql
   ocelotgw:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
@@ -41,23 +65,4 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-  auth-sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=admin
-      - MSSQL_PID=Developer
-    ports:
-      - "1433:1433"
-    volumes:
-      - ./sqlserver-data/auth:/var/opt/mssql
-  metadata-sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=admin
-      - MSSQL_PID=Developer
-    ports:
-      - "1434:1433"
-    volumes:
-      - ./sqlserver-data/metadata:/var/opt/mssql
+  
