@@ -90,7 +90,7 @@ public class RoleController : ControllerBase
     /// <param name="accountID"></param>
     /// <param name="roleIDs"></param>
     /// <returns></returns>
-    [HttpPut("/auth/accounts/{accountID:guid}/roles")]
+    [HttpPut("assign/{accountID:guid}/roles")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
     public async Task<IActionResult> AssignRolesToAccount(string accountID, int[]? roleIDs)

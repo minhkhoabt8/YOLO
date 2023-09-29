@@ -10,7 +10,7 @@ using System.Linq.Dynamic.Core.Tokenizer;
 namespace Auth.API.Controllers;
 
 [ApiController]
-[Route("auth")]
+[Route("auth/login")]
 [AllowAnonymous]
 public class AuthController : ControllerBase
 {
@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [HttpPost("login")]
+    [HttpPost()]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     [ServiceFilter(typeof(AutoValidateModelState))]
@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
     /// Refresh token
     /// </summary>
     /// <returns></returns>
-    [HttpPost("refresh")]
+    [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     public async Task<IActionResult> Refresh(string? token)
@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
     /// Login with OTP
     /// </summary>
     /// <returns></returns>
-    [HttpPost("otp")]
+    [HttpPost("otp-login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     public async Task<IActionResult> LoginWithOtp(LoginInputDTO input, string? code)
@@ -70,7 +70,7 @@ public class AuthController : ControllerBase
     /// Resend OTP
     /// </summary>
     /// <returns></returns>
-    [HttpPost("resend")]
+    [HttpPost("resend-otp")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     public async Task<IActionResult> ResendOtp(LoginInputDTO input)
