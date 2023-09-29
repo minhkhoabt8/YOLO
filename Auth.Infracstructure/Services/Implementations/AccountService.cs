@@ -50,6 +50,8 @@ namespace Auth.Infrastructure.Services.Implementations
 
             newAccount.Otp = GenerateOtp();
 
+            newAccount.OtpExpiredAt = DateTime.Now.AddDays(1);
+
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
             //call Send SMS

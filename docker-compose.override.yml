@@ -3,28 +3,31 @@ version: '3.4'
 services:
   auth-sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: auth_db
     user: root
-    restart: always
+    restart: on-failure
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=sa
+      - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
       # - SA_USERNAME=sa
+      - MSSQL_PID=Express
     ports:
       - "1433:1433"
     volumes:
-      - ./sqlserver-data/auth:/var/opt/mssql
+      - ./sqlserver-data/auth:/var/opt/mssql/data
   metadata-sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: metadata_db
     user: root
-    restart: always
+    restart: on-failure
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=sa
-      # - SA_USERNAME=sa
+      - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
+      - MSSQL_PID=Express
     ports:
       - "1434:1433"
     volumes:
-      - ./sqlserver-data/metadata:/var/opt/mssql
+      - ./sqlserver-data/metadata:/var/opt/mssql/data
   ocelotgw:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker

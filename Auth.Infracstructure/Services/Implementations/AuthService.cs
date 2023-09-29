@@ -121,7 +121,7 @@ namespace Auth.Infrastructure.Services.Implementations
                 throw new WrongCredentialsException();
             }
 
-            if (string.IsNullOrEmpty(code) || account.Otp != code)
+            if (string.IsNullOrEmpty(code) || account.Otp != code || account.OtpExpiredAt < DateTime.Now)
             {
                 throw new InvalidOtpException();
             }

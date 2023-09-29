@@ -21,6 +21,8 @@ public partial class Account
 
     public string? Otp { get; set; }
 
+    public DateTime? OtpExpiredAt { get; set; }
+
     public bool? IsActive { get; set; } = false;
 
     public bool? IsDelete { get; set; } = false;

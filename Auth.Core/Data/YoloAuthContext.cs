@@ -32,6 +32,7 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.RoleId).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(20);
             entity.Property(e=>e.Otp).HasMaxLength(6);
+            entity.Property(e => e.OtpExpiredAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
