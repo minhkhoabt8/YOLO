@@ -6,30 +6,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Auth.Core.Entities
+namespace Auth.Core.Entities;
+
+public partial class RefreshToken
 {
-    public class RefreshToken
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    public string? Token { get; set; }
+
+    public DateTime Expires { get; set; }
+
+    public bool IsExpired => DateTime.Now >= Expires;
+
+    public int ExpiresIn => (int)Expires.Subtract(DateTime.Now).TotalSeconds;
+
+    public string? AccountId { get; set; }
+
+    public string? ReplacedBy { get; set; }
+
+    public DateTime? CreatedAt { get; set; } = DateTime.Now.SetKindUtc();
+
+    public bool IsRevoked { get; set; } = false;
+
+    public string? ReplacedByToken { get; set; }
+
+    public virtual Account? Account { get; set; }
+
+    public void Revoke()
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string Token { get; set; }
-        public DateTime Expires { get; set; }
-        public bool IsExpired => DateTime.Now >= Expires;
-        public int ExpiresIn => (int)Expires.Subtract(DateTime.Now).TotalSeconds;
-        public virtual Account Account { get; set; }
-        public string AccountId { get; set; }
-        public bool IsRevoked { get; set; } = false;
-        public string? ReplacedBy { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now.SetKindUtc();
-
-        public void Revoke()
-        {
-            IsRevoked = true;
-        }
-
-        public void ReplaceWith(RefreshToken replacement)
-        {
-            ReplacedBy = replacement.Token;
-            Revoke();
-        }
+        IsRevoked = true;
     }
+    public void ReplaceWith(RefreshToken replacement)
+    {
+        ReplacedBy = replacement.Token;
+        Revoke();
+    }
+
 }

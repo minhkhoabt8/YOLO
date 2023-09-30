@@ -16,11 +16,17 @@ public partial class YoloAuthContext : DbContext
     {
     }
 
-    
     public virtual DbSet<Account> Accounts { get; set; }
-    public virtual DbSet<Role> Roles { get; set; }
-    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public virtual DbSet<Notification> Notifications { get; set; }
+
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
+    public virtual DbSet<Role> Roles { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=(local);Database=YOLO_Auth;User Id=khoalnm;Password=admin;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,12 +35,12 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.Id).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(30);
             entity.Property(e => e.Name).HasMaxLength(30);
+            entity.Property(e => e.Otp).HasMaxLength(6);
+            entity.Property(e => e.OtpExpiredAt).HasColumnType("datetime");
             entity.Property(e => e.Password).HasMaxLength(20);
             entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.RoleId).HasMaxLength(50);
             entity.Property(e => e.Username).HasMaxLength(20);
-            entity.Property(e=>e.Otp).HasMaxLength(6);
-            entity.Property(e => e.OtpExpiredAt).HasColumnType("datetime");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
@@ -45,14 +51,14 @@ public partial class YoloAuthContext : DbContext
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.Property(e => e.Id).HasMaxLength(50);
-            entity.Property(e => e.UserId).HasMaxLength(50);
-            entity.Property(e => e.NotificationContent).HasMaxLength(100);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.NotificationContent).HasMaxLength(100);
+            entity.Property(e => e.UserId).HasMaxLength(50);
 
-            entity.HasOne(d => d.Account).WithMany(p => p.Notification)
+            entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Notifications_Accounts");
-
         });
 
         modelBuilder.Entity<RefreshToken>(entity =>
@@ -63,14 +69,13 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.AccountId).HasMaxLength(50);
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Expires).HasColumnType("datetime");
-            entity.Property(e => e.ReplacedBy).HasMaxLength(50);
+            entity.Property(e => e.ReplacedBy).HasMaxLength(150);
             entity.Property(e => e.Token).HasMaxLength(150);
 
             entity.HasOne(d => d.Account).WithMany(p => p.RefreshTokens)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_RefreshTokens_Accounts");
         });
-
 
         modelBuilder.Entity<Role>(entity =>
         {

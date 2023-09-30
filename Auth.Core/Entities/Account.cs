@@ -23,14 +23,13 @@ public partial class Account
 
     public DateTime? OtpExpiredAt { get; set; }
 
-    public bool? IsActive { get; set; } = false;
+    public bool IsActive { get; set; } = false;
 
-    public bool? IsDelete { get; set; } = false;
+    public bool IsDelete { get; set; } = false;
 
-    public virtual Role Role { get; set; } = null!;
+    public virtual ICollection<Notification> Notifications { get; } = new List<Notification>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 
-    public virtual ICollection<Notification> Notification { get; } = new List<Notification>();
+    public virtual Role Role { get; set; } = null!;
 }
-
