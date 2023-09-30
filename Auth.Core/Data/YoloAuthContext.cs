@@ -16,9 +16,11 @@ public partial class YoloAuthContext : DbContext
     {
     }
 
+    
     public virtual DbSet<Account> Accounts { get; set; }
     public virtual DbSet<Role> Roles { get; set; }
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+    public virtual DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +42,18 @@ public partial class YoloAuthContext : DbContext
                 .HasConstraintName("FK_Accounts_Roles");
         });
 
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.Property(e => e.Id).HasMaxLength(50);
+            entity.Property(e => e.UserId).HasMaxLength(50);
+            entity.Property(e => e.NotificationContent).HasMaxLength(100);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Notification)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Notifications_Accounts");
+
+        });
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {

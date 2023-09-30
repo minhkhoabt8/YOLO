@@ -23,11 +23,13 @@ public partial class MeasuredLandInfo
 
     public string? OwnerId { get; set; }
 
+    public string? UnitPriceLandId { get; set; }
+
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 
     public virtual GcnlandInfo? GcnLandInfo { get; set; }
 
-    public virtual ICollection<LandCompensation> LandCompensations { get; } = new List<LandCompensation>();
-
     public virtual LandType? LandType { get; set; }
+
+    public virtual UnitPriceLand? UnitPriceLand { get; set; }
 }

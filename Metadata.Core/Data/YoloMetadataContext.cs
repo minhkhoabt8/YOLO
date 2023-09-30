@@ -34,8 +34,6 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<GcnlandInfo> GcnlandInfos { get; set; }
 
-    public virtual DbSet<LandCompensation> LandCompensations { get; set; }
-
     public virtual DbSet<LandGroup> LandGroups { get; set; }
 
     public virtual DbSet<LandPositionInfo> LandPositionInfos { get; set; }
@@ -64,7 +62,6 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<UnitPriceLand> UnitPriceLands { get; set; }
 
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetCompensation>(entity =>
@@ -309,45 +306,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasConstraintName("FK_GCNLandInfos_Owners");
         });
 
-        modelBuilder.Entity<LandCompensation>(entity =>
-        {
-            entity.Property(e => e.LandCompensationId)
-                .HasMaxLength(50)
-                .HasColumnName("land_compensation_id");
-            entity.Property(e => e.CompensationContent).HasColumnName("compensation_content");
-            entity.Property(e => e.CompensationNote).HasColumnName("compensation_note");
-            entity.Property(e => e.CompensationPrice)
-                .HasColumnType("decimal(10, 3)")
-                .HasColumnName("compensation_price");
-            entity.Property(e => e.CompensationRate)
-                .HasMaxLength(20)
-                .HasColumnName("compensation_rate");
-            entity.Property(e => e.LandPosition)
-                .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("land_position");
-            entity.Property(e => e.MeasuredLandInfoId)
-                .HasMaxLength(50)
-                .HasColumnName("measured_land_info_id");
-            entity.Property(e => e.OwnerId)
-                .HasMaxLength(50)
-                .HasColumnName("owner_id");
-            entity.Property(e => e.UnitPriceLandId)
-                .HasMaxLength(50)
-                .HasColumnName("unit_price_land_id");
-            entity.Property(e => e.WithdrawArea)
-                .HasMaxLength(20)
-                .HasColumnName("withdraw_area");
-
-            entity.HasOne(d => d.MeasuredLandInfo).WithMany(p => p.LandCompensations)
-                .HasForeignKey(d => d.MeasuredLandInfoId)
-                .HasConstraintName("FK_LandCompensations_MeasuredLandInfo");
-
-            entity.HasOne(d => d.UnitPriceLand).WithMany(p => p.LandCompensations)
-                .HasForeignKey(d => d.UnitPriceLandId)
-                .HasConstraintName("FK_LandCompensations_UnitPriceLands");
-        });
-
         modelBuilder.Entity<LandGroup>(entity =>
         {
             entity.Property(e => e.LandGroupId)
@@ -431,6 +389,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.OwnerId)
                 .HasMaxLength(50)
                 .HasColumnName("owner_id");
+            entity.Property(e => e.UnitPriceLandId)
+                .HasMaxLength(50)
+                .HasColumnName("unit_price_land_id");
             entity.Property(e => e.WidthdrawArea)
                 .HasMaxLength(20)
                 .HasColumnName("widthdraw_area");
@@ -442,6 +403,10 @@ public partial class YoloMetadataContext : DbContext
             entity.HasOne(d => d.LandType).WithMany(p => p.MeasuredLandInfos)
                 .HasForeignKey(d => d.LandTypeId)
                 .HasConstraintName("FK_MeasuredLandInfo_LandTypes");
+
+            entity.HasOne(d => d.UnitPriceLand).WithMany(p => p.MeasuredLandInfos)
+                .HasForeignKey(d => d.UnitPriceLandId)
+                .HasConstraintName("FK_MeasuredLandInfo_UnitPriceLands");
         });
 
         modelBuilder.Entity<OrganizationType>(entity =>

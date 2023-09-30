@@ -25,9 +25,9 @@ public partial class UnitPriceLand
 
     public decimal? LandPositionRest { get; set; }
 
-    public virtual ICollection<LandCompensation> LandCompensations { get; } = new List<LandCompensation>();
-
     public virtual LandType? LandType { get; set; }
+
+    public virtual ICollection<MeasuredLandInfo> MeasuredLandInfos { get; } = new List<MeasuredLandInfo>();
 
     public virtual Project? Project { get; set; }
 }
