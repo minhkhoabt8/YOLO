@@ -13,13 +13,9 @@ namespace SharedLib.Infrastructure.Services.Implementations
             _contextAccessor = contextAccessor;
         }
 
-        public Guid? AccountID =>
-            Guid.TryParse(
-                _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.NameIdentifier)
-                    ?.Value, out var id)
-                ? id
-                : null;
-
+        public string? AccountID =>
+                _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.NameIdentifier)?.Value ?? null;
+                
         public string? Username =>
             _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(cl => cl.Type == ClaimTypes.Name)?.Value ?? null;
 

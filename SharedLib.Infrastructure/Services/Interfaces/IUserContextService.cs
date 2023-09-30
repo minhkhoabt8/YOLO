@@ -2,7 +2,7 @@
 {
     public interface IUserContextService
     {
-        Guid? AccountID { get; }
+        string? AccountID { get; }
         string? Username { get; }
         string? Email { get; }
         bool IsAuthenticated { get; }

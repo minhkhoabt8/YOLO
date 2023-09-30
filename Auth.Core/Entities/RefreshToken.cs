@@ -28,8 +28,6 @@ public partial class RefreshToken
 
     public bool IsRevoked { get; set; } = false;
 
-    public string? ReplacedByToken { get; set; }
-
     public virtual Account? Account { get; set; }
 
     public void Revoke()

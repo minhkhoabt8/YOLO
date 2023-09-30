@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SharedLib.Core.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace Metadata.Core.Entities;
 
 public partial class Owner
 {
-    public string OwnerId { get; set; } = null!;
+    public string OwnerId { get; set; } = Guid.NewGuid().ToString();
 
     public string? OwnerCode { get; set; }
 
@@ -27,7 +28,7 @@ public partial class Owner
 
     public string? OwnerType { get; set; }
 
-    public DateTime? OwnerCreatedTime { get; set; }
+    public DateTime? OwnerCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
     public string? OwnerCreatedBy { get; set; }
 

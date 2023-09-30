@@ -9,6 +9,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Metadata.Core.Data;
+using Metadata.Infrastructure.UOW;
+using Metadata.Infrastructure.Services.Interfaces;
+using Metadata.Infrastructure.Services.Implementations;
+using Metadata.Infrastructure.Repositories.Interfaces;
+using Metadata.Infrastructure.Repositories.Implementations;
+using Metadata.Infrastructure.Mappers;
+using SharedLib.Core.Attributes;
 
 namespace Metadata.API.Extensions;
 
@@ -18,7 +25,7 @@ public static class ServiceExtensions
     {
         services.AddDbContext<YoloMetadataContext>(opt =>
         {
-            opt.UseSqlServer(configuration.GetConnectionString("MetatdataConnection"),
+            opt.UseSqlServer(configuration.GetConnectionString("MetadataConnection"),
                 b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
             );
         });
@@ -48,7 +55,6 @@ public static class ServiceExtensions
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
-
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -108,18 +114,22 @@ public static class ServiceExtensions
 
     public static void AddServices(this IServiceCollection services)
     {
-       
-        
+        services.AddScoped<IUserContextService, UserContextService>();
+        services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IDocumentService, DocumentService>();
+
     }
 
     public static void AddRepositories(this IServiceCollection services)
     {
-        
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IDocumentRepository,DocumentRepository>();
+        services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)
     {
-      
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static void AddServiceFilters(this IServiceCollection services)
@@ -134,7 +144,7 @@ public static class ServiceExtensions
 
     public static void AddAutoMapper(this IServiceCollection services)
     {
-       
+        services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfiles)));
     }
 
     public static void AddEvents(this IServiceCollection services)

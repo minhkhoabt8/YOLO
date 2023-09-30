@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class LandPositionInfo
 {
-    public string LandInfoPositionId { get; set; } = null!;
+    public string LandInfoPositionId { get; set; } = Guid.NewGuid().ToString();
 
     public string? LocationName { get; set; }
 

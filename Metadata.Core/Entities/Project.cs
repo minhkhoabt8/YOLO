@@ -1,15 +1,17 @@
-﻿using System;
+﻿using SharedLib.Core.Entities;
+using SharedLib.Core.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace Metadata.Core.Entities;
 
-public partial class Project
+public partial class Project : ITextSearchableEntity
 {
-    public string ProjectId { get; set; } = null!;
+    public string ProjectId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? ProjectCode { get; set; }
+    public string ProjectCode { get; set; }
 
-    public string? ProjectName { get; set; }
+    public string ProjectName { get; set; } 
 
     public string? ProjectLocation { get; set; }
 
@@ -45,13 +47,13 @@ public partial class Project
 
     public string? AssetCompensationBasis { get; set; }
 
-    public DateTime? ProjectCreatedTime { get; set; }
+    public DateTime? ProjectCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
     public string? ProjectCreatedBy { get; set; }
 
     public bool? ProjectStatus { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool? IsDeleted { get; set; } = false;
 
     public virtual ICollection<LandPositionInfo> LandPositionInfos { get; } = new List<LandPositionInfo>();
 
@@ -64,4 +66,10 @@ public partial class Project
     public virtual ICollection<ProjectDocument> ProjectDocuments { get; } = new List<ProjectDocument>();
 
     public virtual ICollection<UnitPriceLand> UnitPriceLands { get; } = new List<UnitPriceLand>();
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(ProjectCode), .5},
+        {() => nameof(ProjectName), .5}
+    };
 }

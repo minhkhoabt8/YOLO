@@ -1,25 +1,26 @@
-﻿using System;
+﻿using SharedLib.Core.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace Metadata.Core.Entities;
 
 public partial class Document
 {
-    public string DocumentId { get; set; } = null!;
+    public string DocumentId { get; set; } = Guid.NewGuid().ToString();
 
     public string? DocumentTypeId { get; set; }
 
-    public string? Number { get; set; }
+    public string Number { get; set; }
 
-    public string? Notation { get; set; }
+    public string Notation { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
-    public DateTime? CreatedTime { get; set; }
+    public DateTime CreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
-    public DateTime? PublishedDate { get; set; }
+    public DateTime PublishedDate { get; set; }
 
-    public DateTime? EffectiveDate { get; set; }
+    public DateTime EffectiveDate { get; set; }
 
     public string? Epitome { get; set; }
 
@@ -33,7 +34,7 @@ public partial class Document
 
     public bool? IsPublic { get; set; }
 
-    public bool? IsDeleted { get; set; }
+    public bool? IsDeleted { get; set; } = false;
 
     public virtual DocumentType? DocumentType { get; set; }
 

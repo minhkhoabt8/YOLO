@@ -7,14 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
-    <Folder Include="UOW\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Metadata.Core\Metadata.Core.csproj" />
+    <ProjectReference Include="..\SharedLib.Infrastructure\SharedLib.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
