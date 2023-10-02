@@ -1,5 +1,6 @@
 ﻿using Auth.Infrastructure.DTOs.Account;
 using Auth.Infrastructure.DTOs.Role;
+using Auth.Infrastructure.Services.Implementations;
 using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -37,12 +38,13 @@ public class AcccountController : ControllerBase
     /// Query accounts
     /// </summary>
     /// <returns></returns>
-    [HttpGet]
+    [HttpGet("query")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
     {
-       throw new NotImplementedException();
+        var accounts = await _accountService.QueryAccount(query);
+        return ResponseFactory.Ok(accounts);
     }
 
     /// <summary>
@@ -54,7 +56,8 @@ public class AcccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
     public async Task<IActionResult> GetAccount(string id)
     {
-        throw new NotImplementedException();
+        var account = await _accountService.GetAccountByIdAsync(id);
+        return ResponseFactory.Ok(account);
     }
 
     /// <summary>
@@ -71,5 +74,36 @@ public class AcccountController : ControllerBase
         var accountDTOs = await _accountService.CreateAccountAsync(input);
 
         return ResponseFactory.Created(accountDTOs);
+    }
+
+    /// <summary>
+    /// Update account
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="writeDTO"></param>
+    /// <returns></returns>
+    [HttpPut("{id}")]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+    public async Task<IActionResult> UpdateAccount(string id, AccountWriteDTO writeDTO)
+    {
+        var account = await _accountService.UpdateAccountAsync(id, writeDTO);
+        return ResponseFactory.Ok(account);
+    }
+
+    /// <summary>
+    /// Delete account
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+    public async Task<IActionResult> DeleteAccount(string id)
+    {
+        await _accountService.DeleteAccountAsync(id);
+        return ResponseFactory.NoContent();
     }
 }

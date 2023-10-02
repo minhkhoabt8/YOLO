@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SharedLib.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auth.Core.Entities;
 
-public partial class Account
+public partial class Account : ITextSearchableEntity
 {
+    [Key]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Username { get; set; } = null!;
@@ -33,7 +34,12 @@ public partial class Account
 
     public virtual Role Role { get; set; } = null!;
 
-
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(Username), .5},
+        {() => nameof(Email), .5},
+        {() => nameof(Phone), .5 }
+    };
     public void GernerateOTP()
     {
         Otp = new Random().Next(100000, 999999).ToString();

@@ -34,8 +34,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 projects = projects.OrderByDynamic(query.OrderBy);
             }
-            IEnumerable<Project> enumeratedDepartments = projects.AsEnumerable();
-            return await Task.FromResult(enumeratedDepartments);
+            IEnumerable<Project> enumeratedProject = projects.AsEnumerable();
+            return await Task.FromResult(enumeratedProject);
         }
     }
 }

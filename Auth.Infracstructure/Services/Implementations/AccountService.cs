@@ -1,11 +1,12 @@
 ﻿using Auth.Core.Entities;
 using Auth.Infrastructure.DTOs.Account;
-using Auth.Infrastructure.DTOs.Role;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
 using SharedLib.Core.Exceptions;
+using SharedLib.Infrastructure.DTOs;
 using System;
+using System.Data;
 
 namespace Auth.Infrastructure.Services.Implementations
 {
@@ -48,9 +49,7 @@ namespace Auth.Infrastructure.Services.Implementations
 
             // generate otp 
 
-            newAccount.Otp = GenerateOtp();
-
-            newAccount.OtpExpiredAt = DateTime.Now.AddDays(1);
+            newAccount.GernerateOTP();
 
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
@@ -80,35 +79,34 @@ namespace Auth.Infrastructure.Services.Implementations
             return new string(password);
         }
 
-        private string GenerateOtp()
+        
+
+        public async Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO)
         {
-            const string chars = "0123456789";
-
-            char[] password = new char[6];
-
-            Random random = new Random();
-
-            for (int i = 0; i < 6; i++)
-            {
-                password[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(password);
+            var account = await _unitOfWork.AccountRepository.FindAsync(Id);
+            if (account == null) throw new EntityWithIDNotFoundException<Account>(Id);
+            _mapper.Map(accountReadDTO, account);
+            return _mapper.Map<AccountReadDTO>(account);
         }
 
-        public Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO)
+        public async Task DeleteAccountAsync(string id)
         {
-            throw new NotImplementedException();
+            var account = await _unitOfWork.AccountRepository.FindAsync(id);
+            if (account == null) throw new EntityWithIDNotFoundException<Account>(id);
+            account.IsDelete = true;
+            await _unitOfWork.CommitAsync();
         }
 
-        public Task DeleteAccountAsync(string id)
+        public async Task<AccountReadDTO> GetAccountByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return _mapper.Map<AccountReadDTO>(await _unitOfWork.AccountRepository.FindAsync(id, include: "Role"));
         }
 
-        public Task<AccountReadDTO> GetAccountByIdAsync(string id)
+        public async Task<PaginatedResponse<AccountReadDTO>> QueryAccount(AccountQuery query)
         {
-            throw new NotImplementedException();
+            var accounts = await _unitOfWork.AccountRepository.QueryAsync(query);
+
+            return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(accounts, query, _mapper);
         }
     }
 }
