@@ -96,5 +96,19 @@ namespace Auth.Infrastructure.Services.Implementations
             return new string(password);
         }
 
+        public Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAccountAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AccountReadDTO> GetAccountByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

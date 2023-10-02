@@ -1,4 +1,5 @@
 ﻿using Auth.Infrastructure.DTOs.Role;
+using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -9,7 +10,14 @@ namespace Auth.API.Controllers;
 [Route("auth/role")]
 public class RoleController : ControllerBase
 {
-    
+    private readonly IRoleService _roleService;
+
+    public RoleController(IRoleService roleService)
+    {
+        _roleService = roleService;
+    }
+
+
     /// <summary>
     /// Get all roles
     /// </summary>
@@ -18,7 +26,8 @@ public class RoleController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<RoleReadDTO>>))]
     public async Task<IActionResult> GetAllRoles()
     {
-        throw new NotImplementedException();
+        var roles = await _roleService.GetRolesAsync();
+        return ResponseFactory.Ok(roles);
     }
 
 
@@ -30,9 +39,10 @@ public class RoleController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> GetRole(int id)
+    public async Task<IActionResult> GetRoleDetailsAsync(string id)
     {
-        throw new NotImplementedException();
+        var role = await _roleService.GetRoleAsync(id);
+        return ResponseFactory.Ok(role);
     }
 
 
@@ -47,7 +57,8 @@ public class RoleController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
     public async Task<IActionResult> CreateRole(RoleWriteDTO writeDTO)
     {
-        throw new NotImplementedException();
+        var role = await _roleService.CreateRoleAsync(writeDTO);
+        return ResponseFactory.Created(role);
     }
 
 
@@ -63,10 +74,10 @@ public class RoleController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> UpdateRole(int id, RoleWriteDTO writeDTO)
+    public async Task<IActionResult> UpdateRole(string id, RoleWriteDTO writeDTO)
     {
-
-        throw new NotImplementedException();
+        var role = await _roleService.UpdateRoleAsync(id, writeDTO);
+        return ResponseFactory.Ok(role);
     }
 
 
@@ -78,23 +89,10 @@ public class RoleController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> DeleteRole(int id)
+    public async Task<IActionResult> DeleteRole(string id)
     {
-        throw new NotImplementedException();
+        await _roleService.DeleteRoleAsync(id);
+        return ResponseFactory.NoContent();
     }
 
-
-    /// <summary>
-    /// Assign roles to account
-    /// </summary>
-    /// <param name="accountID"></param>
-    /// <param name="roleIDs"></param>
-    /// <returns></returns>
-    [HttpPut("assign/{accountID:guid}/roles")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> AssignRolesToAccount(string accountID, int[]? roleIDs)
-    {
-        throw new NotImplementedException();
-    }
 }
