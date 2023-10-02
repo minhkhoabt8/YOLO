@@ -1,6 +1,7 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
     {
         public DocumentRepository(YoloMetadataContext context) : base(context)
         {
+        }
+
+        public async Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId)
+        {
+            return await _context.ProjectDocuments
+                .Where(pd => pd.ProjectId == projectId)
+                .Include(pd => pd.Document)
+                .Select(pd => pd.Document)
+                .ToListAsync();
         }
     }
 }

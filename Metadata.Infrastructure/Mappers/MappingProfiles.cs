@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.LandPositionInfo;
+using Metadata.Infrastructure.DTOs.Owner;
+using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.DTOs.Project;
+using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using System.Data;
 
 namespace Metadata.Infrastructure.Mappers
@@ -21,6 +25,21 @@ namespace Metadata.Infrastructure.Mappers
 
             //PriceApplyCode
             CreateMap<PriceAppliedCode, PriceAppliedCodeReadDTO>();
+
+            //Owner
+            CreateMap<Owner, OwnerReadDTO>();
+            CreateMap<Owner, OwnersInProjectDTO>();
+
+            //Plan
+            CreateMap<Plan, PlanReadDTO>();
+            CreateMap<Plan, PlansInProjectDTO>();   
+
+            //LandPositionInfos
+            CreateMap<LandPositionInfo, LandPositionInfoReadDTO>();
+
+            //UnitPriceLand
+            CreateMap<UnitPriceLand, UnitPriceLandReadDTO>();
+
         }
     }
 }

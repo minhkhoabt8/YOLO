@@ -4,7 +4,7 @@ namespace Auth.Core.Exceptions
 {
     public class WrongCredentialsException : HandledException
     {
-        public WrongCredentialsException() : base(403, "Username or Password is incorrect")
+        public WrongCredentialsException() : base(401, "Username or Password is incorrect")
         {
         }
     }

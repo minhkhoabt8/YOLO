@@ -25,21 +25,37 @@ namespace Metadata.API.Controllers
         /// <summary>
         /// Query projects
         /// </summary>
+        /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<ProjectReadDTO>))]
-        public async Task<IActionResult> QueryAccounts([FromQuery] ProjectQuery query)
+        public async Task<IActionResult> QueryProjects([FromQuery] ProjectQuery query)
         {
             var projects = await _projectService.ProjectQueryAsync(query);
 
             return ResponseFactory.PaginatedOk(projects);
         }
 
+
+        /// <summary>
+        /// Get project details
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
+        public async Task<IActionResult> QueryProjects(string projectId)
+        {
+            var projects = await _projectService.GetProjectAsync(projectId);
+
+            return ResponseFactory.Ok(projects);
+        }
+
+
         /// <summary>
         /// Create Project
         /// </summary>
         /// <param name="projectDto"></param>
-        /// <param name="fileAttaches"></param>
         /// <returns></returns>
         [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]

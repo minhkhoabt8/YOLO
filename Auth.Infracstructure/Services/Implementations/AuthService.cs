@@ -25,36 +25,25 @@ namespace Auth.Infrastructure.Services.Implementations
             _smsService = smsService;
         }
 
-        public async Task<LoginOutputDTO> LoginAsync(LoginInputDTO inputDTO)
+        public async Task<AccountReadDTO> LoginAsync(LoginInputDTO inputDTO)
         {
+            //check account with username and password
             var account = await _unitOfWork.AccountRepository.LoginAsync(inputDTO);
 
             if (account == null)
             {
                 throw new WrongCredentialsException();
             }
-            if (account.IsActive == false)
-            {
-                throw new AccountNotVerifyException();
-            }
-
-            var refreshToken = _tokenService.GenerateRefreshToken(account);
-
-            await _unitOfWork.RefreshTokenRepository.AddAsync(refreshToken);
+            //re-assign Otp for two-factor-authentication
+            account.GernerateOTP();
 
             await _unitOfWork.CommitAsync();
 
-            return new LoginOutputDTO
-            {
-                UserId = account!.Id,
-                FullName = account!.Name,
-                UserName = account!.Username,
-                Role = account!.Role.Name,
-                Token = await _tokenService.GenerateTokenAsync(account),
-                TokenExpires = 12000,
-                RefreshToken = refreshToken.Token ,
-                RefreshTokenExpires = refreshToken.ExpiresIn
-            };
+            ////call Send SMS
+            await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
+
+            return _mapper.Map<AccountReadDTO>(account);
+
         }
 
        
@@ -121,7 +110,7 @@ namespace Auth.Infrastructure.Services.Implementations
                 throw new WrongCredentialsException();
             }
 
-            if (string.IsNullOrEmpty(code) || account.Otp != code || account.OtpExpiredAt < DateTime.Now)
+            if (string.IsNullOrEmpty(code) || !account.IsOtpValid(code))
             {
                 throw new InvalidOtpException();
             }
@@ -142,7 +131,7 @@ namespace Auth.Infrastructure.Services.Implementations
                 Role = account!.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(account),
                 TokenExpires = 12000,
-                RefreshToken = refreshToken.Token,
+                RefreshToken = refreshToken.Token!,
                 RefreshTokenExpires = refreshToken.ExpiresIn
             };
 
@@ -158,31 +147,15 @@ namespace Auth.Infrastructure.Services.Implementations
                 throw new WrongCredentialsException();
             }
 
-            account.Otp = GenerateOtp();
-
-            ////call Send SMS
-            await _smsService.SendSmsAsync(account.Phone, account.Otp);
+            account.GernerateOTP();
 
             await _unitOfWork.CommitAsync();
 
-            return account.Otp;
+            ////call Send SMS
+            await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
+
+            return account.Otp!;
         }
 
-
-        private string GenerateOtp()
-        {
-            const string chars = "0123456789";
-
-            char[] password = new char[6];
-
-            Random random = new Random();
-
-            for (int i = 0; i < 6; i++)
-            {
-                password[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(password);
-        }
     }
 }

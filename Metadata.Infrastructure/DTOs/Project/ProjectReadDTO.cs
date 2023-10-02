@@ -63,15 +63,105 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public ICollection<LandPositionInfoReadDTO> LandPositionInfos { get; set; }
 
-        public ICollection<OwnerReadDTO> Owners {  get; set; }
+        public ICollection<OwnersInProjectDTO> Owners {  get; set; }
 
-        public ICollection<PlanReadDTO> Plans { get; set; }
+        public ICollection<PlansInProjectDTO> Plans { get; set; }
 
         public PriceAppliedCodeReadDTO PriceAppliedCode { get; set; }
-        //Add Documents manual
-        public ICollection<DocumentReadDTO> Documents { get; set; }
+        //Attach Documents manual
+        public IEnumerable<DocumentReadDTO>? Documents { get; set; }
 
-        public ICollection<UnitPriceLandReadDTO> UnitPriceLands { get; set; }
+        public ICollection<UnitPriceLandReadDTO>? UnitPriceLands { get; set; }
+
+    }
+
+    public class OwnersInProjectDTO
+    {
+        public string OwnerId { get; set; } = null!;
+
+        public string? OwnerCode { get; set; }
+
+        public string? OwnerName { get; set; }
+
+        public string? OwnerIdCode { get; set; }
+
+        public string? OwnerGender { get; set; }
+
+        public DateTime? OwnerDateOfBirth { get; set; }
+
+        public string? OwnerEthnic { get; set; }
+
+        public string? OwnerNational { get; set; }
+
+        public string? OwnerAddress { get; set; }
+
+        public string? OwnerTaxCode { get; set; }
+
+        public string? OwnerType { get; set; }
+
+        public DateTime? OwnerCreatedTime { get; set; }
+
+        public string? OwnerCreatedBy { get; set; }
+
+        public string? ProjectId { get; set; }
+
+        public string? PlanId { get; set; }
+
+        public string? OwnerStatus { get; set; }
+
+        public DateTime? PublishedDate { get; set; }
+
+        public string? PublishedPlace { get; set; }
+
+        public string? HusbandWifeName { get; set; }
+
+        public string? RepresentPerson { get; set; }
+
+        public DateTime? TaxPublishedDate { get; set; }
+
+        public string? OrganizationTypeId { get; set; }
+
+        public OrganizationType? OrganizationType { get; set; }
+    }
+
+    public class PlansInProjectDTO
+    {
+        public string PlanId { get; set; } = null!;
+
+        public string? ProjectId { get; set; }
+
+        public string? PlaneCode { get; set; }
+
+        public string? PlanPhrase { get; set; }
+
+        public string? PlanDescription { get; set; }
+
+        public string? PlanCreateBase { get; set; }
+
+        public string? PlanApprovedBy { get; set; }
+
+        public string? PlanReportSignal { get; set; }
+
+        public DateTime? PlanReportDate { get; set; }
+
+        public DateTime? PlanCreatedTime { get; set; }
+
+        public DateTime? PlanEndedTime { get; set; }
+
+        public string? PlanCreatedBy { get; set; }
+
+        public bool? PlanStatus { get; set; }
+
+        public bool? IsDeleted { get; set; }
+    }
+
+    public class DocumentsInProject
+    {
+
+    }
+
+    public class UnitPriceLandsInProject
+    {
 
     }
 }

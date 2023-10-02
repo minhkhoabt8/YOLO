@@ -67,9 +67,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<ProjectReadDTO> GetProjectAsync(string projectId)
+        public async Task<ProjectReadDTO> GetProjectAsync(string projectId)
         {
-            throw new NotImplementedException();
+            var project = await _unitOfWork.ProjectRepository
+                .FindAsync(projectId, include: "LandPositionInfos, Owners, Plans, PriceAppliedCode, UnitPriceLands, ProjectDocuments");
+            
+            var projectReadDto =  _mapper.Map<ProjectReadDTO>(project);
+
+            var projectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfProjectAsync(projectId);
+
+            projectReadDto.Documents = _mapper.Map<IEnumerable<DocumentReadDTO>>(projectDocuments);
+
+            return projectReadDto;
         }
 
         public async Task<PaginatedResponse<ProjectReadDTO>> ProjectQueryAsync(ProjectQuery query)

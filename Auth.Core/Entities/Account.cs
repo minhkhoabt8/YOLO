@@ -32,4 +32,19 @@ public partial class Account
     public virtual ICollection<RefreshToken> RefreshTokens { get; } = new List<RefreshToken>();
 
     public virtual Role Role { get; set; } = null!;
+
+
+    public void GernerateOTP()
+    {
+        Otp = new Random().Next(100000, 999999).ToString();
+        OtpExpiredAt = DateTime.Now.AddMinutes(30);
+    }
+
+    public bool IsOtpValid(string checkOtp)
+    {
+        if (Otp != checkOtp || OtpExpiredAt < DateTime.Now )
+            return false;
+        return true;
+        
+    }
 }

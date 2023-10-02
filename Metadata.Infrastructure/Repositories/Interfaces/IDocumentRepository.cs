@@ -14,6 +14,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IUpdate<Document>,
         IDelete<Document>
     {
-
+        Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId);
     }
 }

@@ -9,7 +9,7 @@ namespace Auth.Core.Exceptions
 {
     public class InvalidOtpException : HandledException
     {
-        public InvalidOtpException() : base(403, "Missing or invalid otp code")
+        public InvalidOtpException() : base(401, "Missing or invalid otp code")
         {
         }
     }
