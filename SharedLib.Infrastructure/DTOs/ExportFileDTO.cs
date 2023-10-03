@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.Project
+namespace SharedLib.Infrastructure.DTOs
 {
-    public class ProjectExportFileDTO
+    public class ExportFileDTO
     {
         public string FileName { get; set; }
         public byte[] FileByte { get; set; }

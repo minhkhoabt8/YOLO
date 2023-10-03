@@ -2,9 +2,11 @@
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Plan;
+using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -80,6 +82,43 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+        /// <summary>
+        /// This method only used to test export all plans in database
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ExportFileDTO> ExportPlansFileAsync(string projectId)
+        {
+            var plans = await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Plans");
+
+                int row = 1;
+
+                var properties = typeof(Plan).GetProperties();
+
+                for (int col = 0; col < properties.Length; col++)
+                {
+                    worksheet.Cells[row, col + 1].Value = properties[col].Name;
+                }
+
+                foreach (var item in plans)
+                {
+                    row++;
+                    for (int col = 0; col < properties.Length; col++)
+                    {
+                        worksheet.Cells[row, col + 1].Value = properties[col].GetValue(item);
+                    }
+                }
+                return new ExportFileDTO
+                {
+                    FileByte = package.GetAsByteArray(),
+                    FileName = $"{"yolo" + $"{Guid.NewGuid()}"}"
+                };
+            }
         }
     }
 }

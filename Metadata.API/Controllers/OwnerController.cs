@@ -107,6 +107,19 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Export Owner File
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("export/{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportOwnerFile(string projectId)
+        {
+            var result = await _ownerService.ExportOwnerFileAsync(projectId);
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
+
+        /// <summary>
         /// Update Owner
         /// </summary>
         /// <param name="id"></param>

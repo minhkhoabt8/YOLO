@@ -16,6 +16,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<Owner>,
         IQueryAsync<Owner, OwnerQuery>
     {
-
+        Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId);
     }
 }

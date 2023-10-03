@@ -54,7 +54,6 @@ namespace Metadata.API.Controllers
         /// <summary>
         /// Export Project File
         /// </summary>
-        /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("export")]
         [ProducesResponseType(StatusCodes.Status200OK)]

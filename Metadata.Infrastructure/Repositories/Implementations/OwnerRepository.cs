@@ -14,6 +14,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId)
+        {
+            return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projectId));
+        }
+
         public async Task<IEnumerable<Owner>> QueryAsync(OwnerQuery query, bool trackChanges = false)
         {
             IQueryable<Owner> owners = _context.Owners;

@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PlanReadDTO> UpdatePlanAsync(string planId, PlanWriteDTO dto);
         Task DeletePlan(string planId);
         Task ImportPlan(IFormFile attachFile);
+        Task<ExportFileDTO> ExportPlansFileAsync(string projectId);
     }
 }

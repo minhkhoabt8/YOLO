@@ -83,7 +83,18 @@ namespace Metadata.API.Controllers
             await _planService.ImportPlan(attachFile);
             return ResponseFactory.Created(attachFile);
         }
-
+        /// <summary>
+        /// Export Project File
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("export/{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportProjectFile(string projectId)
+        {
+            var result = await _planService.ExportPlansFileAsync(projectId);
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
         /// <summary>
         /// Update Plan
         /// </summary>

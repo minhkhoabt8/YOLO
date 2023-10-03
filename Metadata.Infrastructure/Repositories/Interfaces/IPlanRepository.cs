@@ -19,5 +19,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<Plan>,
         IQueryAsync<Plan, PlanQuery>
     {
+        Task <IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId);
     }
 }

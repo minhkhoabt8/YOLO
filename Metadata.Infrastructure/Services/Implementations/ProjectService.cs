@@ -73,7 +73,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         /// This method only used to test export all projects in database
         /// </summary>
         /// <returns></returns>
-        public async Task<ProjectExportFileDTO> ExportProjectFileAsync()
+        public async Task<ExportFileDTO> ExportProjectFileAsync()
         {
             var project = await _unitOfWork.ProjectRepository.GetAllAsync();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -98,7 +98,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         worksheet.Cells[row, col + 1].Value = properties[col].GetValue(item);
                     }
                 }
-                return new ProjectExportFileDTO
+                return new ExportFileDTO
                 {
                     FileByte = package.GetAsByteArray(),
                     FileName = $"{"yolo" + $"{Guid.NewGuid()}"}"
