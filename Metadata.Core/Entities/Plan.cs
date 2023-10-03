@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SharedLib.Core.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
-public partial class Plan
+public partial class Plan : ITextSearchableEntity
 {
-    public string PlanId { get; set; } = null!;
+    [Key]
+    public string PlanId { get; set; } = Guid.NewGuid().ToString();
 
     public string? ProjectId { get; set; }
 
@@ -38,4 +39,9 @@ public partial class Plan
     public virtual ICollection<Owner> Owners { get; } = new List<Owner>();
 
     public virtual Project? Project { get; set; }
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(PlaneCode), .5}
+    };
 }

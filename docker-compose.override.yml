@@ -1,33 +1,33 @@
 version: '3.4'
 
 services:
-  auth-sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: auth_db
-    user: root
-    restart: always
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
-      # - SA_USERNAME=sa
-      - MSSQL_PID=Express
-    ports:
-      - "1433:1433"
-    volumes:
-      - ./sqlserver-data/auth:/var/opt/mssql
-  metadata-sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: metadata_db
-    user: root
-    restart: always
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
-      - MSSQL_PID=Express
-    ports:
-      - "1434:1433"
-    volumes:
-      - ./sqlserver-data/metadata:/var/opt/mssql
+  # auth-sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   container_name: auth_db
+  #   user: root
+  #   restart: always
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
+  #     # - SA_USERNAME=sa
+  #     - MSSQL_PID=Express
+  #   ports:
+  #     - "1433:1433"
+  #   volumes:
+  #     - ./sqlserver-data/auth:/var/opt/mssql
+  # metadata-sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   container_name: metadata_db
+  #   user: root
+  #   restart: always
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=MySup4rStrongP@ssword@@
+  #     - MSSQL_PID=Express
+  #   ports:
+  #     - "1434:1433"
+  #   volumes:
+  #     - ./sqlserver-data/metadata:/var/opt/mssql
   ocelotgw:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
@@ -43,8 +43,8 @@ services:
   auth.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
-    depends_on:
-      - auth-sqlserver
+    # depends_on:
+    #   - auth-sqlserver
     ports:
       - "8001:80"
     volumes:
@@ -61,8 +61,8 @@ services:
   metadata.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
-    depends_on:
-      - metadata-sqlserver
+    # depends_on:
+    #   - metadata-sqlserver
     ports:
       - "8002:80"
     volumes:

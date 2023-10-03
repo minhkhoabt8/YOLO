@@ -117,6 +117,7 @@ public static class ServiceExtensions
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IDocumentService, DocumentService>();
+        services.AddScoped<IOwnerService, OwnerService>();
 
     }
 
@@ -125,6 +126,7 @@ public static class ServiceExtensions
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IDocumentRepository,DocumentRepository>();
         services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
+        services.AddScoped<IOwnerRepository, OwnerRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

@@ -7,14 +7,9 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -57,9 +52,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task DeleteProjectAsync(string projectId)
+        public async Task DeleteProjectAsync(string projectId)
         {
-            throw new NotImplementedException();
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+
+            if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            project.IsDeleted = true;
+
+            await _unitOfWork.CommitAsync();
         }
 
         public Task<IEnumerable<ProjectReadDTO>> GetAllProjectsAsync()
@@ -88,9 +89,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<ProjectReadDTO>.FromEnumerableWithMapping(projects, query, _mapper);
         }
 
-        public Task<ProjectReadDTO> UpdateProjectAsync(string projectId, ProjectWriteDTO project)
+        public async Task<ProjectReadDTO> UpdateProjectAsync(string projectId, ProjectWriteDTO dto)
         {
-            throw new NotImplementedException();
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+
+            if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            _mapper.Map(dto, project);
+
+            return _mapper.Map<ProjectReadDTO>(project);
         }
     }
 }

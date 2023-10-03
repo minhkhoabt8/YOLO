@@ -23,7 +23,7 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Query projects
+        /// Query Projects
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
@@ -38,13 +38,13 @@ namespace Metadata.API.Controllers
 
 
         /// <summary>
-        /// Get project details
+        /// Get Project Details
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("{projectId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
-        public async Task<IActionResult> QueryProjects(string projectId)
+        public async Task<IActionResult> GetProjectDetails(string projectId)
         {
             var projects = await _projectService.GetProjectAsync(projectId);
 
@@ -59,13 +59,58 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DocumentReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateProjectAsync([FromForm] ProjectWriteDTO projectDto)
         {
             var project = await _projectService.CreateProjectAsync(projectDto);
 
             return ResponseFactory.Created(project);
+        }
+
+        /// <summary>
+        /// Import Project From File
+        /// </summary>
+        /// <param name="attachFile"></param>
+        /// <returns></returns>
+        [HttpPost("import")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<ProjectReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public Task<IActionResult> ImportProjectAsync(IFormFile attachFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Update Project
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> UpdateProject(string id, ProjectWriteDTO writeDTO)
+        {
+            var project = await _projectService.UpdateProjectAsync(id, writeDTO);
+            return ResponseFactory.Ok(project);
+        }
+
+        /// <summary>
+        /// Delete Project
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> DeleteProject(string id)
+        {
+            await _projectService.DeleteProjectAsync(id);
+            return ResponseFactory.NoContent();
         }
     }
 }

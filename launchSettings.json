@@ -8,8 +8,8 @@
         "auth.api": "StartDebugging",
         "document.api": "StartDebugging",
         "metadata.api": "StartDebugging",
-        "auth-sqlserver:": "StartWithoutDebugging",
-        "metadata-sqlserver": "StartWithoutDebugging"
+        //"auth-sqlserver:": "StartWithoutDebugging",
+        //"metadata-sqlserver": "StartWithoutDebugging"
       }
     }
   }

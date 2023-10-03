@@ -12,7 +12,7 @@ namespace Metadata.Core.Exceptions
         /// <summary>
         /// if user token not have username
         /// </summary>
-        public CanNotAssignUserException() : base(403, "Can Not Assign User")
+        public CanNotAssignUserException() : base(403, "Can Not Assign Creator To User")
         {
         }
 

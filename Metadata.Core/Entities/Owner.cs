@@ -1,11 +1,14 @@
-﻿using SharedLib.Core.Extensions;
+﻿using SharedLib.Core.Entities;
+using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
-public partial class Owner
+public partial class Owner : ITextSearchableEntity
 {
+    [Key]
     public string OwnerId { get; set; } = Guid.NewGuid().ToString();
 
     public string? OwnerCode { get; set; }
@@ -65,4 +68,10 @@ public partial class Owner
     public virtual Project? Project { get; set; }
 
     public virtual ICollection<Support> Supports { get; } = new List<Support>();
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(OwnerName), .5},
+        {() => nameof(OwnerCode), .5}
+    };
 }

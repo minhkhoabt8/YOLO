@@ -19,6 +19,8 @@ namespace Metadata.Infrastructure.UOW
         public IProjectRepository ProjectRepository => GetSingletonRepository<IProjectRepository>();
         public IDocumentRepository DocumentRepository => GetSingletonRepository<IDocumentRepository>();
         public IProjectDocumentRepository ProjectDocumentRepository => GetSingletonRepository<IProjectDocumentRepository>();
+        public IOwnerRepository OwnerRepository => GetSingletonRepository<IOwnerRepository>();
+        public IPlanRepository PlanRepository => GetSingletonRepository<IPlanRepository>();
 
         public Task<int> CommitAsync()
         {
