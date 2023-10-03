@@ -9,7 +9,7 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentRepository DocumentRepository { get; }
         public IProjectRepository ProjectRepository { get; }
         public IProjectDocumentRepository ProjectDocumentRepository { get; }
-
+        ILandGroupRepository LandGroupRepository { get; }
         Task<int> CommitAsync();
     }
 }

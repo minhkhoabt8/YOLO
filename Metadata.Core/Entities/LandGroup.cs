@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class LandGroup
 {
-    public string LandGroupId { get; set; } = null!;
+    public string LandGroupId { get; set; } = Guid.NewGuid().ToString();
 
     public string? Code { get; set; }
 

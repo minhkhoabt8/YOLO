@@ -20,6 +20,8 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentRepository DocumentRepository => GetSingletonRepository<IDocumentRepository>();
         public IProjectDocumentRepository ProjectDocumentRepository => GetSingletonRepository<IProjectDocumentRepository>();
 
+        public ILandGroupRepository LandGroupRepository => GetSingletonRepository<ILandGroupRepository>();
+
         public Task<int> CommitAsync()
         {
             return _context.SaveChangesAsync();
