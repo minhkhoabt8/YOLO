@@ -14,5 +14,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<ProjectReadDTO> GetProjectAsync(string projectId);
         Task CreateProjectsFromFileAsync(IFormFile formFile);
         Task<PaginatedResponse<ProjectReadDTO>> ProjectQueryAsync(ProjectQuery query);
+        Task<ProjectExportFileDTO> ExportProjectFileAsync();
     }
 }

@@ -3,6 +3,7 @@ using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
 
@@ -69,7 +70,7 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Import Owner From File
+        /// Import Owner From File - Test Template
         /// </summary>
         /// <param name="attachFile"></param>
         /// <returns></returns>
@@ -77,10 +78,32 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> ImportOwnerAsync(IFormFile attachFile)
+        public async Task<IActionResult> ImportOwnerAsync(IFormFile file)
         {
-            await _ownerService.ImportOwner(attachFile);
-            return ResponseFactory.Created(attachFile);
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest("Invalid file.");
+            }
+            var importedUsers = new List<UserTestClass>();
+            using (var package = new ExcelPackage(file.OpenReadStream()))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+
+                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    var user = new UserTestClass
+                    {
+                        UserId = worksheet.Cells[row, 1].Value.ToString(),    
+                        UserName = worksheet.Cells[row, 2].Value.ToString(),       
+                        Password = worksheet.Cells[row, 3].Value.ToString(),         
+                        Role = worksheet.Cells[row, 4].Value.ToString()         
+                    };
+                    importedUsers.Add(user);
+                }
+
+                return Ok(importedUsers);
+            }
         }
 
         /// <summary>

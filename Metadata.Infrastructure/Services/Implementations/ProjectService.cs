@@ -7,6 +7,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -66,6 +67,43 @@ namespace Metadata.Infrastructure.Services.Implementations
         public Task<IEnumerable<ProjectReadDTO>> GetAllProjectsAsync()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This method only used to test export all projects in database
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ProjectExportFileDTO> ExportProjectFileAsync()
+        {
+            var project = await _unitOfWork.ProjectRepository.GetAllAsync();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Projects");
+
+                int row = 1;
+
+                var properties = typeof(Project).GetProperties();
+
+                for (int col = 0; col < properties.Length; col++)
+                {
+                    worksheet.Cells[row, col + 1].Value = properties[col].Name;
+                }
+
+                foreach (var item in project)
+                {
+                    row++;
+                    for (int col = 0; col < properties.Length; col++)
+                    {
+                        worksheet.Cells[row, col + 1].Value = properties[col].GetValue(item);
+                    }
+                }
+                return new ProjectExportFileDTO
+                {
+                    FileByte = package.GetAsByteArray(),
+                    FileName = $"{"yolo" + $"{Guid.NewGuid()}"}"
+                };
+            }
         }
 
         public async Task<ProjectReadDTO> GetProjectAsync(string projectId)

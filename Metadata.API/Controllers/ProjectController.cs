@@ -51,6 +51,18 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(projects);
         }
 
+        /// <summary>
+        /// Export Project File
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("export")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportProjectFile()
+        {
+            var result = await _projectService.ExportProjectFileAsync();
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
 
         /// <summary>
         /// Create Project

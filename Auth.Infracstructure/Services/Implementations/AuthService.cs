@@ -130,7 +130,7 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = account!.Username,
                 Role = account!.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(account),
-                TokenExpires = 12000,
+                TokenExpires = 3600,
                 RefreshToken = refreshToken.Token!,
                 RefreshTokenExpires = refreshToken.ExpiresIn
             };

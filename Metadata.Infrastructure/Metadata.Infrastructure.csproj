@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,9 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="EPPlus" Version="6.2.10" />
+	</ItemGroup>
+	
   <ItemGroup>
     <ProjectReference Include="..\Metadata.Core\Metadata.Core.csproj" />
     <ProjectReference Include="..\SharedLib.Infrastructure\SharedLib.Infrastructure.csproj" />
+
   </ItemGroup>
 
 </Project>
