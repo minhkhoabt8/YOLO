@@ -28,7 +28,7 @@ public class JWTTokenService : ITokenService
         {
             Token = Convert.ToBase64String(randomBytes),
             // Last for a month
-            Expires = DateTime.UtcNow.AddMonths(1),
+            Expires = DateTime.UtcNow.AddMonths(5),
             AccountId = account.Id
         };
 

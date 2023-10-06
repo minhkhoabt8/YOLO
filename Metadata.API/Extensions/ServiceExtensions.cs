@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SharedLib.Filters;
 using SharedLib.Infrastructure.Services.Implementations;
@@ -15,7 +14,6 @@ using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Metadata.Infrastructure.Repositories.Implementations;
 using Metadata.Infrastructure.Mappers;
-using SharedLib.Core.Attributes;
 
 namespace Metadata.API.Extensions;
 
@@ -118,6 +116,7 @@ public static class ServiceExtensions
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IOwnerService, OwnerService>();
+        services.AddScoped<IUploadFileService, UploadFileService>();
 
     }
 

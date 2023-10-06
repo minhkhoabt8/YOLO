@@ -33,14 +33,19 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var project = _mapper.Map<Project>(projectDto);
 
-            project.ProjectCreatedBy = _userContextService.Username! 
-                ?? throw new CanNotAssignUserException();
+            project.ProjectCreatedBy = _userContextService.Username! ??
+                throw new CanNotAssignUserException();
 
             if(projectDto.Documents.IsNullOrEmpty())
             {
-                await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, projectDto.Documents!);
-            }
+                var documents = await _documentService.CreateDocumentsAsync(projectDto.Documents!);
 
+                foreach(var document in documents)
+                {
+                    await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
+                }
+                
+            }
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
             await _unitOfWork.CommitAsync();
@@ -137,5 +142,6 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<ProjectReadDTO>(project);
         }
+
     }
 }

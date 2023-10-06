@@ -10,6 +10,7 @@ namespace Metadata.Infrastructure.DTOs.Document
 {
     public class DocumentWriteDTO
     {
+        [Required]
         public string DocumentTypeId { get; set; }
         [Required]
         public string Number { get; set; }
@@ -17,6 +18,7 @@ namespace Metadata.Infrastructure.DTOs.Document
         public string Notation { get; set; }
         [Required]
         public DateTime PublishedDate { get; set; }
+
         public DateTime EffectiveDate { get; set; }
         [Required]
         public string Epitome { get; set; }
@@ -27,10 +29,9 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public string Pen { get; set; }
 
-        public string ReferenceLink { get; set; }
-
         public bool? IsPublic { get; set; } = false;
 
+        [Required]
         public IFormFile FileAttach { get; set; }
     }
 }

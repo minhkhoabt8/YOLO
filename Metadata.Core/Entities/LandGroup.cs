@@ -11,5 +11,7 @@ public partial class LandGroup
 
     public string? Name { get; set; }
 
+
+
     public virtual ICollection<LandType> LandTypes { get; } = new List<LandType>();
 }

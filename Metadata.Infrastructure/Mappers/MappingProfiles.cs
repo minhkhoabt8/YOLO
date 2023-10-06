@@ -22,6 +22,7 @@ namespace Metadata.Infrastructure.Mappers
             // Document
             CreateMap<Document, DocumentReadDTO>();
             CreateMap<DocumentWriteDTO, Document>();
+            CreateMap<DocumentInProjectWriteDTO,Document>();
 
             //PriceApplyCode
             CreateMap<PriceAppliedCode, PriceAppliedCodeReadDTO>();

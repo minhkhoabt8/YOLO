@@ -1,6 +1,8 @@
-﻿using SharedLib.Core.Extensions;
+﻿using Microsoft.AspNetCore.Http;
+using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Metadata.Core.Entities;
 

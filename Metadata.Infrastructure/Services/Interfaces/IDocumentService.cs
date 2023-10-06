@@ -4,6 +4,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
 {
     public interface IDocumentService
     {
-        Task<IEnumerable<DocumentReadDTO>> AssignDocumentsToProjectAsync(string projectId, IEnumerable<DocumentWriteDTO> documentDtos);
+        Task AssignDocumentsToProjectAsync(string projectId, string documentId);
+        Task<IEnumerable<DocumentReadDTO>> CreateDocumentsAsync(IEnumerable<DocumentWriteDTO> documentDtos);
+        Task<DocumentReadDTO> CreateDocumentAsync(DocumentWriteDTO documentDto);
     }
 }
