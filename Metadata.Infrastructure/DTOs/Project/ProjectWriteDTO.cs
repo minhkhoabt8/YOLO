@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.DTOs.Document;
+using Microsoft.AspNetCore.Http;
 using SharedLib.Core.Attributes;
 using System;
 using System.Collections.Generic;
@@ -56,4 +57,30 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
     }
+
+    public class DocumentInProjectWriteDTO
+    {
+        public string DocumentTypeId { get; set; }
+        [Required]
+        public string Number { get; set; }
+        [Required]
+        public string Notation { get; set; }
+        [Required]
+        public DateTime PublishedDate { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        [Required]
+        public string Epitome { get; set; }
+
+        public string SignInfo { get; set; }
+
+        public string Note { get; set; }
+
+        public string Pen { get; set; }
+
+        public bool? IsPublic { get; set; } = false;
+
+        [Required]
+        public IFormFile FileAttach { get; set; }
+    }
+
 }

@@ -4,6 +4,7 @@ using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Reflection.Metadata;
 
@@ -14,35 +15,79 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public DocumentService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService)
+        public DocumentService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IUploadFileService uploadFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
+            _uploadFileService = uploadFileService;
         }
 
-        public async Task<IEnumerable<DocumentReadDTO>> AssignDocumentsToProjectAsync(string projectId, IEnumerable<DocumentWriteDTO> documentDtos)
+        public async Task AssignDocumentsToProjectAsync(string projectId, string documentId)
         {
 
-            var documents = _mapper.Map<IEnumerable<Core.Entities.Document>>(documentDtos);
+            var projectDocument = ProjectDocument.CreateProjectDocument(projectId, documentId);
 
-            foreach (var document in documents)
-            {
-                document.CreatedBy = _userContextService.Username! ?? throw new CanNotAssignUserException();
-
-                var projectDocument = ProjectDocument.CreateProjectDocument(projectId, document.DocumentId);
-
-                await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
-            }
-
-            //TODO:Upload to WS3
+            await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<IEnumerable<DocumentReadDTO>>(documents);
-
         }
 
+        public async Task<IEnumerable<DocumentReadDTO>> CreateDocumentsAsync(IEnumerable<DocumentWriteDTO> documentDtos)
+        {
+            var documentList = new List<Core.Entities.Document>();
+
+           foreach(var documentDto in documentDtos)
+           {
+                var fileUpload = new UploadFileDTO
+                {
+                    File = documentDto.FileAttach!,
+                    FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}"
+                };
+
+                var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                document.ReferenceLink = returnUrl;
+
+                document.CreatedBy = _userContextService.Username! ??
+                    throw new CanNotAssignUserException();
+
+                await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                documentList.Add(document);
+
+           }
+           
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<DocumentReadDTO>>(documentList);
+        }
+
+        public async Task<DocumentReadDTO> CreateDocumentAsync(DocumentWriteDTO documentDto)
+        {
+            var fileUpload = new UploadFileDTO
+            {
+                File = documentDto.FileAttach!,
+                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}"
+            };
+
+            var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+            var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+            document.ReferenceLink = returnUrl;
+
+            document.CreatedBy = _userContextService.Username! ??
+                throw new CanNotAssignUserException();
+
+            await _unitOfWork.DocumentRepository.AddAsync(document);
+
+            return _mapper.Map<DocumentReadDTO>(document);
+        }
     }
 }

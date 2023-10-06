@@ -10,6 +10,6 @@ namespace Metadata.Infrastructure.DTOs.Project
     {
         public string FileName { get; set; }
         public byte[] FileByte { get; set; }
-        public string FileType { get; set; } = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public string FileType { get; } = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     }
 }
