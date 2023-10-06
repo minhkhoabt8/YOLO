@@ -29,8 +29,6 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string OwnerType { get; set; }
 
-        public string OwnerCreatedBy { get; set; }
-
         public string ProjectId { get; set; }
 
         public string PlanId { get; set; }

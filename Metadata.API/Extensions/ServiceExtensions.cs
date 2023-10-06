@@ -117,6 +117,7 @@ public static class ServiceExtensions
         services.AddScoped<IDocumentService, DocumentService>();
         services.AddScoped<IOwnerService, OwnerService>();
         services.AddScoped<IUploadFileService, UploadFileService>();
+        services.AddScoped<IPlanService, PlanService>();
 
     }
 
