@@ -87,6 +87,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.DocumentRepository.AddAsync(document);
 
+            await _unitOfWork.CommitAsync();
+
             return _mapper.Map<DocumentReadDTO>(document);
         }
     }

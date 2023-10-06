@@ -13,8 +13,10 @@ namespace Metadata.Infrastructure.DTOs.Document
         [Required]
         public string DocumentTypeId { get; set; }
         [Required]
+        [MaxLength(10)]
         public string Number { get; set; }
         [Required]
+        [MaxLength(10)]
         public string Notation { get; set; }
         [Required]
         public DateTime PublishedDate { get; set; }
