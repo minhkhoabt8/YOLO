@@ -127,6 +127,7 @@ public static class ServiceExtensions
         services.AddScoped<IDocumentRepository,DocumentRepository>();
         services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
         services.AddScoped<IOwnerRepository, OwnerRepository>();
+        services.AddScoped<IPlanRepository, PlanRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

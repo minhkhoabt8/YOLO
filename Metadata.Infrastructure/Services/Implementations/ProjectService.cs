@@ -126,7 +126,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         public async Task<PaginatedResponse<ProjectReadDTO>> ProjectQueryAsync(ProjectQuery query)
-        {
+         {
             var projects = await _unitOfWork.ProjectRepository.QueryAsync(query);
 
             return PaginatedResponse<ProjectReadDTO>.FromEnumerableWithMapping(projects, query, _mapper);
