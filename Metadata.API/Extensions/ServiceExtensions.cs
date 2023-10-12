@@ -14,6 +14,7 @@ using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Metadata.Infrastructure.Repositories.Implementations;
 using Metadata.Infrastructure.Mappers;
+using SharedLib.Infrastructure.Attributes;
 
 namespace Metadata.API.Extensions;
 
@@ -128,6 +129,7 @@ public static class ServiceExtensions
         services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
         services.AddScoped<IOwnerRepository, OwnerRepository>();
         services.AddScoped<IPlanRepository, PlanRepository>();
+        services.AddScoped<IEntityAuditor, EntityAuditor>();
     }
 
     public static void AddUOW(this IServiceCollection services)

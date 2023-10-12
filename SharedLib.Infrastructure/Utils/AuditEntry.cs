@@ -1,15 +1,10 @@
 ﻿using Metadata.Core.Entities;
-using Metadata.Core.Enums;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
+using SharedLib.Core.Enums;
 using SharedLib.Core.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.AuditEntry
+namespace SharedLib.Infrastructure.Utils
 {
     public class AuditEntry
     {

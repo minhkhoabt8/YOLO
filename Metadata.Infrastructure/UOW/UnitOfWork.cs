@@ -1,11 +1,8 @@
 ﻿using Metadata.Core.Data;
-using Metadata.Infrastructure.DTOs.AuditEntry;
 using Metadata.Infrastructure.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using SharedLib.Infrastructure.Attributes;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System;
-using System.Security.AccessControl;
+
 
 namespace Metadata.Infrastructure.UOW
 {
@@ -15,13 +12,15 @@ namespace Metadata.Infrastructure.UOW
         private readonly IServiceProvider _serviceProvider;
         private readonly IDictionary<string, object> _singletonRepositories;
         private readonly IUserContextService _userContextService;
+        private readonly IEntityAuditor _entityAuditor;
 
 
-        public UnitOfWork(YoloMetadataContext context, IServiceProvider serviceProvider, IUserContextService userContextService)
+        public UnitOfWork(YoloMetadataContext context, IServiceProvider serviceProvider, IUserContextService userContextService, IEntityAuditor entityAuditor)
         {
             _context = context;
             _serviceProvider = serviceProvider;
             _userContextService = userContextService;
+            _entityAuditor = entityAuditor;
             _singletonRepositories = new Dictionary<string, object>();
         }
 
@@ -50,51 +49,13 @@ namespace Metadata.Infrastructure.UOW
 
         private void OnBeforeSaveChanges()
         {
-            _context.ChangeTracker.DetectChanges();
-            var auditEntries = new List<AuditEntry>();
-            foreach (var entry in _context.ChangeTracker.Entries())
-            {
-                if (entry.Entity is AuditEntry || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged) continue;
-                var auditEntry = new AuditEntry(entry);
-                auditEntry.TableName = entry.Entity.GetType().Name;
-                auditEntry.UserId = _userContextService.AccountID;
-                auditEntry.UserName = _userContextService.Username;
-                auditEntries.Add(auditEntry);
+            var auditEntries = _entityAuditor.AuditEntries(_context, _userContextService);
 
-                foreach (var property in entry.Properties)
-                {
-                    string propertyName = property.Metadata.Name;
-                    if (property.Metadata.IsPrimaryKey())
-                    {
-                        auditEntry.KeyValues[propertyName] = property.CurrentValue;
-                        continue;
-                    }
-                    switch (entry.State)
-                    {
-                        case EntityState.Added:
-                            auditEntry.AuditType = Core.Enums.AuditType.Create;
-                            auditEntry.NewValues[propertyName] = property.CurrentValue;
-                            break;
-                        case EntityState.Deleted:
-                            auditEntry.AuditType = Core.Enums.AuditType.Delete;
-                            auditEntry.OldValues[propertyName] = property.OriginalValue;
-                            break;
-                        case EntityState.Modified:
-                            if (property.IsModified)
-                            {
-                                auditEntry.ChangedColumns.Add(propertyName);
-                                auditEntry.AuditType = Core.Enums.AuditType.Update;
-                                auditEntry.OldValues[propertyName] = property.OriginalValue;
-                                auditEntry.NewValues[propertyName] = property.CurrentValue;
-                            }
-                            break;
-                    }
-                }
-            }
             foreach (var auditEntry in auditEntries)
             {
                 _context.AuditTrails.Add(auditEntry.ToAudit());
             }
         }
+
     }
 }
