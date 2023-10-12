@@ -11,5 +11,7 @@ public partial class DeductionType
 
     public string Name { get; set; } = null!;
 
+    public bool? IsDeleted { get; set; } = false;
+
     public virtual ICollection<Deduction> Deductions { get; } = new List<Deduction>();
 }

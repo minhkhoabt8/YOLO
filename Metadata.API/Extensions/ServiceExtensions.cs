@@ -117,7 +117,14 @@ public static class ServiceExtensions
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IDocumentService, DocumentService>();
-
+        services.AddScoped<ILandGroupService, LandGroupService>();
+        services.AddScoped<ILandTypeService, LandTypeService>();
+        services.AddScoped<ISupportTypeService, SupportTypeService>();
+        services.AddScoped<IAssetGroupService, AssetGroupService>();
+        services.AddScoped<IOrganizationService, OrganizationService>();
+        services.AddScoped<IDeductionTypeService, DeductionTypeService>();
+        services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+        services.AddScoped<IAssetUnitService, AssetUnitService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)
@@ -125,6 +132,14 @@ public static class ServiceExtensions
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IDocumentRepository,DocumentRepository>();
         services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
+        services.AddScoped<ILandGroupRepository, LandGroupRepository>();
+        services.AddScoped<ILandTypeRepository, LandTypeRepository>();
+        services.AddScoped<ISupportTypeRepository, SupportTypeRepository>();
+        services.AddScoped<IAssetGroupRepository, AssetGroupRepository>();
+        services.AddScoped<IOrganizationTypeRepository, IOrganizationTypeRepository>();
+        services.AddScoped<IDeductionTypeRepository, IDeductionTypeRepository>();
+        services.AddScoped<IDocumentTypeRepository, IDocumentTypeRepository>();
+        services.AddScoped<IAssetUnitRepository, IAssetUnitRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

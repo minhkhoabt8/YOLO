@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.LandGroup
+namespace Metadata.Infrastructure.DTOs.DeductionType
 {
-    public class LandGroupWriteDTO
+    public class DeductionTypeWriteDTO
     {
-        public string Code { get; set; }
+        public string Code { get; set; } 
 
-        public string Name { get; set; }
+        public string Name { get; set; } 
+
         public bool? IsDeleted { get; set; }
+
     }
 }

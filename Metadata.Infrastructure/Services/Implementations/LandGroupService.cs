@@ -3,6 +3,7 @@ using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using SharedLib.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(delete);
             if (landGroup == null)
             {
-                throw new Exception("This landgroup not found");
+                throw new EntityWithIDNotFoundException<LandGroup>(delete);
             }
-             _unitOfWork.LandGroupRepository.Delete(landGroup);
+             landGroup.IsDeleted = true;
             await _unitOfWork.CommitAsync();
             return true;
 
@@ -39,7 +40,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<LandGroupReadDTO>> GetAllLandGroupAsync()
         {
-           var landGroups = _unitOfWork.LandGroupRepository.GetAllAsync();
+           var landGroups = await _unitOfWork.LandGroupRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<LandGroupReadDTO>>(landGroups);
         }
 
@@ -54,10 +55,10 @@ namespace Metadata.Infrastructure.Services.Implementations
            var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
             if (existLandgroup == null)
             {
-                throw new Exception("This landgroup not found");
+                throw new EntityWithIDNotFoundException<LandGroup>(id);
             }
            
-            existLandgroup.Name = landGroupUpdateDTO.Name;
+            _mapper.Map(landGroupUpdateDTO, existLandgroup);
             
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LandGroupReadDTO>(existLandgroup);
@@ -68,6 +69,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<LandGroupReadDTO?> CreateLandgroupAsync(LandGroupWriteDTO landGroupWriteDTO)
         {   
             await EnsureLandGroupCodeNotDupicate(landGroupWriteDTO.Code);
+            await CheckDeleteStatus(landGroupWriteDTO.Code);
             var landGroup = _mapper.Map<LandGroup>(landGroupWriteDTO);
             await _unitOfWork.LandGroupRepository.AddAsync(landGroup);
             await _unitOfWork.CommitAsync();
@@ -76,12 +78,20 @@ namespace Metadata.Infrastructure.Services.Implementations
         private async Task EnsureLandGroupCodeNotDupicate(string code)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAsync(code);
-            if (landGroup != null)
+            if (landGroup != null  && landGroup.Code == code)
             {
-                throw new Exception("This landgroup code is already exist");
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Code), code);
             }
         }
-
+        private async Task CheckDeleteStatus(string id)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+            if (landGroup != null && landGroup.IsDeleted == true)
+            {
+                throw new Exception("This landgroup code is already delete");
+            }
+            
+        }
       
     }
 }

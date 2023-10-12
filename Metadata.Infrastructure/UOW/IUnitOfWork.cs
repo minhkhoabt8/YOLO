@@ -1,6 +1,7 @@
 ﻿
 
 using Metadata.Infrastructure.Repositories.Interfaces;
+using Metadata.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.UOW
 {
@@ -9,7 +10,16 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentRepository DocumentRepository { get; }
         public IProjectRepository ProjectRepository { get; }
         public IProjectDocumentRepository ProjectDocumentRepository { get; }
-        ILandGroupRepository LandGroupRepository { get; }
+        public ILandTypeRepository LandTypeRepository { get; }
+        public ILandGroupRepository LandGroupRepository { get; }
+        public ISupportTypeRepository SupportTypeRepository { get; }
+        public IAssetGroupRepository AssetGroupRepository { get; }
+        public IOrganizationTypeRepository OrganizationTypeRepository { get; }
+        public IDeductionTypeRepository DeductionTypeRepository { get; }
+
+        public IDocumentTypeRepository DocumentTypeRepository { get; }
+
+        public IAssetUnitRepository AssetUnitRepository { get; }
         Task<int> CommitAsync();
     }
 }

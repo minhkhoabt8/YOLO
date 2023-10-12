@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.LandGroup
+namespace Metadata.Infrastructure.DTOs.AssetGroup
 {
-    public class LandGroupWriteDTO
+    public class AssetGroupWriteDTO
     {
         public string Code { get; set; }
 
         public string Name { get; set; }
+
         public bool? IsDeleted { get; set; }
     }
 }
