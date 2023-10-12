@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using Metadata.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +22,8 @@ public partial class YoloMetadataContext : DbContext
     public virtual DbSet<AssetUnit> AssetUnits { get; set; }
 
     public virtual DbSet<AttachFile> AttachFiles { get; set; }
+
+    public virtual DbSet<AuditTrail> AuditTrails { get; set; }
 
     public virtual DbSet<Deduction> Deductions { get; set; }
 
@@ -178,6 +179,34 @@ public partial class YoloMetadataContext : DbContext
             entity.HasOne(d => d.Plan).WithMany(p => p.AttachFiles)
                 .HasForeignKey(d => d.PlanId)
                 .HasConstraintName("FK_AttachFiles_Plans");
+        });
+
+
+        modelBuilder.Entity<AuditTrail>(entity =>
+        {
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Action)
+                .HasMaxLength(10)
+                .HasColumnName("action");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("created_date");
+            entity.Property(e => e.EntityIdentifier)
+                .HasMaxLength(50)
+                .HasColumnName("entity_identifier");
+            entity.Property(e => e.EntityName)
+                .HasMaxLength(50)
+                .HasColumnName("entity_name");
+            entity.Property(e => e.NewValue).HasColumnName("new_value");
+            entity.Property(e => e.OldValue).HasColumnName("old_value");
+            entity.Property(e => e.PropertyName)
+                .HasMaxLength(50)
+                .HasColumnName("property_name");
         });
 
         modelBuilder.Entity<Deduction>(entity =>
