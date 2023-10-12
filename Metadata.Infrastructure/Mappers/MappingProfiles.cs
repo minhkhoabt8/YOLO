@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AuditTrail;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandPositionInfo;
 using Metadata.Infrastructure.DTOs.Owner;
@@ -41,6 +42,9 @@ namespace Metadata.Infrastructure.Mappers
 
             //UnitPriceLand
             CreateMap<UnitPriceLand, UnitPriceLandReadDTO>();
+            //Audit Trail
+            CreateMap<AuditTrail,AuditTrailReadDTO>();
+            CreateMap<AuditTrailWriteDTO, AuditTrail>();
 
         }
     }

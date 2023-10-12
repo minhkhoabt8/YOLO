@@ -12,6 +12,8 @@ namespace Metadata.Infrastructure.UOW
         public IOwnerRepository OwnerRepository { get; }
         public IPlanRepository PlanRepository { get; }
 
+        public IAuditTrailRepository AuditTrailRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

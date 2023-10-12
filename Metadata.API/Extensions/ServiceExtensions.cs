@@ -119,6 +119,7 @@ public static class ServiceExtensions
         services.AddScoped<IOwnerService, OwnerService>();
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IPlanService, PlanService>();
+        services.AddScoped<IAuditTrailService, AuditTrailService>();
 
     }
 
@@ -130,6 +131,7 @@ public static class ServiceExtensions
         services.AddScoped<IOwnerRepository, OwnerRepository>();
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IEntityAuditor, EntityAuditor>();
+        services.AddScoped<IAuditTrailRepository, AuditTrailRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)
