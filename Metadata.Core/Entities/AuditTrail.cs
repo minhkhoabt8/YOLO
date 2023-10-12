@@ -10,19 +10,21 @@ namespace Metadata.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        public string? EntityName { get; set; }
+        public string? UserId { get; set; } = null!;
 
-        public string? Action { get; set; }
+        public string? UserName { get; set; } = null!;
 
-        public string? EntityIdentifier { get; set; }
+        public string? Type { get; set; } = null!;
 
-        public string PropertyName { get; set; } = null!;
+        public string TableName { get; set; } 
 
-        public string OldValue { get; set; } = null!;
+        public string OldValue { get; set; }
 
-        public string NewValue { get; set; } = null!;
+        public string NewValue { get; set; } 
 
-        public string CreatedBy { get; set; } = null!;
+        public string AffectedColumn { get; set; } 
+
+        public string PrimaryKey { get; set; } 
 
         public DateTime CreatedDate { get; set; } = DateTime.Now.SetKindUtc();
     }

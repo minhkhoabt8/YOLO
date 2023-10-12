@@ -187,26 +187,21 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("id");
-            entity.Property(e => e.Action)
-                .HasMaxLength(10)
-                .HasColumnName("action");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("created_by");
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id");
+            entity.Property(e => e.UserName)
+                .HasColumnName("user_name");
             entity.Property(e => e.CreatedDate)
                 .HasColumnType("datetime")
                 .HasColumnName("created_date");
-            entity.Property(e => e.EntityIdentifier)
-                .HasMaxLength(50)
-                .HasColumnName("entity_identifier");
-            entity.Property(e => e.EntityName)
-                .HasMaxLength(50)
-                .HasColumnName("entity_name");
+            entity.Property(e => e.Type)
+                .HasColumnName("type");
+            entity.Property(e => e.TableName)
+                .HasColumnName("table_name");
             entity.Property(e => e.NewValue).HasColumnName("new_value");
             entity.Property(e => e.OldValue).HasColumnName("old_value");
-            entity.Property(e => e.PropertyName)
-                .HasMaxLength(50)
-                .HasColumnName("property_name");
+            entity.Property(e => e.AffectedColumn).HasColumnName("affected_column");
+            entity.Property(e => e.PrimaryKey).HasColumnName("primary_key");
         });
 
         modelBuilder.Entity<Deduction>(entity =>

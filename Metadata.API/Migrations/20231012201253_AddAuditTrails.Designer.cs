@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Metadata.API.Migrations
 {
     [DbContext(typeof(YoloMetadataContext))]
-    [Migration("20230930001830_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231012201253_AddAuditTrails")]
+    partial class AddAuditTrails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,6 +196,58 @@ namespace Metadata.API.Migrations
                     b.ToTable("AttachFiles");
                 });
 
+            modelBuilder.Entity("Metadata.Core.Entities.AuditTrail", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AffectedColumn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("affected_column");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("NewValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("new_value");
+
+                    b.Property<string>("OldValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("old_value");
+
+                    b.Property<string>("PrimaryKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("primary_key");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("table_name");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("type");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("user_name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditTrails");
+                });
+
             modelBuilder.Entity("Metadata.Core.Entities.Deduction", b =>
                 {
                     b.Property<string>("DeductionId")
@@ -262,11 +314,12 @@ namespace Metadata.API.Migrations
                         .HasColumnName("document_id");
 
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)")
                         .HasColumnName("created_by");
 
-                    b.Property<DateTime?>("CreatedTime")
+                    b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime")
                         .HasColumnName("created_time");
 
@@ -275,7 +328,7 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("document_type_id");
 
-                    b.Property<DateTime?>("EffectiveDate")
+                    b.Property<DateTime>("EffectiveDate")
                         .HasColumnType("date")
                         .HasColumnName("effective_date");
 
@@ -292,6 +345,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("is_public");
 
                     b.Property<string>("Notation")
+                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("notation");
@@ -301,6 +355,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("note");
 
                     b.Property<string>("Number")
+                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("number");
@@ -309,7 +364,7 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("pen");
 
-                    b.Property<DateTime?>("PublishedDate")
+                    b.Property<DateTime>("PublishedDate")
                         .HasColumnType("date")
                         .HasColumnName("published_date");
 
@@ -840,6 +895,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("project_brief_number");
 
                     b.Property<string>("ProjectCode")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("project_code");
@@ -863,6 +919,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("project_location");
 
                     b.Property<string>("ProjectName")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("project_name");

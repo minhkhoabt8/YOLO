@@ -42,13 +42,14 @@ namespace Metadata.API.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false),
-                    entityname = table.Column<string>(name: "entity_name", type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    action = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    entityidentifier = table.Column<string>(name: "entity_identifier", type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    propertyname = table.Column<string>(name: "property_name", type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    userid = table.Column<string>(name: "user_id", type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(name: "user_name", type: "nvarchar(max)", nullable: true),
+                    type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    tablename = table.Column<string>(name: "table_name", type: "nvarchar(max)", nullable: false),
                     oldvalue = table.Column<string>(name: "old_value", type: "nvarchar(max)", nullable: false),
                     newvalue = table.Column<string>(name: "new_value", type: "nvarchar(max)", nullable: false),
-                    createdby = table.Column<string>(name: "created_by", type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    affectedcolumn = table.Column<string>(name: "affected_column", type: "nvarchar(max)", nullable: false),
+                    primarykey = table.Column<string>(name: "primary_key", type: "nvarchar(max)", nullable: false),
                     createddate = table.Column<DateTime>(name: "created_date", type: "datetime", nullable: false)
                 },
                 constraints: table =>

@@ -199,30 +199,14 @@ namespace Metadata.API.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<string>("Action")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
-                        .HasColumnName("action");
-
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("AffectedColumn")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("created_by");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("affected_column");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("created_date");
-
-                    b.Property<string>("EntityIdentifier")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("entity_identifier");
-
-                    b.Property<string>("EntityName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("entity_name");
 
                     b.Property<string>("NewValue")
                         .IsRequired()
@@ -234,11 +218,27 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("old_value");
 
-                    b.Property<string>("PropertyName")
+                    b.Property<string>("PrimaryKey")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("property_name");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("primary_key");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("table_name");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("type");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("user_name");
 
                     b.HasKey("Id");
 
