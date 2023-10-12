@@ -32,4 +32,8 @@
 	  <ProjectReference Include="..\SharedLib.API\SharedLib.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

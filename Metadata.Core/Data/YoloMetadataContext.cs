@@ -185,7 +185,7 @@ public partial class YoloMetadataContext : DbContext
         modelBuilder.Entity<AuditTrail>(entity =>
         {
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .HasMaxLength(50)
                 .HasColumnName("id");
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id");
@@ -200,7 +200,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("table_name");
             entity.Property(e => e.NewValue).HasColumnName("new_value");
             entity.Property(e => e.OldValue).HasColumnName("old_value");
-            entity.Property(e => e.AffectedColumn).HasColumnName("affected_column");
+            entity.Property(e => e.AffectedColumn).HasColumnName("affected_column").IsRequired(false);
             entity.Property(e => e.PrimaryKey).HasColumnName("primary_key");
         });
 

@@ -8,7 +8,7 @@ namespace Metadata.Core.Entities
     public class AuditTrail
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         public string? UserId { get; set; } = null!;
 
