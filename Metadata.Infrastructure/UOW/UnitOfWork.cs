@@ -31,6 +31,21 @@ namespace Metadata.Infrastructure.UOW
         public IPlanRepository PlanRepository => GetSingletonRepository<IPlanRepository>();
         public IAuditTrailRepository AuditTrailRepository => GetSingletonRepository<IAuditTrailRepository>();
 
+        public ILandGroupRepository LandGroupRepository => GetSingletonRepository<ILandGroupRepository>();
+
+        public ILandTypeRepository LandTypeRepository => GetSingletonRepository<ILandTypeRepository>();
+
+        public ISupportTypeRepository SupportTypeRepository => GetSingletonRepository<ISupportTypeRepository>();
+
+        public IAssetGroupRepository AssetGroupRepository => GetSingletonRepository<IAssetGroupRepository>();
+
+        public IOrganizationTypeRepository OrganizationTypeRepository => GetSingletonRepository<IOrganizationTypeRepository>();
+
+        public IDeductionTypeRepository DeductionTypeRepository => GetSingletonRepository<IDeductionTypeRepository>();
+
+        public IDocumentTypeRepository DocumentTypeRepository => GetSingletonRepository<IDocumentTypeRepository>();
+
+        public IAssetUnitRepository AssetUnitRepository => GetSingletonRepository<IAssetUnitRepository>();
         public Task<int> CommitAsync()
         {
             OnBeforeSaveChanges();
