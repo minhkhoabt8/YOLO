@@ -5,11 +5,13 @@ namespace Metadata.Core.Entities;
 
 public partial class LandType
 {
-    public string LandTypeId { get; set; } = null!;
+    public string LandTypeId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
+
+    public bool IsDeleted { get; set; } = false;
 
     public string? LandGroupId { get; set; }
 
