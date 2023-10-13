@@ -72,6 +72,11 @@ public partial class Owner : ITextSearchableEntity
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
         {() => nameof(OwnerName), .5},
-        {() => nameof(OwnerCode), .5}
+        {() => nameof(OwnerCode), .5},
+        {() => nameof(OwnerIdCode), .5},
+        {() => nameof(HusbandWifeName), .5},
+        {() => nameof(OwnerTaxCode), .5},
+        {() => nameof(RepresentPerson), .5},
+        {() => nameof(OwnerType), .5}
     };
 }

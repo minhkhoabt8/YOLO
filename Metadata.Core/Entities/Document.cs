@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SharedLib.Core.Entities;
 using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Metadata.Core.Entities;
 
-public partial class Document
+public partial class Document : ITextSearchableEntity
 {
     public string DocumentId { get; set; } = Guid.NewGuid().ToString();
 
@@ -41,4 +42,11 @@ public partial class Document
     public virtual DocumentType? DocumentType { get; set; }
 
     public virtual ICollection<ProjectDocument> ProjectDocuments { get; } = new List<ProjectDocument>();
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(Number), .5},
+        {() => nameof(Notation), .5},
+        {() => nameof(DocumentTypeId), .5 }
+    };
 }

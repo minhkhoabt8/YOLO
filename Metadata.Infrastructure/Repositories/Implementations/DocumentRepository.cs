@@ -1,8 +1,10 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,30 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .Include(pd => pd.Document)
                 .Select(pd => pd.Document)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Document>> QueryAsync(DocumentQuery query, bool trackChanges = false)
+        {
+            IQueryable<Document> documents = _context.Documents;
+
+            if (!trackChanges)
+            {
+                documents = documents.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                documents = documents.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                documents = documents.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                documents = documents.OrderByDynamic(query.OrderBy);
+            }
+            IEnumerable<Document> enumeratedDocument = documents.AsEnumerable();
+            return await Task.FromResult(enumeratedDocument);
         }
     }
 }

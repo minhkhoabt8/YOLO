@@ -4,9 +4,9 @@ using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System.Reflection.Metadata;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -90,6 +90,39 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<DocumentReadDTO>(document);
+        }
+
+        public async Task DeleteDocumentAsync(string documentId)
+        {
+            var document = await _unitOfWork.DocumentRepository.FindAsync(documentId);
+
+            if (document == null) throw new EntityWithIDNotFoundException<Core.Entities.Document>(documentId);
+
+            document.IsDeleted = true;
+
+            await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<DocumentReadDTO> UpdateDocumentAsync(string documentId, DocumentWriteDTO dto)
+        {
+            var document = await _unitOfWork.DocumentRepository.FindAsync(documentId);
+
+            if (document == null) throw new EntityWithIDNotFoundException<Core.Entities.Document>(documentId);
+
+            _mapper.Map(dto, document);
+
+            document.CreatedBy = _userContextService.Username!
+                ?? throw new CanNotAssignUserException();
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<DocumentReadDTO>(document);
+        }
+
+        public async Task<PaginatedResponse<DocumentReadDTO>> QueryDocumentAsync(DocumentQuery query)
+        {
+            var owner = await _unitOfWork.DocumentRepository.QueryAsync(query);
+            return PaginatedResponse<DocumentReadDTO>.FromEnumerableWithMapping(owner, query, _mapper);
         }
     }
 }

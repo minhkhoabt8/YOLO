@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.Document;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IFindAsync<Document>,
         IAddAsync<Document>,
         IUpdate<Document>,
-        IDelete<Document>
+        IDelete<Document>,
+        IQueryAsync<Document, DocumentQuery>
     {
         Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId);
     }
