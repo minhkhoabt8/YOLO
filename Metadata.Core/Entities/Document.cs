@@ -47,6 +47,6 @@ public partial class Document : ITextSearchableEntity
     {
         {() => nameof(Number), .5},
         {() => nameof(Notation), .5},
-        {() => nameof(DocumentTypeId), .5 }
+        {() => nameof(DocumentTypeId), .5}
     };
 }

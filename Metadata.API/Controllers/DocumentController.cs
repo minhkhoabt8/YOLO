@@ -30,7 +30,7 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("query")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<OwnerReadDTO>))]
-        public async Task<IActionResult> QueryOwners([FromQuery] DocumentQuery query)
+        public async Task<IActionResult> QueryDocuments([FromQuery] DocumentQuery query)
         {
             var owners = await _documentService.QueryDocumentAsync(query);
             return ResponseFactory.PaginatedOk(owners);
@@ -63,7 +63,7 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> UpdateDocument(string id, DocumentWriteDTO writeDTO)
+        public async Task<IActionResult> UpdateDocument(string id,[FromForm] DocumentWriteDTO writeDTO)
         {
             var document = await _documentService.UpdateDocumentAsync(id, writeDTO);
             return ResponseFactory.Ok(document);
