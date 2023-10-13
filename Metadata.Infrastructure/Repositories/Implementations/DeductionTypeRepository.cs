@@ -21,10 +21,5 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.DeductionTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower());
         }
-
-        
-    }
-    {
-
     }
 }

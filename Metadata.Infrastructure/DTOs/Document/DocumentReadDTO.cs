@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.DocumentType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,6 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public bool IsDeleted { get; set; }
 
-        public DocumentType DocumentType { get; set; }
+        public DocumentTypeReadDTO DocumentType { get; set; }
     }
 }
