@@ -11,7 +11,6 @@ public partial class SupportType
 
     public string Name { get; set; } = null!;
 
-    public bool? IsDeleted { get; set; } = false;
-
+    public bool IsDeleted { get; set; } = false;
     public virtual ICollection<Support> Supports { get; } = new List<Support>();
 }

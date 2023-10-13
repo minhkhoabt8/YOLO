@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class DocumentType
 {
-    public string DocumentTypeId { get; set; } = null!;
+    public string DocumentTypeId { get; set; } = Guid.NewGuid().ToString();
 
     public string Code { get; set; } = null!;
 
