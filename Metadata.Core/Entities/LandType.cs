@@ -15,8 +15,6 @@ public partial class LandType
 
     public string? LandGroupId { get; set; }
 
-    public bool? IsDeleted { get; set; } = false;
-
     public virtual ICollection<GcnlandInfo> GcnlandInfos { get; } = new List<GcnlandInfo>();
 
     public virtual LandGroup? LandGroup { get; set; }
