@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SharedLib.Core.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.Plan
 {
     public class PlanWriteDTO
     {
         [Required]
-        public string? ProjectId { get; set; }
+        public string ProjectId { get; set; } = null!;
 
         public string? PlaneCode { get; set; }
 
@@ -20,18 +16,17 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string? PlanCreateBase { get; set; }
 
-        public string? PlanApprovedBy { get; set; }
+        [Required]
+        public string PlanApprovedBy { get; set; } = null!;
 
         public string? PlanReportSignal { get; set; }
-
+        [InputType(typeof(DateTime))]
         public DateTime? PlanReportDate { get; set; }
-
+        [InputType(typeof(DateTime))]
         public DateTime? PlanCreatedTime { get; set; }
-
+        [InputType(typeof(DateTime))]
         public DateTime? PlanEndedTime { get; set; }
 
         public bool? PlanStatus { get; set; }
-
-        public bool? IsDeleted { get; set; }
     }
 }

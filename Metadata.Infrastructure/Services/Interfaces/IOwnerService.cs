@@ -18,5 +18,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task DeleteOwner(string ownerId);
         Task ImportOwner(IFormFile attachFile);
         Task<ExportFileDTO> ExportOwnerFileAsync(string projectId);
+        Task<OwnerReadDTO> AssignProjectOwnerAsync(string projectId, string ownerId);
+        Task<IEnumerable<OwnerReadDTO>> GetOwnersOfProjectAsync(string projectId);
     }
 }

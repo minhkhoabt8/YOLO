@@ -28,6 +28,20 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
         {
+            var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
+
+            if(existProject == null)
+            {
+                throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
+            }
+
+            var existApprover = await _unitOfWork.OwnerRepository.FindAsync(dto.PlanApprovedBy);
+
+            if(existApprover == null)
+            {
+                throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
+            }
+
             var plan = _mapper.Map<Plan>(dto);
 
             plan.PlanCreatedBy = _userContextService.Username!
@@ -70,6 +84,20 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> UpdatePlanAsync(string planId, PlanWriteDTO dto)
         {
+            var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
+
+            if (existProject == null)
+            {
+                throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
+            }
+
+            var existApprover = await _unitOfWork.OwnerRepository.FindAsync(dto.PlanApprovedBy);
+
+            if (existApprover == null)
+            {
+                throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
+            }
+
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
 
             if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);

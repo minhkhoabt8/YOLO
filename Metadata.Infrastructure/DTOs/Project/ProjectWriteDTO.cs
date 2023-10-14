@@ -31,6 +31,9 @@ namespace Metadata.Infrastructure.DTOs.Project
         [InputType(typeof(DateTime))]
         public DateTime ProjectApprovalDate { get; set; }
 
+        [InputType(typeof(DateTime))]
+        public DateTime? ProjectCreatedTime { get; set; }
+
         public string ImplementationYear { get; set; }
 
         public string RegulatedUnitPrice { get; set; }

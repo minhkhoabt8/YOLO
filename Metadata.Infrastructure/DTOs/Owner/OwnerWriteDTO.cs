@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
     {
 
         public string OwnerCode { get; set; }
-
+        [Required]
         public string OwnerName { get; set; }
 
         public string OwnerIdCode { get; set; }

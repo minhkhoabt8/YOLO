@@ -1,11 +1,10 @@
 ﻿using Metadata.Infrastructure.DTOs.Owner;
-using Metadata.Infrastructure.DTOs.Project;
-using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -45,13 +44,26 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("{ownerId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
-        public async Task<IActionResult> GetProjectDetails(string ownerId)
+        public async Task<IActionResult> GetOwnerDetails(string ownerId)
         {
             var owner = await _ownerService.GetOwnerAsync(ownerId);
 
             return ResponseFactory.Ok(owner);
         }
 
+        /// <summary>
+        /// Get All Owners Of Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project/{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
+        public async Task<IActionResult> GetOwnersOfProjectAsync(string projectId)
+        {
+            var owner = await _ownerService.GetOwnersOfProjectAsync(projectId);
+
+            return ResponseFactory.Ok(owner);
+        }
 
         /// <summary>
         /// Create Owner
@@ -65,6 +77,23 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> CreateOwnerAsync([FromForm] OwnerWriteDTO dto)
         {
             var owner = await _ownerService.CreateOwnerAsync(dto);
+
+            return ResponseFactory.Created(owner);
+        }
+
+        /// <summary>
+        /// Assign Project Owner
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpPost("assign/{ownerId}/{projectId}")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> AssignProjectOwnerAsync([Required] string ownerId, [Required] string projectId)
+        {
+            var owner = await _ownerService.AssignProjectOwnerAsync(projectId, ownerId);
 
             return ResponseFactory.Created(owner);
         }

@@ -31,6 +31,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
+
+
             var project = _mapper.Map<Project>(projectDto);
 
             project.ProjectCreatedBy = _userContextService.Username! ??

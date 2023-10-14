@@ -120,5 +120,30 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<OwnerReadDTO>(owner);
         }
+
+        public async Task<IEnumerable<OwnerReadDTO>> GetOwnersOfProjectAsync(string projectId)
+        {
+            var owners = await _unitOfWork.OwnerRepository.GetOwnersOfProjectAsync(projectId);
+
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(owners);
+        }
+
+        public async Task<OwnerReadDTO> AssignProjectOwnerAsync(string projectId, string ownerId)
+        {
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+
+            if (project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+
+            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            owner.ProjectId = projectId;
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OwnerReadDTO>(owner);
+
+        }
     }
 }
