@@ -90,6 +90,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.UnitPriceAssetId)
                 .HasMaxLength(50)
                 .HasColumnName("unit_price_asset_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.AssetCompensations)
                 .HasForeignKey(d => d.OwnerId)
@@ -111,6 +112,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<AssetUnit>(entity =>
@@ -124,6 +126,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<AttachFile>(entity =>
@@ -320,7 +323,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.OwnerId)
                 .HasMaxLength(50)
                 .HasColumnName("owner_id");
-
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.HasOne(d => d.LandType).WithMany(p => p.GcnlandInfos)
                 .HasForeignKey(d => d.LandTypeId)
                 .HasConstraintName("FK_GCNLandInfos_LandTypes");
@@ -341,6 +344,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<LandPositionInfo>(entity =>
@@ -379,7 +383,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
-
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.HasOne(d => d.LandGroup).WithMany(p => p.LandTypes)
                 .HasForeignKey(d => d.LandGroupId)
                 .HasConstraintName("FK_LandTypes_LandGroups");
@@ -419,7 +423,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.WidthdrawArea)
                 .HasMaxLength(20)
                 .HasColumnName("widthdraw_area");
-
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.HasOne(d => d.GcnLandInfo).WithMany(p => p.MeasuredLandInfos)
                 .HasForeignKey(d => d.GcnLandInfoId)
                 .HasConstraintName("FK_MeasuredLandInfo_GCNLandInfos");
@@ -444,6 +448,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(20)
                 .HasColumnName("name");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<Owner>(entity =>
@@ -535,8 +540,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("plan_id");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.PlanApprovedBy)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasMaxLength(50)
                 .HasColumnName("plan_approved_by");
             entity.Property(e => e.PlanCreateBase)
                 .HasMaxLength(50)
@@ -736,6 +740,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<UnitPriceAsset>(entity =>
@@ -810,7 +815,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.StreetAreaName)
                 .HasMaxLength(50)
                 .HasColumnName("street_area_name");
-
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.HasOne(d => d.LandType).WithMany(p => p.UnitPriceLands)
                 .HasForeignKey(d => d.LandTypeId)
                 .HasConstraintName("FK_UnitPriceLands_LandTypes");

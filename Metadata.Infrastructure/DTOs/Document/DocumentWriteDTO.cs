@@ -11,6 +11,7 @@ namespace Metadata.Infrastructure.DTOs.Document
     public class DocumentWriteDTO
     {
         [Required]
+        [MaxLength(50)]
         public string DocumentTypeId { get; set; }
         [Required]
         [MaxLength(10)]

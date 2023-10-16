@@ -11,8 +11,9 @@ namespace Metadata.Infrastructure.UOW
         public IProjectDocumentRepository ProjectDocumentRepository { get; }
         public IOwnerRepository OwnerRepository { get; }
         public IPlanRepository PlanRepository { get; }
-
+        public IMeasuredLandInfoRepository MeasuredLandInfoRepository { get; }
         public IAuditTrailRepository AuditTrailRepository { get; }
+        public IGCNLandInfoRepository GCNLandInfoRepository { get; }
 
         Task<int> CommitAsync();
     }

@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
-            if(projectDto.Documents.IsNullOrEmpty())
+            if(!projectDto.Documents.IsNullOrEmpty())
             {
                 var documents = await _documentService.CreateDocumentsAsync(projectDto.Documents!);
 

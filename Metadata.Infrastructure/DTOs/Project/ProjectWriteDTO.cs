@@ -13,16 +13,18 @@ namespace Metadata.Infrastructure.DTOs.Project
     public class ProjectWriteDTO
     {
         [Required]
+        [MaxLength(50)]
         public string ProjectCode { get; set; }
         [Required]
+        [MaxLength(50)]
         public string ProjectName { get; set; }
-
+        [MaxLength(200)]
         public string ProjectLocation { get; set; }
-
+        [MaxLength(20)]
         public string Province { get; set; }
-
+        [MaxLength(20)]
         public string District { get; set; }
-
+        [MaxLength(20)]
         public string Ward { get; set; }
 
         [InputType(typeof(decimal))]
@@ -33,30 +35,30 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         [InputType(typeof(DateTime))]
         public DateTime? ProjectCreatedTime { get; set; }
-
+        [MaxLength(4)]
         public string ImplementationYear { get; set; }
-
+        [MaxLength(20)]
         public string RegulatedUnitPrice { get; set; }
-
+        [MaxLength(10)]
         public string ProjectBriefNumber { get; set; }
-
+        [MaxLength(50)]
         public string ProjectNote { get; set; }
-
+        [MaxLength(50)]
         public string PriceAppliedCodeId { get; set; }
-
+        [MaxLength(20)]
         public string CheckCode { get; set; }
 
         public string ReportSignal { get; set; }
-
+        [MaxLength(20)]
         public string ReportNumber { get; set; }
-
+        [MaxLength(20)]
         public string PriceBasis { get; set; }
-
+        [MaxLength(20)]
         public string LandCompensationBasis { get; set; }
-
+        [MaxLength(20)]
         public string AssetCompensationBasis { get; set; }
 
-        public bool ProjectStatus { get; set; } 
+        public bool ProjectStatus { get; set; } = true;
 
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
     }

@@ -2,7 +2,9 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AuditTrail;
 using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.LandPositionInfo;
+using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
@@ -45,6 +47,12 @@ namespace Metadata.Infrastructure.Mappers
             //Audit Trail
             CreateMap<AuditTrail,AuditTrailReadDTO>();
             CreateMap<AuditTrailWriteDTO, AuditTrail>();
+            //Measured Land Info
+            CreateMap<MeasuredLandInfo, MeasuredLandInfoReadDTO>();
+            CreateMap<MeasuredLandInfoWriteDTO, MeasuredLandInfo>();
+            //Gcn Land Info
+            CreateMap<GcnlandInfo, GCNLandInfoReadDTO>();
+            CreateMap<GCNLandInfoWriteDTO, GcnlandInfo>();
 
         }
     }

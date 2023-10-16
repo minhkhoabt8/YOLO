@@ -120,6 +120,8 @@ public static class ServiceExtensions
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IPlanService, PlanService>();
         services.AddScoped<IAuditTrailService, AuditTrailService>();
+        services.AddScoped<IMeasuredLandInfoService,MeasuredLandInfoService>();
+        services.AddScoped<IGCNLandInfoService,GCNLandInfoService>();
 
     }
 
@@ -132,6 +134,8 @@ public static class ServiceExtensions
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IEntityAuditor, EntityAuditor>();
         services.AddScoped<IAuditTrailRepository, AuditTrailRepository>();
+        services.AddScoped<IMeasuredLandInfoRepository,MeasuredLandInfoRepository>();
+        services.AddScoped<IGCNLandInfoRepository, GCNLandInfoRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

@@ -25,6 +25,8 @@ public partial class UnitPriceLand
 
     public decimal? LandPositionRest { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     public virtual LandType? LandType { get; set; }
 
     public virtual ICollection<MeasuredLandInfo> MeasuredLandInfos { get; } = new List<MeasuredLandInfo>();

@@ -30,6 +30,8 @@ namespace Metadata.Infrastructure.UOW
         public IOwnerRepository OwnerRepository => GetSingletonRepository<IOwnerRepository>();
         public IPlanRepository PlanRepository => GetSingletonRepository<IPlanRepository>();
         public IAuditTrailRepository AuditTrailRepository => GetSingletonRepository<IAuditTrailRepository>();
+        public IMeasuredLandInfoRepository MeasuredLandInfoRepository => GetSingletonRepository<IMeasuredLandInfoRepository>();
+        public IGCNLandInfoRepository GCNLandInfoRepository => GetSingletonRepository<IGCNLandInfoRepository>();
 
         public Task<int> CommitAsync()
         {

@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class AssetCompensation
 {
-    public string AssetCompensationId { get; set; } = null!;
+    public string AssetCompensationId { get; set; } = Guid.NewGuid().ToString();
 
     public string? CompensationContent { get; set; }
 
@@ -22,6 +22,8 @@ public partial class AssetCompensation
     public string? UnitPriceAssetId { get; set; }
 
     public string? OwnerId { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 

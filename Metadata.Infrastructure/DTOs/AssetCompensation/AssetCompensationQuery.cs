@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.UnitPriceLand
+namespace Metadata.Infrastructure.DTOs.AssetCompensation
 {
-    public class UnitPriceLandWriteDTO
+    public class AssetCompensationQuery
     {
     }
 }
