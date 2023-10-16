@@ -1,4 +1,5 @@
 ﻿
+using Document.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
@@ -12,7 +13,12 @@ public static class ServiceExtensions
 {
     public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        
+        services.AddDbContext<YoloDocumentContext>(opt =>
+        {
+            opt.UseSqlServer(configuration.GetConnectionString("DocumentConnection"),
+                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
+            );
+        });
     }
 
     public static void AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
