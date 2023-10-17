@@ -122,8 +122,6 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string? OrganizationTypeId { get; set; }
 
-        /*public OrganizationType? OrganizationType { get; set; }*/
-
         public OrganizationTypeReadDTO? OrganizationType { get; set; }
     }
 

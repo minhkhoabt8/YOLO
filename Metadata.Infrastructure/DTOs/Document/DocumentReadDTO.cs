@@ -41,7 +41,6 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public bool IsDeleted { get; set; }
 
-        /*public DocumentType DocumentType { get; set; }*/
         public DocumentTypeReadDTO DocumentType { get; set; }
     }
 }

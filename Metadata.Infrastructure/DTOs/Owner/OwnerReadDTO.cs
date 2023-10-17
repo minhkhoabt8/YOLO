@@ -56,7 +56,6 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string? OrganizationTypeId { get; set; }
 
-        /*public  OrganizationType? OrganizationType { get; set; }*/
         public OrganizationTypeReadDTO? OrganizationType { get; set; }
 
         public PlanReadDTO? Plan { get; set; }

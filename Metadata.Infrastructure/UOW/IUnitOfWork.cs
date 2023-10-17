@@ -21,7 +21,9 @@ namespace Metadata.Infrastructure.UOW
         public IAssetGroupRepository AssetGroupRepository { get; }
         public IOrganizationTypeRepository OrganizationTypeRepository { get; }
         public IDeductionTypeRepository DeductionTypeRepository { get; }
-
+        public IPlanRepository PlanRepository { get; }
+        public IOwnerRepository OwnerRepository { get; }
+        public IAuditTrailRepository AuditTrailRepository { get; }
         public IDocumentTypeRepository DocumentTypeRepository { get; }
 
         public IAssetUnitRepository AssetUnitRepository { get; }
