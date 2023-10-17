@@ -66,20 +66,20 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<AssetUnitReadDTO?> CreateAssetUnitAsync(AssetUnitWriteDTO assetUnitWriteDTO)
         {
-            await EnsureAssetUnitCodeNotDuplicate(assetUnitWriteDTO.Code);
+           /* await EnsureAssetUnitCodeNotDuplicate(assetUnitWriteDTO.Code);*/
             var assetUnit = _mapper.Map<AssetUnit>(assetUnitWriteDTO);
             await _unitOfWork.AssetUnitRepository.AddAsync(assetUnit);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetUnitReadDTO>(assetUnit);
         }
-
+/*
         private async Task EnsureAssetUnitCodeNotDuplicate (string code)
         {
             var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(code);
             if (assetUnit != null && assetUnit.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(assetUnit.Code), code);
-            }
+            }*/
         }
 
        

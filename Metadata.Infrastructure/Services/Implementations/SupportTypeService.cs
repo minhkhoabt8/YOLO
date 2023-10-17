@@ -36,7 +36,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<SupportTypeReadDTO?> CreateLandTypeAsync(SupportTypeWriteDTO supportTypeWriteDTO)
         {
-            EnsureSupportTypeCodeNotDupicate(supportTypeWriteDTO.Code);
+           /* EnsureSupportTypeCodeNotDupicate(supportTypeWriteDTO.Code);*/
             var supportType = _mapper.Map<SupportType>(supportTypeWriteDTO);
             await _unitOfWork.SupportTypeRepository.AddAsync(supportType);
             await _unitOfWork.CommitAsync();

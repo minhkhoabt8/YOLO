@@ -24,7 +24,5 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         
     }
-    {
-
-    }
+    
 }

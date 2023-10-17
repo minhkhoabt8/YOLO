@@ -7,7 +7,7 @@ using SharedLib.ResponseWrapper;
 
 namespace Metadata.API.Controllers
 {
-    [Route("metadata/project")]
+    [Route("metadata/deductionType")]
     [ApiController]
     public class DeductionTypeController : Controller
     {
@@ -18,6 +18,10 @@ namespace Metadata.API.Controllers
             _deductionTypeService = deductionTypeService;
         }
 
+        /// <summary>
+        /// Get all DeductionTypes
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getAll")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
         public async Task<IActionResult> getAllDeductionTypes()
@@ -26,6 +30,10 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(deductionTypes);
         }
 
+        /// <summary>
+        /// Get DeductionTypes
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getById")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         public async Task<IActionResult> getDeductionType(string id)
@@ -34,27 +42,43 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(deductionType);
         }
 
+        /// <summary>
+        /// Create new DeductionTypes
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("Create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateDeductionType(LandGroupWriteDTO writeDTO)
+        public async Task<IActionResult> CreateDeductionType(DeductionTypeWriteDTO input)
         {
-            var deductionType = await _deductionTypeService.AddDeductionType(writeDTO);
+            var deductionType = await _deductionTypeService.AddDeductionType(input);
             return ResponseFactory.Created(deductionType);
         }
 
+        /// <summary>
+        /// Update DeductionTypes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
         [HttpPut("UpdateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> UpdateDeductionType(string id, LandGroupWriteDTO writeDTO)
+        public async Task<IActionResult> UpdateDeductionType(string id, DeductionTypeWriteDTO writeDTO)
         {
             var deductionType = await _deductionTypeService.UpdateDeductionTypeAsync(id, writeDTO);
             return ResponseFactory.Ok(deductionType);
         }
 
+        /// <summary>
+        /// Delete DeductionTypes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]

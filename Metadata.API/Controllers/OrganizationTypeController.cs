@@ -6,7 +6,7 @@ using SharedLib.ResponseWrapper;
 
 namespace Metadata.API.Controllers
 {
-    [Route("metadata/project")]
+    [Route("metadata/organizationType")]
     [ApiController]
     public class OrganizationTypeController : Controller
     {
@@ -17,6 +17,10 @@ namespace Metadata.API.Controllers
             _organizationService = organizationService;
         }
 
+        /// <summary>
+        /// Get all OrganizationType
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getAll")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
         public async Task<IActionResult> getAllOrganizationTypes()
@@ -25,16 +29,39 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(organizationTypes);
         }
 
+        /// <summary>
+        /// Get OrganizationType
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
+        public async Task<IActionResult> getOrganizationType(string id)
+        {
+            var organizationType = await _organizationService.GetAsync(id);
+            return ResponseFactory.Ok(organizationType);
+        }
+
+        /// <summary>
+        /// Create new OrganizationType
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("Create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateOrganizationType(OrganizationTypeWriteDTO writeDTO)
+        public async Task<IActionResult> CreateOrganizationType(OrganizationTypeWriteDTO input)
         {
-            var organizationType = await _organizationService.CreateOrganizationTypeAsync(writeDTO);
+            var organizationType = await _organizationService.CreateOrganizationTypeAsync(input);
             return ResponseFactory.Created(organizationType);
         }
 
+        /// <summary>
+        /// Update OrganizationType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
         [HttpPut("UpdateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
@@ -46,12 +73,17 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(organizationType);
         }
 
+        /// <summary>
+        /// Delete OrganizationType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> DeleteOrganizationType(string ob)
+        public async Task<IActionResult> DeleteOrganizationType(string id)
         {
-            await _organizationService.DeleteAsync(ob);
+            await _organizationService.DeleteAsync(id);
             return ResponseFactory.NoContent();
         }
     }

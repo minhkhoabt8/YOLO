@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
 using System;
@@ -55,7 +56,8 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string? OrganizationTypeId { get; set; }
 
-        public  OrganizationType? OrganizationType { get; set; }
+        /*public  OrganizationType? OrganizationType { get; set; }*/
+        public OrganizationTypeReadDTO? OrganizationType { get; set; }
 
         public PlanReadDTO? Plan { get; set; }
 

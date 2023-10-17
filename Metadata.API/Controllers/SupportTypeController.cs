@@ -6,7 +6,7 @@ using SharedLib.ResponseWrapper;
 
 namespace Metadata.API.Controllers
 {
-    [Route("metadata/project")]
+    [Route("metadata/supportType")]
     [ApiController]
     public class SupportTypeController : Controller
     {
@@ -16,6 +16,10 @@ namespace Metadata.API.Controllers
         {
             _supportTypeService = supportTypeService;
         }
+        /// <summary>
+        /// Get all SupportType
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getAll")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
         public async Task<IActionResult> getAllSupportTypes()
@@ -24,16 +28,39 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(supportTypes);
         }
 
+        /// <summary>
+        /// Get SupportType
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
+        public async Task<IActionResult> getSupportType(string id)
+        {
+            var supportType = await _supportTypeService.GetAsync(id);
+            return ResponseFactory.Ok(supportType);
+        }
+
+        /// <summary>
+        /// Create new SupportType
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("Create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateSupportType(SupportTypeWriteDTO writeDTO)
+        public async Task<IActionResult> CreateSupportType(SupportTypeWriteDTO input)
         {
-            var supportType = await _supportTypeService.CreateLandTypeAsync(writeDTO);
+            var supportType = await _supportTypeService.CreateLandTypeAsync(input);
             return ResponseFactory.Created(supportType);
         }
 
+        /// <summary>
+        /// Update SupportType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
         [HttpPut("UpdateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
@@ -45,6 +72,11 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(supportType);
         }
 
+        /// <summary>
+        /// Delete SupportType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]

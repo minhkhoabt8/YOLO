@@ -10,6 +10,11 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentRepository DocumentRepository { get; }
         public IProjectRepository ProjectRepository { get; }
         public IProjectDocumentRepository ProjectDocumentRepository { get; }
+        public IPlanRepository PlanRepository { get; }
+        public IAuditTrailRepository AuditTrailRepository { get; }
+        public IOwnerRepository OwnerRepository { get; }
+        
+        
         public ILandTypeRepository LandTypeRepository { get; }
         public ILandGroupRepository LandGroupRepository { get; }
         public ISupportTypeRepository SupportTypeRepository { get; }
@@ -20,6 +25,11 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentTypeRepository DocumentTypeRepository { get; }
 
         public IAssetUnitRepository AssetUnitRepository { get; }
+
+        
+        
+
+        
         Task<int> CommitAsync();
     }
 }

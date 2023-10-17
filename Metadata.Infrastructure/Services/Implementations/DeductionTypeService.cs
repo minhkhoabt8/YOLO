@@ -24,9 +24,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<DeductionTypeReadDTO> AddDeductionType(LandGroupWriteDTO deductionType)
+        public async Task<DeductionTypeReadDTO> AddDeductionType(DeductionTypeWriteDTO deductionType)
         {
-            await EnsureDeductionTypeNotExist(deductionType.Code);
+           /* await EnsureDeductionTypeNotExist(deductionType.Code);*/
             var newDeductionType = _mapper.Map<DeductionType>(deductionType);
             await _unitOfWork.DeductionTypeRepository.AddAsync(newDeductionType);
             await _unitOfWork.CommitAsync();
@@ -57,7 +57,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<DeductionTypeReadDTO>(deductionType);
         }
 
-        public async Task<DeductionTypeReadDTO> UpdateDeductionTypeAsync(string id, LandGroupWriteDTO deductionType)
+        public async Task<DeductionTypeReadDTO> UpdateDeductionTypeAsync(string id, DeductionTypeWriteDTO deductionType)
         {
             var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindAsync(id);
             if (existDeductionType == null)

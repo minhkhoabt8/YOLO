@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(LandGroupWriteDTO delete)
+        public async Task<bool> DeleteAsync(string delete)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(delete);
             if (landGroup == null)
@@ -68,8 +68,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandGroupReadDTO?> CreateLandgroupAsync(LandGroupWriteDTO landGroupWriteDTO)
         {   
-            await EnsureLandGroupCodeNotDupicate(landGroupWriteDTO.Code);
-            await CheckDeleteStatus(landGroupWriteDTO.Code);
+            /*await EnsureLandGroupCodeNotDupicate(landGroupWriteDTO.Code);
+            await CheckDeleteStatus(landGroupWriteDTO.Code);*/
             var landGroup = _mapper.Map<LandGroup>(landGroupWriteDTO);
             await _unitOfWork.LandGroupRepository.AddAsync(landGroup);
             await _unitOfWork.CommitAsync();

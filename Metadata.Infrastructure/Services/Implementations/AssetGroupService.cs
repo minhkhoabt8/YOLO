@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO)
         {
-            EnsureAssetGroupCodeNotDupicate(assetGroupWriteDTO.Code);
+            /*EnsureAssetGroupCodeNotDupicate(assetGroupWriteDTO.Code);*/
             var assetGroup = _mapper.Map<AssetGroup>(assetGroupWriteDTO);
             await _unitOfWork.AssetGroupRepository.AddAsync(assetGroup);
             await _unitOfWork.CommitAsync();
@@ -59,7 +59,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<AssetGroupReadDTO> UpdateAssetGroupAsync(string id, AssetGroupWriteDTO assetGroupWriteDTO)
         {
-            var existAssetGroup = _unitOfWork.AssetGroupRepository.FindAsync(id);
+            var existAssetGroup = await _unitOfWork.AssetGroupRepository.FindAsync(id);
             if (existAssetGroup == null)
             {
                 throw new EntityWithIDNotFoundException<AssetGroup>(id);
@@ -68,13 +68,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetGroupReadDTO>(existAssetGroup);
         }
-        private async Task EnsureAssetGroupCodeNotDupicate(string code)
+        /*private async Task EnsureAssetGroupCodeNotDupicate(string code)
         {
             var assetGroup = await _unitOfWork.AssetGroupRepository.FindByCodeAsync(code);
             if (assetGroup != null && assetGroup.Code == code)
             {
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetGroup.Code), code);
             }
-        }
+        }*/
     }
 }

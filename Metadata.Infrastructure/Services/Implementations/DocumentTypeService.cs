@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<DocumentTypeReadDTO> CreateDocumentTypeAsync(DocumentTypeWriteDTO documentType)
         {
-            EnsureDocumentTypeCodeNotDuplicate(documentType.Code);
+           /* EnsureDocumentTypeCodeNotDuplicate(documentType.Code);*/
             var documentTypeEntity = _mapper.Map<DocumentType>(documentType);
             await _unitOfWork.DocumentTypeRepository.AddAsync(documentTypeEntity);
             await _unitOfWork.CommitAsync();
@@ -59,7 +59,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<DocumentTypeReadDTO> UpdateDocumentTypeAsync(string id, DocumentTypeWriteDTO documentType)
         {
-            var documentTypeEntity =  _unitOfWork.DocumentTypeRepository.FindAsync(id);
+            var documentTypeEntity = await  _unitOfWork.DocumentTypeRepository.FindAsync(id);
             if (documentTypeEntity == null)
             {
                 throw new EntityWithIDNotFoundException<DocumentType>(id);

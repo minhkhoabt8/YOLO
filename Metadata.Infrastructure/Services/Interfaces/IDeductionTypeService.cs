@@ -13,8 +13,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<DeductionTypeReadDTO>> GetAllDeductionTypesAsync();
         Task<DeductionTypeReadDTO> GetDeductionTypeAsync(string id);
-        Task<DeductionTypeReadDTO> AddDeductionType(LandGroupWriteDTO deductionType);
-        Task<DeductionTypeReadDTO> UpdateDeductionTypeAsync(string id ,LandGroupWriteDTO deductionType);
+        Task<DeductionTypeReadDTO> AddDeductionType(DeductionTypeWriteDTO deductionType);
+        Task<DeductionTypeReadDTO> UpdateDeductionTypeAsync(string id , DeductionTypeWriteDTO deductionType);
         Task<bool> DeleteDeductionTypeAsync(string id);
     }
 }

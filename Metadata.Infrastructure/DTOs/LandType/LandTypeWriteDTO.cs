@@ -15,6 +15,6 @@ namespace Metadata.Infrastructure.DTOs.LandType
 
         public string? LandGroupId { get; set; }
 
-        public bool? IsDeleted { get; set; } = false;
+        
     }
 }

@@ -2,6 +2,7 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.AuditTrail;
 using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.DocumentType;
@@ -84,6 +85,8 @@ namespace Metadata.Infrastructure.Mappers
             //AssetUnit
             CreateMap<AssetUnit, AssetUnitReadDTO>();
             CreateMap<AssetUnitWriteDTO, AssetUnit>();
+
+
 
         }
     }

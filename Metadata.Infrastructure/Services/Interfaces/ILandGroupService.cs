@@ -13,6 +13,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<LandGroupReadDTO?> GetAsync(string code);
         Task<LandGroupReadDTO?> CreateLandgroupAsync(LandGroupWriteDTO landGroupWriteDTO);
         Task<LandGroupReadDTO?> UpdateAsync(string id, LandGroupWriteDTO landGroupUpdateDTO);
-        Task<bool> DeleteAsync(LandGroupWriteDTO delete);
+        Task<bool> DeleteAsync(string  id);
     }
 }

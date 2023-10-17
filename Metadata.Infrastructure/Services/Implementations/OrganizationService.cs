@@ -37,8 +37,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OrganizationTypeReadDTO?> CreateOrganizationTypeAsync(OrganizationTypeWriteDTO organizationTypeWriteDTO)
         {
-            await EnsureOrganizationTypeCodeNotDuplicate(organizationTypeWriteDTO.Code);
-            await CheckDeleteStatus(organizationTypeWriteDTO.Code);
+           /* await EnsureOrganizationTypeCodeNotDuplicate(organizationTypeWriteDTO.Code);
+            await CheckDeleteStatus(organizationTypeWriteDTO.Code);*/
             var organizationType = _mapper.Map<OrganizationType>(organizationTypeWriteDTO);
             await _unitOfWork.OrganizationTypeRepository.AddAsync(organizationType);
             await _unitOfWork.CommitAsync();

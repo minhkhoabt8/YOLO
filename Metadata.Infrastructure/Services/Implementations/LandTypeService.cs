@@ -27,8 +27,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandTypeReadDTO?> CreateLandTypeAsync(LandTypeWriteDTO landTypeWriteDTO)
         {
-            await EnsureLandGroupCodeNotDupicate(landTypeWriteDTO.Code);
-            await CheckDeleteStatus(landTypeWriteDTO.Code);
+           /* await EnsureLandGroupCodeNotDupicate(landTypeWriteDTO.Code);
+            await CheckDeleteStatus(landTypeWriteDTO.Code);*/
             var landType = _mapper.Map<LandType>(landTypeWriteDTO);
             await _unitOfWork.LandTypeRepository.AddAsync(landType);
             await _unitOfWork.CommitAsync();

@@ -12,6 +12,6 @@ namespace Metadata.Infrastructure.DTOs.AssetUnit
 
         public string Name { get; set; }
 
-        public bool? IsDeleted { get; set; }
+        
     }
 }

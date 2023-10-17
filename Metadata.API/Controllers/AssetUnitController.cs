@@ -6,7 +6,7 @@ using SharedLib.ResponseWrapper;
 
 namespace Metadata.API.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("metadata/assetUnit")]
     [ApiController]
     public class AssetUnitController : Controller
     {
@@ -17,6 +17,10 @@ namespace Metadata.API.Controllers
             _assetUnitService = assetUnitService;
         }
 
+        /// <summary>
+        /// Get all AssetUnits
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("getAll")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
         public async Task<IActionResult> getAllAssetUnits()
@@ -25,16 +29,41 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(assetUnits);
         }
 
+        /// <summary>
+        /// Get AssetUnits
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
+        public async Task<IActionResult> getAssetUnit(string id)
+        {
+            var assetUnit = await _assetUnitService.GetAsync(id);
+            return ResponseFactory.Ok(assetUnit);
+        }
+
+
+        /// <summary>
+        /// Create new AssetUnits
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost("Create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateAssetUnit(AssetUnitWriteDTO writeDTO)
+        public async Task<IActionResult> CreateAssetUnit(AssetUnitWriteDTO input)
         {
-            var assetUnit = await _assetUnitService.CreateAssetUnitAsync(writeDTO);
+            var assetUnit = await _assetUnitService.CreateAssetUnitAsync(input);
             return ResponseFactory.Created(assetUnit);
         }
 
+
+        /// <summary>
+        /// Update AssetUnit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
         [HttpPut("UpdateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
@@ -46,12 +75,17 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(assetUnit);
         }
 
+        /// <summary>
+        /// Delete AssetUnit
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("Delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> DeleteAssetUnit(string ob)
+        public async Task<IActionResult> DeleteAssetUnit(string id)
         {
-            await _assetUnitService.DeleteAsync(ob);
+            await _assetUnitService.DeleteAsync(id);
             return ResponseFactory.NoContent();
         }
     }

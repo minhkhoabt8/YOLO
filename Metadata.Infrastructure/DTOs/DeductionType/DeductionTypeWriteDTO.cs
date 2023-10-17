@@ -12,7 +12,7 @@ namespace Metadata.Infrastructure.DTOs.DeductionType
 
         public string Name { get; set; } 
 
-        public bool? IsDeleted { get; set; }
+      
 
     }
 }
