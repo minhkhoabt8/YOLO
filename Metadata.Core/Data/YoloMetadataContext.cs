@@ -567,7 +567,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnType("ntext")
                 .HasColumnName("plan_report_signal");
             entity.Property(e => e.PlanStatus).HasColumnName("plan_status");
-            entity.Property(e => e.PlaneCode)
+            entity.Property(e => e.PlanCode)
                 .HasMaxLength(10)
                 .HasColumnName("plane_code");
             entity.Property(e => e.ProjectId)
@@ -800,9 +800,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.LandPosition4)
                 .HasColumnType("decimal(10, 3)")
                 .HasColumnName("land_position_4");
-            entity.Property(e => e.LandPositionRest)
+            entity.Property(e => e.LandPosition5)
                 .HasColumnType("decimal(10, 3)")
-                .HasColumnName("land_position_rest");
+                .HasColumnName("land_position_5");
             entity.Property(e => e.LandTypeId)
                 .HasMaxLength(50)
                 .HasColumnName("land_type_id");

@@ -1,4 +1,5 @@
-﻿using Auth.Infrastructure.DTOs.Authentication;
+﻿using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,12 +28,27 @@ public class AuthController : ControllerBase
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost()]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     [ServiceFilter(typeof(AutoValidateModelState))]
     public async Task<IActionResult> Login(LoginInputDTO input)
     {
         var result = await _authService.LoginAsync(input);
+        return ResponseFactory.Ok(result);
+    }
+
+    /// <summary>
+    /// Reset Password Then Verify Account
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("reset")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    public async Task<IActionResult> FirstTimeResetPassWordAsync(ResetPasswordInputDTO input)
+    {
+        var result = await _authService.FirstTimeResetPasswordAsync(input);
         return ResponseFactory.Ok(result);
     }
 

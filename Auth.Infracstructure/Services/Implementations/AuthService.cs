@@ -1,12 +1,10 @@
-﻿using Auth.Core.Entities;
-using Auth.Core.Exceptions;
+﻿using Auth.Core.Exceptions;
 using Auth.Infrastructure.DTOs.Account;
 using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Linq.Dynamic.Core.Tokenizer;
+using SharedLib.Core.Exceptions;
 
 namespace Auth.Infrastructure.Services.Implementations
 {
@@ -30,17 +28,17 @@ namespace Auth.Infrastructure.Services.Implementations
             //check account with username and password
             var account = await _unitOfWork.AccountRepository.LoginAsync(inputDTO);
 
-            if (account == null)
+            if (account == null || account.IsDelete)
             {
                 throw new WrongCredentialsException();
             }
-            //re-assign Otp for two-factor-authentication
+
             account.GernerateOTP();
 
-            await _unitOfWork.CommitAsync();
-
-            ////call Send SMS
+            //call Send SMS
             await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
+
+            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AccountReadDTO>(account);
 
@@ -105,7 +103,7 @@ namespace Auth.Infrastructure.Services.Implementations
             
             var account = await _unitOfWork.AccountRepository.LoginAsync(input);
 
-            if (account == null)
+            if (account == null || account.IsDelete == true)
             {
                 throw new WrongCredentialsException();
             }
@@ -114,8 +112,6 @@ namespace Auth.Infrastructure.Services.Implementations
             {
                 throw new InvalidOtpException();
             }
-
-            account.IsActive = true;
 
             var refreshToken = _tokenService.GenerateRefreshToken(account);
 
@@ -142,7 +138,7 @@ namespace Auth.Infrastructure.Services.Implementations
         {
             var account = await _unitOfWork.AccountRepository.LoginAsync(input);
 
-            if (account == null)
+            if (account == null || account.IsDelete)
             {
                 throw new WrongCredentialsException();
             }
@@ -155,6 +151,47 @@ namespace Auth.Infrastructure.Services.Implementations
             await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
 
             return account.Otp!;
+        }
+
+        /// <summary>
+        /// First Time Reset Password -  Active account !!!
+        /// </summary>
+        /// <param name="resetDTO"></param>
+        /// <returns></returns>
+        /// <exception cref="WrongCredentialsException"></exception>
+        public async Task<AccountReadDTO> FirstTimeResetPasswordAsync(ResetPasswordInputDTO resetDTO)
+        {
+            //1.try log in using old password
+            var login = new LoginInputDTO 
+            {
+                Username = resetDTO.Username,
+                Password = resetDTO.OldPassword
+            };
+
+            //2.check account exist with username and old password
+            var account = await _unitOfWork.AccountRepository.LoginAsync(login);
+
+            if (account == null)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            //1.2check if account is Active -> this using to active account so account aldready active can not use this
+            if (account.IsActive)
+            {
+                throw new InvalidActionException();
+            }
+
+            //2.if account exist then re-assign Password
+            account.Password = resetDTO.NewPassword;
+
+            //3.set is active of account
+            if (!account.IsActive) account.IsActive = true;
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<AccountReadDTO>(account);
+
         }
 
     }

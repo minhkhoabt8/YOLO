@@ -24,7 +24,7 @@ namespace Auth.Infrastructure.Repositories.Implementations
 
         public async Task<Account?> LoginAsync(LoginInputDTO inputDTO)
         {
-            return await _context.Accounts.Include(acc=>acc.Role).FirstOrDefaultAsync(acc => acc.Username == inputDTO.Username && acc.Password == inputDTO.Password);
+            return await _context.Accounts.Include(acc=>acc.Role).FirstOrDefaultAsync(acc => acc.Username == inputDTO.Username && acc.Password == inputDTO.Password && !acc.IsDelete);
         }
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)

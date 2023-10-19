@@ -10,7 +10,7 @@ public partial class Plan : ITextSearchableEntity
 
     public string? ProjectId { get; set; }
 
-    public string? PlaneCode { get; set; }
+    public string? PlanCode { get; set; }
 
     public string? PlanPhrase { get; set; }
 
@@ -42,6 +42,6 @@ public partial class Plan : ITextSearchableEntity
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
-        {() => nameof(PlaneCode), .5}
+        {() => nameof(PlanCode), .5}
     };
 }

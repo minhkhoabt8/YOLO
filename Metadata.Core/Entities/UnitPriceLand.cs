@@ -23,7 +23,7 @@ public partial class UnitPriceLand
 
     public decimal? LandPosition4 { get; set; }
 
-    public decimal? LandPositionRest { get; set; }
+    public decimal? LandPosition5 { get; set; }
 
     public bool IsDeleted { get; set; }
 

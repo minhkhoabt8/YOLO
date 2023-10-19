@@ -47,22 +47,17 @@ namespace Auth.Infrastructure.Services.Implementations
 
             newAccount.Password = GeneratePassword();
 
-            // generate otp 
-
-            newAccount.GernerateOTP();
-
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
             //call Send SMS
-            await _smsService.SendSmsAsync(newAccount.Phone, newAccount.Otp);
+            await _smsService.SendSmsAsync(newAccount.Phone!, newAccount.Otp!);
 
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AccountReadDTO>(newAccount);
         }
 
-
-
+        
         private string GeneratePassword()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
