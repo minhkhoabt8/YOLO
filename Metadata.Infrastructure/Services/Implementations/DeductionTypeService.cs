@@ -26,12 +26,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<DeductionTypeReadDTO> AddDeductionType(DeductionTypeWriteDTO deductionType)
         {
-           /* await EnsureDeductionTypeNotExist(deductionType.Code);*/
+            await EnsureDeductionTypeNotExist(deductionType.Code);
             var newDeductionType = _mapper.Map<DeductionType>(deductionType);
             await _unitOfWork.DeductionTypeRepository.AddAsync(newDeductionType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<DeductionTypeReadDTO>(newDeductionType);
         }
+
+
 
         public async Task<bool> DeleteDeductionTypeAsync(string id)
         {
@@ -48,6 +50,12 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<IEnumerable<DeductionTypeReadDTO>> GetAllDeductionTypesAsync()
         {
             var deductionTypes = await _unitOfWork.DeductionTypeRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<DeductionTypeReadDTO>>(deductionTypes);
+        }
+
+        public async Task<IEnumerable<DeductionTypeReadDTO>> GetAllDeletedDeductionTypesAsync()
+        {
+            var deductionTypes = await _unitOfWork.DeductionTypeRepository.GetAllDeletedDeductionTypes();
             return _mapper.Map<IEnumerable<DeductionTypeReadDTO>>(deductionTypes);
         }
 
@@ -71,7 +79,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         private async Task EnsureDeductionTypeNotExist(string code)
         {
-            var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindAsync(code);
+            var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindByCodeAndIsDeletedStatus(code, true);
             if (existDeductionType != null && existDeductionType.Code==code)
             {
                 throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType.Code),code);

@@ -13,6 +13,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<OrganizationTypeReadDTO?> GetAsync(string code);
         Task<OrganizationTypeReadDTO?> CreateOrganizationTypeAsync(OrganizationTypeWriteDTO organizationTypeWriteDTO);
         Task<OrganizationTypeReadDTO?> UpdateAsync(string id, OrganizationTypeWriteDTO organizationTypeUpdateDTO);
+        Task<IEnumerable<OrganizationTypeReadDTO>> GetAllDeletedOrganizationTypeAsync();
         Task<bool> DeleteAsync(string delete);
     }
 }

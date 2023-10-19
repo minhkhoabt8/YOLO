@@ -25,14 +25,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO)
         {
-            /*EnsureAssetGroupCodeNotDupicate(assetGroupWriteDTO.Code);*/
+            await EnsureAssetGroupCodeNotDuplicate(assetGroupWriteDTO.Code);
+           
             var assetGroup = _mapper.Map<AssetGroup>(assetGroupWriteDTO);
+
             await _unitOfWork.AssetGroupRepository.AddAsync(assetGroup);
+            
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetGroupReadDTO>(assetGroup);
 
         }
-
+        
         public async Task<bool> DeleteAssetGroupAsync(string id)
         {
             var assetGroup = await _unitOfWork.AssetGroupRepository.FindAsync(id);
@@ -51,8 +54,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<AssetGroupReadDTO>>(assetGroups);
         }
 
-        public async Task<AssetGroupReadDTO> GetAssetGroupAsync(string code)
+        public async Task<IEnumerable<AssetGroupReadDTO>> GetAllDeletedAssetGroupAsync()
         {
+            var assetGroups = await _unitOfWork.AssetGroupRepository.GetAllDeletedAssetGroup();
+            return _mapper.Map<IEnumerable<AssetGroupReadDTO>>(assetGroups);
+        }
+
+
+        public async Task<AssetGroupReadDTO> GetAssetGroupAsync(string code)
+        {   
             var landgroups = await _unitOfWork.AssetGroupRepository.FindAsync(code);
             return _mapper.Map<AssetGroupReadDTO>(landgroups);
         }
@@ -68,13 +78,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetGroupReadDTO>(existAssetGroup);
         }
-        /*private async Task EnsureAssetGroupCodeNotDupicate(string code)
+        private async Task EnsureAssetGroupCodeNotDuplicate(string code)
         {
-            var assetGroup = await _unitOfWork.AssetGroupRepository.FindByCodeAsync(code);
+            var assetGroup = await _unitOfWork.AssetGroupRepository.FindByCodeAndIsDeletedStatus(code, false);
             if (assetGroup != null && assetGroup.Code == code)
             {
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetGroup.Code), code);
             }
-        }*/
+        }
+
+        
     }
 }

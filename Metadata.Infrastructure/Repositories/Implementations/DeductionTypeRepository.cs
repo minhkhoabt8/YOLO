@@ -21,5 +21,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.DeductionTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower());
         }
+
+        public async Task<DeductionType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
+        {
+            return await _context.DeductionTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<DeductionType>?> GetAllDeletedDeductionTypes()
+        {
+            return await _context.DeductionTypes.Where(x => x.IsDeleted == true).ToListAsync();
+        }
     }
 }

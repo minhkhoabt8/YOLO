@@ -23,7 +23,16 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         }
 
-        
+        public async Task<LandGroup?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
+        {
+            return await _context.LandGroups.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<LandGroup>?> GetAllDeletedLandGroups()
+        {
+            return await _context.LandGroups.Where(x => x.IsDeleted == true).ToListAsync();
+        }
+
     }
     
 }

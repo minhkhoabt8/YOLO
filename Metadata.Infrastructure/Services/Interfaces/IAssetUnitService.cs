@@ -10,6 +10,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
     public interface IAssetUnitService
     {
         Task<IEnumerable<AssetUnitReadDTO>> GetAllAssetUnitAsync();
+        Task<IEnumerable<AssetUnitReadDTO>> GetAllDeletedAssetUnitAsync();
         Task<AssetUnitReadDTO?> GetAsync(string code);
         Task<AssetUnitReadDTO?> CreateAssetUnitAsync(AssetUnitWriteDTO assetUnitWriteDTO);
         Task<AssetUnitReadDTO?> UpdateAsync(string id, AssetUnitWriteDTO assetUnitUpdateDTO);

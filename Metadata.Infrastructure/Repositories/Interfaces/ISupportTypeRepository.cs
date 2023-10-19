@@ -14,6 +14,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<SupportType>
     {
         Task<SupportType?> FindByCodeAsync(string code);
+        Task<SupportType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<IEnumerable<SupportType>?> GetAllDeletedSupportType();
 
     }
     

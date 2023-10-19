@@ -12,6 +12,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<AssetGroupReadDTO>> GetAllAssetGroupsAsync();
         Task<AssetGroupReadDTO> GetAssetGroupAsync(string code);
+        Task<IEnumerable<AssetGroupReadDTO>> GetAllDeletedAssetGroupAsync();
         Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO);
         Task<AssetGroupReadDTO> UpdateAssetGroupAsync(string id ,AssetGroupWriteDTO assetGroupWriteDTO);
         Task<bool> DeleteAssetGroupAsync(string id);

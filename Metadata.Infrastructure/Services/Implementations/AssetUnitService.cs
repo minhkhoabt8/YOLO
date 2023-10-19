@@ -37,6 +37,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
+        public async Task<IEnumerable<AssetUnitReadDTO>> GetAllDeletedAssetUnitAsync()
+        {
+            var assetUnits = await _unitOfWork.AssetUnitRepository.GetAllDeletedAssetUnit();
+            return _mapper.Map<IEnumerable<AssetUnitReadDTO>>(assetUnits);
+        }
 
         public async Task<IEnumerable<AssetUnitReadDTO>> GetAllAssetUnitAsync()
         {
@@ -66,22 +71,22 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<AssetUnitReadDTO?> CreateAssetUnitAsync(AssetUnitWriteDTO assetUnitWriteDTO)
         {
-           /* await EnsureAssetUnitCodeNotDuplicate(assetUnitWriteDTO.Code);*/
+            await EnsureAssetUnitCodeNotDuplicate(assetUnitWriteDTO.Code);
             var assetUnit = _mapper.Map<AssetUnit>(assetUnitWriteDTO);
             await _unitOfWork.AssetUnitRepository.AddAsync(assetUnit);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetUnitReadDTO>(assetUnit);
         }
-/*
-        private async Task EnsureAssetUnitCodeNotDuplicate (string code)
+
+        private async Task EnsureAssetUnitCodeNotDuplicate(string code)
         {
-            var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(code);
+             var assetUnit = await _unitOfWork.AssetUnitRepository.FindByCodeAndIsDeletedStatus(code,true);
             if (assetUnit != null && assetUnit.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(assetUnit.Code), code);
-            }*/
+            }
         }
 
-       
+
     }
 }

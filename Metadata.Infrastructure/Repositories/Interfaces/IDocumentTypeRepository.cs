@@ -14,5 +14,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<DocumentType>
     {
         Task<DocumentType?> FindByCodeAsync(string code);
+        Task<DocumentType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<IEnumerable<DocumentType>?> GetAllDeletedDocumentTypes();
+
     }
 }

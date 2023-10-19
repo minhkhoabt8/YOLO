@@ -31,6 +31,20 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all LandType
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandTypeReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedLandType()
+        {
+            var landTypes = await _landTypeService.GetAllDeletedLandTypeAsync();
+            return ResponseFactory.Ok(landTypes);
+
+        }
+
+
+        /// <summary>
         /// Get LandType
         /// </summary>
         /// <returns></returns>

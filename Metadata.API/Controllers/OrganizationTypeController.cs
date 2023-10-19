@@ -42,6 +42,19 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted OrganizationType
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeletedOrganizationType")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedOrganizationType()
+        {
+            var organizationTypes = await _organizationService.GetAllDeletedOrganizationTypeAsync();
+            return ResponseFactory.Ok(organizationTypes);
+        }
+
+
+        /// <summary>
         /// Create new OrganizationType
         /// </summary>
         /// <param name="input"></param>

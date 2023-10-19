@@ -27,8 +27,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandTypeReadDTO?> CreateLandTypeAsync(LandTypeWriteDTO landTypeWriteDTO)
         {
-           /* await EnsureLandGroupCodeNotDupicate(landTypeWriteDTO.Code);
-            await CheckDeleteStatus(landTypeWriteDTO.Code);*/
+            await EnsureLandGroupCodeNotDuplicate(landTypeWriteDTO.Code);
+            
             var landType = _mapper.Map<LandType>(landTypeWriteDTO);
             await _unitOfWork.LandTypeRepository.AddAsync(landType);
             await _unitOfWork.CommitAsync();
@@ -54,6 +54,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<LandTypeReadDTO>>(landTypes);
         }
 
+        public async Task<IEnumerable<LandTypeReadDTO>> GetAllDeletedLandTypeAsync()
+        {
+            var landTypes = await _unitOfWork.LandTypeRepository.GetAllDeletedLandTypes();
+            return _mapper.Map<IEnumerable<LandTypeReadDTO>>(landTypes);
+        }
+
         public async Task<LandTypeReadDTO?> GetAsync(string code)
         {
             var landTypes = await _unitOfWork.LandTypeRepository.FindAsync(code);
@@ -72,23 +78,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<LandTypeReadDTO>(existLandType);
         }
 
-        private async Task EnsureLandGroupCodeNotDupicate(string code)
+        private async Task EnsureLandGroupCodeNotDuplicate(string code)
         {
-            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAsync(code);
+            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatus(code,true);
             if (landType != null && landType.Code == code)
             {
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
             }
         }
-        private async Task CheckDeleteStatus(string id)
-        {
-            var landType = await _unitOfWork.LandTypeRepository.FindAsync(id);
-            if (landType != null && landType.IsDeleted == true)
-            {
-                throw new Exception("This landgroup code is already delete");
-            }
-
-        }
+        
 
     }
 }

@@ -15,5 +15,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<SupportTypeReadDTO?> CreateLandTypeAsync(SupportTypeWriteDTO supportTypeWriteDTO);
         Task<SupportTypeReadDTO?> UpdateAsync(string id, SupportTypeWriteDTO supportTypeUpdateDTO);
         Task<bool> DeleteAsync(string id);
+        Task<IEnumerable<SupportTypeReadDTO>> GetAllDeletedLandTypeAsync();
     }
 }

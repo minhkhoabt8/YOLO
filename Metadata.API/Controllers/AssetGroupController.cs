@@ -30,6 +30,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted AssetGroup
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedAssetGroups()
+        {
+            var assetGroups = await _assetGroupService.GetAllDeletedAssetGroupAsync();
+            return ResponseFactory.Ok(assetGroups);
+        }
+
+        /// <summary>
         /// get AssetGroup by Id
         /// </summary>
         /// <returns></returns>

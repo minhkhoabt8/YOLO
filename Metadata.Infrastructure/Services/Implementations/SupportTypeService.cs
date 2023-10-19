@@ -34,9 +34,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<SupportTypeReadDTO>(supportType);
         }
 
+        public async Task<IEnumerable<SupportTypeReadDTO>> GetAllDeletedLandTypeAsync()
+        {
+            return _mapper.Map<IEnumerable<SupportTypeReadDTO>>(await _unitOfWork.SupportTypeRepository.GetAllDeletedSupportType());
+        }
+
         public async Task<SupportTypeReadDTO?> CreateLandTypeAsync(SupportTypeWriteDTO supportTypeWriteDTO)
         {
-           /* EnsureSupportTypeCodeNotDupicate(supportTypeWriteDTO.Code);*/
+            await EnsureSupportTypeCodeNotDuplicate(supportTypeWriteDTO.Code);
             var supportType = _mapper.Map<SupportType>(supportTypeWriteDTO);
             await _unitOfWork.SupportTypeRepository.AddAsync(supportType);
             await _unitOfWork.CommitAsync();
@@ -68,9 +73,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
-        private async Task EnsureSupportTypeCodeNotDupicate(string code)
+        private async Task EnsureSupportTypeCodeNotDuplicate(string code)
         {
-            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAsync(code);
+            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatus(code,true);
             if (supportType != null && supportType.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(supportType.Code), code);
