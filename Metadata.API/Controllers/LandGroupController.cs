@@ -31,6 +31,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted LandGroup
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedLandGroups()
+        {
+            var landGroups = await _landGroupService.GetAllDeletedLandGroupAsync();
+            return ResponseFactory.Ok(landGroups);
+        }
+
+        /// <summary>
         /// Get LandGroup
         /// </summary>
         /// <returns></returns>

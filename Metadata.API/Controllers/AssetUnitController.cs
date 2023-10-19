@@ -30,6 +30,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted AssetUnits
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedAssetUnits()
+        {
+            var assetUnits = await _assetUnitService.GetAllDeletedAssetUnitAsync();
+            return ResponseFactory.Ok(assetUnits);
+        }
+
+        /// <summary>
         /// Get AssetUnits
         /// </summary>
         /// <returns></returns>

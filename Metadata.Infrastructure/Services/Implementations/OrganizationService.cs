@@ -29,6 +29,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<OrganizationTypeReadDTO>>(organizationTypes);
         }
 
+        public async Task<IEnumerable<OrganizationTypeReadDTO>> GetAllDeletedOrganizationTypeAsync()
+        {
+            var organizationTypes = await _unitOfWork.OrganizationTypeRepository.GetAllDeletedOrganizationTypes();
+            return _mapper.Map<IEnumerable<OrganizationTypeReadDTO>>(organizationTypes);
+        }
+
         public async Task<OrganizationTypeReadDTO?> GetAsync(string code)
         {
             var organizationTypes = await _unitOfWork.OrganizationTypeRepository.FindAsync(code);
@@ -37,8 +43,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OrganizationTypeReadDTO?> CreateOrganizationTypeAsync(OrganizationTypeWriteDTO organizationTypeWriteDTO)
         {
-           /* await EnsureOrganizationTypeCodeNotDuplicate(organizationTypeWriteDTO.Code);
-            await CheckDeleteStatus(organizationTypeWriteDTO.Code);*/
+            await EnsureOrganizationTypeCodeNotDuplicate(organizationTypeWriteDTO.Code);
+           
             var organizationType = _mapper.Map<OrganizationType>(organizationTypeWriteDTO);
             await _unitOfWork.OrganizationTypeRepository.AddAsync(organizationType);
             await _unitOfWork.CommitAsync();
@@ -74,21 +80,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         private async Task EnsureOrganizationTypeCodeNotDuplicate(string code)
         {
-            var organizationType = await _unitOfWork.LandGroupRepository.FindByCodeAsync(code);
+            var organizationType = await _unitOfWork.LandGroupRepository.FindByCodeAndIsDeletedStatus(code,true);
             if (organizationType != null && organizationType.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(organizationType.Code), code);
             }
         }
 
-        private async Task CheckDeleteStatus(string id)
-        {
-            var organizationType = await _unitOfWork.OrganizationTypeRepository.FindAsync(id);
-            if (organizationType != null && organizationType.IsDeleted == true)
-            {
-                throw new Exception("This landgroup code is already delete");
-            }
-
-        }
+       
     }
 }

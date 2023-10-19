@@ -30,6 +30,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted DocumentTypes
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeteled")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DocumentTypeReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedDocumentTypes()
+        {
+            var documentTypes = await _documentTypeService.GetAllDeletedDocumentTypesAsync();
+            return ResponseFactory.Ok(documentTypes);
+        }
+
+        /// <summary>
         /// Get DocumentTypes
         /// </summary>
         /// <returns></returns>

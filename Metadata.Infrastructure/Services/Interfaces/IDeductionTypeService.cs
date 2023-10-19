@@ -15,6 +15,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<DeductionTypeReadDTO> GetDeductionTypeAsync(string id);
         Task<DeductionTypeReadDTO> AddDeductionType(DeductionTypeWriteDTO deductionType);
         Task<DeductionTypeReadDTO> UpdateDeductionTypeAsync(string id , DeductionTypeWriteDTO deductionType);
+        Task<IEnumerable<DeductionTypeReadDTO>> GetAllDeletedDeductionTypesAsync();
         Task<bool> DeleteDeductionTypeAsync(string id);
     }
 }

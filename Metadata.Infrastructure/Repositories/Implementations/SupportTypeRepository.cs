@@ -23,6 +23,14 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         }
 
+        public async Task<SupportType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
+        {
+            return await _context.SupportTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
+        }
 
+        public async Task<IEnumerable<SupportType>?> GetAllDeletedSupportType()
+        {
+            return await _context.SupportTypes.Where(x => x.IsDeleted == true).ToListAsync();
+        }
     }
 }

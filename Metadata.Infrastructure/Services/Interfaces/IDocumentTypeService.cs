@@ -13,6 +13,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<DocumentTypeReadDTO> GetDocumentTypeAsync(string id);
         Task<DocumentTypeReadDTO> CreateDocumentTypeAsync(DocumentTypeWriteDTO documentType);
         Task<DocumentTypeReadDTO> UpdateDocumentTypeAsync(string id, DocumentTypeWriteDTO documentType);
+        Task<IEnumerable<DocumentTypeReadDTO>> GetAllDeletedDocumentTypesAsync();
         Task<bool> DeleteDocumentTypeAsync(string id);
     }
 }

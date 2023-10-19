@@ -22,7 +22,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetUnits.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower());
         }
 
-        
+        public async Task<AssetUnit?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
+        {
+            return await _context.AssetUnits.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<AssetUnit>?> GetAllDeletedAssetUnit()
+        {
+            return await _context.AssetUnits.Where(x => x.IsDeleted == true).ToListAsync();
+        }
     }
     
 }

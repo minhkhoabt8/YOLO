@@ -94,4 +94,5 @@ public class GenericRepository<TEntity, TContext> :
         var equalExpr = Expression.Equal(propertyExpr, Expression.Constant(id));
         return Expression.Lambda<Func<TEntity, bool>>(equalExpr, objParameterExpr);
     }
+
 }

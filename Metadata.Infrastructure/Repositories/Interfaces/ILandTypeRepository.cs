@@ -14,5 +14,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<LandType>
     {
         Task<LandType?> FindByCodeAsync(string code);
+        Task<LandType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<IEnumerable<LandType>?> GetAllDeletedLandTypes();
     }
 }

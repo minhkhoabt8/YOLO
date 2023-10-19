@@ -31,6 +31,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted DeductionTypes
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedDeductionTypes()
+        {
+            var deductionTypes = await _deductionTypeService.GetAllDeletedDeductionTypesAsync();
+            return ResponseFactory.Ok(deductionTypes);
+        }
+
+        /// <summary>
         /// Get DeductionTypes
         /// </summary>
         /// <returns></returns>

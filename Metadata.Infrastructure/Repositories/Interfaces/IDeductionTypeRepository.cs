@@ -14,5 +14,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<DeductionType>
     {
         Task<DeductionType?> FindByCodeAsync(string code);
+        Task<IEnumerable<DeductionType>?> GetAllDeletedDeductionTypes();
+        Task<DeductionType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
     }
 }

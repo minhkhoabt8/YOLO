@@ -14,5 +14,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<AssetUnit>
     {
         Task<AssetUnit?> FindByCodeAsync(string code);
+        Task<AssetUnit?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<IEnumerable<AssetUnit>?> GetAllDeletedAssetUnit();
     }
 }

@@ -29,6 +29,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get all deleted SupportType
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getAllDeleted")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
+        public async Task<IActionResult> getAllDeletedSupportTypes()
+        {
+            var supportTypes = await _supportTypeService.GetAllDeletedLandTypeAsync();
+            return ResponseFactory.Ok(supportTypes);
+        }
+
+        /// <summary>
         /// Get SupportType
         /// </summary>
         /// <returns></returns>

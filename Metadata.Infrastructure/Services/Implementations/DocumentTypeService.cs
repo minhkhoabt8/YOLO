@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<DocumentTypeReadDTO> CreateDocumentTypeAsync(DocumentTypeWriteDTO documentType)
         {
-           /* EnsureDocumentTypeCodeNotDuplicate(documentType.Code);*/
+            await EnsureDocumentTypeCodeNotDuplicate(documentType.Code);
             var documentTypeEntity = _mapper.Map<DocumentType>(documentType);
             await _unitOfWork.DocumentTypeRepository.AddAsync(documentTypeEntity);
             await _unitOfWork.CommitAsync();
@@ -51,6 +51,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<DocumentTypeReadDTO>>(documentTypes);
         }
 
+        public async Task<IEnumerable<DocumentTypeReadDTO>> GetAllDeletedDocumentTypesAsync()
+        {
+            var documentTypes = await _unitOfWork.DocumentTypeRepository.GetAllDeletedDocumentTypes();
+            return _mapper.Map<IEnumerable<DocumentTypeReadDTO>>(documentTypes);
+        }
+
         public async Task<DocumentTypeReadDTO> GetDocumentTypeAsync(string id)
         {
             var documentType = await _unitOfWork.DocumentTypeRepository.FindAsync(id);
@@ -71,8 +77,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         private async Task EnsureDocumentTypeCodeNotDuplicate(string code)
         {
-            var documentType = await _unitOfWork.DocumentTypeRepository.FindAsync(code);
-            if (documentType != null)
+            var documentType = await _unitOfWork.DocumentTypeRepository.FindByCodeAndIsDeletedStatus(code,true);
+            if (documentType != null && documentType.Code==code)
             {
                 throw new UniqueConstraintException<DocumentType>(nameof(documentType.Code),code);
             }

@@ -44,6 +44,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<LandGroupReadDTO>>(landGroups);
         }
 
+        public async Task<IEnumerable<LandGroupReadDTO>> GetAllDeletedLandGroupAsync()
+        {
+            var landGroups = await _unitOfWork.LandGroupRepository.GetAllDeletedLandGroups();
+            return _mapper.Map<IEnumerable<LandGroupReadDTO>>(landGroups);
+        }
+
         public async Task<LandGroupReadDTO?> GetAsync(string code)
         {
             var landGroups = await _unitOfWork.LandGroupRepository.FindAsync(code);
@@ -67,31 +73,23 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         public async Task<LandGroupReadDTO?> CreateLandgroupAsync(LandGroupWriteDTO landGroupWriteDTO)
-        {   
-            /*await EnsureLandGroupCodeNotDupicate(landGroupWriteDTO.Code);
-            await CheckDeleteStatus(landGroupWriteDTO.Code);*/
+        {
+            await EnsureLandGroupCodeNotDuplicate(landGroupWriteDTO.Code);
+            
             var landGroup = _mapper.Map<LandGroup>(landGroupWriteDTO);
             await _unitOfWork.LandGroupRepository.AddAsync(landGroup);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LandGroupReadDTO>(landGroup);
         }
-        private async Task EnsureLandGroupCodeNotDupicate(string code)
+        private async Task EnsureLandGroupCodeNotDuplicate(string code)
         {
-            var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAsync(code);
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAndIsDeletedStatus(code,true);
             if (landGroup != null  && landGroup.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Code), code);
             }
         }
-        private async Task CheckDeleteStatus(string id)
-        {
-            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
-            if (landGroup != null && landGroup.IsDeleted == true)
-            {
-                throw new Exception("This landgroup code is already delete");
-            }
-            
-        }
+        
       
     }
 }
