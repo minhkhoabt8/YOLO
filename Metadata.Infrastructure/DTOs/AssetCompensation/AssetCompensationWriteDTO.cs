@@ -31,6 +31,6 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         [MaxLength(50)]
         public string OwnerId { get; set; }
         [Required]
-        public IEnumerable<AttachFile>? AttachFiles { get; set; }
+        public IEnumerable<Core.Entities.AttachFile>? AttachFiles { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class Deduction
 {
-    public string DeductionId { get; set; } = null!;
+    public string DeductionId { get; set; } = Guid.NewGuid().ToString();
 
     public string? DeductionContent { get; set; }
 

@@ -18,12 +18,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
+        private readonly IGCNLandInfoService _gcNLandInfoService;
+        private readonly IMeasuredLandInfoService _measuredLandInfoService;
 
-        public OwnerService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService)
+        public OwnerService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IGCNLandInfoService gcNLandInfoService, IMeasuredLandInfoService measuredLandInfoService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
+            _gcNLandInfoService = gcNLandInfoService;
+            _measuredLandInfoService = measuredLandInfoService;
         }
 
         public async Task<OwnerReadDTO> CreateOwnerAsync(OwnerWriteDTO dto)

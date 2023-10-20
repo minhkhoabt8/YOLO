@@ -14,6 +14,10 @@ namespace Metadata.Infrastructure.UOW
         public IMeasuredLandInfoRepository MeasuredLandInfoRepository { get; }
         public IAuditTrailRepository AuditTrailRepository { get; }
         public IGCNLandInfoRepository GCNLandInfoRepository { get; }
+        public ISupportRepository SupportRepository { get; }
+        public IDeductionRepository DeductionRepository { get; }
+        public IAssetCompensationRepository AssetCompensationRepository { get; }
+        public IAttachFileRepository AttachFileRepository { get; }
 
         Task<int> CommitAsync();
     }

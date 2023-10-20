@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
+﻿using Metadata.Infrastructure.DTOs.GCNLandInfo;
+using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Project;
 using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
@@ -19,5 +20,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<MeasuredLandInfoReadDTO> GetMeasuredLandInfoAsync(string id);
         Task CreateMeasuredLandInfoFromFileAsync(IFormFile formFile);
         Task<PaginatedResponse<MeasuredLandInfoReadDTO>> MeasuredLandInfoQueryAsync(MeasuredLandInfoQuery query);
+
+        Task<IEnumerable<MeasuredLandInfoReadDTO>> CreateOwnerMeasuredLandInfosAsync(string ownerId, IEnumerable<MeasuredLandInfoWriteDTO> dto);
     }
 }

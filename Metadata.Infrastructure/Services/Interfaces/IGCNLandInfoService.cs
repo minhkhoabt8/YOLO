@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task DeleteGCNLandInfoAsync(string id);
         Task<GCNLandInfoReadDTO> GetGCNLandInfoAsync(string id);
         Task<PaginatedResponse<GCNLandInfoReadDTO>> GCNLandInfoQueryAsync(GCNLandInfoQuery query);
+        Task<IEnumerable<GCNLandInfoReadDTO>> CreateOwnerGcnLandInfosAsync(string ownerId, IEnumerable<GCNLandInfoWriteDTO> dto);
     }
 }

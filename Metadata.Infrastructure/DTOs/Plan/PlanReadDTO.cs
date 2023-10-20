@@ -39,7 +39,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public bool? IsDeleted { get; set; }
 
-        public  ICollection<AttachFile> AttachFiles { get; set; }
+        public  ICollection<Core.Entities.AttachFile> AttachFiles { get; set; }
 
         public  ICollection<OwnerReadDTO> Owners { get; set; }
     }

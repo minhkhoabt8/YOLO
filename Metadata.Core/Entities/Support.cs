@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class Support
 {
-    public string SupportId { get; set; } = null!;
+    public string SupportId { get; set; } = Guid.NewGuid().ToString();
 
     public string? SupportContent { get; set; }
 

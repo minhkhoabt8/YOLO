@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Owner;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
 
         public string OwnerId { get; set; }
 
-        public virtual IEnumerable<AttachFile> AttachFiles { get; } = new List<AttachFile>();
+        public IEnumerable<AttachFileReadDTO> AttachFiles { get; set; }
 
     }
 }

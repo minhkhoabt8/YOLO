@@ -2,6 +2,7 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
+using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
@@ -76,5 +77,31 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<GCNLandInfoReadDTO>(measuredLandInfo);
         }
+
+        public async Task<IEnumerable<GCNLandInfoReadDTO>> CreateOwnerGcnLandInfosAsync(string ownerId, IEnumerable<GCNLandInfoWriteDTO> dto)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+
+            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            if (dto == null) throw new InvalidActionException(nameof(dto));
+
+            var landInfoList = new List<GcnlandInfo>();
+
+            foreach (var item in dto)
+            {
+                var landInfo = _mapper.Map<GcnlandInfo>(item);
+
+                landInfo.OwnerId = ownerId;
+
+                await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
+
+                landInfoList.Add(landInfo);
+            }
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<GCNLandInfoReadDTO>>(landInfoList);
+        }
+
     }
 }

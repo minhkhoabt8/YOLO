@@ -22,12 +22,10 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
 
         public string OwnerId { get; set; }
 
-        public IEnumerable<AttachFile> AttachFiles { get; set; }
-
         public LandType? LandType { get; set; }
 
-        public IEnumerable<MeasuredLandInfoReadDTO> MeasuredLandInfos { get; set; }
+        public IEnumerable<Core.Entities.AttachFile> AttachFiles { get; set; }
 
-        public OwnerReadDTO Owner { get; set; }
+
     }
 }

@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class AttachFile
 {
-    public string AttachFileId { get; set; } = null!;
+    public string AttachFileId { get; set; } = Guid.NewGuid().ToString();
 
     public string? Name { get; set; }
 

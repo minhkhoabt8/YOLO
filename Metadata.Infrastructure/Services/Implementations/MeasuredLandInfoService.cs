@@ -1,7 +1,7 @@
-﻿using Amazon.S3.Model;
-using AutoMapper;
+﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
+using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -39,6 +39,31 @@ namespace Metadata.Infrastructure.Services.Implementations
         public Task CreateMeasuredLandInfoFromFileAsync(IFormFile formFile)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<MeasuredLandInfoReadDTO>> CreateOwnerMeasuredLandInfosAsync(string ownerId, IEnumerable<MeasuredLandInfoWriteDTO> dto)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+
+            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            if (dto == null) throw new InvalidActionException(nameof(dto));
+
+            var landInfoList = new List<MeasuredLandInfo>();
+
+            foreach (var item in dto)
+            {
+                var landInfo = _mapper.Map<MeasuredLandInfo>(item);
+
+                landInfo.OwnerId = ownerId;
+
+                await _unitOfWork.MeasuredLandInfoRepository.AddAsync(landInfo);
+
+                landInfoList.Add(landInfo);
+            }
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<MeasuredLandInfoReadDTO>>(landInfoList);
         }
 
         public async Task DeleteMeasuredLandInfoAsync(string id)

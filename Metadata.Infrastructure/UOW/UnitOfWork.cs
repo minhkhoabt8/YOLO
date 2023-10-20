@@ -32,6 +32,11 @@ namespace Metadata.Infrastructure.UOW
         public IAuditTrailRepository AuditTrailRepository => GetSingletonRepository<IAuditTrailRepository>();
         public IMeasuredLandInfoRepository MeasuredLandInfoRepository => GetSingletonRepository<IMeasuredLandInfoRepository>();
         public IGCNLandInfoRepository GCNLandInfoRepository => GetSingletonRepository<IGCNLandInfoRepository>();
+        public ISupportRepository SupportRepository => GetSingletonRepository<ISupportRepository>();
+        public IDeductionRepository DeductionRepository => GetSingletonRepository<IDeductionRepository>();
+        public IAssetCompensationRepository AssetCompensationRepository => GetSingletonRepository<IAssetCompensationRepository>();
+
+        public IAttachFileRepository AttachFileRepository => GetSingletonRepository<IAttachFileRepository>();
 
         public Task<int> CommitAsync()
         {
