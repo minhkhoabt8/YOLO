@@ -1,6 +1,7 @@
 ﻿using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandPositionInfo;
+using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
@@ -121,7 +122,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string? OrganizationTypeId { get; set; }
 
-        public OrganizationType? OrganizationType { get; set; }
+        public OrganizationTypeReadDTO? OrganizationType { get; set; }
     }
 
     public class PlansInProjectDTO

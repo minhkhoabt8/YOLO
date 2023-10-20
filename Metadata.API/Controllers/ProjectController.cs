@@ -68,7 +68,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="projectDto"></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost("Create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]

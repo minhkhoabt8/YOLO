@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.LandType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Metadata.Infrastructure.DTOs.UnitPriceLand
 
         public decimal? LandPositionRest { get; set; }
 
-        public virtual LandType? LandType { get; set; }
+        public virtual LandTypeReadDTO? LandType { get; set; }
 
     }
 }
