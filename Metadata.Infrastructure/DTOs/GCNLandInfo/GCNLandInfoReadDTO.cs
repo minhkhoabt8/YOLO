@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Owner;
 
@@ -22,9 +23,9 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
 
         public string OwnerId { get; set; }
 
-        public LandType? LandType { get; set; }
+        //public LandType? LandType { get; set; }
 
-        public IEnumerable<Core.Entities.AttachFile> AttachFiles { get; set; }
+        public IEnumerable<AttachFileReadDTO> AttachFiles { get; set; }
 
 
     }

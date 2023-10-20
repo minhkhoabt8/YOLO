@@ -13,6 +13,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<GcnlandInfo>,
         IQueryAsync<GcnlandInfo, GCNLandInfoQuery>
     {
-        
+        Task<IEnumerable<GcnlandInfo>> GetAllGcnLandInfosOfOwnerAsync(string ownerId);
     }
 }

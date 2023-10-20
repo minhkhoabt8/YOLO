@@ -21,7 +21,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Owner>> QueryAsync(OwnerQuery query, bool trackChanges = false)
         {
-            IQueryable<Owner> owners = _context.Owners;
+            IQueryable<Owner> owners = _context.Owners
+                .Include(o=> o.Supports)
+                .Include(o => o.Deductions)
+                .Include(o=> o.GcnlandInfos)
+                .Include(o=> o.AssetCompensations)
+                .Include(o=> o.AttachFiles);
 
             if (!trackChanges)
             {

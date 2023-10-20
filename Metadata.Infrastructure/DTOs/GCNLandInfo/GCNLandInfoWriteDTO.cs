@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Metadata.Infrastructure.DTOs.AttachFile;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -29,5 +30,7 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
         [Required]
         [MaxLength(50)]
         public string OwnerId { get; set; }
+
+        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
     }
 }

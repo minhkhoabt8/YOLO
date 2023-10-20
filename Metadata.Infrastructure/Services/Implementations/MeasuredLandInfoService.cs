@@ -9,6 +9,7 @@ using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
+using SharedLib.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -16,11 +17,13 @@ namespace Metadata.Infrastructure.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachFileService _attachFileService;
 
-        public MeasuredLandInfoService(IMapper mapper, IUnitOfWork unitOfWork)
+        public MeasuredLandInfoService(IMapper mapper, IUnitOfWork unitOfWork, IAttachFileService attachFileService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _attachFileService = attachFileService;
         }
 
         public async Task<MeasuredLandInfoReadDTO> CreateMeasuredLandInfoAsync(MeasuredLandInfoWriteDTO dto)
@@ -30,6 +33,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(dto);
 
             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
+
+            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
 
             await _unitOfWork.CommitAsync();
 
@@ -58,6 +63,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 landInfo.OwnerId = ownerId;
 
                 await _unitOfWork.MeasuredLandInfoRepository.AddAsync(landInfo);
+
+                await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
                 landInfoList.Add(landInfo);
             }

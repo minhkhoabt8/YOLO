@@ -15,12 +15,14 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
+        private readonly IAttachFileService _attachFileService;
 
-        public AssetCompensationService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService)
+        public AssetCompensationService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
+            _attachFileService = attachFileService;
         }
 
         public async Task<IEnumerable<AssetCompensationReadDTO>> CreateOwnerAssetCompensationsAsync(string ownerId, IEnumerable<AssetCompensationWriteDTO> dto)
@@ -40,6 +42,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 compensation.OwnerId = ownerId;
 
                 await _unitOfWork.AssetCompensationRepository.AddAsync(compensation);
+
+                await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
                 compensationList.Add(compensation);
             }

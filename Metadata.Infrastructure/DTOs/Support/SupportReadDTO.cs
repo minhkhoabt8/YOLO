@@ -23,6 +23,6 @@ namespace Metadata.Infrastructure.DTOs.Support
 
         public string SupportTypeId { get; set; }
 
-        public SupportType? SupportType { get; set; }
+        //public SupportType? SupportType { get; set; }
     }
 }

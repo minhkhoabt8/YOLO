@@ -16,11 +16,13 @@ namespace Metadata.Infrastructure.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAttachFileService _attachFileService;
 
-        public GCNLandInfoService(IUnitOfWork unitOfWork, IMapper mapper)
+        public GCNLandInfoService(IUnitOfWork unitOfWork, IMapper mapper, IAttachFileService attachFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _attachFileService = attachFileService;
         }
 
         public async Task<GCNLandInfoReadDTO> CreateGCNLandInfoAsync(GCNLandInfoWriteDTO dto)
@@ -30,6 +32,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
 
             await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
+
+            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
 
             await _unitOfWork.CommitAsync();
 
@@ -73,6 +77,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             _mapper.Map(dto, measuredLandInfo);
 
+            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<GCNLandInfoReadDTO>(measuredLandInfo);
@@ -95,6 +101,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 landInfo.OwnerId = ownerId;
 
                 await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
+
+                await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
                 landInfoList.Add(landInfo);
             }

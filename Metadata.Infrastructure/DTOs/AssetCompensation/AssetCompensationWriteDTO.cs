@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,6 +32,6 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         [MaxLength(50)]
         public string OwnerId { get; set; }
         [Required]
-        public IEnumerable<Core.Entities.AttachFile>? AttachFiles { get; set; }
+        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
     }
 }

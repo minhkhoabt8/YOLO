@@ -13,6 +13,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<MeasuredLandInfo>,
         IQueryAsync<MeasuredLandInfo, MeasuredLandInfoQuery>
     {
-
+        Task<IEnumerable<MeasuredLandInfo>> GetAllMeasuredLandInfosOfOwnerAsync(string ownerId);
     }
 }

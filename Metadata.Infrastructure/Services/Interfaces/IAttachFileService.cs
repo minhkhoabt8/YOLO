@@ -7,5 +7,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<AttachFileReadDTO>> CreateOwnerAttachFilesAsync(string ownerId, IEnumerable<AttachFileWriteDTO> dto);
         Task<AttachFileReadDTO> UpdateAttachFileAsync(string fileId, AttachFileWriteDTO dto);
         Task DeleteAttachFileAsync(string fileId);
+        Task UploadAttachFileAsync(IEnumerable<AttachFileWriteDTO> files);
     }
 }

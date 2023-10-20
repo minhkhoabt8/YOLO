@@ -91,5 +91,30 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<AttachFileReadDTO>(file);
         }
+
+        public async Task UploadAttachFileAsync(IEnumerable<AttachFileWriteDTO> files)
+        {
+            foreach (var item in files)
+            {
+                var file = _mapper.Map<AttachFile>(item);
+
+                file.Name = item.AttachFile.Name;
+                file.FileType = Path.GetExtension(item.AttachFile.Name);
+
+                var fileUpload = new UploadFileDTO
+                {
+                    File = item.AttachFile!,
+                    FileName = $"{file.Name}-{file.CreatedTime}-{Guid.NewGuid()}"
+                };
+                var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                file.ReferenceLink = returnUrl;
+
+                file.CreatedBy = _userContextService.Username! ??
+                    throw new CanNotAssignUserException();
+
+                await _unitOfWork.AttachFileRepository.AddAsync(file);
+            }
+        }
     }
 }

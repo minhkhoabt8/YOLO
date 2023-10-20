@@ -14,9 +14,14 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<IEnumerable<MeasuredLandInfo>> GetAllMeasuredLandInfosOfOwnerAsync(string ownerId)
+        {
+            return await _context.MeasuredLandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
+        }
+
         public async Task<IEnumerable<MeasuredLandInfo>> QueryAsync(MeasuredLandInfoQuery query, bool trackChanges = false)
         {
-            IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos;
+            IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos.Include(c => c.AttachFiles);
 
             if (!trackChanges)
             {

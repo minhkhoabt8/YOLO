@@ -14,9 +14,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<IEnumerable<GcnlandInfo>> GetAllGcnLandInfosOfOwnerAsync(string ownerId)
+        {
+            return await _context.GcnlandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
+        }
+
+
         public async Task<IEnumerable<GcnlandInfo>> QueryAsync(GCNLandInfoQuery query, bool trackChanges = false)
         {
-            IQueryable<GcnlandInfo> gcnLandInfos = _context.GcnlandInfos;
+            IQueryable<GcnlandInfo> gcnLandInfos = _context.GcnlandInfos.Include(c => c.AttachFiles);
 
             if (!trackChanges)
             {

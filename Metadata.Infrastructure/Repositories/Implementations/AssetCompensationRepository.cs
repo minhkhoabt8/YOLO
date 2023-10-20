@@ -19,7 +19,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<AssetCompensation?>> GetAllAssetCompensationsOfOwnerAsync(string ownerId)
         {
-            return await _context.AssetCompensations.Where(c => c.OwnerId == ownerId).ToListAsync();
+            return await _context.AssetCompensations.Include(c=>c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
     }
 }

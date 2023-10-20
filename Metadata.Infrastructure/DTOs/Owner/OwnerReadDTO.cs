@@ -1,6 +1,12 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetCompensation;
+using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.Deduction;
+using Metadata.Infrastructure.DTOs.GCNLandInfo;
+using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
+using Metadata.Infrastructure.DTOs.Support;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,10 +61,16 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string? OrganizationTypeId { get; set; }
 
-        public  OrganizationType? OrganizationType { get; set; }
+        //public  OrganizationType? OrganizationType { get; set; }
 
         //public PlanReadDTO? Plan { get; set; }
 
         //public ProjectReadDTO? Project { get; set; }
+        public IEnumerable<SupportReadDTO>? Supports { get; set; }
+        public IEnumerable<DeductionReadDTO>? Deductions { get; set; }
+        public IEnumerable<GCNLandInfoReadDTO>? GcnlandInfos { get; set; }
+        public IEnumerable<MeasuredLandInfoReadDTO>? MeasuredLandInfos { get; set; }
+        public IEnumerable<AssetCompensationReadDTO>? AssetCompensations { get; set; }
+        public IEnumerable<AttachFileReadDTO>? AttachFiles { get; set; }
     }
 }

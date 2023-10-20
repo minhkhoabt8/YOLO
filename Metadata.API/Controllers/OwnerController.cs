@@ -74,15 +74,15 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateOwnerAsync([FromForm] OwnerWriteDTO dto)
+        public async Task<IActionResult> CreateOwnerWithFullInfomationAsync([FromForm] OwnerWriteDTO dto)
         {
-            var owner = await _ownerService.CreateOwnerAsync(dto);
+            var owner = await _ownerService.CreateOwnerWithFullInfomationAsync(dto);
 
             return ResponseFactory.Created(owner);
         }
 
         /// <summary>
-        /// Assign Project Owner
+        /// Assign Project To Owner
         /// </summary>
         /// <param name="ownerId"></param>
         /// <param name="projectId"></param>

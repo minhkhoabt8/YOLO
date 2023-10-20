@@ -76,6 +76,10 @@ namespace Metadata.Infrastructure.Mappers
             //AssetCompensation
             CreateMap<AssetCompensation, AssetCompensationReadDTO>();
             CreateMap<AssetCompensationWriteDTO, AssetCompensation>();
+
+            //GcnLandInfo
+            CreateMap<GcnlandInfo, GCNLandInfoReadDTO>();
+            CreateMap<GCNLandInfoWriteDTO, GcnlandInfo>();
         }
     }
 }

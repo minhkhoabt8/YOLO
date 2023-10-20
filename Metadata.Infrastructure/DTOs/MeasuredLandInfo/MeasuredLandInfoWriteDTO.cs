@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Metadata.Infrastructure.DTOs.AttachFile;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 {
@@ -31,5 +32,7 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         [Required]
         [MaxLength(50)]
         public string UnitPriceLandId { get; set; }
+
+        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
     }
 }

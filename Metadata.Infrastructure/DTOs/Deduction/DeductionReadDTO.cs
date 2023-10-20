@@ -19,6 +19,6 @@ namespace Metadata.Infrastructure.DTOs.Deduction
 
         public string DeductionTypeId { get; set; }
 
-        public DeductionType? DeductionType { get; set; }
+        //public DeductionType? DeductionType { get; set; }
     }
 }
