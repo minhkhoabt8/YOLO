@@ -25,14 +25,7 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentTypeRepository DocumentTypeRepository { get; }
 
         public IAssetUnitRepository AssetUnitRepository { get; }
-
-        
-        
-
-        
-        public IPlanRepository PlanRepository { get; }
         public IMeasuredLandInfoRepository MeasuredLandInfoRepository { get; }
-        public IAuditTrailRepository AuditTrailRepository { get; }
         public IGCNLandInfoRepository GCNLandInfoRepository { get; }
         public ISupportRepository SupportRepository { get; }
         public IDeductionRepository DeductionRepository { get; }

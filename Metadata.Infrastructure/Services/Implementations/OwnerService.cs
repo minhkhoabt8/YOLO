@@ -98,7 +98,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             //2.3 Gcn Land Info
             if(!dto.GcnlandInfos.IsNullOrEmpty())
             {
-                ownerReadDto.GCNLandInfos =  await _gcNLandInfoService.CreateOwnerGcnLandInfosAsync(owner.OwnerId, dto.GcnlandInfos!);
+                ownerReadDto.GcnlandInfos =  await _gcNLandInfoService.CreateOwnerGcnLandInfosAsync(owner.OwnerId, dto.GcnlandInfos!);
             }
             //2.4 MeasuredLandInfos
             if(!dto.MeasuredLandInfos.IsNullOrEmpty())
