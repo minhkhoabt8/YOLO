@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.DeductionType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,6 @@ namespace Metadata.Infrastructure.DTOs.Deduction
 
         public string DeductionTypeId { get; set; }
 
-        //public DeductionType? DeductionType { get; set; }
+        public DeductionTypeReadDTO? DeductionType { get; set; }
     }
 }

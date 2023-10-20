@@ -796,7 +796,7 @@ namespace Metadata.API.Migrations
                     b.Property<string>("PlaneCode")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
-                        .HasColumnName("plane_code");
+                        .HasColumnName("plan_code");
 
                     b.Property<string>("ProjectId")
                         .HasMaxLength(50)

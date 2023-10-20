@@ -569,7 +569,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanStatus).HasColumnName("plan_status");
             entity.Property(e => e.PlanCode)
                 .HasMaxLength(10)
-                .HasColumnName("plane_code");
+                .HasColumnName("plan_code");
             entity.Property(e => e.ProjectId)
                 .HasMaxLength(50)
                 .HasColumnName("project_id");

@@ -70,11 +70,11 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateOwnerWithFullInfomationAsync([FromForm] OwnerWriteDTO dto)
+        public async Task<IActionResult> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
         {
             var owner = await _ownerService.CreateOwnerWithFullInfomationAsync(dto);
 

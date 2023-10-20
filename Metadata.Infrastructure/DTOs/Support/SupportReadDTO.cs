@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.SupportType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,6 @@ namespace Metadata.Infrastructure.DTOs.Support
 
         public string SupportTypeId { get; set; }
 
-        //public SupportType? SupportType { get; set; }
+        public SupportTypeReadDTO? SupportType { get; set; }
     }
 }

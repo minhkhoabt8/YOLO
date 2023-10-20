@@ -282,7 +282,7 @@ namespace Metadata.API.Migrations
                 {
                     planid = table.Column<string>(name: "plan_id", type: "nvarchar(50)", maxLength: 50, nullable: false),
                     projectid = table.Column<string>(name: "project_id", type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    planecode = table.Column<string>(name: "plane_code", type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    planecode = table.Column<string>(name: "plan_code", type: "nvarchar(10)", maxLength: 10, nullable: true),
                     planphrase = table.Column<string>(name: "plan_phrase", type: "nvarchar(10)", maxLength: 10, nullable: true),
                     plandescription = table.Column<string>(name: "plan_description", type: "ntext", nullable: true),
                     plancreatebase = table.Column<string>(name: "plan_create_base", type: "nvarchar(50)", maxLength: 50, nullable: true),

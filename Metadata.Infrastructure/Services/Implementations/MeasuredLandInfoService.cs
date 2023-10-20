@@ -64,6 +64,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _unitOfWork.MeasuredLandInfoRepository.AddAsync(landInfo);
 
+
+                foreach(var file in item.AttachFiles!)
+                {
+                    file.MeasuredLandInfoId = landInfo.MeasuredLandInfoId;
+                }
+
                 await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
                 landInfoList.Add(landInfo);

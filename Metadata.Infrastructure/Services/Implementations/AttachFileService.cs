@@ -49,6 +49,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                     File = item.AttachFile!,
                     FileName = $"{file.Name}-{file.CreatedTime}-{Guid.NewGuid()}"
                 };
+                
+                file.OwnerId = ownerId;
 
                 var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 

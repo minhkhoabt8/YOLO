@@ -102,6 +102,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
 
+                foreach (var file in item.AttachFiles!)
+                {
+                    file.GcnLandInfoId = landInfo.GcnLandInfoId;
+                }
+
                 await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
                 landInfoList.Add(landInfo);
