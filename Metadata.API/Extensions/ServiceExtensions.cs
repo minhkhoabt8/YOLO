@@ -113,9 +113,22 @@ public static class ServiceExtensions
 
     public static void AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IEntityAuditor, EntityAuditor>();
+        services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IUserContextService, UserContextService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IDocumentService, DocumentService>();
+        
+        services.AddScoped<ILandGroupService, LandGroupService>();
+        services.AddScoped<ILandTypeService, LandTypeService>();
+        services.AddScoped<ISupportTypeService, SupportTypeService>();
+        services.AddScoped<IAssetGroupService, AssetGroupService>();
+        services.AddScoped<IOrganizationService, OrganizationService>();
+        services.AddScoped<IDeductionTypeService, DeductionTypeService>();
+        services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+        services.AddScoped<IAssetUnitService, AssetUnitService>();
+
+        
         services.AddScoped<IOwnerService, OwnerService>();
         services.AddScoped<IUploadFileService, UploadFileService>();
         services.AddScoped<IPlanService, PlanService>();
@@ -134,6 +147,15 @@ public static class ServiceExtensions
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IDocumentRepository,DocumentRepository>();
         services.AddScoped<IProjectDocumentRepository, ProjectDocumentRepository>();
+        
+        services.AddScoped<ILandGroupRepository, LandGroupRepository>();
+        services.AddScoped<ILandTypeRepository, LandTypeRepository>();
+        services.AddScoped<ISupportTypeRepository, SupportTypeRepository>();
+        services.AddScoped<IAssetGroupRepository, AssetGroupRepository>();
+        services.AddScoped<IOrganizationTypeRepository, OrganizationTypeRepositoty>();
+        services.AddScoped<IDeductionTypeRepository, DeductionTypeRepository>();
+        services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+        services.AddScoped<IAssetUnitRepository, AssetUnitRepository>();
         services.AddScoped<IOwnerRepository, OwnerRepository>();
         services.AddScoped<IPlanRepository, PlanRepository>();
         services.AddScoped<IEntityAuditor, EntityAuditor>();

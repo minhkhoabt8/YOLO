@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Deduction;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
+using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.Support;
@@ -62,6 +63,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public string? OrganizationTypeId { get; set; }
 
         //public  OrganizationType? OrganizationType { get; set; }
+        public OrganizationTypeReadDTO? OrganizationType { get; set; }
 
         //public PlanReadDTO? Plan { get; set; }
 
