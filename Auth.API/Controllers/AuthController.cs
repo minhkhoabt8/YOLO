@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SharedLib.Core.Exceptions;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core.Tokenizer;
 
 namespace Auth.API.Controllers;
@@ -70,13 +71,15 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Login with OTP
     /// </summary>
+    /// <param name="userName"></param>
+    /// <param name="code"></param>
     /// <returns></returns>
     [HttpPost("otp-login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-    public async Task<IActionResult> LoginWithOtp(LoginInputDTO input, string? code)
+    public async Task<IActionResult> LoginWithOtp([Required] string userName, string? code)
     {
-        var result = await _authService.LoginWithOtpAsync(input, code);
+        var result = await _authService.LoginWithOtpAsync(userName, code);
 
         return ResponseFactory.Ok(result);
     }

@@ -98,10 +98,10 @@ namespace Auth.Infrastructure.Services.Implementations
             };
         }
 
-        public async Task<LoginOutputDTO> LoginWithOtpAsync(LoginInputDTO input, string? code)
+        public async Task<LoginOutputDTO> LoginWithOtpAsync(string userName, string? code)
         {
             
-            var account = await _unitOfWork.AccountRepository.LoginAsync(input);
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(userName);
 
             if (account == null || account.IsDelete == true)
             {
