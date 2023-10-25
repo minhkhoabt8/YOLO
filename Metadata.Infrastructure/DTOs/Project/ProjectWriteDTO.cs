@@ -1,5 +1,9 @@
-﻿using Metadata.Infrastructure.DTOs.Document;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.LandPositionInfo;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SharedLib.Core.Attributes;
 using System;
 using System.Collections.Generic;
@@ -58,9 +62,13 @@ namespace Metadata.Infrastructure.DTOs.Project
         [MaxLength(20)]
         public string AssetCompensationBasis { get; set; }
 
-        public string ProjectStatus { get; set; } = "Inprogress";
+        [EnumDataType(typeof(ProjectStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ProjectStatusEnum ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
 
+        public IEnumerable<LandPositionInfoInProjectWriteDTO>? LandPositionInfos { get; set; }
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
+        
     }
 
     public class DocumentInProjectWriteDTO
@@ -88,6 +96,16 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         [Required]
         public IFormFile FileAttach { get; set; }
+    }
+
+    public class LandPositionInfoInProjectWriteDTO
+    {
+        [Required]
+        public string LocationName { get; set; }
+
+        public string? Description { get; set; }
+        [Required]
+        public string LandInfoType { get; set; }
     }
 
 }

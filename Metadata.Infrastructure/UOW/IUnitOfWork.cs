@@ -31,6 +31,7 @@ namespace Metadata.Infrastructure.UOW
         public IDeductionRepository DeductionRepository { get; }
         public IAssetCompensationRepository AssetCompensationRepository { get; }
         public IAttachFileRepository AttachFileRepository { get; }
+        public ILandPositionInfoRepository LandPositionInfoRepository { get; }
 
         Task<int> CommitAsync();
     }

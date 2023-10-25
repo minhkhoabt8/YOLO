@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.LandPositionInfo
 {
-    public class LandPositionWriteDTO
+    public class LandPositionInfoWriteDTO
     {
         public string? LocationName { get; set; }
 

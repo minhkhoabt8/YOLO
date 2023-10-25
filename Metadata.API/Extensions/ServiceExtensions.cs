@@ -166,6 +166,7 @@ public static class ServiceExtensions
         services.AddScoped<IDeductionRepository, DeductionRepository>();
         services.AddScoped<IAssetCompensationRepository, AssetCompensationRepository>();
         services.AddScoped<IAttachFileRepository, AttachFileRepository>();
+        services.AddScoped<ILandPositionInfoRepository, LandPositionInfoRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

@@ -53,6 +53,8 @@ namespace Metadata.Infrastructure.UOW
         public IDocumentTypeRepository DocumentTypeRepository => GetSingletonRepository<IDocumentTypeRepository>();
 
         public IAssetUnitRepository AssetUnitRepository => GetSingletonRepository<IAssetUnitRepository>();
+        
+        public ILandPositionInfoRepository LandPositionInfoRepository => GetSingletonRepository<ILandPositionInfoRepository>(); 
         public Task<int> CommitAsync()
         {
             OnBeforeSaveChanges();

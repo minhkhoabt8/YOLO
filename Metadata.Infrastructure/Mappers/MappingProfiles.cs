@@ -122,6 +122,11 @@ namespace Metadata.Infrastructure.Mappers
             //GcnLandInfo
             CreateMap<GcnlandInfo, GCNLandInfoReadDTO>();
             CreateMap<GCNLandInfoWriteDTO, GcnlandInfo>();
+
+            //LandPOsitionINfo
+            CreateMap<LandPositionInfo, LandPositionInfoReadDTO>();
+            CreateMap<LandPositionInfoWriteDTO, LandPositionInfo>();
+            CreateMap<LandPositionInfoInProjectWriteDTO, LandPositionInfo>();
         }
     }
 }

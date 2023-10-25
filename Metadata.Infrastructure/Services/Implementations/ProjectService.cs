@@ -38,6 +38,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
+            await _unitOfWork.ProjectRepository.AddAsync(project);
+
+            if (!projectDto.LandPositionInfos.IsNullOrEmpty())
+            {
+                foreach(var item in projectDto.LandPositionInfos!)
+                {
+                    var landPosition = _mapper.Map<LandPositionInfo>(item);
+                    landPosition.ProjectId = project.ProjectId;
+                    await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
+                }
+            }
+
             if(!projectDto.Documents.IsNullOrEmpty())
             {
                 var documents = await _documentService.CreateDocumentsAsync(projectDto.Documents!);
@@ -48,7 +60,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 
             }
-            await _unitOfWork.ProjectRepository.AddAsync(project);
 
             await _unitOfWork.CommitAsync();
 

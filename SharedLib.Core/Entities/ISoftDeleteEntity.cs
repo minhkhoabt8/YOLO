@@ -7,5 +7,5 @@ public interface ISoftDeleteEntity
 
 public abstract class SoftDeleteEntity : ISoftDeleteEntity
 {
-    public virtual bool IsActive { get; set; } = true;
+    public virtual bool IsActive { get; set; } = false;
 }
