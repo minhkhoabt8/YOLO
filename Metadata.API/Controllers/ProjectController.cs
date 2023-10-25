@@ -72,7 +72,7 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateProjectAsync([FromForm] ProjectWriteDTO projectDto)
+        public async Task<IActionResult> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
             var project = await _projectService.CreateProjectAsync(projectDto);
 

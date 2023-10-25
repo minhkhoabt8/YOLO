@@ -56,6 +56,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Refresh token
     /// </summary>
+    /// <param name="token"></param>
     /// <returns></returns>
     [HttpPost("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LoginOutputDTO>))]

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Auth.API.Extensions;
 
@@ -160,6 +161,6 @@ public static class ServiceExtensions
 
     public static void ConfigureApiOptions(this IServiceCollection services)
     {
-        
+        services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
     }
 }
