@@ -15,7 +15,7 @@ public class BaseYOLOService
     {
         httpClient.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenService.GenerateToken());
-        httpClient.BaseAddress = new Uri(configuration["BaseAddresses:DMSGateway"]);
+        httpClient.BaseAddress = new Uri(configuration["BaseAddresses:YOLOGateway"]);
         _httpClient = httpClient;
     }
 
