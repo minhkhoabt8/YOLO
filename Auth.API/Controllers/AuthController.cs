@@ -63,7 +63,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     public async Task<IActionResult> Refresh(string? token)
     {
-        string tokenHeader = HttpContext.Request.Headers["Authorization"].ToString() ?? token;
+        string tokenHeader = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ","") ?? token;
 
         var result = await _authService.LoginWithRefreshTokenAsync(tokenHeader);
 
