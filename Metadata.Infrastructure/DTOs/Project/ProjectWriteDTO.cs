@@ -58,7 +58,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         [MaxLength(20)]
         public string AssetCompensationBasis { get; set; }
 
-        public bool ProjectStatus { get; set; } = true;
+        public string ProjectStatus { get; set; } = "Inprogress";
 
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
     }

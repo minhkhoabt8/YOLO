@@ -16,7 +16,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)
         {
-            IQueryable<Project> projects = _context.Projects;
+            IQueryable<Project> projects = _context.Projects.Include(p => p.LandPositionInfos);
 
             if (!trackChanges)
             {

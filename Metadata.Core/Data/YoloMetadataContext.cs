@@ -388,6 +388,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ProjectId)
                 .HasMaxLength(50)
                 .HasColumnName("project_id");
+            entity.Property(e => e.LandInfoType)
+               .HasMaxLength(50)
+               .HasColumnName("land_info_type");
 
             entity.HasOne(d => d.Project).WithMany(p => p.LandPositionInfos)
                 .HasForeignKey(d => d.ProjectId)
@@ -721,7 +724,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ProjectNote)
                 .HasMaxLength(50)
                 .HasColumnName("project_note");
-            entity.Property(e => e.ProjectStatus).HasColumnName("project_status");
+            entity.Property(e => e.ProjectStatus)
+            .HasMaxLength(20)
+            .HasColumnName("project_status");
             entity.Property(e => e.Province)
                 .HasMaxLength(20)
                 .HasColumnName("province");

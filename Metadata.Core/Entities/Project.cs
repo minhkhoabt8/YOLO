@@ -54,7 +54,7 @@ public partial class Project : ITextSearchableEntity
 
     public string? ProjectCreatedBy { get; set; }
 
-    public bool? ProjectStatus { get; set; }
+    public string? ProjectStatus { get; set; }
 
     public bool? IsDeleted { get; set; } = false;
 

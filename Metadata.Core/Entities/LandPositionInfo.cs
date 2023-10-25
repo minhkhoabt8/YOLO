@@ -13,5 +13,7 @@ public partial class LandPositionInfo
 
     public string? ProjectId { get; set; }
 
+    public string? LandInfoType { get; set; }
+
     public virtual Project? Project { get; set; }
 }

@@ -60,7 +60,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string ProjectCreatedBy { get; set; }
 
-        public bool ProjectStatus { get; set; }
+        public string ProjectStatus { get; set; }
 
         public ICollection<LandPositionInfoReadDTO> LandPositionInfos { get; set; }
 
