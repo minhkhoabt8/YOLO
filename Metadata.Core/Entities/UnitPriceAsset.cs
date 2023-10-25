@@ -21,6 +21,8 @@ public partial class UnitPriceAsset
 
     public string? AssetGroupId { get; set; }
 
+    public bool IsDeleted {  get; set; } = false;
+
     public virtual ICollection<AssetCompensation> AssetCompensations { get; } = new List<AssetCompensation>();
 
     public virtual AssetGroup? AssetGroup { get; set; }

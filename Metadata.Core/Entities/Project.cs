@@ -1,6 +1,7 @@
 ﻿using SharedLib.Core.Entities;
 using SharedLib.Core.Extensions;
 using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -66,6 +67,8 @@ public partial class Project : ITextSearchableEntity
     public virtual PriceAppliedCode? PriceAppliedCode { get; set; }
 
     public virtual ICollection<ProjectDocument> ProjectDocuments { get; } = new List<ProjectDocument>();
+
+    public virtual ICollection<ResettlementProject> ResettlementProjects { get; } = new List<ResettlementProject>();
 
     public virtual ICollection<UnitPriceLand> UnitPriceLands { get; } = new List<UnitPriceLand>();
 

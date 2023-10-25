@@ -61,6 +61,8 @@ public partial class Owner : ITextSearchableEntity
 
     public virtual ICollection<GcnlandInfo> GcnlandInfos { get; } = new List<GcnlandInfo>();
 
+    public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();
+
     public virtual OrganizationType? OrganizationType { get; set; }
 
     public virtual Plan? Plan { get; set; }
