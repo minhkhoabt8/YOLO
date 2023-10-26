@@ -148,5 +148,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 };
             }
         }
+
+        public Task<ExportFileDTO> ExportBTHTPlansPdfAsync(string planId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

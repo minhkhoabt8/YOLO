@@ -639,10 +639,36 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanReportSignal)
                 .HasColumnType("ntext")
                 .HasColumnName("plan_report_signal");
-            entity.Property(e => e.PlanStatus).HasColumnName("plan_status");
+            entity.Property(e => e.PlanStatus)
+            .HasMaxLength(20)
+            .HasColumnName("plan_status");
             entity.Property(e => e.ProjectId)
                 .HasMaxLength(50)
                 .HasColumnName("project_id");
+            entity.Property(e => e.TotalOwnerSupportCompensation)
+                .HasColumnType("int")
+                .HasColumnName("total_owner_support_compensation");
+            entity.Property(e => e.TotalPriceCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_compensation");
+            entity.Property(e => e.TotalPriceLandSupportCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_land_support_compensation");
+            entity.Property(e => e.TotalPriceHouseSupportCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_house_support_compensation");
+            entity.Property(e => e.TotalPriceArchitectureSupportCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_architecture_support_compensation");
+            entity.Property(e => e.TotalPricePlantSupportCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_plant_support_compensation");
+            entity.Property(e => e.TotalPriceOtherSupportCompensation)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_price_other_support_compensation");
+            entity.Property(e => e.TotalDeduction)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_deduction");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Plans)

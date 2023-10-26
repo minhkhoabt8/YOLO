@@ -1,4 +1,7 @@
-﻿using SharedLib.Core.Attributes;
+﻿using Metadata.Core.Enums;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SharedLib.Core.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Infrastructure.DTOs.Plan
@@ -32,6 +35,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
         [InputType(typeof(DateTime))]
         public DateTime? PlanEndedTime { get; set; }
 
-        public bool? PlanStatus { get; set; } = true;
+        [EnumDataType(typeof(PlanStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PlanStatusEnum? PlanStatus { get; set; } = PlanStatusEnum.DRAFT;
     }
 }

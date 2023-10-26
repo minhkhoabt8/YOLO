@@ -35,8 +35,27 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string? PlanCreatedBy { get; set; }
 
-        public bool? PlanStatus { get; set; }
+        public string? PlanStatus { get; set; }
 
+        //Tong Chu So Huu Ho Tro Boi Thuong
+        public int? TotalOwnerSupportCompensation { get; set; }
+
+        //Tong Kinh Phi Boi Thuong
+        public decimal? TotalPriceCompensation { get; set; }
+
+        //Tong King Phi Boi Thuong Dat
+        public decimal? TotalPriceLandSupportCompensation { get; set; }
+
+        public decimal? TotalPriceHouseSupportCompensation { get; set; }
+
+        public decimal? TotalPriceArchitectureSupportCompensation { get; set; }
+
+        public decimal? TotalPricePlantSupportCompensation { get; set; }
+
+        public decimal? TotalPriceOtherSupportCompensation { get; set; }
+
+        //Tong Khau Tru
+        public decimal? TotalDeduction { get; set; }
         public bool? IsDeleted { get; set; }
 
         public  ICollection<Core.Entities.AttachFile> AttachFiles { get; set; }
