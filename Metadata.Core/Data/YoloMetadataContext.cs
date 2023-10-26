@@ -491,8 +491,20 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("unit_price_land_id");
             entity.Property(e => e.WidthdrawArea)
-                .HasMaxLength(20)
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("widthdraw_area");
+
+            entity.Property(e => e.CompensationPrice)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("compensation_price");
+
+            entity.Property(e => e.CompensationRate)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("compensation_rate");
+            
+            entity.Property(e => e.CompensationNote)
+                .HasMaxLength(50)
+                .HasColumnName("compensation_note");
 
             entity.HasOne(d => d.GcnLandInfo).WithMany(p => p.MeasuredLandInfos)
                 .HasForeignKey(d => d.GcnLandInfoId)
@@ -589,7 +601,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TaxPublishedDate)
                 .HasColumnType("date")
                 .HasColumnName("tax_published_date");
-
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.HasOne(d => d.OrganizationType).WithMany(p => p.Owners)
                 .HasForeignKey(d => d.OrganizationTypeId)
                 .HasConstraintName("FK_Owners_OrganizationTypes");

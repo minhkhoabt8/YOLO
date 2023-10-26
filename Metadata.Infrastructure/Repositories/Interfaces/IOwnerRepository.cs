@@ -17,5 +17,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<Owner, OwnerQuery>
     {
         Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId);
+        Task<IEnumerable<Owner>> GetOwnersOfPlanAsync(string planId);
     }
 }

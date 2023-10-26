@@ -17,7 +17,13 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 
         public string MeasuredPlotArea { get; set; }
 
-        public string WidthdrawArea { get; set; }
+        public decimal? WidthdrawArea { get; set; } 
+
+        public decimal? CompensationPrice { get; set; }
+
+        public decimal? CompensationRate { get; set; } 
+
+        public string? CompensationNote { get; set; }
 
         public string GcnLandInfoId { get; set; }
 

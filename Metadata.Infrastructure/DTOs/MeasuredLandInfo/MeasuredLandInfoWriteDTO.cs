@@ -21,8 +21,17 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         [MaxLength(20)]
         public string MeasuredPlotArea { get; set; }
         [Required]
-        [MaxLength(20)]
-        public string WidthdrawArea { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal WidthdrawArea { get; set; } = 0;
+        [Required]
+        [Range(0, double.MaxValue)]
+        public decimal CompensationPrice { get; set; } = 0;
+        [Required]
+        [Range(0, double.MaxValue)]
+        public decimal CompensationRate { get; set; } = 0;
+        [Required]
+        [MaxLength(50)]
+        public string CompensationNote { get; set; }
         [Required]
         [MaxLength(50)]
         public string GcnLandInfoId { get; set; }

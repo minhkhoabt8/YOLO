@@ -33,26 +33,26 @@ public partial class Plan : ITextSearchableEntity
     public string? PlanStatus { get; set; }
 
     //Tong Chu So Huu Ho Tro Boi Thuong
-    public int? TotalOwnerSupportCompensation {  get; set; }
+    public int? TotalOwnerSupportCompensation {  get; set; } = 0;
 
     //Tong Kinh Phi Boi Thuong
-    public decimal? TotalPriceCompensation { get; set; }
+    public decimal? TotalPriceCompensation { get; set; } = 0;
 
     //Tong King Phi Boi Thuong Dat
-    public decimal? TotalPriceLandSupportCompensation { get; set; }
+    public decimal? TotalPriceLandSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceHouseSupportCompensation { get; set; }
+    public decimal? TotalPriceHouseSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceArchitectureSupportCompensation { get; set; }
+    public decimal? TotalPriceArchitectureSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPricePlantSupportCompensation { get; set; }
+    public decimal? TotalPricePlantSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceOtherSupportCompensation { get; set; }
+    public decimal? TotalPriceOtherSupportCompensation { get; set; } = 0;
 
     //Tong Khau Tru
-    public decimal? TotalDeduction { get; set; }
+    public decimal? TotalDeduction { get; set; } = 0;
 
-    public bool? IsDeleted { get; set; }
+    public bool? IsDeleted { get; set; } = false;
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 

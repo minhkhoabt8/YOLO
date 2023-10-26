@@ -53,6 +53,8 @@ public partial class Owner : ITextSearchableEntity
 
     public string? OrganizationTypeId { get; set; }
 
+    public bool? IsDeleted { get; set; } = false;
+
     public virtual ICollection<AssetCompensation> AssetCompensations { get; } = new List<AssetCompensation>();
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();

@@ -1,4 +1,5 @@
-﻿using Metadata.Core.Data;
+﻿using DocumentFormat.OpenXml.InkML;
+using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.Repositories.Interfaces;
@@ -19,6 +20,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.MeasuredLandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
 
+        public async Task<decimal?> CaculateTotalUnitPriceLandOfOwnerAsync(string ownerId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<IEnumerable<MeasuredLandInfo>> QueryAsync(MeasuredLandInfoQuery query, bool trackChanges = false)
         {
             IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos.Include(c => c.AttachFiles);

@@ -18,7 +18,13 @@ public partial class MeasuredLandInfo : ITextSearchableEntity
 
     public string? MeasuredPlotArea { get; set; }
 
-    public string? WidthdrawArea { get; set; }
+    public decimal? WidthdrawArea { get; set; } = 0;
+
+    public decimal? CompensationPrice { get; set; } = 0;
+
+    public decimal? CompensationRate { get; set; } = 0;
+
+    public string? CompensationNote { get; set; }
 
     public string? GcnLandInfoId { get; set; }
 

@@ -153,5 +153,20 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Use this method to check and reassign prices value of plan when price settings or owners of plan were changed
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task ReCheckPricesOfPlanAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+            if(plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+            //1.Caculate all owner of a plan with status isDelete = false, => Sum total_owner_support_compensation
+            var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
+            plan.TotalOwnerSupportCompensation = owners.Count();
+            //2.For each owner, re-caculating related prices and reassign it to plan
+        }
     }
 }
