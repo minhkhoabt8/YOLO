@@ -5,7 +5,7 @@ namespace Auth.Core.Exceptions
 {
     public class AccountNotVerifyException : HandledException
     {
-        public AccountNotVerifyException() : base(401, "Account Is Not Verify")
+        public AccountNotVerifyException() : base(403, "Account Is Not Verify")
         {
         }
     }
