@@ -3,11 +3,13 @@ using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core.Tokenizer;
+using System;
 
 namespace Auth.API.Controllers;
 
@@ -63,7 +65,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
     public async Task<IActionResult> Refresh(string? token)
     {
-        string tokenHeader = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ","") ?? token;
+        string tokenHeader = !string.IsNullOrEmpty(HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "")) ? HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "") : token;
 
         var result = await _authService.LoginWithRefreshTokenAsync(tokenHeader);
 
