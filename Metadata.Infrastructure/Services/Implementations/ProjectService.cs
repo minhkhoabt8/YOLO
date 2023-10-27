@@ -31,23 +31,24 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
-
-
             var project = _mapper.Map<Project>(projectDto);
 
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
-            await _unitOfWork.ProjectRepository.AddAsync(project);
-
+            if(!project.SignerId.IsNullOrEmpty())
+            {
+                var owner = await _unitOfWork.OwnerRepository.FindAsync(project.SignerId!) ?? throw new EntityWithIDNotFoundException<Owner>(project.SignerId);
+            }
+            
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())
             {
                 foreach(var item in projectDto.LandPositionInfos!)
                 {
                     var landPosition = _mapper.Map<LandPositionInfo>(item);
                     landPosition.ProjectId = project.ProjectId;
-                    await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
                 }
+                
             }
 
             if(!projectDto.Documents.IsNullOrEmpty())
@@ -60,6 +61,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 
             }
+
+            await _unitOfWork.ProjectRepository.AddAsync(project);
 
             await _unitOfWork.CommitAsync();
 

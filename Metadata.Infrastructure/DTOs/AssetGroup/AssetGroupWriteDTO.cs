@@ -12,6 +12,5 @@ namespace Metadata.Infrastructure.DTOs.AssetGroup
 
         public string Name { get; set; }
 
-        
     }
 }

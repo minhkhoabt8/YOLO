@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharedLib.Core.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace Metadata.Core.Entities;
@@ -7,15 +8,15 @@ public partial class AttachFile
 {
     public string AttachFileId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? FileType { get; set; }
+    public string FileType { get; set; } = null!;
 
-    public string? ReferenceLink { get; set; }
+    public string ReferenceLink { get; set; } = null!;
 
-    public DateTime? CreatedTime { get; set; }
+    public DateTime CreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
-    public string? CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = null!;
 
     public string? PlanId { get; set; }
 

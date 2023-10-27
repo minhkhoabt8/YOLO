@@ -62,7 +62,7 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreatePlanAsync([FromForm] PlanWriteDTO dto)
+        public async Task<IActionResult> CreatePlanAsync(PlanWriteDTO dto)
         {
             var plan = await _planService.CreatePlanAsync(dto);
 

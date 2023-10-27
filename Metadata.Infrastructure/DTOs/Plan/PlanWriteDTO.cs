@@ -1,4 +1,7 @@
 ﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.Owner;
+using Metadata.Infrastructure.DTOs.Project;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SharedLib.Core.Attributes;
@@ -12,7 +15,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         [MaxLength(50)]
         public string ProjectId { get; set; } = null!;
         [MaxLength(10)]
-        public string? PlaneCode { get; set; } = null ?? "Generated";
+        public string? PlanCode { get; set; } = null ?? "Generated";
         [MaxLength(10)]
         public string? PlanPhrase { get; set; }
 
@@ -38,5 +41,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         [EnumDataType(typeof(PlanStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public PlanStatusEnum? PlanStatus { get; set; } = PlanStatusEnum.DRAFT;
+        //public IEnumerable<OwnerWriteDTO>? Owners { get; set; }
+        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
     }
 }

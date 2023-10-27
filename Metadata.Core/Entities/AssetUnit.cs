@@ -11,6 +11,7 @@ public partial class AssetUnit
 
     public string Name { get; set; } = null!;
 
-    public bool? IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<UnitPriceAsset> UnitPriceAssets { get; } = new List<UnitPriceAsset>();
 }

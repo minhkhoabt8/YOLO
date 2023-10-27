@@ -13,8 +13,8 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
     {
         public string CompensationContent { get; set; }
         [Required]
-        [MaxLength(20)]
-        public string CompensationRate { get; set; }
+        [Range(0, int.MaxValue)]
+        public int CompensationRate { get; set; }
         [Required]
         public int QuantityArea { get; set; }
         [Required]

@@ -23,8 +23,8 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
         [MaxLength(50)]
         public string LandTypeId { get; set; }
         [Required]
-        [MaxLength(20)]
-        public string GcnPlotArea { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal GcnPlotArea { get; set; }
         [Required]
         public string GcnOwnerCertificate { get; set; }
         [Required]

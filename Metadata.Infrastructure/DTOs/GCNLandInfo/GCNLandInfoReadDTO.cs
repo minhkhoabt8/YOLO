@@ -18,7 +18,7 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
 
         public string LandTypeId { get; set; }
 
-        public string GcnPlotArea { get; set; }
+        public decimal GcnPlotArea { get; set; }
 
         public string GcnOwnerCertificate { get; set; }
 

@@ -2,18 +2,16 @@
 using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class Owner : ITextSearchableEntity
 {
-    [Key]
     public string OwnerId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? OwnerCode { get; set; }
+    public string OwnerCode { get; set; } = null!;
 
-    public string? OwnerName { get; set; }
+    public string OwnerName { get; set; } = null!;
 
     public string? OwnerIdCode { get; set; }
 
@@ -31,9 +29,9 @@ public partial class Owner : ITextSearchableEntity
 
     public string? OwnerType { get; set; }
 
-    public DateTime? OwnerCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
+    public DateTime OwnerCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
-    public string? OwnerCreatedBy { get; set; }
+    public string OwnerCreatedBy { get; set; } = null!;
 
     public string? ProjectId { get; set; }
 
@@ -51,9 +49,9 @@ public partial class Owner : ITextSearchableEntity
 
     public DateTime? TaxPublishedDate { get; set; }
 
-    public string? OrganizationTypeId { get; set; }
+    public string OrganizationTypeId { get; set; } = null!;
 
-    public bool? IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<AssetCompensation> AssetCompensations { get; } = new List<AssetCompensation>();
 
@@ -65,7 +63,7 @@ public partial class Owner : ITextSearchableEntity
 
     public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();
 
-    public virtual OrganizationType? OrganizationType { get; set; }
+    public virtual OrganizationType OrganizationType { get; set; } = null!;
 
     public virtual Plan? Plan { get; set; }
 

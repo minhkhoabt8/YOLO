@@ -1,6 +1,7 @@
 ﻿using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
+using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string? ProjectId { get; set; }
 
-        public string? PlaneCode { get; set; }
+        public string? PlanCode { get; set; }
 
         public string? PlanPhrase { get; set; }
 
@@ -61,5 +62,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public  ICollection<Core.Entities.AttachFile> AttachFiles { get; set; }
 
         public  ICollection<OwnerReadDTO> Owners { get; set; }
+
+        
     }
 }

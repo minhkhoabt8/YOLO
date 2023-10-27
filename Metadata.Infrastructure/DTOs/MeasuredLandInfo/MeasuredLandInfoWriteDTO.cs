@@ -5,42 +5,27 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 {
     public class MeasuredLandInfoWriteDTO
     {
-        [Required]
-        [MaxLength(10)]
-        public string MeasuredPageNumber { get; set; }
-        [Required]
-        [MaxLength(10)]
-        public string MeasuredPlotNumber { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string MeasuredPlotAddress { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string LandTypeId { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string MeasuredPlotArea { get; set; }
-        [Required]
+        public string? MeasuredPageNumber { get; set; }
+
+        public string? MeasuredPlotNumber { get; set; }
+
+        public string? MeasuredPlotAddress { get; set; }
+
+        public string LandTypeId { get; set; } = null!;
         [Range(0, double.MaxValue)]
-        public decimal WidthdrawArea { get; set; } = 0;
-        [Required]
+        public decimal? MeasuredPlotArea { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal CompensationPrice { get; set; } = 0;
-        [Required]
+        public decimal? WithdrawArea { get; set; }
         [Range(0, double.MaxValue)]
-        public decimal CompensationRate { get; set; } = 0;
-        [Required]
-        [MaxLength(50)]
-        public string CompensationNote { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string GcnLandInfoId { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string OwnerId { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string UnitPriceLandId { get; set; }
+        public decimal? CompensationPrice { get; set; }
+        [Range(0, double.MaxValue)]
+        public decimal? CompensationRate { get; set; }
+        public string? CompensationNote { get; set; }
+        public string GcnLandInfoId { get; set; } = null!;
+
+        public string OwnerId { get; set; } = null!;
+
+        public string UnitPriceLandId { get; set; } = null!;
 
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
     }

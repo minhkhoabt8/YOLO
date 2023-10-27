@@ -1,16 +1,17 @@
 ﻿using SharedLib.Core.Entities;
-using System.ComponentModel.DataAnnotations;
+using SharedLib.Core.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace Metadata.Core.Entities;
 
 public partial class Plan : ITextSearchableEntity
 {
-    [Key]
     public string PlanId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? ProjectId { get; set; }
+    public string ProjectId { get; set; } = null!;
 
-    public string? PlanCode { get; set; }
+    public string PlanCode { get; set; } = null!;
 
     public string? PlanPhrase { get; set; }
 
@@ -18,27 +19,24 @@ public partial class Plan : ITextSearchableEntity
 
     public string? PlanCreateBase { get; set; }
 
-    public string? PlanApprovedBy { get; set; }
+    public string PlanApprovedBy { get; set; } = null!;
 
     public string? PlanReportSignal { get; set; }
 
     public DateTime? PlanReportDate { get; set; }
 
-    public DateTime? PlanCreatedTime { get; set; }
+    public DateTime PlanCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
-    public DateTime? PlanEndedTime { get; set; }
+    public DateTime PlanEndedTime { get; set; }
 
-    public string? PlanCreatedBy { get; set; }
+    public string PlanCreatedBy { get; set; } = null!;
 
-    public string? PlanStatus { get; set; }
+    public string PlanStatus { get; set; } = null!;
 
-    //Tong Chu So Huu Ho Tro Boi Thuong
-    public int? TotalOwnerSupportCompensation {  get; set; } = 0;
+    public int? TotalOwnerSupportCompensation { get; set; } = 0;
 
-    //Tong Kinh Phi Boi Thuong
     public decimal? TotalPriceCompensation { get; set; } = 0;
 
-    //Tong King Phi Boi Thuong Dat
     public decimal? TotalPriceLandSupportCompensation { get; set; } = 0;
 
     public decimal? TotalPriceHouseSupportCompensation { get; set; } = 0;
@@ -49,16 +47,15 @@ public partial class Plan : ITextSearchableEntity
 
     public decimal? TotalPriceOtherSupportCompensation { get; set; } = 0;
 
-    //Tong Khau Tru
     public decimal? TotalDeduction { get; set; } = 0;
 
-    public bool? IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 
     public virtual ICollection<Owner> Owners { get; } = new List<Owner>();
 
-    public virtual Project? Project { get; set; }
+    public virtual Project Project { get; set; } = null!;
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {

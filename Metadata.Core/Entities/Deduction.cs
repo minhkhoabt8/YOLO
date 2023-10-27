@@ -7,9 +7,9 @@ public partial class Deduction
 {
     public string DeductionId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? DeductionContent { get; set; }
+    public string DeductionContent { get; set; } = null!;
 
-    public decimal? DeductionPrice { get; set; }
+    public decimal DeductionPrice { get; set; }
 
     public string? OwnerId { get; set; }
 

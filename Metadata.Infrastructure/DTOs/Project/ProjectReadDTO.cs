@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string RegulatedUnitPrice { get; set; }
 
-        public string ProjectBriefNumber { get; set; }
+        public int ProjectBriefNumber { get; set; }
 
         public string ProjectNote { get; set; }
 
@@ -56,6 +56,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string AssetCompensationBasis { get; set; }
 
+        public string SignerId { get; set; }
         public DateTime ProjectCreatedTime { get; set; }
 
         public string ProjectCreatedBy { get; set; }

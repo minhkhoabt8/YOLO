@@ -8,29 +8,29 @@ public partial class GcnlandInfo : ITextSearchableEntity
 {
     public string GcnLandInfoId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? GcnPageNumber { get; set; }
+    public string GcnPageNumber { get; set; } = null!;
 
-    public string? GcnPlotNumber { get; set; }
+    public string GcnPlotNumber { get; set; } = null!;
 
-    public string? GcnPlotAddress { get; set; }
+    public string GcnPlotAddress { get; set; } = null!;
 
-    public string? LandTypeId { get; set; }
+    public string LandTypeId { get; set; } = null!;
 
-    public string? GcnPlotArea { get; set; }
+    public decimal? GcnPlotArea { get; set; }
 
     public string? GcnOwnerCertificate { get; set; }
 
-    public string? OwnerId { get; set; }
+    public string OwnerId { get; set; } = null!;
 
     public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 
-    public virtual LandType? LandType { get; set; }
+    public virtual LandType LandType { get; set; } = null!;
 
     public virtual ICollection<MeasuredLandInfo> MeasuredLandInfos { get; } = new List<MeasuredLandInfo>();
 
-    public virtual Owner? Owner { get; set; }
+    public virtual Owner Owner { get; set; } = null!;
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {

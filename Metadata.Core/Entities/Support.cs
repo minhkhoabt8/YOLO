@@ -7,19 +7,19 @@ public partial class Support
 {
     public string SupportId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? SupportContent { get; set; }
+    public string SupportContent { get; set; } = null!;
 
     public string? SupportUnit { get; set; }
 
-    public string? SupportNumber { get; set; }
+    public int SupportNumber { get; set; }
 
-    public decimal? SupportPrice { get; set; }
+    public decimal SupportPrice { get; set; }
 
-    public string? OwnerId { get; set; }
+    public string OwnerId { get; set; } = null!;
 
-    public string? SupportTypeId { get; set; }
+    public string SupportTypeId { get; set; } = null!;
 
-    public virtual Owner? Owner { get; set; }
+    public virtual Owner Owner { get; set; } = null!;
 
-    public virtual SupportType? SupportType { get; set; }
+    public virtual SupportType SupportType { get; set; } = null!;
 }

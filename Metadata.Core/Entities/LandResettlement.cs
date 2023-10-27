@@ -5,7 +5,7 @@ namespace Metadata.Core.Entities;
 
 public partial class LandResettlement
 {
-    public string LandResettlementId { get; set; } = null!;
+    public string LandResettlementId { get; set; } = Guid.NewGuid().ToString();
 
     public string? Position { get; set; }
 
@@ -19,11 +19,11 @@ public partial class LandResettlement
 
     public decimal? TotalLandPrice { get; set; }
 
-    public string? ResettlementProjectId { get; set; }
+    public string ResettlementProjectId { get; set; } = null!;
 
-    public string? OwnerId { get; set; }
+    public string OwnerId { get; set; } = null!;
 
-    public virtual Owner? Owner { get; set; }
+    public virtual Owner Owner { get; set; } = null!;
 
-    public virtual ResettlementProject? ResettlementProject { get; set; }
+    public virtual ResettlementProject ResettlementProject { get; set; } = null!;
 }

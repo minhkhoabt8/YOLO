@@ -43,8 +43,8 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string ImplementationYear { get; set; }
         [MaxLength(20)]
         public string RegulatedUnitPrice { get; set; }
-        [MaxLength(10)]
-        public string ProjectBriefNumber { get; set; }
+        [Range(0, int.MaxValue)]
+        public int ProjectBriefNumber { get; set; }
         [MaxLength(50)]
         public string ProjectNote { get; set; }
         [MaxLength(50)]
@@ -53,12 +53,15 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string CheckCode { get; set; }
 
         public string ReportSignal { get; set; }
-        [MaxLength(20)]
-        public string ReportNumber { get; set; }
+        [Range(0, int.MaxValue)]
+        public int ReportNumber { get; set; }
         [MaxLength(20)]
         public string PriceBasis { get; set; }
         [MaxLength(20)]
         public string LandCompensationBasis { get; set; }
+        [MaxLength(50)]
+        [InputType(typeof(Guid))]
+        public string? SignerId { get; set; } = "";
         [MaxLength(20)]
         public string AssetCompensationBasis { get; set; }
 

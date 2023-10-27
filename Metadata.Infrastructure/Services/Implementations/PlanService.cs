@@ -6,6 +6,7 @@ using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -18,12 +19,14 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
+        private readonly IAttachFileService _attachFileService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
+            _attachFileService = attachFileService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -48,6 +51,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new CanNotAssignUserException();
 
             await _unitOfWork.PlanRepository.AddAsync(plan);
+
+            if (!dto.AttachFiles.IsNullOrEmpty())
+            {
+                foreach (var item in dto.AttachFiles!)
+                {
+                    item.PlanId = plan.PlanId;
+                }
+
+                await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            }
 
             await _unitOfWork.CommitAsync();
 

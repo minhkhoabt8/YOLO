@@ -5,6 +5,7 @@ using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 
@@ -33,7 +34,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
 
-            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            if (!dto.AttachFiles.IsNullOrEmpty())
+            {
+                foreach(var item in dto.AttachFiles!)
+                {
+                    item.GcnLandInfoId = gcnLandInfo.GcnLandInfoId;
+                }
+                await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            }
 
             await _unitOfWork.CommitAsync();
 
@@ -77,7 +85,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             _mapper.Map(dto, measuredLandInfo);
 
-            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            if (!dto.AttachFiles.IsNullOrEmpty())
+            {
+                foreach(var item in dto.AttachFiles!)
+                {
+                    item.GcnLandInfoId = id;
+                }
+
+                await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            }
 
             await _unitOfWork.CommitAsync();
 

@@ -1,20 +1,17 @@
 ﻿using SharedLib.Core.Entities;
 using SharedLib.Core.Extensions;
 using System;
-﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class Project : ITextSearchableEntity
 {
-    [Key]
     public string ProjectId { get; set; } = Guid.NewGuid().ToString();
 
-    public string ProjectCode { get; set; }
+    public string ProjectCode { get; set; } = null!;
 
-    public string ProjectName { get; set; } 
+    public string ProjectName { get; set; } = null!;
 
     public string? ProjectLocation { get; set; }
 
@@ -32,7 +29,7 @@ public partial class Project : ITextSearchableEntity
 
     public string? RegulatedUnitPrice { get; set; }
 
-    public string? ProjectBriefNumber { get; set; }
+    public int? ProjectBriefNumber { get; set; }
 
     public string? ProjectNote { get; set; }
 
@@ -42,7 +39,7 @@ public partial class Project : ITextSearchableEntity
 
     public string? ReportSignal { get; set; }
 
-    public string? ReportNumber { get; set; }
+    public int? ReportNumber { get; set; }
 
     public string? PriceBasis { get; set; }
 
@@ -50,13 +47,15 @@ public partial class Project : ITextSearchableEntity
 
     public string? AssetCompensationBasis { get; set; }
 
-    public DateTime? ProjectCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
+    public string? SignerId { get; set; }
 
-    public string? ProjectCreatedBy { get; set; }
+    public DateTime ProjectCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
-    public string? ProjectStatus { get; set; }
+    public string ProjectCreatedBy { get; set; } = null!;
 
-    public bool? IsDeleted { get; set; } = false;
+    public string ProjectStatus { get; set; } = null!;
+
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<LandPositionInfo> LandPositionInfos { get; } = new List<LandPositionInfo>();
 

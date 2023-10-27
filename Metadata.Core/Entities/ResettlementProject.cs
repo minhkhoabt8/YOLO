@@ -5,23 +5,23 @@ namespace Metadata.Core.Entities;
 
 public partial class ResettlementProject
 {
-    public string ResettlementProjectId { get; set; } = null!;
+    public string ResettlementProjectId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? Code { get; set; }
+    public string Code { get; set; } = null!;
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public string? LimitToResettlement { get; set; }
+    public int LimitToResettlement { get; set; }
 
-    public string? LimitToConsideration { get; set; }
+    public int LimitToConsideration { get; set; }
 
     public string? Position { get; set; }
 
-    public string? LandNumber { get; set; }
+    public int LandNumber { get; set; }
 
     public string? ImplementYear { get; set; }
 
-    public decimal? LandPrice { get; set; }
+    public decimal LandPrice { get; set; }
 
     public string? Note { get; set; }
 
@@ -29,15 +29,15 @@ public partial class ResettlementProject
 
     public string? LastPersonEdit { get; set; }
 
-    public string? DocumentId { get; set; }
+    public string DocumentId { get; set; } = null!;
 
-    public string? ProjectId { get; set; }
+    public string ProjectId { get; set; } = null!;
 
-    public bool ? IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();
 
-    public virtual Project? Project { get; set; }
+    public virtual Project Project { get; set; } = null!;
 
     public virtual ICollection<ResettlementDocument> ResettlementDocuments { get; } = new List<ResettlementDocument>();
 }

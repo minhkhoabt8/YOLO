@@ -7,27 +7,25 @@ public partial class AssetCompensation
 {
     public string AssetCompensationId { get; set; } = Guid.NewGuid().ToString();
 
-    public string? CompensationContent { get; set; }
+    public string CompensationContent { get; set; } = null!;
 
-    public string? CompensationRate { get; set; }
+    public int CompensationRate { get; set; }
 
-    public int? QuantityArea { get; set; }
+    public int QuantityArea { get; set; }
 
-    public string? CompensationUnit { get; set; }
+    public decimal CompensationPrice { get; set; }
 
-    public decimal? CompensationPrice { get; set; }
+    public string CompensationType { get; set; } = null!;
 
-    public string? CompensationType { get; set; }
+    public string UnitPriceAssetId { get; set; } = null!;
 
-    public string? UnitPriceAssetId { get; set; }
-
-    public string? OwnerId { get; set; }
+    public string OwnerId { get; set; } = null!;
 
     public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
 
-    public virtual Owner? Owner { get; set; }
+    public virtual Owner Owner { get; set; } = null!;
 
-    public virtual UnitPriceAsset? UnitPriceAsset { get; set; }
+    public virtual UnitPriceAsset UnitPriceAsset { get; set; } = null!;
 }

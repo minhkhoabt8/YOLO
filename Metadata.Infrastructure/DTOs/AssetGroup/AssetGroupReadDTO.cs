@@ -8,12 +8,12 @@ namespace Metadata.Infrastructure.DTOs.AssetGroup
 {
     public class AssetGroupReadDTO
     {
-        public string AssetGroupId { get; set; } = null!;
+        public string AssetGroupId { get; set; }
 
-        public string Code { get; set; } 
+        public string Code { get; set; }
 
-        public string Name { get; set; } 
+        public string Name { get; set; }
 
-        public bool? IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
