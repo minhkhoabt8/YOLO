@@ -2,6 +2,7 @@
 using Auth.Infrastructure.DTOs.Role;
 using Auth.Infrastructure.Services.Implementations;
 using Auth.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -39,6 +40,7 @@ public class AcccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("query")]
+    //[Authorize(Roles = "creator")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
@@ -46,6 +48,7 @@ public class AcccountController : ControllerBase
         var accounts = await _accountService.QueryAccount(query);
         return ResponseFactory.Ok(accounts);
     }
+
 
     /// <summary>
     /// Get account
