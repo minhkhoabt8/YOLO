@@ -25,7 +25,7 @@ public partial class Project : ITextSearchableEntity
 
     public DateTime? ProjectApprovalDate { get; set; }
 
-    public string? ImplementationYear { get; set; }
+    public int? ImplementationYear { get; set; }
 
     public string? RegulatedUnitPrice { get; set; }
 

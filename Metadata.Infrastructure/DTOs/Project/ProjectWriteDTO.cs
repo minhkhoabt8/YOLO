@@ -40,11 +40,12 @@ namespace Metadata.Infrastructure.DTOs.Project
         [InputType(typeof(DateTime))]
         public DateTime? ProjectCreatedTime { get; set; }
         [MaxLength(4)]
-        public string ImplementationYear { get; set; }
+        [Range(0, 9999)]
+        public int ImplementationYear { get; set; } = 2023;
         [MaxLength(20)]
         public string RegulatedUnitPrice { get; set; }
         [Range(0, int.MaxValue)]
-        public int ProjectBriefNumber { get; set; }
+        public int ProjectBriefNumber { get; set; } = 0;
         [MaxLength(50)]
         public string ProjectNote { get; set; }
         [MaxLength(50)]
@@ -54,7 +55,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string ReportSignal { get; set; }
         [Range(0, int.MaxValue)]
-        public int ReportNumber { get; set; }
+        public int ReportNumber { get; set; } = 0;
         [MaxLength(20)]
         public string PriceBasis { get; set; }
         [MaxLength(20)]
