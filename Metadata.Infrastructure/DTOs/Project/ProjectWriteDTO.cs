@@ -39,7 +39,6 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         [InputType(typeof(DateTime))]
         public DateTime? ProjectCreatedTime { get; set; }
-        [MaxLength(4)]
         [Range(0, 9999)]
         public int ImplementationYear { get; set; } = 2023;
         [MaxLength(20)]
