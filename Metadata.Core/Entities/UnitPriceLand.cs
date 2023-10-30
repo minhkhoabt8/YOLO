@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class UnitPriceLand
 {
+    [Key]
     public string UnitPriceLandId { get; set; } = Guid.NewGuid().ToString();
 
     public string ProjectId { get; set; } = null!;

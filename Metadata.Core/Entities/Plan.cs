@@ -2,11 +2,13 @@
 using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class Plan : ITextSearchableEntity
 {
+    [Key]
     public string PlanId { get; set; } = Guid.NewGuid().ToString();
 
     public string ProjectId { get; set; } = null!;

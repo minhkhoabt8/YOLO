@@ -1,11 +1,13 @@
 ﻿using SharedLib.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class GcnlandInfo : ITextSearchableEntity
 {
+    [Key]
     public string GcnLandInfoId { get; set; } = Guid.NewGuid().ToString();
 
     public string GcnPageNumber { get; set; } = null!;

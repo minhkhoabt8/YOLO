@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class LandCompensation
 {
+    [Key]
     public string LandCompensationId { get; set; } = null!;
 
     public string? CompensationContent { get; set; }

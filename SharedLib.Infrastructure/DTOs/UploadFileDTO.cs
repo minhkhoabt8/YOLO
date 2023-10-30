@@ -9,8 +9,7 @@ namespace SharedLib.Infrastructure.DTOs
         public byte[] File { get; set; } = null!;
         [Required]
         public string FileName { get; set; } = null!;
-        public string FileType { get; set; }
+        public string FileType { get; set; } = "application/pdf";
 
-        
     }
 }

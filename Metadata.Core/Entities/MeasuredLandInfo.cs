@@ -1,11 +1,13 @@
 ﻿using SharedLib.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class MeasuredLandInfo : ITextSearchableEntity
 {
+    [Key]
     public string MeasuredLandInfoId { get; set; } = Guid.NewGuid().ToString();
 
     public string? MeasuredPageNumber { get; set; }

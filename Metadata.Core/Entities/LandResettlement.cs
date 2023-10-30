@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class LandResettlement
 {
+    [Key]
     public string LandResettlementId { get; set; } = Guid.NewGuid().ToString();
 
     public string? Position { get; set; }

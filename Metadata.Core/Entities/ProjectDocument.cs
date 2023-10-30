@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class ProjectDocument
 {
+    [Key]
     public string ProjectDocumentId { get; set; }
 
     public string ProjectId { get; set; } = null!;

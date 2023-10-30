@@ -8,6 +8,7 @@ using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
+using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -20,13 +21,15 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
         private readonly IAttachFileService _attachFileService;
+        private readonly IAuthService _authService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _attachFileService = attachFileService;
+            _authService = authService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -38,11 +41,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
 
-            var existApprover = await _unitOfWork.OwnerRepository.FindAsync(dto.PlanApprovedBy);
-
-            if(existApprover == null)
+            if (!dto.PlanApprovedBy.IsNullOrEmpty())
             {
-                throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
+                var signer = await _authService.GetAccountByIdAsync(dto.PlanApprovedBy!);
+
+                if (signer == null || signer.Role.Id != ((int)AuthRoleEnum.Approval).ToString())
+                {
+                    throw new CannotAssignSignerException();
+                }
+
+                dto.PlanApprovedBy = signer.Id;
             }
 
             var plan = _mapper.Map<Plan>(dto);

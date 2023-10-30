@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class PriceAppliedCode
 {
+    [Key]
     public string PriceAppliedCodeId { get; set; } = Guid.NewGuid().ToString();
 
     public string UnitPriceCode { get; set; } = null!;

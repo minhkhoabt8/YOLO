@@ -1,11 +1,13 @@
 ﻿using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class AttachFile
 {
+    [Key]
     public string AttachFileId { get; set; } = Guid.NewGuid().ToString();
 
     public string Name { get; set; } = null!;

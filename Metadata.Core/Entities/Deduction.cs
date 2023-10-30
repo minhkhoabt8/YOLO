@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class Deduction
 {
+    [Key]
     public string DeductionId { get; set; } = Guid.NewGuid().ToString();
 
     public string DeductionContent { get; set; } = null!;

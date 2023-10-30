@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
 public partial class Support
 {
+    [Key]
     public string SupportId { get; set; } = Guid.NewGuid().ToString();
 
     public string SupportContent { get; set; } = null!;
