@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Metadata.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,14 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
         public string? OwnerId { get; set; }
 
         public string? AssetCompensationId { get; set; }
+
+        [Required]
+        public string FileName { get; set; }
+        [Required]
+        public FileTypeEnum FileType { get; set; }
         [Required]
         public byte[] AttachFile { get; set; }
+        
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Metadata.Core.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,8 +34,10 @@ namespace Metadata.Infrastructure.DTOs.Document
         public string Pen { get; set; }
 
         public bool? IsPublic { get; set; } = false;
-
+        [Required]
+        public FileTypeEnum FileType { get; set; }
         [Required]
         public byte[] FileAttach { get; set; }
+
     }
 }

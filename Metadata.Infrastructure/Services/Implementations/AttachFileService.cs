@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Deduction;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -39,17 +41,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach (var item in dto)
             {
-                var file = _mapper.Map<AttachFile>(item);
-
-                //file.Name = item.AttachFile.Name;
-                //file.FileType = Path.GetExtension(item.AttachFile.Name);
-
+                
                 var fileUpload = new UploadFileDTO
                 {
                     File = item.AttachFile!,
-                    FileName = $"{file.Name}-{file.CreatedTime}-{Guid.NewGuid()}"
+                    FileName = $"{item.FileName}-{Guid.NewGuid()}",
+                    FileType = FileTypeExtensions.ToFileMimeTypeString(item.FileType)
+                    
                 };
-                
+
+                var file = _mapper.Map<AttachFile>(item);
+
                 file.OwnerId = ownerId;
 
                 var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
@@ -98,7 +100,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             foreach (var item in files)
             {
-                var file = _mapper.Map<AttachFile>(item);
+                
 
                 //file.Name = item.AttachFile.Name;
                 //file.FileType = Path.GetExtension(item.AttachFile.Name);
@@ -106,8 +108,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var fileUpload = new UploadFileDTO
                 {
                     File = item.AttachFile!,
-                    FileName = $"{file.Name}-{file.CreatedTime}-{Guid.NewGuid()}"
+                    FileName = $"{item.FileName}-{Guid.NewGuid()}",
+                    FileType = FileTypeExtensions.ToFileMimeTypeString(item.FileType)
                 };
+
+                var file = _mapper.Map<AttachFile>(item);
+
                 var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
                 file.ReferenceLink = returnUrl;

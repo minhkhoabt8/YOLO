@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -46,7 +47,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var fileUpload = new UploadFileDTO
                 {
                     File = documentDto.FileAttach!,
-                    FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}"
+                    FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                    FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
                 };
 
                 var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
@@ -74,7 +76,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             var fileUpload = new UploadFileDTO
             {
                 File = documentDto.FileAttach!,
-                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}"
+                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType)
             };
 
             var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
