@@ -8,12 +8,7 @@ using Microsoft.Extensions.Configuration;
 using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SharedLib.Infrastructure.Services.Implementations
 {
