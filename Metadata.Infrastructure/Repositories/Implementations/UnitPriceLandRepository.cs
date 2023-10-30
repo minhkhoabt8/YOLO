@@ -1,8 +1,11 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Metadata.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
-
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 
 namespace Metadata.Infrastructure.Repositories.Implementations
 {
@@ -11,5 +14,30 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public UnitPriceLandRepository(YoloMetadataContext context) : base(context)
         {
         }
+
+        public async Task<IEnumerable<UnitPriceLand>> QueryAsync(UnitPriceLandQuery query, bool trackChanges = false)
+        {
+            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands;
+
+            if (!trackChanges)
+            {
+                unitPriceLands = unitPriceLands.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                unitPriceLands = unitPriceLands.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                unitPriceLands = unitPriceLands.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                unitPriceLands = unitPriceLands.OrderByDynamic(query.OrderBy);
+            }
+            IEnumerable<UnitPriceLand> enumeratedUnitPriceLands = unitPriceLands.AsEnumerable();
+            return await Task.FromResult(enumeratedUnitPriceLands);
+        }
     }
-}
+    }
+    

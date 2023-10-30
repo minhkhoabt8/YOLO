@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.LandPositionInfo;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 
 
@@ -9,7 +10,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IUpdate<LandPositionInfo>,
         IGetAllAsync<LandPositionInfo>,
         IFindAsync<LandPositionInfo>,
-        IDelete<LandPositionInfo>
+        IDelete<LandPositionInfo>,
+        IQueryAsync<LandPositionInfo, LandPositionInfoQuery>
     {
     }
 }

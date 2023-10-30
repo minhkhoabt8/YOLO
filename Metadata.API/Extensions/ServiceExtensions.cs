@@ -148,7 +148,9 @@ public static class ServiceExtensions
         services.AddScoped<IAttachFileService, AttachFileService>();
         services.AddScoped<ITokenService,JWTTokenService>();
 
+        services.AddScoped<ILandPositionInfoService, LandPositionInfoService>();
         services.AddScoped<IUnitPriceAssetService, UnitPriceAssetService>();
+        services.AddScoped<IUnitPriceLandService, UnitPriceLandService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

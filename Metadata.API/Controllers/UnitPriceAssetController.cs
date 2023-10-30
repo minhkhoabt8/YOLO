@@ -94,7 +94,7 @@ namespace Metadata.API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> DeleteRole(string id)
+        public async Task<IActionResult> DeleteUNitPriceAsset(string id)
         {
             await _unitPriceAssetService.DeleteUnitPriceAsset(id);
             return ResponseFactory.NoContent();

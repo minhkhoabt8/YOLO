@@ -30,7 +30,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public DateTime ProjectApprovalDate { get; set; }
 
-        public string ImplementationYear { get; set; }
+        public int ImplementationYear { get; set; }
 
         public string RegulatedUnitPrice { get; set; }
 
@@ -44,7 +44,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string ReportSignal { get; set; }
 
-        public string ReportNumber { get; set; }
+        public int ReportNumber { get; set; }
 
         public string PriceBasis { get; set; }
 

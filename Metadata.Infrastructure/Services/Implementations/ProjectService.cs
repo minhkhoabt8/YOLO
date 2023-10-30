@@ -64,17 +64,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
 
 
-            if (!projectDto.UnitPriceLands.IsNullOrEmpty())
-            {
-                foreach (var item in projectDto.UnitPriceLands!)
-                {
-                    var unitPriceLand = _mapper.Map<UnitPriceLand>(item);
-                    unitPriceLand.ProjectId = project.ProjectId;
-                    //await _unitOfWork.UnitPriceLandRepository.AddAsync(unitPriceLand);
-                }
-            }
-
-
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
 

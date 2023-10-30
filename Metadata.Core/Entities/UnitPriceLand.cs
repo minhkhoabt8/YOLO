@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SharedLib.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
-public partial class UnitPriceLand
+public partial class UnitPriceLand : ITextSearchableEntity
 {
     [Key]
     public string UnitPriceLandId { get; set; } = Guid.NewGuid().ToString();
@@ -34,4 +35,10 @@ public partial class UnitPriceLand
     public virtual ICollection<MeasuredLandInfo> MeasuredLandInfos { get; } = new List<MeasuredLandInfo>();
 
     public virtual Project Project { get; set; } = null!;
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(StreetAreaName), .5},
+        {() => nameof(LandUnit), .5}
+    };
 }
