@@ -15,6 +15,8 @@ using Metadata.Infrastructure.Repositories.Interfaces;
 using Metadata.Infrastructure.Repositories.Implementations;
 using Metadata.Infrastructure.Mappers;
 using SharedLib.Infrastructure.Attributes;
+using Polly.Extensions.Http;
+using Polly;
 
 namespace Metadata.API.Extensions;
 
@@ -37,7 +39,12 @@ public static class ServiceExtensions
 
     public static void AddHttpClients(this IServiceCollection services)
     {
-        
+        services.AddHttpClient<IAuthService, YOLOAuthService>()
+            .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+            .AddPolicyHandler(
+                HttpPolicyExtensions.HandleTransientHttpError().WaitAndRetryAsync(5,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+            );
     }
 
     public static void ConfigureSwagger(this IServiceCollection services)
@@ -139,7 +146,7 @@ public static class ServiceExtensions
         services.AddScoped<IDeductionService, DeductionService>();
         services.AddScoped<IAssetCompensationService, AssetCompensationService>();
         services.AddScoped<IAttachFileService, AttachFileService>();
-
+        services.AddScoped<ITokenService,JWTTokenService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

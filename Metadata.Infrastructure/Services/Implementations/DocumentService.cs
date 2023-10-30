@@ -42,6 +42,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
            foreach(var documentDto in documentDtos)
            {
+
                 var fileUpload = new UploadFileDTO
                 {
                     File = documentDto.FileAttach!,

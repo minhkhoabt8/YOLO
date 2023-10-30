@@ -1,9 +1,5 @@
 ﻿using SharedLib.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Metadata.Core.Exceptions
 {
@@ -16,5 +12,15 @@ namespace Metadata.Core.Exceptions
         {
         }
 
+    }
+
+    public class CannotAssignSignerException : HandledException
+    {
+        /// <summary>
+        /// If user not a signer role 
+        /// </summary>
+        public CannotAssignSignerException() : base(40, "Can Not Assign Signer To User")
+        {
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.Runtime.Internal.Auth;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Document;
@@ -8,6 +9,7 @@ using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
+using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -20,13 +22,15 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
         private readonly IDocumentService _documentService;
+        private readonly IAuthService _authService;
 
-        public ProjectService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IDocumentService documentService)
+        public ProjectService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IDocumentService documentService, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _documentService = documentService;
+            _authService = authService;
         }
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
@@ -38,7 +42,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(!project.SignerId.IsNullOrEmpty())
             {
-                var owner = await _unitOfWork.OwnerRepository.FindAsync(project.SignerId!) ?? throw new EntityWithIDNotFoundException<Owner>(project.SignerId);
+                var signer = await _authService.GetAccountByIdAsync(project.SignerId!);
+
+                if (signer == null || signer.Role.Id != ((int)AuthRoleEnum.Approval).ToString())
+                {
+                    throw new CannotAssignSignerException();
+                }
+
+                project.SignerId = signer.Id;
             }
             
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())
@@ -51,8 +62,13 @@ namespace Metadata.Infrastructure.Services.Implementations
                 
             }
 
-            if(!projectDto.Documents.IsNullOrEmpty())
+
+            await _unitOfWork.ProjectRepository.AddAsync(project);
+
+
+            if (!projectDto.Documents.IsNullOrEmpty())
             {
+
                 var documents = await _documentService.CreateDocumentsAsync(projectDto.Documents!);
 
                 foreach(var document in documents)
@@ -62,7 +78,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 
             }
 
-            await _unitOfWork.ProjectRepository.AddAsync(project);
+            
 
             await _unitOfWork.CommitAsync();
 

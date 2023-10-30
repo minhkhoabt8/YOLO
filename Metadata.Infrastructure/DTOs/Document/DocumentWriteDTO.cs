@@ -35,6 +35,6 @@ namespace Metadata.Infrastructure.DTOs.Document
         public bool? IsPublic { get; set; } = false;
 
         [Required]
-        public IFormFile FileAttach { get; set; }
+        public byte[] FileAttach { get; set; }
     }
 }

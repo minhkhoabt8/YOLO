@@ -9,6 +9,7 @@ using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,7 @@ namespace SharedLib.Infrastructure.Services.Implementations
         {
             var fileUpload = new TransferUtilityUploadRequest
             {
-                InputStream = file.File.OpenReadStream(),
+                InputStream = new MemoryStream(file.File),
                 Key = file.FileName,
                 BucketName = _awsBucketName,
                 CannedACL = S3CannedACL.PublicRead,

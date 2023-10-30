@@ -125,6 +125,7 @@ public static class ServiceExtensions
             .AddScoped<SharedLib.Infrastructure.Services.Interfaces.ITokenService,
                 SharedLib.Infrastructure.Services.Implementations.JWTTokenService>();
         services.AddScoped<ISmsService, SmsService>();
+
     }
 
     public static void AddRepositories(this IServiceCollection services)

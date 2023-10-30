@@ -21,7 +21,7 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
 
         public string? AssetCompensationId { get; set; }
         [Required]
-        public IFormFile AttachFile { get; set; }
+        public byte[] AttachFile { get; set; }
 
     }
 }

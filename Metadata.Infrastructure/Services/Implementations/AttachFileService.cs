@@ -41,8 +41,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var file = _mapper.Map<AttachFile>(item);
 
-                file.Name = item.AttachFile.Name;
-                file.FileType = Path.GetExtension(item.AttachFile.Name);
+                //file.Name = item.AttachFile.Name;
+                //file.FileType = Path.GetExtension(item.AttachFile.Name);
 
                 var fileUpload = new UploadFileDTO
                 {
@@ -100,8 +100,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var file = _mapper.Map<AttachFile>(item);
 
-                file.Name = item.AttachFile.Name;
-                file.FileType = Path.GetExtension(item.AttachFile.Name);
+                //file.Name = item.AttachFile.Name;
+                //file.FileType = Path.GetExtension(item.AttachFile.Name);
 
                 var fileUpload = new UploadFileDTO
                 {
