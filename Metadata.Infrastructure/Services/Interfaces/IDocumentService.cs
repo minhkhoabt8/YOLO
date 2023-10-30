@@ -12,5 +12,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task DeleteDocumentAsync(string documentId);
         Task<DocumentReadDTO> UpdateDocumentAsync(string documentId, DocumentWriteDTO dto);
         Task<PaginatedResponse<DocumentReadDTO>> QueryDocumentAsync(DocumentQuery query);
+        Task<IEnumerable<DocumentReadDTO>> GetDocumentsOfProjectAsync(string projectId);
     }
 }

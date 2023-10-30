@@ -1,6 +1,9 @@
 ﻿using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandPositionInfo;
+using Metadata.Infrastructure.DTOs.PriceAppliedCode;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
+using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -69,7 +72,10 @@ namespace Metadata.Infrastructure.DTOs.Project
         [JsonConverter(typeof(StringEnumConverter))]
         public ProjectStatusEnum ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
 
+
+
         public IEnumerable<LandPositionInfoInProjectWriteDTO>? LandPositionInfos { get; set; }
+        public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
         
     }
@@ -109,6 +115,26 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string? Description { get; set; }
         [Required]
         public string LandInfoType { get; set; }
+    }
+
+    public class UnitPriceLandInProjectWriteDTO
+    {
+        [Required]
+        public string StreetAreaName { get; set; } = null!;
+        [Required]
+        public string LandTypeId { get; set; } = null!;
+        [Required]
+        public string LandUnit { get; set; } = null!;
+
+        public decimal? LandPosition1 { get; set; }
+
+        public decimal? LandPosition2 { get; set; }
+
+        public decimal? LandPosition3 { get; set; }
+
+        public decimal? LandPosition4 { get; set; }
+
+        public decimal? LandPosition5 { get; set; }
     }
 
 }

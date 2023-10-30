@@ -55,6 +55,13 @@ namespace Metadata.Infrastructure.UOW
         public IAssetUnitRepository AssetUnitRepository => GetSingletonRepository<IAssetUnitRepository>();
         
         public ILandPositionInfoRepository LandPositionInfoRepository => GetSingletonRepository<ILandPositionInfoRepository>(); 
+
+        public IUnitPriceAssetRepository UnitPriceAssetRepository => GetSingletonRepository<IUnitPriceAssetRepository>();
+
+        public IUnitPriceLandRepository UnitPriceLandRepository => GetSingletonRepository<IUnitPriceLandRepository>();
+
+        public IPriceAppliedCodeRepository PriceAppliedCodeRepository => GetSingletonRepository<IPriceAppliedCodeRepository>();
+
         public Task<int> CommitAsync()
         {
             OnBeforeSaveChanges();

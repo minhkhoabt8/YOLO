@@ -22,7 +22,7 @@ using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
-using System.Data;
+using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 
 namespace Metadata.Infrastructure.Mappers
 {
@@ -41,6 +41,7 @@ namespace Metadata.Infrastructure.Mappers
 
             //PriceApplyCode
             CreateMap<PriceAppliedCode, PriceAppliedCodeReadDTO>();
+            CreateMap<PriceAppliedCodeWriteDTO, PriceAppliedCode>();
 
             //Owner
             CreateMap<Owner, OwnerReadDTO>();
@@ -124,10 +125,21 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<GcnlandInfo, GCNLandInfoReadDTO>();
             CreateMap<GCNLandInfoWriteDTO, GcnlandInfo>();
 
-            //LandPOsitionINfo
+            //LandPOsitionInfo
             CreateMap<LandPositionInfo, LandPositionInfoReadDTO>();
             CreateMap<LandPositionInfoWriteDTO, LandPositionInfo>();
             CreateMap<LandPositionInfoInProjectWriteDTO, LandPositionInfo>();
+
+            //UnitPriceAsset
+            CreateMap<UnitPriceAsset, UnitPriceAssetReadDTO>();
+            CreateMap<UnitPriceAssetWriteDTO, UnitPriceAsset>();
+
+            //UnitPriceLand
+            CreateMap<UnitPriceLand, UnitPriceLandReadDTO>();
+            CreateMap<UnitPriceLandWriteDTO, UnitPriceLand>();
+            CreateMap<UnitPriceLandInProjectWriteDTO, UnitPriceLand>();
+
+
         }
     }
 }

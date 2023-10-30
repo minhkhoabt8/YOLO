@@ -1,7 +1,4 @@
 ﻿using Metadata.Infrastructure.DTOs.Document;
-using Metadata.Infrastructure.DTOs.Owner;
-using Metadata.Infrastructure.DTOs.Project;
-using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -29,12 +26,28 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<DocumentReadDTO>))]
         public async Task<IActionResult> QueryDocuments([FromQuery] DocumentQuery query)
         {
             var owners = await _documentService.QueryDocumentAsync(query);
             return ResponseFactory.PaginatedOk(owners);
         }
+
+        /// <summary>
+        /// Get Documents Of Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DocumentReadDTO>))]
+        public async Task<IActionResult> GetDocumentsOfProject(string projectId)
+        {
+            var documents = await _documentService.GetDocumentsOfProjectAsync(projectId);
+            return Ok(documents);
+        }
+
+
 
         /// <summary>
         /// Create Document
@@ -60,7 +73,7 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> UpdateDocument(string id,[FromForm] DocumentWriteDTO writeDTO)

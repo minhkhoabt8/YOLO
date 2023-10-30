@@ -58,8 +58,20 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     var landPosition = _mapper.Map<LandPositionInfo>(item);
                     landPosition.ProjectId = project.ProjectId;
+                    //await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
                 }
                 
+            }
+
+
+            if (!projectDto.UnitPriceLands.IsNullOrEmpty())
+            {
+                foreach (var item in projectDto.UnitPriceLands!)
+                {
+                    var unitPriceLand = _mapper.Map<UnitPriceLand>(item);
+                    unitPriceLand.ProjectId = project.ProjectId;
+                    //await _unitOfWork.UnitPriceLandRepository.AddAsync(unitPriceLand);
+                }
             }
 
 
@@ -175,5 +187,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<ProjectReadDTO>(project);
         }
 
+        public async Task<ProjectReadDTO> CreateProjectDocumentsAsync(string projectId, IEnumerable<DocumentWriteDTO> documentDtos)
+        {
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+
+            if (project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+
+            if (!documentDtos.IsNullOrEmpty())
+            {
+
+                var documents =await _documentService.CreateDocumentsAsync(documentDtos);
+
+                foreach (var document in documents)
+                {
+                    await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
+                }
+
+            }
+
+            return _mapper.Map<ProjectReadDTO>(project);
+
+        }
     }
 }

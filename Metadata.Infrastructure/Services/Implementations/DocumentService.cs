@@ -125,5 +125,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             var owner = await _unitOfWork.DocumentRepository.QueryAsync(query);
             return PaginatedResponse<DocumentReadDTO>.FromEnumerableWithMapping(owner, query, _mapper);
         }
+
+        public async Task<IEnumerable<DocumentReadDTO>> GetDocumentsOfProjectAsync(string projectId)
+        {
+            var documents = await _unitOfWork.DocumentRepository.GetDocumentsOfProjectAsync(projectId);
+
+            return _mapper.Map<IEnumerable<DocumentReadDTO>>(documents);
+        }
     }
 }

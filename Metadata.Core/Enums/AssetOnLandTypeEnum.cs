@@ -9,7 +9,8 @@ namespace Metadata.Core.Enums
     public enum AssetOnLandTypeEnum
     {
         House,
-        AssetsOnLand,
-        Plants
+        Architecture,
+        Plants,
+        Other
     }
 }

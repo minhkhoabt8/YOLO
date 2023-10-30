@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharedLib.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,7 +28,7 @@ public partial class ResettlementProject
 
     public string? Note { get; set; }
 
-    public DateTime? LastDateEdit { get; set; }
+    public DateTime? LastDateEdit { get; set; } = DateTime.Now.SetKindUtc();
 
     public string? LastPersonEdit { get; set; }
 

@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
 {
-    internal class PriceAppliedCodeWriteDTO
+    public class PriceAppliedCodeWriteDTO
     {
+        
+        public string UnitPriceCode { get; set; } = null!;
+
+        public string PriceContent { get; set; } = null!;
+
+        public DateTime ExpriredTime { get; set; }
     }
 }

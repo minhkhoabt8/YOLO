@@ -147,6 +147,8 @@ public static class ServiceExtensions
         services.AddScoped<IAssetCompensationService, AssetCompensationService>();
         services.AddScoped<IAttachFileService, AttachFileService>();
         services.AddScoped<ITokenService,JWTTokenService>();
+
+        services.AddScoped<IUnitPriceAssetService, UnitPriceAssetService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)
@@ -174,6 +176,9 @@ public static class ServiceExtensions
         services.AddScoped<IAssetCompensationRepository, AssetCompensationRepository>();
         services.AddScoped<IAttachFileRepository, AttachFileRepository>();
         services.AddScoped<ILandPositionInfoRepository, LandPositionInfoRepository>();
+        services.AddScoped<IUnitPriceAssetRepository, UnitPriceAssetRepository>();
+        services.AddScoped<IUnitPriceLandRepository, UnitPriceLandRepository>();
+        services.AddScoped<IPriceAppliedCodeRepository, PriceAppliedCodeRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

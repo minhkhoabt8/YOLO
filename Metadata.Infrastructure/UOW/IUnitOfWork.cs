@@ -33,6 +33,11 @@ namespace Metadata.Infrastructure.UOW
         public IAttachFileRepository AttachFileRepository { get; }
         public ILandPositionInfoRepository LandPositionInfoRepository { get; }
 
+        public IUnitPriceAssetRepository UnitPriceAssetRepository { get; }
+        public IUnitPriceLandRepository UnitPriceLandRepository { get; }
+
+        public IPriceAppliedCodeRepository PriceAppliedCodeRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

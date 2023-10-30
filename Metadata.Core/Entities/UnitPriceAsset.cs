@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SharedLib.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
-public partial class UnitPriceAsset
+public partial class UnitPriceAsset : ITextSearchableEntity
 {
     [Key]
     public string UnitPriceAssetId { get; set; } = Guid.NewGuid().ToString();
@@ -32,4 +33,11 @@ public partial class UnitPriceAsset
     public virtual AssetUnit AssetUnit { get; set; } = null!;
 
     public virtual PriceAppliedCode PriceAppliedCode { get; set; } = null!;
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(AssetName), .5},
+        {() => nameof(AssetPrice), .5},
+        {() => nameof(AssetRegulation),.5}
+    };
 }

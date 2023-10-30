@@ -79,6 +79,25 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Created(project);
         }
 
+
+        /// <summary>
+        /// Create Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="documents"></param>
+        /// <returns></returns>
+        [HttpPost("document")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreateProjectDocumentAsync(string projectId, IEnumerable<DocumentWriteDTO> documents)
+        {
+            var project = await _projectService.CreateProjectDocumentsAsync(projectId, documents);
+
+            return ResponseFactory.Created(project);
+        }
+
+
         /// <summary>
         /// Import Project From File
         /// </summary>
