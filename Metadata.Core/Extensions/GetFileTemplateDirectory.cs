@@ -16,7 +16,7 @@ namespace Metadata.Core.Extensions
         /// <returns></returns>
         public static string Get(string fileName)
         {
-            string templateDirectory = Path.Combine(Environment.CurrentDirectory, "ReportTemplate");
+            string templateDirectory = Path.Combine(Environment.CurrentDirectory, "ReportTemplates");
 
             switch (fileName)
             {
@@ -38,7 +38,7 @@ namespace Metadata.Core.Extensions
 
                 case "PhuongAn_BaoCao":
 
-                    return Path.Combine(templateDirectory, "PhuongAn_BaoCao.xlsx");
+                    return Path.Combine(templateDirectory, "PhuongAn_BaoCao.docx");
 
                 default:
                     return "File not found";

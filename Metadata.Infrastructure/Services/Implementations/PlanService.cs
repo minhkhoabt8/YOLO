@@ -190,7 +190,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var fileName = GetFileTemplateDirectory.Get("PhuongAn_BaoCao");
 
             //Create new File Based on Template
-            var fileDest = Path.Combine(Directory.GetCurrentDirectory()
+            var fileDest = Path.Combine(Directory.GetCurrentDirectory(),"Temp"
                 , $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
             
             if (!CopyTemplate(fileName, fileDest)) throw new Exception("Cannot Create File");
@@ -242,12 +242,17 @@ namespace Metadata.Infrastructure.Services.Implementations
                 wordDoc.Dispose();
             }
             byte[] fileBytes = File.ReadAllBytes(fileDest);
+
+            File.Delete(fileDest);
+
             return new ExportFileDTO
             {
                 FileName = Path.GetFileName(fileDest),
                 FileByte = fileBytes,
                 FileType = FileTypeExtensions.ToFileMimeTypeString(FileTypeEnum.docx) // Change this to the appropriate content type for Word documents
             };
+
+            
         }
 
         private async Task<BTHTPlanReadDTO> GetDataForBTHTPlanAsnc(string planId)
@@ -303,7 +308,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         mainPart.Document.Save();
                     }
                 }
-
+                
                 return true;
             }
             catch (Exception ex)
