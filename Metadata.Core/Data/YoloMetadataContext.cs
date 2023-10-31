@@ -653,6 +653,15 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanApprovedBy)
                 .HasMaxLength(50)
                 .HasColumnName("plan_approved_by");
+
+            entity.Property(e => e.PlanName)
+                .HasMaxLength(200)
+                .HasColumnName("plan_name");
+
+            entity.Property(e => e.PlanLocation)
+                .HasMaxLength(200)
+                .HasColumnName("plan_location");
+
             entity.Property(e => e.PlanCode)
                 .HasMaxLength(10)
                 .HasColumnName("plan_code");
@@ -708,6 +717,14 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalPricePlantSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_price_plant_support_compensation");
+
+            entity.Property(e => e.TotalLandRecoveryArea)
+               .HasColumnType("decimal(18, 0)")
+               .HasColumnName("total_land_recovery_area");
+
+            entity.Property(e => e.TotalGpmbServiceCost)
+              .HasColumnType("decimal(18, 0)")
+              .HasColumnName("total_gpmb_service_cost");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Plans)
                 .HasForeignKey(d => d.ProjectId)

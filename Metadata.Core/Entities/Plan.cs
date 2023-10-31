@@ -13,6 +13,10 @@ public partial class Plan : ITextSearchableEntity
 
     public string ProjectId { get; set; } = null!;
 
+    public string PlanName { get; set; } = null!;
+
+    public string PlanLocation { get; set; } = null!;
+
     public string PlanCode { get; set; } = null!;
 
     public string? PlanPhrase { get; set; }
@@ -50,6 +54,10 @@ public partial class Plan : ITextSearchableEntity
     public decimal TotalPriceOtherSupportCompensation { get; set; } = 0;
 
     public decimal TotalDeduction { get; set; } = 0;
+
+    public decimal TotalLandRecoveryArea { get; set; } = 0;
+
+    public decimal TotalGpmbServiceCost { get; set; } = 0;
 
     public bool IsDeleted { get; set; } = false;
 

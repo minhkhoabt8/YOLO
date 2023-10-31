@@ -268,19 +268,19 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ProjectName = project.ProjectName,
                 ProjectLocation = project.ProjectLocation,
 
-                PlanName = plan.PlanCode, //need change
-                PlanLocation = plan.PlanDescription, // need change
+                PlanName = plan.PlanName, //need change
+                PlanLocation = plan.PlanLocation,
                 PlanBasedOn = plan.PlanCreateBase,
 
                 TotalLandRecoveryArea = 0, //need updated
                 TotalOwnerSupportCompensation = plan.TotalOwnerSupportCompensation,
-                LandAcquisitionAddress = plan.PlanDescription, //the same as PlanLocation value
+                LandAcquisitionAddress = plan.PlanLocation, //the same as PlanLocation value
                 TotalPriceLandSupportCompensation = plan.TotalPriceLandSupportCompensation,
                 TotalPriceHouseSupportCompensation = plan.TotalPriceHouseSupportCompensation,
                 TotalPriceArchitectureSupportCompensation = plan.TotalPriceArchitectureSupportCompensation,
                 TotalPricePlantSupportCompensation = plan.TotalPricePlantSupportCompensation,
                 TotalPriceOtherSupportCompensation = plan.TotalPriceOtherSupportCompensation,
-                TotalGpmbServiceCost = 0 // needd updated
+                TotalGpmbServiceCost = plan.TotalGpmbServiceCost// needd updated
 
             };
         }
