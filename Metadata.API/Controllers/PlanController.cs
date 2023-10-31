@@ -58,7 +58,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -97,7 +97,7 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Export BTHT File
+        /// Export BTHT File Report (.docx)
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
@@ -125,6 +125,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> UpdatePlan(string id, PlanWriteDTO writeDTO)
         {
             var owner = await _planService.UpdatePlanAsync(id, writeDTO);
+
             return ResponseFactory.Ok(owner);
         }
 

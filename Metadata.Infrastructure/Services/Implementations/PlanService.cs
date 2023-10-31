@@ -175,8 +175,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                 };
             }
         }
+
         /// <summary>
-        /// Boi Thuong Ho Tro  
+        /// Tao Boi Thuong Ho Tro File Doc
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
@@ -255,6 +256,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             
         }
 
+        /// <summary>
+        /// Lay Data Tu DB len cho BTHT Export File
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Plan}"></exception>
+        /// <exception cref="EntityWithAttributeNotFoundException{Project}"></exception>
         private async Task<BTHTPlanReadDTO> GetDataForBTHTPlanAsnc(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
@@ -285,6 +293,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             };
         }
 
+        /// <summary>
+        /// Create Temp File To Export
+        /// </summary>
+        /// <param name="fileSource"></param>
+        /// <param name="fileDest"></param>
+        /// <returns></returns>
         private bool CopyTemplate(string fileSource, string fileDest)
         {
             try
@@ -313,7 +327,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             catch (Exception ex)
             {
-                // Handle exceptions or log errors
                 return false;
             }
         }
