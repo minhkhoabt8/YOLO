@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<Project, ProjectQuery>
     {
         Task<Project?> GetProjectIncludePlanByPlanIdAsync(string planId);
+        Task<Project?> GetProjectByPlandIdAsync(string planId);
     }
 }

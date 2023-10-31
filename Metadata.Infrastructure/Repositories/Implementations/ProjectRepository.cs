@@ -22,6 +22,13 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<Project?> GetProjectByPlandIdAsync(string planId)
+        {
+            return await _context.Projects
+                .Where(p => p.Plans.Any(plan => plan.PlanId == planId))
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)
         {
             IQueryable<Project> projects = _context.Projects.Include(p => p.LandPositionInfos);

@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -12,6 +16,8 @@ using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
+using System.Globalization;
+using System.Reflection;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -169,10 +175,142 @@ namespace Metadata.Infrastructure.Services.Implementations
                 };
             }
         }
-
-        public Task<ExportFileDTO> ExportBTHTPlansPdfAsync(string planId)
+        /// <summary>
+        /// Boi Thuong Ho Tro  
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId)
         {
-            throw new NotImplementedException();
+            //Get Data BTHT
+            var dataBTHT = await GetDataForBTHTPlanAsnc(planId)
+                ?? throw new Exception("Value is null");
+
+            //Get File Template
+            var fileName = GetFileTemplateDirectory.Get("PhuongAn_BaoCao");
+
+            //Create new File Based on Template
+            var fileDest = Path.Combine(Directory.GetCurrentDirectory()
+                , $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
+            
+            if (!CopyTemplate(fileName, fileDest)) throw new Exception("Cannot Create File");
+
+            //Fill in data
+            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(fileDest, true, new OpenSettings { AutoSave = false }))
+            {
+                var body = wordDoc.MainDocumentPart.Document.Body;
+                var paras = body.Elements<Paragraph>();
+                foreach (var para in paras)
+                {
+                    foreach (var run in para.Elements<Run>())
+                    {
+                        foreach (var text in run.Elements<Text>())
+                        {
+                            Console.Write(text.Text + "\n");
+                            if (text.Text.Contains("tenduan"))
+                                text.Text = text.Text.Replace("tenduan", dataBTHT.ProjectName);
+                            if (text.Text.Contains("cancu"))
+                                text.Text = text.Text.Replace("cancu", dataBTHT.PlanBasedOn == null ? "" : dataBTHT.PlanBasedOn);
+                            if (text.Text.Contains("diadiem"))
+                                text.Text = text.Text.Replace("diadiem", dataBTHT.PlanLocation);
+                            if (text.Text.Contains("Sumdientichthuhoi"))
+                                text.Text = text.Text.Replace("Sumdientichthuhoi", string.Format("{0:#,###.## m2}", dataBTHT.TotalLandRecoveryArea));
+                            if (text.Text.Contains("countvanban"))
+                                text.Text = text.Text.Replace("countvanban", string.Format("{0:#,##0}", dataBTHT.TotalOwnerSupportCompensation));
+                            if (text.Text.Contains("diachithuhoi"))
+                                text.Text = text.Text.Replace("diachithuhoi", dataBTHT.LandAcquisitionAddress);
+                            if (text.Text.Contains("boithuongdat"))
+                                text.Text = text.Text.Replace("boithuongdat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceLandSupportCompensation));
+                            if (text.Text.Contains("boithuongnha"))
+                                text.Text = text.Text.Replace("boithuongnha", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceHouseSupportCompensation));
+                            if (text.Text.Contains("boithuongvat"))
+                                text.Text = text.Text.Replace("boithuongvat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceArchitectureSupportCompensation));
+                            if (text.Text.Contains("boithuongcay"))
+                                text.Text = text.Text.Replace("boithuongcay", string.Format("{0:#,##0đ}", dataBTHT.TotalPricePlantSupportCompensation));
+                            if (text.Text.Contains("boithuongkhac"))
+                                text.Text = text.Text.Replace("boithuongkhac", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceOtherSupportCompensation));
+                            if (text.Text.Contains("chiphiphucvu"))
+                                text.Text = text.Text.Replace("chiphiphucvu", string.Format("{0:#,##0đ}", dataBTHT.TotalGpmbServiceCost));
+                        }
+
+                    }
+                }
+                wordDoc.Save();
+                var mainPart = wordDoc.MainDocumentPart;
+                wordDoc.Close();
+                wordDoc.Dispose();
+            }
+            byte[] fileBytes = File.ReadAllBytes(fileDest);
+            return new ExportFileDTO
+            {
+                FileName = Path.GetFileName(fileDest),
+                FileByte = fileBytes,
+                FileType = FileTypeExtensions.ToFileMimeTypeString(FileTypeEnum.docx) // Change this to the appropriate content type for Word documents
+            };
+        }
+
+        private async Task<BTHTPlanReadDTO> GetDataForBTHTPlanAsnc(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var project = await _unitOfWork.ProjectRepository.GetProjectByPlandIdAsync(planId)
+                ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId);
+
+            return new BTHTPlanReadDTO
+            {
+                ProjectName = project.ProjectName,
+                ProjectLocation = project.ProjectLocation,
+
+                PlanName = plan.PlanCode, //need change
+                PlanLocation = plan.PlanDescription, // need change
+                PlanBasedOn = plan.PlanCreateBase,
+
+                TotalLandRecoveryArea = 0, //need updated
+                TotalOwnerSupportCompensation = plan.TotalOwnerSupportCompensation,
+                LandAcquisitionAddress = plan.PlanDescription, //the same as PlanLocation value
+                TotalPriceLandSupportCompensation = plan.TotalPriceLandSupportCompensation,
+                TotalPriceHouseSupportCompensation = plan.TotalPriceHouseSupportCompensation,
+                TotalPriceArchitectureSupportCompensation = plan.TotalPriceArchitectureSupportCompensation,
+                TotalPricePlantSupportCompensation = plan.TotalPricePlantSupportCompensation,
+                TotalPriceOtherSupportCompensation = plan.TotalPriceOtherSupportCompensation,
+                TotalGpmbServiceCost = 0 // needd updated
+
+            };
+        }
+
+        private bool CopyTemplate(string fileSource, string fileDest)
+        {
+            try
+            {
+                File.Copy(fileSource, fileDest);
+
+                using (var wordDocument = WordprocessingDocument.Open(fileDest, true))
+                {
+                    var mainPart = wordDocument.MainDocumentPart;
+                    if (mainPart != null)
+                    {
+                        // Define content
+                        var text = new Text("Hello Open XML world");
+                        var run = new Run(text);
+                        var paragraph = new Paragraph(run);
+
+                        // Add the paragraph to the document body
+                        mainPart.Document.Body.AppendChild(paragraph);
+
+                        // Save the changes
+                        mainPart.Document.Save();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors
+                return false;
+            }
         }
 
         /// <summary>
@@ -180,6 +318,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
+        // TODO:
         public async Task ReCheckPricesOfPlanAsync(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);

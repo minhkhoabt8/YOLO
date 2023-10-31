@@ -88,13 +88,29 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        [HttpGet("export/{projectId}")]
+        [HttpGet("export/test/{projectId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportProjectFile(string projectId)
         {
             var result = await _planService.ExportPlansFileAsync(projectId);
             return File(result.FileByte, result.FileType, result.FileName);
         }
+
+        /// <summary>
+        /// Export BTHT File
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpGet("export/btht/{planId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportBthtFile(string planId)
+        {
+            var result = await _planService.ExportBTHTPlansWordAsync(planId);
+
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
+
+
         /// <summary>
         /// Update Plan
         /// </summary>

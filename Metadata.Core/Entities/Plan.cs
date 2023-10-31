@@ -35,21 +35,21 @@ public partial class Plan : ITextSearchableEntity
 
     public string PlanStatus { get; set; } = null!;
 
-    public int? TotalOwnerSupportCompensation { get; set; } = 0;
+    public int TotalOwnerSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceCompensation { get; set; } = 0;
+    public decimal TotalPriceCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceLandSupportCompensation { get; set; } = 0;
+    public decimal TotalPriceLandSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceHouseSupportCompensation { get; set; } = 0;
+    public decimal TotalPriceHouseSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceArchitectureSupportCompensation { get; set; } = 0;
+    public decimal TotalPriceArchitectureSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPricePlantSupportCompensation { get; set; } = 0;
+    public decimal TotalPricePlantSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalPriceOtherSupportCompensation { get; set; } = 0;
+    public decimal TotalPriceOtherSupportCompensation { get; set; } = 0;
 
-    public decimal? TotalDeduction { get; set; } = 0;
+    public decimal TotalDeduction { get; set; } = 0;
 
     public bool IsDeleted { get; set; } = false;
 
