@@ -17,7 +17,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<UnitPriceLand>> QueryAsync(UnitPriceLandQuery query, bool trackChanges = false)
         {
-            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands;
+            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

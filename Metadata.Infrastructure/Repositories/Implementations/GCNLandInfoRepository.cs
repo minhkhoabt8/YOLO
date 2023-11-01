@@ -22,7 +22,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<GcnlandInfo>> QueryAsync(GCNLandInfoQuery query, bool trackChanges = false)
         {
-            IQueryable<GcnlandInfo> gcnLandInfos = _context.GcnlandInfos.Include(c => c.AttachFiles);
+            IQueryable<GcnlandInfo> gcnLandInfos = _context.GcnlandInfos
+                .Include(c => c.AttachFiles)
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

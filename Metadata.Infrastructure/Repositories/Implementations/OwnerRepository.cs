@@ -31,7 +31,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .Include(o => o.Deductions)
                 .Include(o=> o.GcnlandInfos)
                 .Include(o=> o.AssetCompensations)
-                .Include(o=> o.AttachFiles);
+                .Include(o=> o.AttachFiles)
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

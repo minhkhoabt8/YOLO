@@ -26,7 +26,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         }
         public async Task<IEnumerable<MeasuredLandInfo>> QueryAsync(MeasuredLandInfoQuery query, bool trackChanges = false)
         {
-            IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos.Include(c => c.AttachFiles);
+            IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos
+                .Include(c => c.AttachFiles)
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

@@ -27,7 +27,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Plan>> QueryAsync(PlanQuery query, bool trackChanges = false)
         {
-            IQueryable <Plan> plans = _context.Plans;
+            IQueryable <Plan> plans = _context.Plans.Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {
