@@ -164,7 +164,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
-            _unitOfWork.OwnerRepository.Delete(owner);
+            owner.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
         }
