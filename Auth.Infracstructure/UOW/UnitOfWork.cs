@@ -20,6 +20,8 @@ namespace Auth.Infrastructure.UOW
         public IAccountRepository AccountRepository => GetSingletonRepository<IAccountRepository>();
         public IRoleRepository RoleRepository => GetSingletonRepository<IRoleRepository>();
         public IRefreshTokenRepository RefreshTokenRepository => GetSingletonRepository<IRefreshTokenRepository>();
+        public INotificationRepository NotificationRepository => GetSingletonRepository<INotificationRepository>(); 
+        
         public Task<int> CommitAsync()
         {
             return _context.SaveChangesAsync();

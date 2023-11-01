@@ -184,7 +184,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId)
         {
             //Get Data BTHT
-            var dataBTHT = await GetDataForBTHTPlanAsnc(planId)
+            var dataBTHT = await GetDataForBTHTPlanAsync(planId)
                 ?? throw new Exception("Value is null");
 
             //Get File Template
@@ -263,7 +263,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         /// <returns></returns>
         /// <exception cref="EntityWithIDNotFoundException{Plan}"></exception>
         /// <exception cref="EntityWithAttributeNotFoundException{Project}"></exception>
-        private async Task<BTHTPlanReadDTO> GetDataForBTHTPlanAsnc(string planId)
+        private async Task<BTHTPlanReadDTO> GetDataForBTHTPlanAsync(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
                 ?? throw new EntityWithIDNotFoundException<Plan>(planId);
@@ -336,7 +336,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        // TODO:
+        // TODO: Need Finish
         public async Task ReCheckPricesOfPlanAsync(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
@@ -345,6 +345,32 @@ namespace Metadata.Infrastructure.Services.Implementations
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
             plan.TotalOwnerSupportCompensation = owners.Count();
             //2.For each owner, re-caculating related prices and reassign it to plan
+        }
+
+        /// <summary>
+        /// Bảng Tổng Hợp Thu Hồi Report Excel 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId)
+        {
+            //Get Data From DB
+            throw new NotImplementedException();
+        }
+
+
+        private async Task<SummaryOfRecoveryReadDTO> GetDataForSummaryOfRecoveryAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var project = await _unitOfWork.ProjectRepository.GetProjectByPlandIdAsync(planId)
+                ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId); ;
+
+            var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
+                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+
+            throw new NotImplementedException();
         }
     }
 }
