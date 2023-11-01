@@ -72,7 +72,6 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<UnitPriceLand> UnitPriceLands { get; set; }
 
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetCompensation>(entity =>
@@ -653,15 +652,6 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanApprovedBy)
                 .HasMaxLength(50)
                 .HasColumnName("plan_approved_by");
-
-            entity.Property(e => e.PlanName)
-                .HasMaxLength(200)
-                .HasColumnName("plan_name");
-
-            entity.Property(e => e.PlanLocation)
-                .HasMaxLength(200)
-                .HasColumnName("plan_location");
-
             entity.Property(e => e.PlanCode)
                 .HasMaxLength(10)
                 .HasColumnName("plan_code");
@@ -680,6 +670,12 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanEndedTime)
                 .HasColumnType("datetime")
                 .HasColumnName("plan_ended_time");
+            entity.Property(e => e.PlanLocation)
+                .HasMaxLength(200)
+                .HasColumnName("plan_location");
+            entity.Property(e => e.PlanName)
+                .HasMaxLength(200)
+                .HasColumnName("plan_name");
             entity.Property(e => e.PlanPhrase)
                 .HasMaxLength(10)
                 .HasColumnName("plan_phrase");
@@ -698,6 +694,12 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalDeduction)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_deduction");
+            entity.Property(e => e.TotalGpmbServiceCost)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_gpmb_service_cost");
+            entity.Property(e => e.TotalLandRecoveryArea)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_land_recovery_area");
             entity.Property(e => e.TotalOwnerSupportCompensation).HasColumnName("total_owner_support_compensation");
             entity.Property(e => e.TotalPriceArchitectureSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
@@ -717,14 +719,6 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalPricePlantSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_price_plant_support_compensation");
-
-            entity.Property(e => e.TotalLandRecoveryArea)
-               .HasColumnType("decimal(18, 0)")
-               .HasColumnName("total_land_recovery_area");
-
-            entity.Property(e => e.TotalGpmbServiceCost)
-              .HasColumnType("decimal(18, 0)")
-              .HasColumnName("total_gpmb_service_cost");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Plans)
                 .HasForeignKey(d => d.ProjectId)
@@ -766,8 +760,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.District)
                 .HasMaxLength(20)
                 .HasColumnName("district");
-            entity.Property(e => e.ImplementationYear)
-                .HasColumnName("implementation_year");
+            entity.Property(e => e.ImplementationYear).HasColumnName("implementation_year");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LandCompensationBasis)
                 .HasMaxLength(20)
@@ -990,10 +983,10 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.AssetUnitId)
                 .HasMaxLength(50)
                 .HasColumnName("asset_unit_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.PriceAppliedCodeId)
                 .HasMaxLength(50)
                 .HasColumnName("price_applied_code_id");
-            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
             entity.HasOne(d => d.AssetGroup).WithMany(p => p.UnitPriceAssets)
                 .HasForeignKey(d => d.AssetGroupId)
