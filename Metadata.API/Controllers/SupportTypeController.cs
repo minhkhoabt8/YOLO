@@ -20,9 +20,9 @@ namespace Metadata.API.Controllers
         /// Get all SupportType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
-        public async Task<IActionResult> getAllSupportTypes()
+        public async Task<IActionResult> GetAllSupportTypes()
         {
             var supportTypes = await _supportTypeService.GetAllLandTypeAsync();
             return ResponseFactory.Ok(supportTypes);
@@ -44,9 +44,9 @@ namespace Metadata.API.Controllers
         /// Get SupportType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
-        public async Task<IActionResult> getSupportType(string id)
+        public async Task<IActionResult> GetSupportType(string id)
         {
             var supportType = await _supportTypeService.GetAsync(id);
             return ResponseFactory.Ok(supportType);
@@ -57,7 +57,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -73,7 +73,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -89,7 +89,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteSupportType(string id)

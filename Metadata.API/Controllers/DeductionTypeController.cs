@@ -22,9 +22,9 @@ namespace Metadata.API.Controllers
         /// Get all DeductionTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeductionTypes()
+        public async Task<IActionResult> GetAllDeductionTypes()
         {
             var deductionTypes = await _deductionTypeService.GetAllDeductionTypesAsync();
             return ResponseFactory.Ok(deductionTypes);
@@ -36,7 +36,7 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("getAllDeleted")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedDeductionTypes()
+        public async Task<IActionResult> GetAllDeletedDeductionTypes()
         {
             var deductionTypes = await _deductionTypeService.GetAllDeletedDeductionTypesAsync();
             return ResponseFactory.Ok(deductionTypes);
@@ -46,9 +46,9 @@ namespace Metadata.API.Controllers
         /// Get DeductionTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
-        public async Task<IActionResult> getDeductionType(string id)
+        public async Task<IActionResult> GetDeductionType(string id)
         {
             var deductionType = await _deductionTypeService.GetDeductionTypeAsync(id);
             return ResponseFactory.Ok(deductionType);
@@ -59,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -75,7 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,7 +91,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteDeductionType(string id)

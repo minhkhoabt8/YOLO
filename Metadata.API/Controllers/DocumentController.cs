@@ -37,9 +37,8 @@ namespace Metadata.API.Controllers
         /// Get Documents Of Project
         /// </summary>
         /// <param name="projectId"></param>
-        /// <param name="query"></param>
         /// <returns></returns>
-        [HttpGet("project")]
+        [HttpGet("projectId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DocumentReadDTO>))]
         public async Task<IActionResult> GetDocumentsOfProject(string projectId)
         {

@@ -22,9 +22,9 @@ namespace Metadata.API.Controllers
         /// Get all LandGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
-        public async Task<IActionResult> getAllLandGroups()
+        public async Task<IActionResult> GetAllLandGroups()
         {
             var landGroups = await _landGroupService.GetAllLandGroupAsync();
             return ResponseFactory.Ok(landGroups);
@@ -46,9 +46,9 @@ namespace Metadata.API.Controllers
         /// Get LandGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
-        public async Task<IActionResult> getLandGroup(string id)
+        public async Task<IActionResult> GetLandGroup(string id)
         {
             var landGroup = await _landGroupService.GetAsync(id);
             return ResponseFactory.Ok(landGroup);
@@ -59,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -75,7 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,7 +91,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteLandGroup(string id)

@@ -58,7 +58,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandGroupReadDTO?> UpdateAsync(string id, LandGroupWriteDTO landGroupUpdateDTO)
         {
-           var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+            var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+
             if (existLandgroup == null)
             {
                 throw new EntityWithIDNotFoundException<LandGroup>(id);
@@ -67,8 +68,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper.Map(landGroupUpdateDTO, existLandgroup);
             
             await _unitOfWork.CommitAsync();
-            return _mapper.Map<LandGroupReadDTO>(existLandgroup);
 
+            return _mapper.Map<LandGroupReadDTO>(existLandgroup);
 
         }
 

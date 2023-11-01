@@ -21,9 +21,9 @@ namespace Metadata.API.Controllers
         /// Get all OrganizationType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
-        public async Task<IActionResult> getAllOrganizationTypes()
+        public async Task<IActionResult> GetAllOrganizationTypes()
         {
             var organizationTypes = await _organizationService.GetAllOrganizationTypeAsync();
             return ResponseFactory.Ok(organizationTypes);
@@ -33,9 +33,9 @@ namespace Metadata.API.Controllers
         /// Get OrganizationType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
-        public async Task<IActionResult> getOrganizationType(string id)
+        public async Task<IActionResult> GetOrganizationType(string id)
         {
             var organizationType = await _organizationService.GetAsync(id);
             return ResponseFactory.Ok(organizationType);
@@ -59,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -75,7 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,7 +91,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete()]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteOrganizationType(string id)

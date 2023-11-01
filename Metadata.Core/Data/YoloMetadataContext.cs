@@ -118,7 +118,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -132,7 +132,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -263,7 +263,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -313,11 +313,11 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("document_type_id");
             entity.Property(e => e.Code)
-                .HasMaxLength(6)
+                .HasMaxLength(10)
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -370,7 +370,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -454,7 +454,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("land_group_id");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
 
             entity.HasOne(d => d.LandGroup).WithMany(p => p.LandTypes)
@@ -556,7 +556,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -963,7 +963,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 

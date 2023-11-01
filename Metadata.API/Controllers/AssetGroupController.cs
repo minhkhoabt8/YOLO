@@ -21,9 +21,9 @@ namespace Metadata.API.Controllers
         /// Get all AssetGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
-        public async Task<IActionResult> getAllAssetGroups()
+        public async Task<IActionResult> GetAllAssetGroups()
         {
             var assetGroups = await _assetGroupService.GetAllAssetGroupsAsync();
             return ResponseFactory.Ok(assetGroups);
@@ -35,19 +35,20 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("getAllDeleted")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedAssetGroups()
+        public async Task<IActionResult> GetAllDeletedAssetGroups()
         {
             var assetGroups = await _assetGroupService.GetAllDeletedAssetGroupAsync();
             return ResponseFactory.Ok(assetGroups);
         }
 
         /// <summary>
-        /// get AssetGroup by Id
+        /// Get Asset Group Details
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
-        public async Task<IActionResult> getAssetGroup(string id)
+        public async Task<IActionResult> GetAssetGroup(string id)
         {
             var assetGroup = await _assetGroupService.GetAssetGroupAsync(id);
             return ResponseFactory.Ok(assetGroup);
@@ -58,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -74,7 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -90,7 +91,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteAssetGroup(string id)

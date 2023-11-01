@@ -28,7 +28,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("query")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ApiPaginatedOkResponse<LandPositionInfoReadDTO>>))]
         public async Task<IActionResult> QuerylandPositionInfo([FromQuery] LandPositionInfoQuery query)
         {

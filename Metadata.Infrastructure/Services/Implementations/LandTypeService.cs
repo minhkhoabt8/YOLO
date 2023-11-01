@@ -35,16 +35,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<LandTypeReadDTO>(landType);
         }
 
-        public async Task<bool> DeleteAsync(LandTypeWriteDTO delete)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var landType = await _unitOfWork.LandTypeRepository.FindAsync(delete);   
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(id);   
             if (landType == null)
             {
-                throw new EntityWithIDNotFoundException<LandType>(delete);
+                throw new EntityWithIDNotFoundException<LandType>(id);
             }
             landType.IsDeleted = true;
 
-            _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
             return true;
         }
 

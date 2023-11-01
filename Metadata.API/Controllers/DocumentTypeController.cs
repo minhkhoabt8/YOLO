@@ -21,9 +21,9 @@ namespace Metadata.API.Controllers
         /// Get all DocumentTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DocumentTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDocumentTypes()
+        public async Task<IActionResult> GetAllDocumentTypes()
         {
             var documentTypes = await _documentTypeService.GetAllDocumentTypesAsync();
             return ResponseFactory.Ok(documentTypes);
@@ -35,7 +35,7 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("getAllDeteled")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DocumentTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedDocumentTypes()
+        public async Task<IActionResult> GetAllDeletedDocumentTypes()
         {
             var documentTypes = await _documentTypeService.GetAllDeletedDocumentTypesAsync();
             return ResponseFactory.Ok(documentTypes);
@@ -45,9 +45,9 @@ namespace Metadata.API.Controllers
         /// Get DocumentTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentTypeReadDTO>))]
-        public async Task<IActionResult> getDocumentType(string id)
+        public async Task<IActionResult> GetDocumentType(string id)
         {
             var documentType = await _documentTypeService.GetDocumentTypeAsync(id);
             return ResponseFactory.Ok(documentType);
@@ -58,7 +58,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DocumentTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -74,7 +74,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("{id}")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -90,7 +90,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteDocumentType(string id)
