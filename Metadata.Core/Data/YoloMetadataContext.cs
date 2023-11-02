@@ -300,6 +300,13 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ReferenceLink).HasColumnName("reference_link");
             entity.Property(e => e.SignInfo).HasColumnName("sign_info");
 
+            entity.Property(e => e.FileName)
+                .HasMaxLength(50)
+                .HasColumnName("file_name");
+
+            entity.Property(e => e.FileSize)
+                .HasColumnName("file_size");
+
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.DocumentTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -516,6 +523,10 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.MeasuredPlotArea)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("measured_plot_area");
+
+            entity.Property(e => e.UnitPriceLandCost)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("unit_price_land_cost");
             entity.Property(e => e.MeasuredPlotNumber)
                 .HasMaxLength(10)
                 .HasColumnName("measured_plot_number");

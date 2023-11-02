@@ -22,6 +22,8 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 
         public decimal? CompensationRate { get; set; }
 
+        public decimal? UnitPriceLandCost { get; set; }
+
         public string? CompensationNote { get; set; }
 
         public string GcnLandInfoId { get; set; }

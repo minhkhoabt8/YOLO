@@ -46,7 +46,7 @@ public class AcccountController : ControllerBase
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
     {
         var accounts = await _accountService.QueryAccount(query);
-        return ResponseFactory.Ok(accounts);
+        return ResponseFactory.PaginatedOk(accounts);
     }
 
 

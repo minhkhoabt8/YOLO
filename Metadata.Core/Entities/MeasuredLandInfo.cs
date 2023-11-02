@@ -28,6 +28,8 @@ public partial class MeasuredLandInfo : ITextSearchableEntity
 
     public string? CompensationNote { get; set; }
 
+    public decimal? UnitPriceLandCost { get; set; }
+
     public string GcnLandInfoId { get; set; } = null!;
 
     public string OwnerId { get; set; } = null!;

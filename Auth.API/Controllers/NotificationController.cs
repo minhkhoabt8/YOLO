@@ -31,7 +31,7 @@ namespace Auth.API.Controllers
         {
             var notifications = await _notificationService.QueryNotification(query);
 
-            return ResponseFactory.Ok(notifications);
+            return ResponseFactory.PaginatedOk(notifications);
         }
 
         /// <summary>
