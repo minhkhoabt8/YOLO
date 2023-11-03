@@ -57,6 +57,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 document.ReferenceLink = returnUrl;
 
+                document.FileName = documentDto.FileName!;
+
+                document.FileSize = documentDto.FileAttach.Length;
+
                 document.CreatedBy = _userContextService.Username! ??
                     throw new CanNotAssignUserException();
 

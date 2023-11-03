@@ -20,5 +20,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.Deductions.Where(c => c.OwnerId == ownerId).ToListAsync();
         }
+        public async Task<decimal> CaculateTotalDeductionOfOwnerAsync(string ownerId)
+        {
+            return await _context.Deductions.Where(c => c.OwnerId == ownerId).SumAsync(c=>c.DeductionPrice);
+        }
     }
 }

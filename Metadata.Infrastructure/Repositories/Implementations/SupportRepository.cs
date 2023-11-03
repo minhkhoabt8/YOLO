@@ -15,5 +15,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.Supports.Where(c => c.OwnerId == ownerId).ToListAsync();
         }
+        public async Task<decimal> CaculateTotalSupportOfOwnerAsync(string ownerId)
+        {
+            return await _context.Supports.Where(c => c.OwnerId == ownerId).SumAsync(c => c.SupportPrice);
+        }
     }
 }

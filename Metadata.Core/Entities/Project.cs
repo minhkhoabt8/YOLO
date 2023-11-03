@@ -23,15 +23,15 @@ public partial class Project : ITextSearchableEntity
 
     public string? Ward { get; set; }
 
-    public decimal? ProjectExpense { get; set; }
+    public decimal? ProjectExpense { get; set; } = 0;
 
     public DateTime? ProjectApprovalDate { get; set; }
 
-    public int? ImplementationYear { get; set; }
+    public int? ImplementationYear { get; set; } = 2023;
 
     public string? RegulatedUnitPrice { get; set; }
 
-    public int? ProjectBriefNumber { get; set; }
+    public int? ProjectBriefNumber { get; set; } = 0;
 
     public string? ProjectNote { get; set; }
 
@@ -41,7 +41,7 @@ public partial class Project : ITextSearchableEntity
 
     public string? ReportSignal { get; set; }
 
-    public int? ReportNumber { get; set; }
+    public int? ReportNumber { get; set; } = 0;
 
     public string? PriceBasis { get; set; }
 

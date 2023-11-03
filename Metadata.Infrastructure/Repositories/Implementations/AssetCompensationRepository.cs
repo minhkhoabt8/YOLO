@@ -22,22 +22,38 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.AssetCompensations.Include(c=>c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
-
-        public async Task<decimal> CaculateAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType)
+        /// <summary>
+        /// If reCheck = true, re-caculate asset compensation, else get directly from field (CompensationPrice)
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="assetType"></param>
+        /// <param name="trackChange"></param>
+        /// <returns></returns>
+        public async Task<decimal> CaculateTotalAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType, bool? reCheck = false)
         {
-            var totalCompensation = _context.AssetCompensations.Where(c => c.OwnerId == ownerId);
+            var totalAssetCompensation = _context.AssetCompensations.Include(c=>c.UnitPriceAsset).Where(c => c.OwnerId == ownerId);
 
             decimal total = 0;
 
-            if (assetType == null)
+            if (assetType == null && reCheck == false)
             {
-                total = await totalCompensation.SumAsync(c => c.CompensationPrice);
+                total = await totalAssetCompensation.SumAsync(c => c.CompensationPrice);
             }
-            else
+            if (assetType == null && reCheck == true)
             {
-                total = await totalCompensation
+                total = await totalAssetCompensation.SumAsync(c => c.QuantityArea * c.CompensationRate * c.UnitPriceAsset.AssetPrice);
+            }
+            if (assetType != null && reCheck == false)
+            {
+                total = await totalAssetCompensation
                     .Where(c => c.CompensationType == assetType.ToString())
                     .SumAsync(c => c.CompensationPrice);
+            }
+            if (assetType != null && reCheck == true)
+            {
+                total = await totalAssetCompensation
+                    .Where(c => c.CompensationType == assetType.ToString())
+                    .SumAsync(c => c.QuantityArea * c.CompensationRate * c.UnitPriceAsset.AssetPrice);
             }
 
             return total;

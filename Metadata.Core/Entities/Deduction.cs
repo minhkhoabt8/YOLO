@@ -11,7 +11,7 @@ public partial class Deduction
 
     public string DeductionContent { get; set; } = null!;
 
-    public decimal DeductionPrice { get; set; }
+    public decimal DeductionPrice { get; set; } = 0;
 
     public string? OwnerId { get; set; }
 

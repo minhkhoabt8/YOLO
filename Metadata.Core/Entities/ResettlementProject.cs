@@ -14,17 +14,17 @@ public partial class ResettlementProject
 
     public string Name { get; set; } = null!;
 
-    public int LimitToResettlement { get; set; }
+    public int LimitToResettlement { get; set; } = 0;
 
-    public int LimitToConsideration { get; set; }
+    public int LimitToConsideration { get; set; } = 0;
 
     public string? Position { get; set; }
 
-    public int LandNumber { get; set; }
+    public int LandNumber { get; set; } = 0;
 
     public string? ImplementYear { get; set; }
 
-    public decimal LandPrice { get; set; }
+    public decimal LandPrice { get; set; } = 0;
 
     public string? Note { get; set; }
 

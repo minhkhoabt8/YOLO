@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
@@ -164,6 +165,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
+            if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString()
+                || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString()
+                || owner.PlanId != null || owner.ProjectId !=null)
+                throw new InvalidActionException();
+
             owner.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
@@ -233,6 +239,76 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<OwnerReadDTO>(owner);
 
+        }
+        //TODO:Asign Owner To Plan
+        public async Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<OwnerWriteDTO> dtos)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public async Task<OwnerReadDTO> RemoveOwnerFromPlanAsync(string ownerId, string planId)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            if (owner.PlanId != planId) 
+                throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.PlanId), planId);
+
+            if(owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
+                throw new InvalidActionException();
+
+            owner.PlanId = null;
+
+            //Update Plan Price Info
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            plan.TotalOwnerSupportCompensation -= 1;
+
+            //Tong Cong Gia Den Bu =  (Dat + Tai San) cua Owner
+            plan.TotalPriceCompensation -= await  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null) 
+                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+            plan.TotalPriceLandSupportCompensation -=  await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+            plan.TotalPriceHouseSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House);
+
+            plan.TotalPriceArchitectureSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture);
+
+            plan.TotalPricePlantSupportCompensation -=  await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
+
+            plan.TotalPriceOtherSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Other);
+
+            plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
+
+            plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+
+            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+            plan.TotalGpmbServiceCost -= plan.TotalPriceCompensation - plan.TotalDeduction; 
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OwnerReadDTO>(owner);
+        }
+
+
+        public async Task<OwnerReadDTO> RemoveOwnerFromProjectAsync(string ownerId, string projectId)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            if (owner.ProjectId != projectId)
+                throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.ProjectId), projectId);
+
+            if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
+                throw new InvalidActionException();
+
+            owner.PlanId = null;
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OwnerReadDTO>(owner);
         }
     }
 }

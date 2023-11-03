@@ -13,6 +13,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<AssetCompensation>
     {
         Task<IEnumerable<AssetCompensation?>> GetAllAssetCompensationsOfOwnerAsync(string ownerId);
-        Task<decimal> CaculateAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType);
+        Task<decimal> CaculateTotalAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType, bool? reCheck = false);
     }
 }

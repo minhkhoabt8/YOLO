@@ -18,15 +18,15 @@ public partial class UnitPriceLand : ITextSearchableEntity
 
     public string LandUnit { get; set; } = null!;
 
-    public decimal? LandPosition1 { get; set; }
+    public decimal? LandPosition1 { get; set; } = 0;
 
-    public decimal? LandPosition2 { get; set; }
+    public decimal? LandPosition2 { get; set; } = 0;
 
-    public decimal? LandPosition3 { get; set; }
+    public decimal? LandPosition3 { get; set; } = 0;
 
-    public decimal? LandPosition4 { get; set; }
+    public decimal? LandPosition4 { get; set; } = 0;
 
-    public decimal? LandPosition5 { get; set; }
+    public decimal? LandPosition5 { get; set; } = 0;
 
     public bool IsDeleted { get; set; } = false;
 

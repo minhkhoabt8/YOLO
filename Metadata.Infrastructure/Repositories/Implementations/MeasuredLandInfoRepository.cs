@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.InkML;
 using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,22 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.MeasuredLandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
 
-        public async Task<decimal?> CaculateTotalUnitPriceLandOfOwnerAsync(string ownerId)
+        public async Task<decimal> CaculateTotalLandCompensationPriceOfOwnerAsync(string ownerId, bool? reCheck = false)
         {
-            throw new NotImplementedException();
+            var totalLandCompensationPrice =  _context.MeasuredLandInfos.Include(c=>c.UnitPriceLand).Where(c => c.OwnerId == ownerId);
+
+            decimal total = 0;
+
+            if(reCheck == false)
+            {
+                total = await totalLandCompensationPrice.SumAsync(c => c.UnitPriceLandCost);
+            }
+
+            total = await totalLandCompensationPrice.SumAsync(c => c.WithdrawArea * c.CompensationRate * c.UnitPriceLandCost) ?? 0;
+
+            return total;
         }
+
         public async Task<IEnumerable<MeasuredLandInfo>> QueryAsync(MeasuredLandInfoQuery query, bool trackChanges = false)
         {
             IQueryable<MeasuredLandInfo> measuredLandInfos = _context.MeasuredLandInfos

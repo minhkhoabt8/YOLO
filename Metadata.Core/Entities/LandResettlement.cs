@@ -17,9 +17,9 @@ public partial class LandResettlement
 
     public string? PlotAddress { get; set; }
 
-    public decimal? LandSize { get; set; }
+    public decimal? LandSize { get; set; } = 0;
 
-    public decimal? TotalLandPrice { get; set; }
+    public decimal? TotalLandPrice { get; set; } = 0;
 
     public string ResettlementProjectId { get; set; } = null!;
 

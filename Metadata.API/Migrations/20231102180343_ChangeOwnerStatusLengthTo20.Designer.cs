@@ -4,6 +4,7 @@ using Metadata.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Metadata.API.Migrations
 {
     [DbContext(typeof(YoloMetadataContext))]
-    partial class YoloMetadataContextModelSnapshot : ModelSnapshot
+    [Migration("20231102180343_ChangeOwnerStatusLengthTo20")]
+    partial class ChangeOwnerStatusLengthTo20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("compensation_content");
 
                     b.Property<decimal>("CompensationPrice")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("compensation_price");
 
                     b.Property<int>("CompensationRate")
@@ -281,7 +284,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("deduction_content");
 
                     b.Property<decimal>("DeductionPrice")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("deduction_price");
 
                     b.Property<string>("DeductionTypeId")
@@ -766,7 +769,7 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("owner_id");
 
-                    b.Property<decimal>("UnitPriceLandCost")
+                    b.Property<decimal?>("UnitPriceLandCost")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("unit_price_land_cost");
 
@@ -1395,7 +1398,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("support_number");
 
                     b.Property<decimal>("SupportPrice")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("support_price");
 
                     b.Property<string>("SupportTypeId")
@@ -1467,7 +1470,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("asset_name");
 
                     b.Property<decimal>("AssetPrice")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("asset_price");
 
                     b.Property<string>("AssetRegulation")
@@ -1520,23 +1523,23 @@ namespace Metadata.API.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<decimal?>("LandPosition1")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("land_position_1");
 
                     b.Property<decimal?>("LandPosition2")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("land_position_2");
 
                     b.Property<decimal?>("LandPosition3")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("land_position_3");
 
                     b.Property<decimal?>("LandPosition4")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("land_position_4");
 
                     b.Property<decimal?>("LandPosition5")
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(10, 3)")
                         .HasColumnName("land_position_5");
 
                     b.Property<string>("LandTypeId")

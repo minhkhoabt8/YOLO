@@ -1,9 +1,12 @@
-﻿using Metadata.Infrastructure.DTOs.AssetCompensation;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Deduction;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Support;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -35,8 +38,9 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public string ProjectId { get; set; }
         [MaxLength(50)]
         public string PlanId { get; set; }
-        [MaxLength(10)]
-        public string OwnerStatus { get; set; }
+        [EnumDataType(typeof(PlanStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public OwnerStatusEnum OwnerStatus { get; set; }
         public DateTime PublishedDate { get; set; }
         [MaxLength(50)]
         public string PublishedPlace { get; set; }
