@@ -99,20 +99,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             //2.3 Gcn Land Info
             if(!dto.GcnlandInfos.IsNullOrEmpty())
             {
-                ownerReadDto.GcnlandInfos =  await _gcNLandInfoService.CreateOwnerGcnLandInfosAsync(owner.OwnerId, dto.GcnlandInfos!);
+                ownerReadDto.GcnlandInfos =  await _gcNLandInfoService.CreateGCNLandInfosAsync(dto.GcnlandInfos!);
             }
-            //2.4 MeasuredLandInfos
-            if(!dto.MeasuredLandInfos.IsNullOrEmpty())
-            {
-                ownerReadDto.MeasuredLandInfos = await _measuredLandInfoService.CreateOwnerMeasuredLandInfosAsync(owner.OwnerId, dto.MeasuredLandInfos!);
-            }
-            //2.5 AssetCompensations
+
+            //2.4 AssetCompensations
             if (!dto.AssetCompensations.IsNullOrEmpty())
             {
                 ownerReadDto.AssetCompensations = await _assetCompensationService.CreateOwnerAssetCompensationsAsync(owner.OwnerId, dto.AssetCompensations!);
             }
 
-            //2.6 AttachFiles
+            //2.5 AttachFiles
             if(!dto.AttachFiles.IsNullOrEmpty())
             {
                 ownerReadDto.AttachFiles = await _attachFileService.CreateOwnerAttachFilesAsync(owner.OwnerId, dto.AttachFiles!);
@@ -177,7 +173,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 

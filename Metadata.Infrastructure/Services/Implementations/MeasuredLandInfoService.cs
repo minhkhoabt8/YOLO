@@ -7,6 +7,7 @@ using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -28,13 +29,27 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<MeasuredLandInfoReadDTO> CreateMeasuredLandInfoAsync(MeasuredLandInfoWriteDTO dto)
         {
-            //TODO: Validate IDs
+            var unitPriceLand = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.UnitPriceLandId)
+                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+
+            var gcnLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.GcnLandInfoId) 
+                ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
+
+            if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
+
 
             var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(dto);
 
             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
 
-            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            if (dto.AttachFiles.IsNullOrEmpty())
+            {
+                foreach (var file in dto.AttachFiles!)
+                {
+                    file.MeasuredLandInfoId = measuredLandInfo.MeasuredLandInfoId;
+                }
+                await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+            }
 
             await _unitOfWork.CommitAsync();
 
@@ -58,6 +73,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach (var item in dto)
             {
+                var unitPriceLand = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(item.UnitPriceLandId)
+                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(item.UnitPriceLandId);
+
+                var gcnLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(item.GcnLandInfoId)
+                    ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(item.GcnLandInfoId);
+
+                if (gcnLandInfo.OwnerId != item.OwnerId) throw new InvalidActionException();
+
                 var landInfo = _mapper.Map<MeasuredLandInfo>(item);
 
                 landInfo.OwnerId = ownerId;
@@ -98,7 +121,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<MeasuredLandInfoReadDTO> GetMeasuredLandInfoAsync(string id)
         {
-            var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
+            var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id, include: "AttachFiles");
             return _mapper.Map<MeasuredLandInfoReadDTO>(measuredLandInfo);
         }
 
@@ -110,7 +133,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<MeasuredLandInfoReadDTO> UpdateMeasuredLandInfoAsync(string id, MeasuredLandInfoWriteDTO dto)
         {
-            //TODO: Validate IDs
+            var unitPriceLand = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.UnitPriceLandId)
+                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+
+            var gcnLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.GcnLandInfoId)
+                ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
+
+            if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
+
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
 
             if (measuredLandInfo == null) throw new EntityWithIDNotFoundException<MeasuredLandInfo>(id);

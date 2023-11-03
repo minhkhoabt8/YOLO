@@ -26,6 +26,8 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
 
         public LandTypeReadDTO? LandType { get; set; }
 
+        public IEnumerable<MeasuredLandInfoReadDTO> MeasuredLandInfos { get; set; }
+
         public IEnumerable<AttachFileReadDTO> AttachFiles { get; set; }
 
 

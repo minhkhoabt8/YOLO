@@ -56,7 +56,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public IEnumerable<SupportWriteDTO>? Supports { get; set; }
         public IEnumerable<DeductionWriteDTO>? Deductions { get; set; }
         public IEnumerable<GCNLandInfoWriteDTO>? GcnlandInfos { get; set;}
-        public IEnumerable<MeasuredLandInfoWriteDTO>? MeasuredLandInfos { get; set; }
+        //public IEnumerable<MeasuredLandInfoWriteDTO>? MeasuredLandInfos { get; set; }
         public IEnumerable<AssetCompensationWriteDTO>? AssetCompensations { get; set; }
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
 

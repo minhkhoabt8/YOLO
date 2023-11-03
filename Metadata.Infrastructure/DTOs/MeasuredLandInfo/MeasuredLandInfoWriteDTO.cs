@@ -23,10 +23,11 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         [Range(0, double.MaxValue)]
         public decimal? UnitPriceLandCost { get; set; } = 0;
         public string? CompensationNote { get; set; }
+        [Required]
         public string GcnLandInfoId { get; set; } = null!;
-
+        [Required]
         public string OwnerId { get; set; } = null!;
-
+        [Required]
         public string UnitPriceLandId { get; set; } = null!;
 
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
