@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Core.Enums
+namespace Metadata.Infrastructure.DTOs.Owner
 {
-    public enum OwnerStatusEnum
+    public class OwnerFileExportWriteDTO
     {
-        Unknown,
-        AcceptCompensation,
-        RejectCompensation
+
     }
 }

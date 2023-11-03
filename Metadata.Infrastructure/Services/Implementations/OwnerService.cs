@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
@@ -116,7 +117,123 @@ namespace Metadata.Infrastructure.Services.Implementations
             return ownerReadDto;
         }
 
+        public async Task<IEnumerable<OwnerWriteDTO>> ExtractOwnersFromFileAsync(IFormFile file)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (file == null || file.Length <= 0)
+            {
+                throw new InvalidActionException();
+            }
 
+            var importedUsers = new List<OwnerFileImportWriteDTO>();
+
+            using (var package = new ExcelPackage(file.OpenReadStream()))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+
+                string[] parts = worksheet.Cells["D6"].Text.Split(':');
+
+                var project = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(parts[1].Trim());
+
+                if (project == null) 
+                    throw new EntityWithAttributeNotFoundException<Project>(nameof(Project.ProjectName), parts[1].Trim());
+
+                for (int row = 11; row <= worksheet.Dimension.End.Row; row++)
+                {
+                    var organizationType = await _unitOfWork.OrganizationTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 16].Value?.ToString() ?? string.Empty, false)
+                        ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OrganizationType), worksheet.Cells[row, 16].Value.ToString()!, row);
+
+                    var user = new OwnerFileImportWriteDTO
+                    {
+                        OwnerCode = worksheet.Cells[row, 4].Value?.ToString() ?? string.Empty,
+                        OwnerName = worksheet.Cells[row, 5].Value?.ToString() ?? string.Empty,
+                        OwnerIdCode = worksheet.Cells[row, 6].Value?.ToString() ?? string.Empty,
+
+                        PublishedDate = DateTime.TryParse(worksheet.Cells[row, 7].Value?.ToString(), out DateTime publishDate)
+                            ? publishDate
+                            : null,
+
+                        OwnerGender = worksheet.Cells[row, 8].Value?.ToString(),
+
+                        OwnerDateOfBirth = DateTime.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out DateTime dateOfBirth)
+                            ? dateOfBirth
+                            : null,
+
+                        OwnerEthnic = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
+                        OwnerNational = worksheet.Cells[row, 11].Value?.ToString() ?? string.Empty,
+                        OwnerAddress = worksheet.Cells[row, 12].Value?.ToString() ?? string.Empty,
+
+                        OwnerType = MapUsertypeEnumWithUserInput(worksheet.Cells[row, 13].Value?.ToString()!).ToString()
+                            ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OwnerType), worksheet.Cells[row, 13].Value.ToString()!, row),
+
+
+                        ProjectId = project.ProjectId,
+
+
+                        //null start from here
+                        HusbandWifeName = worksheet.Cells[row, 14].Value?.ToString() ?? string.Empty,
+
+                        RepresentPerson = worksheet.Cells[row, 15].Value?.ToString() ?? string.Empty,
+
+                        
+                        OrganizationTypeId = organizationType.OrganizationTypeId,
+
+                        OwnerTaxCode = worksheet.Cells[row, 17].Value?.ToString() ?? string.Empty,
+
+                        TaxPublishedDate = DateTime.TryParse(worksheet.Cells[row, 18].Value?.ToString(), out DateTime taxPublishDate)
+                            ? taxPublishDate
+                            : null,
+                        PublishedPlace = worksheet.Cells[row, 19].Value?.ToString() ?? string.Empty
+
+                    };
+                    importedUsers.Add(user);
+                }
+                package.Dispose();
+            }
+            return _mapper.Map<IEnumerable<OwnerWriteDTO>>(importedUsers);
+        }
+
+        private static ProjectOwnerTypeEnum MapUsertypeEnumWithUserInput(string name)
+        {
+            var input = name.ToLower().Split(" ");
+            if (input.Equals("cánhân")) return ProjectOwnerTypeEnum.Individual;
+            if (input.Equals("giađình")) return ProjectOwnerTypeEnum.Household;
+            if (input.Equals("tổchức")) return ProjectOwnerTypeEnum.Organization;
+            return ProjectOwnerTypeEnum.Individual;
+        }
+
+
+        public async Task<IEnumerable<OwnerReadDTO>> ImportOwnerFromExcelFileAsync(IFormFile file)
+        {
+
+            var dtos = await ExtractOwnersFromFileAsync(file);
+
+            var ownersList = new List<Owner>();
+
+            foreach (var dto in dtos)
+            {
+                var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
+
+                if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
+
+                //var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId);
+
+                //if (plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId);
+
+                var owner = _mapper.Map<Owner>(dto);
+
+                owner.OwnerCreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
+
+                await _unitOfWork.OwnerRepository.AddAsync(owner);
+
+                await _unitOfWork.CommitAsync();
+
+                ownersList.Add(owner);
+            }
+
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownersList);  
+        }
 
         /// <summary>
         /// This method only used to test export all owners in database

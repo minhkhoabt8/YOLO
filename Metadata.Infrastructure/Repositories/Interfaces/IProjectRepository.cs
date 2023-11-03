@@ -19,5 +19,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<Project?> GetProjectIncludePlanByPlanIdAsync(string planId);
         Task<Project?> GetProjectByPlandIdAsync(string planId);
+        Task<Project?> GetProjectByNameAsync(string projectName);
     }
 }

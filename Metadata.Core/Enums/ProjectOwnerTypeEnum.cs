@@ -8,8 +8,10 @@ namespace Metadata.Core.Enums
 {
     public enum ProjectOwnerTypeEnum
     {
+        None,
         Individual,
         Organization,
         Household
     }
+    
 }
