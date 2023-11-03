@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 
@@ -36,6 +39,29 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
         }
+
+        public async Task<ExportFileDTO> GetFileImportExcelTemplateAsync(string name)
+        {
+            string fileName = "";
+
+            if (name.ToLower().Equals("owner"))
+            {
+                fileName = GetFileTemplateDirectory.Get("BangNhapChuSoHuu");
+            }
+
+            if (!File.Exists(fileName))
+            {
+                throw new EntityWithAttributeNotFoundException<ExportFileDTO>(nameof(ExportFileDTO.FileName), name);
+            }
+
+            return new ExportFileDTO
+            {
+                FileName = Path.GetFileName(fileName) + DateTime.Now.SetKindUtc(),
+                FileByte = File.ReadAllBytes(fileName),
+                FileType = FileTypeExtensions.ToFileMimeTypeString(FileTypeEnum.xlsx)
+            };
+        }
+        
 
         public async Task<IEnumerable<DocumentReadDTO>> CreateDocumentsAsync(IEnumerable<DocumentWriteDTO> documentDtos)
         {
