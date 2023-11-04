@@ -23,6 +23,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await Task.FromResult(_context.Owners.Where(o => o.PlanId == planId && o.IsDeleted == false));
         }
+        public async Task<IEnumerable<Owner>> GetAllOwner()
+        {
+            return await Task.FromResult(_context.Owners.Where(o => o.IsDeleted == false));
+        }
 
         public async Task<IEnumerable<Owner>> QueryAsync(OwnerQuery query, bool trackChanges = false)
         {
@@ -52,5 +56,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<Owner> enumeratedOwner = owners.AsEnumerable();
             return await Task.FromResult(enumeratedOwner);
         }
+
+        
     }
 }

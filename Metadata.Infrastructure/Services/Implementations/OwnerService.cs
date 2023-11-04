@@ -39,6 +39,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             _attachFileService = attachFileService;
         }
 
+        public async Task<IEnumerable<OwnerReadDTO>> GetAllOwner()
+        {
+            var owners = await _unitOfWork.OwnerRepository.GetAllOwner();
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(owners);
+        }
+
         public async Task<OwnerReadDTO> CreateOwnerAsync(OwnerWriteDTO dto)
         {
             var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
@@ -234,5 +240,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
 
         }
+
+        
     }
 }

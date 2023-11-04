@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.DTOs.LandType;
+using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,11 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<LandTypeReadDTO?> GetAsync(string code);
         Task<LandTypeReadDTO?> CreateLandTypeAsync(LandTypeWriteDTO landTypeWriteDTO);
         Task<LandTypeReadDTO?> UpdateAsync(string id, LandTypeWriteDTO landTypeUpdateDTO);
-        Task<bool> DeleteAsync(LandTypeWriteDTO delete);
-        Task<IEnumerable<LandTypeReadDTO>> GetAllDeletedLandTypeAsync();
+        Task<bool> DeleteAsync(string delete);
+        Task<IEnumerable<LandTypeReadDTO>> GetAllActivedLandTypeAsync();
+        Task<IEnumerable<LandTypeReadDTO>> CreateLandTypesAsync(IEnumerable<LandTypeWriteDTO> landTypeWriteDTOs);
+        Task CheckNameLandGroupNotDuplicate(string name);
+        Task CheckCodeLandGroupNotDuplicate(string code);
+        Task<PaginatedResponse<LandTypeReadDTO>> QueryLandTypeAsync(LandTypeQuery paginationQuery);
     }
 }

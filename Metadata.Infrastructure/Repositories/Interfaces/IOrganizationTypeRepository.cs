@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.OrganizationType;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<OrganizationType?> FindByCodeAsync(string code);
         Task<OrganizationType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
-        Task<IEnumerable<OrganizationType>?> GetAllDeletedOrganizationTypes();
+        Task<OrganizationType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
+        Task<IEnumerable<OrganizationType>?> GetAllActivedOrganizationTypes();
+        Task<IEnumerable<OrganizationType>> QueryAsync(OrganizationTypeQuery query, bool trackChanges = false);
     }
  
 }

@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -28,9 +29,29 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetGroups.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
 
-        public async Task<IEnumerable<AssetGroup>?> GetAllDeletedAssetGroup()
+        public async Task<AssetGroup?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.AssetGroups.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.AssetGroups.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
         }
+
+
+        public async Task<IEnumerable<AssetGroup>?> GetAllActivedDeletedAssetGroup()
+        {
+            return await _context.AssetGroups.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<AssetGroup>> QueryAsync (AssetGroupQuery query , bool trackChanges = false)
+        {
+            IQueryable<AssetGroup> assetGroups = _context.AssetGroups;
+
+            if (!trackChanges)
+            {
+                assetGroups = assetGroups.AsNoTracking();
+            }
+
+            IEnumerable<AssetGroup> enumeratedAssetGroups = assetGroups.AsEnumerable();
+            return await Task.FromResult(enumeratedAssetGroups);
+        }
+        
     }
 }

@@ -21,5 +21,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<OwnerReadDTO> AssignProjectOwnerAsync(string projectId, string ownerId);
         Task<IEnumerable<OwnerReadDTO>> GetOwnersOfProjectAsync(string projectId);
         Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto);
+
+        Task<IEnumerable<OwnerReadDTO>> GetAllOwner();
     }
 }

@@ -42,14 +42,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all deleted OrganizationType
+        /// Get all actived OrganizationType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeletedOrganizationType")]
+        [HttpGet("getAllActivedOrganizationType")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedOrganizationType()
+        public async Task<IActionResult> getAllActivedOrganizationType()
         {
-            var organizationTypes = await _organizationService.GetAllDeletedOrganizationTypeAsync();
+            var organizationTypes = await _organizationService.GetAllActivedOrganizationTypeAsync();
             return ResponseFactory.Ok(organizationTypes);
         }
 
@@ -59,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -70,12 +70,27 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Create new OrganizationType
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateOrganizationTypeList(IEnumerable<OrganizationTypeWriteDTO> input)
+        {
+            var organizationType = await _organizationService.CreateOrganizationTypesAsync(input);
+            return ResponseFactory.Created(organizationType);
+        }
+
+        /// <summary>
         /// Update OrganizationType
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("UpdateId")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,13 +106,51 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OrganizationTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteOrganizationType(string id)
         {
             await _organizationService.DeleteAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Check Duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+             await _organizationService.CheckNameOrganizationTypeNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check Duplicate Code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+            await _organizationService.CheckCodeOrganizationTypeNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  OrganizationType
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OrganizationTypeReadDTO>>))]
+        public async Task<IActionResult> QueryOrganizationType([FromQuery] OrganizationTypeQuery query)
+        {
+            var organizationTypes = await _organizationService.QueryOrganizationTypeAsync(query);
+            return ResponseFactory.Ok(organizationTypes);
         }
     }
 }

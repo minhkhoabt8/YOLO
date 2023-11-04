@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.LandType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -27,9 +28,27 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.LandTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
 
-        public async Task<IEnumerable<LandType>?> GetAllDeletedLandTypes()
+        public async Task<LandType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.LandTypes.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.LandTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<LandType>?> GetAllActivedLandTypes()
+        {
+            return await _context.LandTypes.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<LandType>> QueryAsync(LandTypeQuery query, bool trackChanges = false)
+        {
+            IQueryable<LandType> landTypes = _context.LandTypes;
+
+            if (!trackChanges)
+            {
+                landTypes = landTypes.AsNoTracking();
+            }
+
+            IEnumerable<LandType> enumeratedLandTypes = landTypes.AsEnumerable();
+            return await Task.FromResult(enumeratedLandTypes);
         }
     }
 }
