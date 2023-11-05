@@ -22,7 +22,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var audits = await _unitOfWork.AuditTrailRepository.QueryAsync(query);
 
-            return PaginatedResponse<AuditTrailReadDTO>.FromEnumerableWithMapping(audits, query, _mapper); ;
+            return PaginatedResponse<AuditTrailReadDTO>.FromEnumerableWithMapping(audits, query, _mapper);
         }
 
     }
