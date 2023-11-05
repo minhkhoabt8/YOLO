@@ -20,6 +20,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task ImportPlan(IFormFile attachFile);
         Task<ExportFileDTO> ExportPlansFileAsync(string projectId);
         Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId);
+        //Bảng Tổng Hợp Thu Hồi 
+        Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId);
         Task ReCheckPricesOfPlanAsync(string planId);
     }
 }

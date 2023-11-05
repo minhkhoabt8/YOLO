@@ -72,7 +72,6 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<UnitPriceLand> UnitPriceLands { get; set; }
 
-    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetCompensation>(entity =>
@@ -82,7 +81,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("asset_compensation_id");
             entity.Property(e => e.CompensationContent).HasColumnName("compensation_content");
             entity.Property(e => e.CompensationPrice)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("compensation_price");
             entity.Property(e => e.CompensationRate).HasColumnName("compensation_rate");
             entity.Property(e => e.CompensationType)
@@ -118,7 +117,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -132,7 +131,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -235,7 +234,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("deduction_id");
             entity.Property(e => e.DeductionContent).HasColumnName("deduction_content");
             entity.Property(e => e.DeductionPrice)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("deduction_price");
             entity.Property(e => e.DeductionTypeId)
                 .HasMaxLength(50)
@@ -263,7 +262,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -301,6 +300,13 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ReferenceLink).HasColumnName("reference_link");
             entity.Property(e => e.SignInfo).HasColumnName("sign_info");
 
+            entity.Property(e => e.FileName)
+                .HasMaxLength(50)
+                .HasColumnName("file_name");
+
+            entity.Property(e => e.FileSize)
+                .HasColumnName("file_size");
+
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.DocumentTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -313,11 +319,11 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("document_type_id");
             entity.Property(e => e.Code)
-                .HasMaxLength(6)
+                .HasMaxLength(10)
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -370,7 +376,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -454,7 +460,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("land_group_id");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
 
             entity.HasOne(d => d.LandGroup).WithMany(p => p.LandTypes)
@@ -517,6 +523,10 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.MeasuredPlotArea)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("measured_plot_area");
+
+            entity.Property(e => e.UnitPriceLandCost)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("unit_price_land_cost");
             entity.Property(e => e.MeasuredPlotNumber)
                 .HasMaxLength(10)
                 .HasColumnName("measured_plot_number");
@@ -556,7 +566,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -603,7 +613,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("owner_national");
             entity.Property(e => e.OwnerStatus)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .HasColumnName("owner_status");
             entity.Property(e => e.OwnerTaxCode)
                 .HasMaxLength(10)
@@ -671,6 +681,12 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanEndedTime)
                 .HasColumnType("datetime")
                 .HasColumnName("plan_ended_time");
+            entity.Property(e => e.PlanLocation)
+                .HasMaxLength(200)
+                .HasColumnName("plan_location");
+            entity.Property(e => e.PlanName)
+                .HasMaxLength(200)
+                .HasColumnName("plan_name");
             entity.Property(e => e.PlanPhrase)
                 .HasMaxLength(10)
                 .HasColumnName("plan_phrase");
@@ -689,6 +705,12 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalDeduction)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_deduction");
+            entity.Property(e => e.TotalGpmbServiceCost)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_gpmb_service_cost");
+            entity.Property(e => e.TotalLandRecoveryArea)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("total_land_recovery_area");
             entity.Property(e => e.TotalOwnerSupportCompensation).HasColumnName("total_owner_support_compensation");
             entity.Property(e => e.TotalPriceArchitectureSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
@@ -749,8 +771,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.District)
                 .HasMaxLength(20)
                 .HasColumnName("district");
-            entity.Property(e => e.ImplementationYear)
-                .HasColumnName("implementation_year");
+            entity.Property(e => e.ImplementationYear).HasColumnName("implementation_year");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LandCompensationBasis)
                 .HasMaxLength(20)
@@ -914,7 +935,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.SupportContent).HasColumnName("support_content");
             entity.Property(e => e.SupportNumber).HasColumnName("support_number");
             entity.Property(e => e.SupportPrice)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("support_price");
             entity.Property(e => e.SupportTypeId)
                 .HasMaxLength(50)
@@ -946,7 +967,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("code");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("name");
         });
 
@@ -962,7 +983,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("asset_name");
             entity.Property(e => e.AssetPrice)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("asset_price");
             entity.Property(e => e.AssetRegulation)
                 .HasMaxLength(20)
@@ -973,10 +994,10 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.AssetUnitId)
                 .HasMaxLength(50)
                 .HasColumnName("asset_unit_id");
+            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.PriceAppliedCodeId)
                 .HasMaxLength(50)
                 .HasColumnName("price_applied_code_id");
-            entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
             entity.HasOne(d => d.AssetGroup).WithMany(p => p.UnitPriceAssets)
                 .HasForeignKey(d => d.AssetGroupId)
@@ -1001,19 +1022,19 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("unit_price_land_id");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LandPosition1)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("land_position_1");
             entity.Property(e => e.LandPosition2)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("land_position_2");
             entity.Property(e => e.LandPosition3)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("land_position_3");
             entity.Property(e => e.LandPosition4)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("land_position_4");
             entity.Property(e => e.LandPosition5)
-                .HasColumnType("decimal(10, 3)")
+                .HasColumnType("decimal(18, 0)")
                 .HasColumnName("land_position_5");
             entity.Property(e => e.LandTypeId)
                 .HasMaxLength(50)

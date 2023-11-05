@@ -60,7 +60,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandGroupReadDTO?> UpdateAsync(string id, LandGroupWriteDTO landGroupUpdateDTO)
         {
-           var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+            var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+
             if (existLandgroup == null)
             {
                 throw new EntityWithIDNotFoundException<LandGroup>(id);
@@ -69,8 +70,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper.Map(landGroupUpdateDTO, existLandgroup);
             
             await _unitOfWork.CommitAsync();
-            return _mapper.Map<LandGroupReadDTO>(existLandgroup);
 
+            return _mapper.Map<LandGroupReadDTO>(existLandgroup);
 
         }
 
@@ -102,7 +103,67 @@ namespace Metadata.Infrastructure.Services.Implementations
         private async Task EnsureLandGroupCodeNotDuplicate(string code,string name)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAndIsDeletedStatus(code,false);
-            if (landGroup != null  && landGroup.Code == code)
+            if (landGroup != null && landGroup.Code == code )
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Code), code);
+            }
+            
+            var landGroup2 = await _unitOfWork.LandGroupRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landGroup2 != null  && landGroup2.Name == name)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup2.Name), name);
+            }
+        }
+        public async Task<LandGroupReadDTO?> UpdateAsync(string id, LandGroupWriteDTO landGroupUpdateDTO)
+        {
+            var existLandgroup = await _unitOfWork.LandGroupRepository.FindAsync(id);
+            if (existLandgroup == null)
+            {
+                throw new EntityWithIDNotFoundException<LandGroup>(id);
+            }
+            await EnsureLandGroupCodeNotDuplicate(landGroupUpdateDTO.Code, landGroupUpdateDTO.Name);
+            _mapper.Map(landGroupUpdateDTO, existLandgroup);
+
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<LandGroupReadDTO>(existLandgroup);
+
+
+        }
+        
+        public async Task CheckNameLandGroupNotDuplicate(string name)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landGroup != null && landGroup.Name == name)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Name), name);
+            }
+        }
+        public async Task CheckCodeLandGroupNotDuplicate(string code)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAndIsDeletedStatus(code, false);
+            if (landGroup != null && landGroup.Code == code)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Code), code);
+            }
+            var landGroup2 = await _unitOfWork.LandGroupRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landGroup2 != null && landGroup2.Name == name)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup2.Name), name);
+            }
+        }
+        
+        public async Task CheckNameLandGroupNotDuplicate(string name)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landGroup != null && landGroup.Name == name)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Name), name);
+            }
+        }
+        public async Task CheckCodeLandGroupNotDuplicate(string code)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAndIsDeletedStatus(code, false);
+            if (landGroup != null && landGroup.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(landGroup.Code), code);
             }

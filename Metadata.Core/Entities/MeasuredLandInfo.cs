@@ -18,15 +18,17 @@ public partial class MeasuredLandInfo : ITextSearchableEntity
 
     public string LandTypeId { get; set; } = null!;
 
-    public decimal? MeasuredPlotArea { get; set; }
+    public decimal? MeasuredPlotArea { get; set; } = 0;
 
-    public decimal? WithdrawArea { get; set; }
+    public decimal? WithdrawArea { get; set; } = 0;
 
-    public decimal? CompensationPrice { get; set; }
+    public decimal? CompensationPrice { get; set; } = 0;
 
-    public decimal? CompensationRate { get; set; }
+    public decimal? CompensationRate { get; set; } = 0;
 
     public string? CompensationNote { get; set; }
+
+    public decimal UnitPriceLandCost { get; set; } = 0;
 
     public string GcnLandInfoId { get; set; } = null!;
 

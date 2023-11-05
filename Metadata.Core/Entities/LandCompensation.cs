@@ -15,7 +15,7 @@ public partial class LandCompensation
 
     public string? WithdrawArea { get; set; }
 
-    public decimal? CompensationPrice { get; set; }
+    public decimal? CompensationPrice { get; set; } = 0;
 
     public string? CompensationNote { get; set; }
 

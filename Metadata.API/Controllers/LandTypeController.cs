@@ -21,9 +21,9 @@ namespace Metadata.API.Controllers
         /// Get all LandType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandTypeReadDTO>>))]
-        public async Task<IActionResult> getAllLandType()
+        public async Task<IActionResult> GetAllLandType()
         {
             var landTypes = await _landTypeService.GetAllLandTypeAsync();
             return ResponseFactory.Ok(landTypes);
@@ -48,7 +48,7 @@ namespace Metadata.API.Controllers
         /// Get LandType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandTypeReadDTO>))]
         public async Task<IActionResult> getLandType(string id)
         {

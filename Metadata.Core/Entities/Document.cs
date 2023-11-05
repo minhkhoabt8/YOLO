@@ -33,6 +33,10 @@ public partial class Document : ITextSearchableEntity
 
     public string? Pen { get; set; }
 
+    public string FileName { get; set; } = null!;
+
+    public int? FileSize { get; set; }
+
     public string ReferenceLink { get; set; } = null!;
 
     public bool IsPublic { get; set; } = false;

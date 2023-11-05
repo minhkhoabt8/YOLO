@@ -16,5 +16,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<Deduction>
     {
         Task<IEnumerable<Deduction?>> GetAllDeductionsOfOwnerAsync(string ownerId);
+        Task<decimal> CaculateTotalDeductionOfOwnerAsync(string ownerId);
     }
 }

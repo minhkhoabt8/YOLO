@@ -50,13 +50,29 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<GCNLandInfoReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateGCNLandInfoAsync([FromForm] GCNLandInfoWriteDTO dto)
         {
             var gcnLandInfo = await _gcnLandInfoService.CreateGCNLandInfoAsync(dto);
+
+            return ResponseFactory.Created(gcnLandInfo);
+        }
+
+        /// <summary>
+        /// Create GCN Land Info From List
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("creates")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<GCNLandInfoReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreateGCNLandInfosAsync(IEnumerable<GCNLandInfoWriteDTO> dtos)
+        {
+            var gcnLandInfo = await _gcnLandInfoService.CreateGCNLandInfosAsync(dtos);
 
             return ResponseFactory.Created(gcnLandInfo);
         }

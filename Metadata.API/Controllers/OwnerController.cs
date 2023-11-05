@@ -87,11 +87,11 @@ namespace Metadata.API.Controllers
         /// <param name="ownerId"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        [HttpPost("assign/{ownerId}/{projectId}")]
+        [HttpPost("assign")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> AssignProjectOwnerAsync([Required] string ownerId, [Required] string projectId)
+        public async Task<IActionResult> AssignProjectOwnerAsync([Required][FromQuery] string ownerId, [Required][FromQuery] string projectId)
         {
             var owner = await _ownerService.AssignProjectOwnerAsync(projectId, ownerId);
 
@@ -99,7 +99,43 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Import Owner From File - Test Template
+        /// Remove Owner From Plan
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpPost("plan/remove")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> RemoveOwnerFromPlanAsync([Required][FromQuery] string ownerId, [Required][FromQuery] string planId)
+        {
+            var owner = await _ownerService.RemoveOwnerFromPlanAsync(ownerId, planId);
+
+            return ResponseFactory.Created(owner);
+        }
+
+        /// <summary>
+        /// Remove Owner From Project
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpPost("project/remove")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> RemoveOwnerFromProjectAsync([Required][FromQuery] string ownerId, [Required][FromQuery] string projectId)
+        {
+            var owner = await _ownerService.RemoveOwnerFromProjectAsync(ownerId, projectId);
+
+            return ResponseFactory.Created(owner);
+        }
+
+
+
+        /// <summary>
+        /// Import Owner From File
         /// </summary>
         /// <param name="attachFile"></param>
         /// <returns></returns>
@@ -107,32 +143,10 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> ImportOwnerAsync(IFormFile file)
+        public async Task<IActionResult> ImportOwnerAsync([Required] IFormFile file)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-            if (file == null || file.Length <= 0)
-            {
-                return BadRequest("Invalid file.");
-            }
-            var importedUsers = new List<UserTestClass>();
-            using (var package = new ExcelPackage(file.OpenReadStream()))
-            {
-                var worksheet = package.Workbook.Worksheets[0];
-
-                for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                {
-                    var user = new UserTestClass
-                    {
-                        UserId = worksheet.Cells[row, 1].Value.ToString(),    
-                        UserName = worksheet.Cells[row, 2].Value.ToString(),       
-                        Password = worksheet.Cells[row, 3].Value.ToString(),         
-                        Role = worksheet.Cells[row, 4].Value.ToString()         
-                    };
-                    importedUsers.Add(user);
-                }
-
-                return Ok(importedUsers);
-            }
+            var result = await _ownerService.ImportOwnerFromExcelFileAsync(file);
+            return ResponseFactory.Created(result);
         }
 
         /// <summary>

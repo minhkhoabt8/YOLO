@@ -22,9 +22,9 @@ namespace Metadata.API.Controllers
         /// Get all DeductionTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeductionTypes()
+        public async Task<IActionResult> GetAllDeductionTypes()
         {
             var deductionTypes = await _deductionTypeService.GetAllDeductionTypesAsync();
             return ResponseFactory.Ok(deductionTypes);
@@ -46,9 +46,9 @@ namespace Metadata.API.Controllers
         /// Get DeductionTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
-        public async Task<IActionResult> getDeductionType(string id)
+        public async Task<IActionResult> GetDeductionType(string id)
         {
             var deductionType = await _deductionTypeService.GetDeductionTypeAsync(id);
             return ResponseFactory.Ok(deductionType);

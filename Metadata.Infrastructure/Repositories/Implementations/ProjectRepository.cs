@@ -29,9 +29,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<Project?> GetProjectByNameAsync(string projectName)
+        {
+            return await _context.Projects.Where(p => p.ProjectName == projectName).FirstOrDefaultAsync();
+        }
+
+
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)
         {
-            IQueryable<Project> projects = _context.Projects.Include(p => p.LandPositionInfos);
+            IQueryable<Project> projects = _context.Projects.Include(p => p.LandPositionInfos).Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

@@ -18,6 +18,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId);
         Task<IEnumerable<Owner>> GetOwnersOfPlanAsync(string planId);
+        Task<int> GetTotalOwnerInPlanAsync(string planId);
 
         Task<IEnumerable<Owner>> GetAllOwner();
     }

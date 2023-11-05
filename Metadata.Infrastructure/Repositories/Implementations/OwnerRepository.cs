@@ -1,4 +1,5 @@
-﻿using Metadata.Core.Data;
+﻿using DocumentFormat.OpenXml.InkML;
+using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Repositories.Interfaces;
@@ -28,6 +29,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(_context.Owners.Where(o => o.IsDeleted == false));
         }
 
+        public async Task<int> GetTotalOwnerInPlanAsync(string planId)
+        {
+            return await Task.FromResult(_context.Owners.Where(o => o.PlanId == planId && o.IsDeleted == false).Count());
+        }
+
         public async Task<IEnumerable<Owner>> QueryAsync(OwnerQuery query, bool trackChanges = false)
         {
             IQueryable<Owner> owners = _context.Owners
@@ -35,7 +41,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .Include(o => o.Deductions)
                 .Include(o=> o.GcnlandInfos)
                 .Include(o=> o.AssetCompensations)
-                .Include(o=> o.AttachFiles);
+                .Include(o=> o.AttachFiles)
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

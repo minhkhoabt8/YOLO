@@ -8,6 +8,7 @@ namespace Auth.Infrastructure.UOW
         IAccountRepository AccountRepository { get; }
         IRoleRepository RoleRepository { get; }
         IRefreshTokenRepository RefreshTokenRepository { get; }
+        INotificationRepository NotificationRepository { get; }
         
         Task<int> CommitAsync();
     }

@@ -28,7 +28,7 @@ public class JWTTokenService : ITokenService
         {
             Token = Convert.ToBase64String(randomBytes),
             // Last for a month
-            Expires = DateTime.UtcNow.AddMinutes(15),
+            Expires = DateTime.UtcNow.AddMinutes(45),
             AccountId = account.Id
         };
 
@@ -51,7 +51,7 @@ public class JWTTokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddSeconds(60),
+            Expires = DateTime.UtcNow.AddMinutes(30),
             Issuer = _configuration["JWT:Issuer"],
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
         };

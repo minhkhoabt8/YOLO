@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.LandType;
@@ -7,11 +6,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -45,10 +40,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landTypes = new List<LandTypeReadDTO>();
 
             foreach (var landTypeDTO in landTypeWriteDTOs)
-            {   
+            {
                 var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeDTO.LandGroupId!)
                     ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeDTO.LandGroupId);
-                await EnsureLandGroupCodeNotDuplicate(landTypeDTO.Code , landTypeDTO.Name);
+                await EnsureLandGroupCodeNotDuplicate(landTypeDTO.Code, landTypeDTO.Name);
 
                 var landType = _mapper.Map<LandType>(landTypeDTO);
 
@@ -63,16 +58,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             return landTypes;
         }
 
-        public async Task<bool> DeleteAsync(string delete)
+
+        public async Task<bool> DeleteAsync(string id)
         {
-            var landType = await _unitOfWork.LandTypeRepository.FindAsync(delete);   
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(id);   
             if (landType == null)
             {
-                throw new EntityWithIDNotFoundException<LandType>(delete);
+                throw new EntityWithIDNotFoundException<LandType>(id);
             }
             landType.IsDeleted = true;
 
-            await  _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
+
             return true;
         }
 
@@ -101,7 +98,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<LandType>(id);
             }
-            await EnsureLandGroupCodeNotDuplicate(landTypeUpdateDTO.Code, landTypeUpdateDTO.Name);
+            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeUpdateDTO.LandGroupId!)
+                ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeUpdateDTO.LandGroupId);
             _mapper.Map(landTypeUpdateDTO, existLandType);
              await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(existLandType);
@@ -137,12 +135,31 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
             }
+            var landType2 = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landType2 != null && landType2.Name == name)
+            {
+                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
+            }
+        }
+        
+        public async Task CheckNameLandGroupNotDuplicate (string name)
+        {
+            var landType = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (landType != null && landType.Name == name)
+            {
+                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Name), name);
+            }
         }
 
         public async Task<PaginatedResponse<LandTypeReadDTO>> QueryLandTypeAsync(LandTypeQuery paginationQuery)
         {
             var landTypes = await _unitOfWork.LandTypeRepository.QueryAsync(paginationQuery);
             return PaginatedResponse<LandTypeReadDTO>.FromEnumerableWithMapping(landTypes, paginationQuery, _mapper);
+        }
+
+        public Task<IEnumerable<LandTypeReadDTO>> GetAllDeletedLandTypeAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -39,6 +39,9 @@ namespace Metadata.Core.Extensions
                 case "PhuongAn_BaoCao":
 
                     return Path.Combine(templateDirectory, "PhuongAn_BaoCao.docx");
+                case "BangNhapChuSoHuu":
+
+                    return Path.Combine(templateDirectory, "BangNhapChuSoHuu.xlsx");
 
                 default:
                     return "File not found";

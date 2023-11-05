@@ -1,4 +1,5 @@
-﻿using Metadata.Core.Enums;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
@@ -14,6 +15,15 @@ namespace Metadata.Infrastructure.DTOs.Plan
         [Required]
         [MaxLength(50)]
         public string ProjectId { get; set; } = null!;
+
+        [Required]
+        [MaxLength(200)]
+        public string PlanName { get; set; }
+
+        [Required]
+        [MaxLength(200)]
+        public string PlanLocation { get; set; }
+
         [MaxLength(10)]
         public string? PlanCode { get; set; } = null ?? "Generated";
         [MaxLength(10)]

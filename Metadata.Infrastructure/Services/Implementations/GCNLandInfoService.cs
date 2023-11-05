@@ -28,7 +28,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<GCNLandInfoReadDTO> CreateGCNLandInfoAsync(GCNLandInfoWriteDTO dto)
         {
-            //TODO: Validate IDs
+
+            var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId) 
+                ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
             var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
 
@@ -46,6 +51,67 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<GCNLandInfoReadDTO>(gcnLandInfo);
+        }
+
+        public async Task<IEnumerable<GCNLandInfoReadDTO>> CreateGCNLandInfosAsync(IEnumerable<GCNLandInfoWriteDTO> dtos)
+        {
+            var gcnList = new List<GcnlandInfo>();
+
+            foreach(var dto in dtos)
+            {
+                var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+
+                var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
+                    ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
+
+                var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
+
+                await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
+
+                if (!dto.AttachFiles.IsNullOrEmpty())
+                {
+                    foreach (var item in dto.AttachFiles!)
+                    {
+                        item.GcnLandInfoId = gcnLandInfo.GcnLandInfoId;
+                    }
+                    await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+                }
+
+                if (!dto.MeasuredLandInfos.IsNullOrEmpty())
+                {
+                    
+                    foreach(var item in dto.MeasuredLandInfos!)
+                    {
+                        //check if GCN Land Info And Measured Has the same owner
+                        if (item.OwnerId != dto.OwnerId) 
+                        {
+                            throw new InvalidActionException();
+                        }
+
+                        var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(item);
+
+                        await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
+
+                        if (!item.AttachFiles.IsNullOrEmpty())
+                        {
+                            foreach (var file in dto.AttachFiles!)
+                            {
+                                file.MeasuredLandInfoId = measuredLandInfo.MeasuredLandInfoId;
+                            }
+                            await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+                        }
+
+                        gcnList.ForEach(item => item.MeasuredLandInfos.Add(measuredLandInfo));
+                    }
+                }
+
+                gcnList.Add(gcnLandInfo);
+
+                await _unitOfWork.CommitAsync();
+            }
+
+            return _mapper.Map<IEnumerable<GCNLandInfoReadDTO>>(gcnList);
         }
 
         public async Task DeleteGCNLandInfoAsync(string id)
@@ -82,6 +148,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
 
             if (measuredLandInfo == null) throw new EntityWithIDNotFoundException<GcnlandInfo>(id);
+
+            var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
+                ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
             _mapper.Map(dto, measuredLandInfo);
 

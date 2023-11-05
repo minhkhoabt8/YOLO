@@ -22,9 +22,9 @@ namespace Metadata.API.Controllers
         /// Get all LandGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
-        public async Task<IActionResult> getAllLandGroups()
+        public async Task<IActionResult> GetAllLandGroups()
         {
             var landGroups = await _landGroupService.GetAllLandGroupAsync();
             return ResponseFactory.Ok(landGroups);
@@ -46,9 +46,9 @@ namespace Metadata.API.Controllers
         /// Get LandGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
-        public async Task<IActionResult> getLandGroup(string id)
+        public async Task<IActionResult> GetLandGroup(string id)
         {
             var landGroup = await _landGroupService.GetAsync(id);
             return ResponseFactory.Ok(landGroup);

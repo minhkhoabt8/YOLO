@@ -35,7 +35,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("compensation_content");
 
                     b.Property<decimal>("CompensationPrice")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("compensation_price");
 
                     b.Property<int>("CompensationRate")
@@ -96,8 +96,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("AssetGroupId");
@@ -124,8 +124,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("AssetUnitId");
@@ -281,7 +281,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("deduction_content");
 
                     b.Property<decimal>("DeductionPrice")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("deduction_price");
 
                     b.Property<string>("DeductionTypeId")
@@ -322,8 +322,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("DeductionTypeId");
@@ -362,6 +362,16 @@ namespace Metadata.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("epitome");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("file_name");
+
+                    b.Property<int?>("FileSize")
+                        .HasColumnType("int")
+                        .HasColumnName("file_size");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
@@ -420,8 +430,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("code");
 
                     b.Property<bool>("IsDeleted")
@@ -430,8 +440,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("DocumentTypeId");
@@ -516,8 +526,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("LandGroupId");
@@ -642,8 +652,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("LandTypeId");
@@ -756,6 +766,10 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("owner_id");
 
+                    b.Property<decimal>("UnitPriceLandCost")
+                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnName("unit_price_land_cost");
+
                     b.Property<string>("UnitPriceLandId")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -796,8 +810,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("OrganizationTypeId");
@@ -879,8 +893,8 @@ namespace Metadata.API.Migrations
                         .HasColumnName("owner_national");
 
                     b.Property<string>("OwnerStatus")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
                         .HasColumnName("owner_status");
 
                     b.Property<string>("OwnerTaxCode")
@@ -978,6 +992,18 @@ namespace Metadata.API.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("plan_ended_time");
 
+                    b.Property<string>("PlanLocation")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("plan_location");
+
+                    b.Property<string>("PlanName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("plan_name");
+
                     b.Property<string>("PlanPhrase")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)")
@@ -1003,35 +1029,43 @@ namespace Metadata.API.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("project_id");
 
-                    b.Property<decimal?>("TotalDeduction")
+                    b.Property<decimal>("TotalDeduction")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_deduction");
 
-                    b.Property<int?>("TotalOwnerSupportCompensation")
+                    b.Property<decimal>("TotalGpmbServiceCost")
+                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnName("total_gpmb_service_cost");
+
+                    b.Property<decimal>("TotalLandRecoveryArea")
+                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnName("total_land_recovery_area");
+
+                    b.Property<int>("TotalOwnerSupportCompensation")
                         .HasColumnType("int")
                         .HasColumnName("total_owner_support_compensation");
 
-                    b.Property<decimal?>("TotalPriceArchitectureSupportCompensation")
+                    b.Property<decimal>("TotalPriceArchitectureSupportCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_architecture_support_compensation");
 
-                    b.Property<decimal?>("TotalPriceCompensation")
+                    b.Property<decimal>("TotalPriceCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_compensation");
 
-                    b.Property<decimal?>("TotalPriceHouseSupportCompensation")
+                    b.Property<decimal>("TotalPriceHouseSupportCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_house_support_compensation");
 
-                    b.Property<decimal?>("TotalPriceLandSupportCompensation")
+                    b.Property<decimal>("TotalPriceLandSupportCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_land_support_compensation");
 
-                    b.Property<decimal?>("TotalPriceOtherSupportCompensation")
+                    b.Property<decimal>("TotalPriceOtherSupportCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_other_support_compensation");
 
-                    b.Property<decimal?>("TotalPricePlantSupportCompensation")
+                    b.Property<decimal>("TotalPricePlantSupportCompensation")
                         .HasColumnType("decimal(18, 0)")
                         .HasColumnName("total_price_plant_support_compensation");
 
@@ -1361,7 +1395,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("support_number");
 
                     b.Property<decimal>("SupportPrice")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("support_price");
 
                     b.Property<string>("SupportTypeId")
@@ -1403,8 +1437,8 @@ namespace Metadata.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("name");
 
                     b.HasKey("SupportTypeId")
@@ -1433,7 +1467,7 @@ namespace Metadata.API.Migrations
                         .HasColumnName("asset_name");
 
                     b.Property<decimal>("AssetPrice")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("asset_price");
 
                     b.Property<string>("AssetRegulation")
@@ -1486,23 +1520,23 @@ namespace Metadata.API.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<decimal?>("LandPosition1")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("land_position_1");
 
                     b.Property<decimal?>("LandPosition2")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("land_position_2");
 
                     b.Property<decimal?>("LandPosition3")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("land_position_3");
 
                     b.Property<decimal?>("LandPosition4")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("land_position_4");
 
                     b.Property<decimal?>("LandPosition5")
-                        .HasColumnType("decimal(10, 3)")
+                        .HasColumnType("decimal(18, 0)")
                         .HasColumnName("land_position_5");
 
                     b.Property<string>("LandTypeId")

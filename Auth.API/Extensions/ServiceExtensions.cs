@@ -14,7 +14,6 @@ using Auth.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auth.API.Extensions;
@@ -40,6 +39,12 @@ public static class ServiceExtensions
     {
         
     }
+
+    public static void AddFireBase(this IServiceCollection services, IConfiguration configuration)
+    {
+
+    }
+
 
     public static void ConfigureSwagger(this IServiceCollection services)
     {
@@ -125,6 +130,10 @@ public static class ServiceExtensions
             .AddScoped<SharedLib.Infrastructure.Services.Interfaces.ITokenService,
                 SharedLib.Infrastructure.Services.Implementations.JWTTokenService>();
         services.AddScoped<ISmsService, SmsService>();
+        services.AddScoped<Auth.Infrastructure.Services.Interfaces.INotificationService
+            , Auth.Infrastructure.Services.Implementations.NotificationService>();
+        services.AddScoped<SharedLib.Infrastructure.Services.Interfaces.INotificationService
+            , SharedLib.Infrastructure.Services.Implementations.NotificationService>();
 
     }
 
@@ -133,6 +142,7 @@ public static class ServiceExtensions
         services.AddScoped<IAccountRepository, AccountRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)
@@ -164,4 +174,5 @@ public static class ServiceExtensions
     {
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
     }
+
 }

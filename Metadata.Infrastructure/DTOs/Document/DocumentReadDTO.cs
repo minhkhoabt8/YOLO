@@ -35,6 +35,10 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public string Pen { get; set; }
 
+        public string FileName { get; set; }
+
+        public int FileSize { get; set; }
+
         public string ReferenceLink { get; set; }
 
         public bool IsPublic { get; set; }

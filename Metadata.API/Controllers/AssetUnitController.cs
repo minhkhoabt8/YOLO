@@ -18,12 +18,12 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all AssetUnits
+        /// 
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
-        public async Task<IActionResult> getAllAssetUnits()
+        public async Task<IActionResult> GetAllAssetUnits()
         {
             var assetUnits = await _assetUnitService.GetAllAssetUnitAsync();
             return ResponseFactory.Ok(assetUnits);
@@ -42,10 +42,11 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get AssetUnits
+        /// Get Asset Unit Details
         /// </summary>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         public async Task<IActionResult> getAssetUnit(string id)
         {

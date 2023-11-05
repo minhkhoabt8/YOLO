@@ -11,11 +11,11 @@ public partial class AssetCompensation
 
     public string CompensationContent { get; set; } = null!;
 
-    public int CompensationRate { get; set; }
+    public int CompensationRate { get; set; } = 0;
 
-    public int QuantityArea { get; set; }
+    public int QuantityArea { get; set; } = 0;
 
-    public decimal CompensationPrice { get; set; }
+    public decimal CompensationPrice { get; set; } = 0;
 
     public string CompensationType { get; set; } = null!;
 

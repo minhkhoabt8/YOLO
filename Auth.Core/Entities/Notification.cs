@@ -6,7 +6,7 @@ namespace Auth.Core.Entities;
 
 public partial class Notification
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string UserId { get; set; } = null!;
 
@@ -21,10 +21,10 @@ public partial class Notification
     public virtual Account User { get; set; } = null!;
 
 
-    public void GenerateNotification(string userUd, string content)
+    public void GenerateNotification(string userId, string content)
     {
         Id = Guid.NewGuid().ToString();
-        UserId = userUd;
+        UserId = userId;
         NotificationContent = content;
     }
 }

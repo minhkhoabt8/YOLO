@@ -13,5 +13,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<DocumentReadDTO> UpdateDocumentAsync(string documentId, DocumentWriteDTO dto);
         Task<PaginatedResponse<DocumentReadDTO>> QueryDocumentAsync(DocumentQuery query);
         Task<IEnumerable<DocumentReadDTO>> GetDocumentsOfProjectAsync(string projectId);
+        Task<ExportFileDTO> GetFileImportExcelTemplateAsync(string name);
     }
 }

@@ -13,18 +13,21 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 
         public string LandTypeId { get; set; } = null!;
         [Range(0, double.MaxValue)]
-        public decimal? MeasuredPlotArea { get; set; }
+        public decimal? MeasuredPlotArea { get; set; } = 0;
         [Range(0, double.MaxValue)]
-        public decimal? WithdrawArea { get; set; }
+        public decimal? WithdrawArea { get; set; } = 0;
         [Range(0, double.MaxValue)]
-        public decimal? CompensationPrice { get; set; }
+        public decimal? CompensationPrice { get; set; } = 0;
         [Range(0, double.MaxValue)]
-        public decimal? CompensationRate { get; set; }
+        public decimal? CompensationRate { get; set; } = 0;
+        [Range(0, double.MaxValue)]
+        public decimal? UnitPriceLandCost { get; set; } = 0;
         public string? CompensationNote { get; set; }
+        [Required]
         public string GcnLandInfoId { get; set; } = null!;
-
+        [Required]
         public string OwnerId { get; set; } = null!;
-
+        [Required]
         public string UnitPriceLandId { get; set; } = null!;
 
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }

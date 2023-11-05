@@ -20,9 +20,9 @@ namespace Metadata.API.Controllers
         /// Get all SupportType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
-        public async Task<IActionResult> getAllSupportTypes()
+        public async Task<IActionResult> GetAllSupportTypes()
         {
             var supportTypes = await _supportTypeService.GetAllLandTypeAsync();
             return ResponseFactory.Ok(supportTypes);
@@ -44,9 +44,9 @@ namespace Metadata.API.Controllers
         /// Get SupportType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
-        public async Task<IActionResult> getSupportType(string id)
+        public async Task<IActionResult> GetSupportType(string id)
         {
             var supportType = await _supportTypeService.GetAsync(id);
             return ResponseFactory.Ok(supportType);

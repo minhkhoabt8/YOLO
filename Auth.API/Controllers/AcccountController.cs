@@ -46,7 +46,7 @@ public class AcccountController : ControllerBase
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
     {
         var accounts = await _accountService.QueryAccount(query);
-        return ResponseFactory.Ok(accounts);
+        return ResponseFactory.PaginatedOk(accounts);
     }
 
 
@@ -72,7 +72,7 @@ public class AcccountController : ControllerBase
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-    public async Task<IActionResult> CreateAccount([FromForm] AccountWriteDTO input)
+    public async Task<IActionResult> CreateAccount( AccountWriteDTO input)
     {
         var accountDTOs = await _accountService.CreateAccountAsync(input);
 

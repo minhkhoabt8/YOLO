@@ -21,9 +21,9 @@ namespace Metadata.API.Controllers
         /// Get all DocumentTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAll")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DocumentTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDocumentTypes()
+        public async Task<IActionResult> GetAllDocumentTypes()
         {
             var documentTypes = await _documentTypeService.GetAllDocumentTypesAsync();
             return ResponseFactory.Ok(documentTypes);
@@ -45,9 +45,9 @@ namespace Metadata.API.Controllers
         /// Get DocumentTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentTypeReadDTO>))]
-        public async Task<IActionResult> getDocumentType(string id)
+        public async Task<IActionResult> GetDocumentType(string id)
         {
             var documentType = await _documentTypeService.GetDocumentTypeAsync(id);
             return ResponseFactory.Ok(documentType);

@@ -18,6 +18,10 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string? PlanCode { get; set; }
 
+        public string PlanName { get; set; }
+
+        public string PlanLocation { get; set; }
+
         public string? PlanPhrase { get; set; }
 
         public string? PlanDescription { get; set; }
@@ -57,6 +61,12 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         //Tong Khau Tru
         public decimal? TotalDeduction { get; set; }
+
+        //Tong dien tich thu hoi dat
+        public decimal TotalLandRecoveryArea { get; set; }
+
+        public decimal TotalGpmbServiceCost { get; set; } 
+
         public bool? IsDeleted { get; set; }
 
         public  ICollection<Core.Entities.AttachFile> AttachFiles { get; set; }

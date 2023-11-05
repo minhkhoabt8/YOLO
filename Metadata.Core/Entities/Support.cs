@@ -13,9 +13,9 @@ public partial class Support
 
     public string? SupportUnit { get; set; }
 
-    public int SupportNumber { get; set; }
+    public int SupportNumber { get; set; } = 0;
 
-    public decimal SupportPrice { get; set; }
+    public decimal SupportPrice { get; set; } = 0;
 
     public string OwnerId { get; set; } = null!;
 

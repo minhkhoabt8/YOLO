@@ -14,5 +14,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<MeasuredLandInfo, MeasuredLandInfoQuery>
     {
         Task<IEnumerable<MeasuredLandInfo>> GetAllMeasuredLandInfosOfOwnerAsync(string ownerId);
+        Task<decimal> CaculateTotalLandCompensationPriceOfOwnerAsync(string ownerId, bool? reCheck = false);
     }
 }

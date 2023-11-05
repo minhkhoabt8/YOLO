@@ -34,8 +34,13 @@ namespace Metadata.Infrastructure.DTOs.Document
         public string Pen { get; set; }
 
         public bool? IsPublic { get; set; } = false;
+
+        [Required]
+        public string? FileName { get; set; }
+
         [Required]
         public FileTypeEnum FileType { get; set; }
+
         [Required]
         public byte[] FileAttach { get; set; }
 

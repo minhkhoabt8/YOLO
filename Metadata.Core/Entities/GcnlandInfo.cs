@@ -18,7 +18,7 @@ public partial class GcnlandInfo : ITextSearchableEntity
 
     public string LandTypeId { get; set; } = null!;
 
-    public decimal? GcnPlotArea { get; set; }
+    public decimal? GcnPlotArea { get; set; } = 0;
 
     public string? GcnOwnerCertificate { get; set; }
 

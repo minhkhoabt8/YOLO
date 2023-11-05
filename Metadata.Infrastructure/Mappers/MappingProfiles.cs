@@ -47,6 +47,7 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<Owner, OwnerReadDTO>();
             CreateMap<OwnerWriteDTO, Owner>();
             CreateMap<Owner, OwnersInProjectDTO>();
+            CreateMap<OwnerFileImportWriteDTO, OwnerWriteDTO>();
 
             //Plan
             CreateMap<Plan, PlanReadDTO>();

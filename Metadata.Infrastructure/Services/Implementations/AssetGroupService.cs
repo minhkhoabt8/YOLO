@@ -98,7 +98,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<AssetGroup>(id);
             }
-            await EnsureAssetGroupCodeNotDuplicate(assetGroupWriteDTO.Code , assetGroupWriteDTO.Name);
+            /*await EnsureAssetGroupCodeNotDuplicateForUpdate(assetGroupWriteDTO.Code , assetGroupWriteDTO.Name , id);*/
               _mapper.Map(assetGroupWriteDTO, existAssetGroup);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<AssetGroupReadDTO>(existAssetGroup);
@@ -116,6 +116,20 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetGroupByName.Name), name);
             }
         }
+
+        /*private async Task EnsureAssetGroupCodeNotDuplicateForUpdate(string code, string name , string id)
+        {
+            var assetGroup = await _unitOfWork.AssetGroupRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id , false);
+            if (assetGroup != null && assetGroup.Code == code && assetGroup.AssetGroupId != id)
+            {
+                throw new UniqueConstraintException<AssetGroup>(nameof(assetGroup.Code), code);
+            }
+            var assetGroupByName = await _unitOfWork.AssetGroupRepository.FindByCodeAndIsDeletedStatusForUpdate(name,id, false);
+            if (assetGroupByName != null && assetGroupByName.Name == name && assetGroupByName.AssetGroupId != id)
+            {
+                throw new UniqueConstraintException<AssetGroup>(nameof(assetGroupByName.Name), name);
+            }
+        }*/
 
         public async Task CheckNameAssetGroupNotDuplicate (string name)
         {

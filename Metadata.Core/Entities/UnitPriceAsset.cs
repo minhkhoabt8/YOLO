@@ -12,7 +12,7 @@ public partial class UnitPriceAsset : ITextSearchableEntity
 
     public string AssetName { get; set; } = null!;
 
-    public decimal AssetPrice { get; set; }
+    public decimal AssetPrice { get; set; } = 0;
 
     public string? AssetRegulation { get; set; }
 

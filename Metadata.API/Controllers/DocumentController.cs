@@ -2,6 +2,7 @@
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.ResponseWrapper;
 
 namespace Metadata.API.Controllers
@@ -37,14 +38,26 @@ namespace Metadata.API.Controllers
         /// Get Documents Of Project
         /// </summary>
         /// <param name="projectId"></param>
-        /// <param name="query"></param>
         /// <returns></returns>
-        [HttpGet("project")]
+        [HttpGet("projectId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DocumentReadDTO>))]
         public async Task<IActionResult> GetDocumentsOfProject(string projectId)
         {
             var documents = await _documentService.GetDocumentsOfProjectAsync(projectId);
-            return Ok(documents);
+            return ResponseFactory.Ok(documents);
+        }
+
+        /// <summary>
+        /// Get Excel File Import Template
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        [HttpGet("importTemplate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UploadFileDTO))]
+        public async Task<IActionResult> GetFileImportExcelTemplateAsync(string name)
+        {
+            var result = await _documentService.GetFileImportExcelTemplateAsync(name);
+            return File(result.FileByte, result.FileType, result.FileName);
         }
 
 
