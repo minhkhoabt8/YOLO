@@ -73,6 +73,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<LandType>(id);
             }
+            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeUpdateDTO.LandGroupId!)
+                ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeUpdateDTO.LandGroupId);
             _mapper.Map(landTypeUpdateDTO, existLandType);
              await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(existLandType);
