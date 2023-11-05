@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -27,10 +28,27 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.OrganizationTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
-
-        public async Task<IEnumerable<OrganizationType>?> GetAllDeletedOrganizationTypes()
+        public async Task<OrganizationType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.OrganizationTypes.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.OrganizationTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<OrganizationType>?> GetAllActivedOrganizationTypes()
+        {
+            return await _context.OrganizationTypes.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrganizationType>> QueryAsync (OrganizationTypeQuery query , bool trackChanges = false)
+        {
+            IQueryable<OrganizationType> organizationTypes = _context.OrganizationTypes;
+
+            if (!trackChanges)
+            {
+                organizationTypes = organizationTypes.AsNoTracking();
+            }
+
+            IEnumerable<OrganizationType> enumeratedOrganizationTypes = organizationTypes.AsEnumerable();
+            return await Task.FromResult(enumeratedOrganizationTypes);
         }
     }
     

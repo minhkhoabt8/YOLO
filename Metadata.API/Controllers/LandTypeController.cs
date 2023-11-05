@@ -31,14 +31,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all LandType
+        /// Get Actived LandType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeleted")]
+        [HttpGet("getAllActived")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedLandType()
+        public async Task<IActionResult> getAllActivedLandType()
         {
-            var landTypes = await _landTypeService.GetAllDeletedLandTypeAsync();
+            var landTypes = await _landTypeService.GetAllActivedLandTypeAsync();
             return ResponseFactory.Ok(landTypes);
 
         }
@@ -61,6 +61,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [HttpPost("create")]
         [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<LandTypeReadDTO>))]
@@ -72,12 +73,27 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Create list  LandType
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<LandTypeReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateLandTypes(IEnumerable<LandTypeWriteDTO> input)
+        {
+             await _landTypeService.CreateLandTypesAsync(input);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
         /// Update LandType
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -93,13 +109,50 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteLandGroup(string id)
         {
             await _landTypeService.DeleteAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Check Duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+            await _landTypeService.CheckNameLandGroupNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check Duplicate Code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+            await _landTypeService.CheckCodeLandGroupNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  LandType
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandTypeReadDTO>>))]
+        public async Task<IActionResult> QueryLandType([FromQuery] LandTypeQuery query)
+        {
+            var landTypes = await _landTypeService.QueryLandTypeAsync(query);
+            return ResponseFactory.Ok(landTypes);
         }
     }
 }

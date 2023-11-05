@@ -23,6 +23,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<OwnerReadDTO> RemoveOwnerFromProjectAsync(string ownerId, string projectId);
         Task<IEnumerable<OwnerReadDTO>> GetOwnersOfProjectAsync(string projectId);
         Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto);
+
+        Task<IEnumerable<OwnerReadDTO>> GetAllOwner();
         Task<IEnumerable<OwnerReadDTO>> ImportOwnerFromExcelFileAsync(IFormFile file);
     }
 }

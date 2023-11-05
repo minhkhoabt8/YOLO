@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -28,9 +29,27 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.SupportTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
 
-        public async Task<IEnumerable<SupportType>?> GetAllDeletedSupportType()
+        public async Task<SupportType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.SupportTypes.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.SupportTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<SupportType>?> GetAllActivedSupportType()
+        {
+            return await _context.SupportTypes.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<SupportType>> QueryAsync(SupportTypeQuery query, bool trackChanges = false)
+        {
+            IQueryable<SupportType> supportTypes = _context.SupportTypes;
+
+            if (!trackChanges)
+            {
+                supportTypes = supportTypes.AsNoTracking();
+            }
+
+            IEnumerable<SupportType> enumeratedSupportTypes = supportTypes.AsEnumerable();
+            return await Task.FromResult(enumeratedSupportTypes);
         }
     }
 }

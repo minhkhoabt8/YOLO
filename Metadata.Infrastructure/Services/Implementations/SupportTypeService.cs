@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +36,33 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<SupportTypeReadDTO>(supportType);
         }
 
-        public async Task<IEnumerable<SupportTypeReadDTO>> GetAllDeletedLandTypeAsync()
+        public async Task<IEnumerable<SupportTypeReadDTO>> GetAllActivedLandTypeAsync()
         {
-            return _mapper.Map<IEnumerable<SupportTypeReadDTO>>(await _unitOfWork.SupportTypeRepository.GetAllDeletedSupportType());
+            return _mapper.Map<IEnumerable<SupportTypeReadDTO>>(await _unitOfWork.SupportTypeRepository.GetAllActivedSupportType());
         }
 
         public async Task<SupportTypeReadDTO?> CreateLandTypeAsync(SupportTypeWriteDTO supportTypeWriteDTO)
         {
-            await EnsureSupportTypeCodeNotDuplicate(supportTypeWriteDTO.Code);
+            await EnsureSupportTypeCodeNotDuplicate(supportTypeWriteDTO.Code, supportTypeWriteDTO.Name);
             var supportType = _mapper.Map<SupportType>(supportTypeWriteDTO);
             await _unitOfWork.SupportTypeRepository.AddAsync(supportType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<SupportTypeReadDTO>(supportType);
+        }
+
+        public async Task<IEnumerable<SupportTypeReadDTO>> CreateLandTypesAsync(IEnumerable<SupportTypeWriteDTO> supportTypeWriteDTOs)
+        {
+            var supportTypes = new List<SupportTypeReadDTO>();
+            foreach (var supportTypeDTO in supportTypeWriteDTOs)
+            {
+                await EnsureSupportTypeCodeNotDuplicate(supportTypeDTO.Code, supportTypeDTO.Name);
+                var supportType = _mapper.Map<SupportType>(supportTypeDTO);
+                await _unitOfWork.SupportTypeRepository.AddAsync(supportType);
+                await _unitOfWork.CommitAsync();
+                var readDTO = _mapper.Map<SupportTypeReadDTO>(supportType);
+                supportTypes.Add(readDTO);
+            }
+            return supportTypes;
         }
 
         public async Task<SupportTypeReadDTO?> UpdateAsync(string id, SupportTypeWriteDTO supportTypeUpdateDTO)
@@ -54,7 +71,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (supportType == null)
             {
                 throw new EntityWithIDNotFoundException<SupportType>(id);
-            }
+            }   
+            await EnsureSupportTypeCodeNotDuplicate(supportTypeUpdateDTO.Code, supportTypeUpdateDTO.Name);
              _mapper.Map(supportTypeUpdateDTO, supportType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<SupportTypeReadDTO>(supportType);
@@ -73,13 +91,42 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
-        private async Task EnsureSupportTypeCodeNotDuplicate(string code)
+        private async Task EnsureSupportTypeCodeNotDuplicate(string code , string name)
         {
-            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatus(code,true);
+            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatus(code,false);
             if (supportType != null && supportType.Code == code)
             {
                 throw new UniqueConstraintException<LandGroup>(nameof(supportType.Code), code);
             }
+            var supportType1 = await _unitOfWork.SupportTypeRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (supportType1 != null && supportType1.Name == name)
+            {
+                throw new UniqueConstraintException<LandGroup>(nameof(supportType1.Name), name);
+            }
+        }
+
+        public async Task CheckNameSupportTypeNotDuplicate(string name)
+        {
+            var supportType = await _unitOfWork.SupportTypeRepository.FindByNameAndIsDeletedStatus(name, false);
+            if (supportType != null && supportType.Name == name)
+            {
+                throw new UniqueConstraintException<SupportType>(nameof(supportType.Name), name);
+            }
+        }
+
+        public async Task CheckCodeSupportTypeNotDuplicate(string code)
+        {
+            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatus(code, false);
+            if (supportType != null && supportType.Code == code)
+            {
+                throw new UniqueConstraintException<SupportType>(nameof(supportType.Code), code);
+            }
+        }
+
+        public async Task<PaginatedResponse<SupportTypeReadDTO>> QuerySupportTypeAsync(SupportTypeQuery paginationQuery)
+        {
+            var supportTypes = await _unitOfWork.SupportTypeRepository.QueryAsync(paginationQuery);
+            return PaginatedResponse<SupportTypeReadDTO>.FromEnumerableWithMapping(supportTypes, paginationQuery, _mapper);
         }
     }
 }

@@ -200,5 +200,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<ProjectReadDTO>(project);
 
         }
+
+        public async Task<ProjectReadDTO> GetProjectOfOwnerAsync(string ownerId)
+        {
+            var project = await _unitOfWork.ProjectRepository.GetProjectsOfOwnerAsync(ownerId);
+
+            return _mapper.Map<ProjectReadDTO>(project);
+        }
     }
 }

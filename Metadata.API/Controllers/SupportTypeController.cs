@@ -29,14 +29,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all deleted SupportType
+        /// Get all actived SupportType
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeleted")]
+        [HttpGet("getAllActived")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedSupportTypes()
+        public async Task<IActionResult> getAllActivedSupportTypes()
         {
-            var supportTypes = await _supportTypeService.GetAllDeletedLandTypeAsync();
+            var supportTypes = await _supportTypeService.GetAllActivedLandTypeAsync();
             return ResponseFactory.Ok(supportTypes);
         }
 
@@ -57,7 +57,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -68,12 +68,27 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Create list SupportType
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateSupportTypes(IEnumerable<SupportTypeWriteDTO> input)
+        {
+            var supportTypes = await _supportTypeService.CreateLandTypesAsync(input);
+            return ResponseFactory.Created(supportTypes);
+        }
+
+        /// <summary>
         /// Update SupportType
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -89,7 +104,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteSupportType(string id)
@@ -98,5 +113,41 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
+        /// <summary>
+        /// Check Duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+            await _supportTypeService.CheckNameSupportTypeNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check Duplicate Code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+            await _supportTypeService.CheckCodeSupportTypeNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  SupportType
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
+        public async Task<IActionResult> QuerySupportType([FromQuery] SupportTypeQuery query)
+        {
+            var supportTypes = await _supportTypeService.QuerySupportTypeAsync(query);
+            return ResponseFactory.Ok(supportTypes);
+        }
     }
 }

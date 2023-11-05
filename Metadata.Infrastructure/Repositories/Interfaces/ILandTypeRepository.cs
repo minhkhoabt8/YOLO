@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.LandType;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<LandType?> FindByCodeAsync(string code);
         Task<LandType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
-        Task<IEnumerable<LandType>?> GetAllDeletedLandTypes();
+        Task<LandType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
+        Task<IEnumerable<LandType>?> GetAllActivedLandTypes();
+        Task<IEnumerable<LandType>> QueryAsync(LandTypeQuery query, bool trackChanges = false);
     }
 }

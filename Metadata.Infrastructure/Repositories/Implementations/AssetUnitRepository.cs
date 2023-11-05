@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -27,9 +28,28 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetUnits.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
 
-        public async Task<IEnumerable<AssetUnit>?> GetAllDeletedAssetUnit()
+        public async Task<AssetUnit?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.AssetUnits.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.AssetUnits.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+
+        public async Task<IEnumerable<AssetUnit>?> GetActivedAssetUnitAsync()
+        {
+            return await _context.AssetUnits.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        
+        public async Task<IEnumerable<AssetUnit>> QueryAsync(AssetUnitQuery query, bool trackChanges = false)
+        {
+            IQueryable<AssetUnit> assetUnits = _context.AssetUnits;
+
+            if (!trackChanges)
+            {
+                assetUnits = assetUnits.AsNoTracking();
+            }
+
+            IEnumerable<AssetUnit> enumeratedAssetUnits = assetUnits.AsEnumerable();
+            return await Task.FromResult(enumeratedAssetUnits);
         }
     }
     

@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetUnit;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<AssetUnit?> FindByCodeAsync(string code);
         Task<AssetUnit?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
-        Task<IEnumerable<AssetUnit>?> GetAllDeletedAssetUnit();
+        Task<IEnumerable<AssetUnit>?> GetActivedAssetUnitAsync();
+        Task<AssetUnit?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
+        Task<IEnumerable<AssetUnit>> QueryAsync(AssetUnitQuery query, bool trackChanges = false);
+        
     }
 }

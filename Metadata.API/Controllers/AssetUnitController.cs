@@ -30,14 +30,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all deleted AssetUnits
+        /// Get actived AssetUnits
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeleted")]
+        [HttpGet("getActived")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
         public async Task<IActionResult> getAllDeletedAssetUnits()
         {
-            var assetUnits = await _assetUnitService.GetAllDeletedAssetUnitAsync();
+            var assetUnits = await _assetUnitService.GetActivedAssetUnitAsync();
             return ResponseFactory.Ok(assetUnits);
         }
 
@@ -60,13 +60,28 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> CreateAssetUnit(AssetUnitWriteDTO input)
         {
             var assetUnit = await _assetUnitService.CreateAssetUnitAsync(input);
+            return ResponseFactory.Created(assetUnit);
+        }
+
+        /// <summary>
+        ///  Create AssetUnit List
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateAssetUnitList(IEnumerable<AssetUnitWriteDTO> input)
+        {
+            var assetUnit = await _assetUnitService.CreateListAssetUnitAsync(input);
             return ResponseFactory.Created(assetUnit);
         }
 
@@ -77,7 +92,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -93,7 +108,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetUnitReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteAssetUnit(string id)
@@ -101,5 +116,43 @@ namespace Metadata.API.Controllers
             await _assetUnitService.DeleteAsync(id);
             return ResponseFactory.NoContent();
         }
+
+        /// <summary>
+        /// Check duplicate code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+             await _assetUnitService.CheckCodeAssetUnitNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+            await _assetUnitService.CheckNameAssetUnitNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  Asset Unit
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
+        public async Task<IActionResult> QueryAssetUnit([FromQuery] AssetUnitQuery query)
+        {
+            var assetUnits = await _assetUnitService.QueryAssetUnitAsync(query);
+            return ResponseFactory.Ok(assetUnits);
+        }
+
     }
 }

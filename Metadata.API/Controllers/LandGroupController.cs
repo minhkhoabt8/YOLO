@@ -31,14 +31,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all deleted LandGroup
+        /// Get all Actived LandGroup
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeleted")]
+        [HttpGet("getAllActived")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
-        public async Task<IActionResult> getAllDeletedLandGroups()
+        public async Task<IActionResult> getAllActivedLandGroups()
         {
-            var landGroups = await _landGroupService.GetAllDeletedLandGroupAsync();
+            var landGroups = await _landGroupService.GetAllActivedLandGroupAsync();
             return ResponseFactory.Ok(landGroups);
         }
 
@@ -70,12 +70,27 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Create new list LandGroup
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateListLandGroup(IEnumerable<LandGroupWriteDTO> input)
+        {
+            var landGroups = await _landGroupService.CreateListLandGroupAsync(input);
+            return ResponseFactory.Created(landGroups);
+        }
+
+        /// <summary>
         /// Update LandGroup
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,13 +106,50 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteLandGroup(string id)
         {
             await _landGroupService.DeleteAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Check Duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+            await _landGroupService.CheckNameLandGroupNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check Duplicate Code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+            await _landGroupService.CheckCodeLandGroupNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  LandGroup
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
+        public async Task<IActionResult> QueryLandGroup([FromQuery] LandGroupQuery query)
+        {
+            var landGroups = await _landGroupService.QueryLandGroupAsync(query);
+            return ResponseFactory.Ok(landGroups);
         }
     }
 }

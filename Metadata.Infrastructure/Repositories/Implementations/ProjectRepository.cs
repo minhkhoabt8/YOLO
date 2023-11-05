@@ -58,5 +58,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<Project> enumeratedProject = projects.AsEnumerable();
             return await Task.FromResult(enumeratedProject);
         }
+
+        public async Task<IEnumerable<Project>> GetProjectsOfOwnerAsync(string ownerId)
+        {
+            return await _context.Projects.Where(p => p.ProjectCode == ownerId).ToListAsync();
+        }
     }
 }

@@ -16,5 +16,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<ProjectReadDTO>> ProjectQueryAsync(ProjectQuery query);
         Task<ExportFileDTO> ExportProjectFileAsync();
         Task<ProjectReadDTO> CreateProjectDocumentsAsync(string projectId, IEnumerable<DocumentWriteDTO> documents);
+
+        Task<ProjectReadDTO> GetProjectOfOwnerAsync(string ownerId);
     }
 }
