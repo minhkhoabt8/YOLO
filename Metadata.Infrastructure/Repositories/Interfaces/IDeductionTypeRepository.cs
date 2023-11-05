@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.DeductionType;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,10 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<DeductionType>
     {
         Task<DeductionType?> FindByCodeAsync(string code);
-        Task<IEnumerable<DeductionType>?> GetAllDeletedDeductionTypes();
+       
         Task<DeductionType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<DeductionType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
+        Task<IEnumerable<DeductionType>?> GetActivedDeductionTypes();
+        Task<IEnumerable<DeductionType>> QueryAsync(DeductionTypeQuery query, bool trackChanges = false);
     }
 }

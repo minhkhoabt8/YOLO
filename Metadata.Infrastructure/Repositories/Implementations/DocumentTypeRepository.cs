@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.DocumentType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -26,12 +27,27 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.DocumentTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
-
-        public async Task<IEnumerable<DocumentType>?> GetAllDeletedDocumentTypes()
+        public async Task<DocumentType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.DocumentTypes.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.DocumentTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+        public async Task<IEnumerable<DocumentType>?> GetAllActivedDocumentTypes()
+        {
+            return await _context.DocumentTypes.Where(x => x.IsDeleted == false).ToListAsync();
         }
 
+        public async Task<IEnumerable<DocumentType>> QueryAsync (DocumentTypeQuery query , bool trackChanges = false)
+        {
+            IQueryable<DocumentType> documentTypes = _context.DocumentTypes;
+
+            if (!trackChanges)
+            {
+                documentTypes = documentTypes.AsNoTracking();
+            }
+
+            IEnumerable<DocumentType> enumeratedDocumentTypes = documentTypes.AsEnumerable();
+            return await Task.FromResult(enumeratedDocumentTypes);
+        }
     }
     
 }

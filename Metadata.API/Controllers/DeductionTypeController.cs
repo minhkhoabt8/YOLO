@@ -31,14 +31,14 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get all deleted DeductionTypes
+        /// GetActivedDeductionTypes
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getAllDeleted")]
+        [HttpGet("getActived")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
-        public async Task<IActionResult> GetAllDeletedDeductionTypes()
+        public async Task<IActionResult> GetActivedDeductionTypes()
         {
-            var deductionTypes = await _deductionTypeService.GetAllDeletedDeductionTypesAsync();
+            var deductionTypes = await _deductionTypeService.GetActivedDeductionTypes();
             return ResponseFactory.Ok(deductionTypes);
         }
 
@@ -59,7 +59,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        [HttpPost()]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -70,12 +70,27 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Create list deductionTypes
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("createList")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateListDeductionTypes(IEnumerable<DeductionTypeWriteDTO> input)
+        {
+            var deductionTypes = await _deductionTypeService.CreateListDeductionTypes(input);
+            return ResponseFactory.Created(deductionTypes);
+        }
+
+        /// <summary>
         /// Update DeductionTypes
         /// </summary>
         /// <param name="id"></param>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
+        [HttpPut("updateId")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,13 +106,50 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DeductionTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteDeductionType(string id)
         {
             await _deductionTypeService.DeleteDeductionTypeAsync(id);
             return ResponseFactory.NoContent();
+        }
+
+        /// <summary>
+        /// Check duplicate code
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateCode")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCode(string code)
+        {
+            await _deductionTypeService.CheckcodeDeductionTypeNotDuplicate(code);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Check duplicate Name
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicateName")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateName(string name)
+        {
+            await _deductionTypeService.ChecknameDeductionTypeNotDuplicate(name);
+            return ResponseFactory.Accepted();
+        }
+
+        /// <summary>
+        /// Query  DeductionTypes
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<DeductionTypeReadDTO>>))]
+        public async Task<IActionResult> QueryDeductionTypes([FromQuery] DeductionTypeQuery query)
+        {
+            var deductionTypes = await _deductionTypeService.QueryDeductionTypesAsync(query);
+            return ResponseFactory.Ok(deductionTypes);
         }
     }
 }

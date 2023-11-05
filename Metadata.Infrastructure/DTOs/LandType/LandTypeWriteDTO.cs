@@ -12,9 +12,9 @@ namespace Metadata.Infrastructure.DTOs.LandType
 
         public string? Code { get; set; }
         public string? Name { get; set; }
-
         public string? LandGroupId { get; set; }
 
-        
+
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.DTOs.DocumentType;
+using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,12 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<DocumentTypeReadDTO> GetDocumentTypeAsync(string id);
         Task<DocumentTypeReadDTO> CreateDocumentTypeAsync(DocumentTypeWriteDTO documentType);
         Task<DocumentTypeReadDTO> UpdateDocumentTypeAsync(string id, DocumentTypeWriteDTO documentType);
-        Task<IEnumerable<DocumentTypeReadDTO>> GetAllDeletedDocumentTypesAsync();
+        Task<IEnumerable<DocumentTypeReadDTO>> GetAllActivedDocumentTypes();
         Task<bool> DeleteDocumentTypeAsync(string id);
+        Task CheckCodeDocumentTypeNotDuplicate(string code);
+        Task CheckNameDocumentTypeNotDuplicate(string name);
+        Task<IEnumerable<DocumentTypeReadDTO>> CreateListDocumentTypeAsync(IEnumerable<DocumentTypeWriteDTO> documentTypeWrites);
+
+        Task<PaginatedResponse<DocumentTypeReadDTO>> QueryDocumentTypeAsync(DocumentTypeQuery paginationQuery);
     }
 }

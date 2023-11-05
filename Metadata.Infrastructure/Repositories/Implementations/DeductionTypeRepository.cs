@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -26,10 +27,26 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.DeductionTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
         }
-
-        public async Task<IEnumerable<DeductionType>?> GetAllDeletedDeductionTypes()
+        public async Task<DeductionType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
         {
-            return await _context.DeductionTypes.Where(x => x.IsDeleted == true).ToListAsync();
+            return await _context.DeductionTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
+        public async Task<IEnumerable<DeductionType>?> GetActivedDeductionTypes()
+        {
+            return await _context.DeductionTypes.Where(x => x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<DeductionType>> QueryAsync(DeductionTypeQuery query, bool trackChanges = false)
+        {
+            IQueryable<DeductionType> deductionTypes = _context.DeductionTypes;
+
+            if (!trackChanges)
+            {
+                deductionTypes = deductionTypes.AsNoTracking();
+            }
+
+            IEnumerable<DeductionType> enumeratedDeductionTypes = deductionTypes.AsEnumerable();
+            return await Task.FromResult(enumeratedDeductionTypes);
         }
     }
 }

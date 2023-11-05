@@ -1,4 +1,6 @@
-﻿using Metadata.Infrastructure.DTOs.OrganizationType;
+﻿using Metadata.Infrastructure.DTOs.LandType;
+using Metadata.Infrastructure.DTOs.OrganizationType;
+using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,11 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<OrganizationTypeReadDTO?> GetAsync(string code);
         Task<OrganizationTypeReadDTO?> CreateOrganizationTypeAsync(OrganizationTypeWriteDTO organizationTypeWriteDTO);
         Task<OrganizationTypeReadDTO?> UpdateAsync(string id, OrganizationTypeWriteDTO organizationTypeUpdateDTO);
-        Task<IEnumerable<OrganizationTypeReadDTO>> GetAllDeletedOrganizationTypeAsync();
+        Task<IEnumerable<OrganizationTypeReadDTO>> GetAllActivedOrganizationTypeAsync();
         Task<bool> DeleteAsync(string delete);
+        Task<IEnumerable<OrganizationTypeReadDTO>> CreateOrganizationTypesAsync(IEnumerable<OrganizationTypeWriteDTO> organizationTypeWriteDTOs);
+        Task CheckNameOrganizationTypeNotDuplicate(string name);
+        Task CheckCodeOrganizationTypeNotDuplicate(string code);
+        Task<PaginatedResponse<OrganizationTypeReadDTO>> QueryOrganizationTypeAsync(OrganizationTypeQuery paginationQuery);
     }
 }
