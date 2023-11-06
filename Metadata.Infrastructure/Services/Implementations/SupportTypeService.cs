@@ -72,7 +72,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<SupportType>(id);
             }   
-            await EnsureSupportTypeCodeNotDuplicate(supportTypeUpdateDTO.Code, supportTypeUpdateDTO.Name);
+            await EnsureSupportTypeCodeNotDuplicateForUpdate(supportTypeUpdateDTO.Code, supportTypeUpdateDTO.Name,id);
              _mapper.Map(supportTypeUpdateDTO, supportType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<SupportTypeReadDTO>(supportType);
@@ -96,12 +96,26 @@ namespace Metadata.Infrastructure.Services.Implementations
             var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatus(code,false);
             if (supportType != null && supportType.Code == code)
             {
-                throw new UniqueConstraintException<LandGroup>(nameof(supportType.Code), code);
+                throw new UniqueConstraintException<SupportType>(nameof(supportType.Code), code);
             }
             var supportType1 = await _unitOfWork.SupportTypeRepository.FindByNameAndIsDeletedStatus(name, false);
             if (supportType1 != null && supportType1.Name == name)
             {
-                throw new UniqueConstraintException<LandGroup>(nameof(supportType1.Name), name);
+                throw new UniqueConstraintException<SupportType>(nameof(supportType1.Name), name);
+            }
+        }
+
+        private async Task EnsureSupportTypeCodeNotDuplicateForUpdate(string code, string name, string id)
+        {
+            var supportType = await _unitOfWork.SupportTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code, id, false);
+            if (supportType != null && supportType.Code == code && supportType.SupportTypeId != id)
+            {
+                throw new UniqueConstraintException<SupportType>(nameof(supportType.Code), code);
+            }
+            var supportType2 = await _unitOfWork.SupportTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name, id, false);
+            if (supportType2 != null && supportType2.Name == name && supportType2.SupportTypeId != id)
+            {
+                throw new UniqueConstraintException<SupportType>(nameof(supportType2.Name), name);
             }
         }
 

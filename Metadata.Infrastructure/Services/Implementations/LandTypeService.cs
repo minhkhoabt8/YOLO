@@ -118,7 +118,22 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
             }
         }
-        
+
+       /* //EnsureLandTypeCodeNotDuplicateForUpdate
+        public async Task EnsureLandTypeCodeNotDuplicateForUpdate(string id, string code, string name)
+        {
+            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id, false);
+            if (landType != null && landType.Code == code && landType.LandTypeId != id)
+            {
+                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
+            }
+            var landType2 = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name,id, false);
+            if (landType2 != null && landType2.Name == name && landType2.LandTypeId != id)
+            {
+                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
+            }
+        }*/
+
         public async Task CheckNameLandGroupNotDuplicate (string name)
         {
             var landType = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
@@ -135,21 +150,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
             }
-            var landType2 = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
-            if (landType2 != null && landType2.Name == name)
-            {
-                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
-            }
+            
         }
         
-        public async Task CheckNameLandGroupNotDuplicate (string name)
-        {
-            var landType = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
-            if (landType != null && landType.Name == name)
-            {
-                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Name), name);
-            }
-        }
+        
 
         public async Task<PaginatedResponse<LandTypeReadDTO>> QueryLandTypeAsync(LandTypeQuery paginationQuery)
         {

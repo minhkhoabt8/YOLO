@@ -1,5 +1,7 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.Deduction;
+using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -23,6 +25,18 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<decimal> CaculateTotalDeductionOfOwnerAsync(string ownerId)
         {
             return await _context.Deductions.Where(c => c.OwnerId == ownerId).SumAsync(c=>c.DeductionPrice);
+        }
+        public async Task<IEnumerable<Deduction>> QueryAsync(DeductionQuery query, bool trackChanges = false)
+        {
+            IQueryable<Deduction> supports = _context.Deductions;
+
+            if (!trackChanges)
+            {
+                supports = supports.AsNoTracking();
+            }
+
+            IEnumerable<Deduction> enumeratedAssetCompensation = supports.AsEnumerable();
+            return await Task.FromResult(enumeratedAssetCompensation);
         }
     }
 }

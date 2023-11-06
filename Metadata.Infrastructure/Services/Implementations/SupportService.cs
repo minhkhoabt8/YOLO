@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -47,6 +49,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<SupportReadDTO>>(supportList);
         }
 
+
+        public async Task<IEnumerable<SupportReadDTO>> GetSupportsAsync(string ownerId)
+        {
+            var supports = await _unitOfWork.SupportRepository.GetAllSupportsOfOwnerAsync(ownerId);
+
+            if(supports == null) throw new EntityWithIDNotFoundException<Support>(ownerId);
+
+            return _mapper.Map<IEnumerable<SupportReadDTO>>(supports);
+        }
+
         public async Task DeleteSupportAsync(string supportId)
         {
             var support = await _unitOfWork.SupportRepository.FindAsync(supportId);
@@ -71,6 +83,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<SupportReadDTO>(support);
         }
 
-        
+        public async Task<PaginatedResponse<SupportReadDTO>> QuerySupportAsync(SupportQuery paginationQuery)
+        {
+            var asset = await _unitOfWork.SupportRepository.QueryAsync(paginationQuery);
+            return PaginatedResponse<SupportReadDTO>.FromEnumerableWithMapping(asset, paginationQuery, _mapper);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.Deduction;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<Deduction?>> GetAllDeductionsOfOwnerAsync(string ownerId);
         Task<decimal> CaculateTotalDeductionOfOwnerAsync(string ownerId);
+        Task<IEnumerable<Deduction>> QueryAsync(DeductionQuery query, bool trackChanges = false);
     }
 }

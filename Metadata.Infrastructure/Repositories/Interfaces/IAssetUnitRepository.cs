@@ -19,6 +19,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<AssetUnit>?> GetActivedAssetUnitAsync();
         Task<AssetUnit?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<AssetUnit>> QueryAsync(AssetUnitQuery query, bool trackChanges = false);
-        
+        Task<AssetUnit?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<AssetUnit?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
+
+
     }
 }

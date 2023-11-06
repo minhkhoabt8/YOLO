@@ -16,7 +16,7 @@ namespace Metadata.Infrastructure.DTOs.Support
 
         public decimal? SupportPrice { get; set; }
 
-        public string? OwnerId { get; set; }
+        /*public string? OwnerId { get; set; }*/
 
         public string? SupportTypeId { get; set; }
     }

@@ -1,6 +1,8 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.AssetCompensation;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -20,8 +22,23 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<AssetCompensation?>> GetAllAssetCompensationsOfOwnerAsync(string ownerId)
         {
-            return await _context.AssetCompensations.Include(c=>c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
+            return await _context.AssetCompensations.Include(c=>c.AttachFiles).Where(c => c.OwnerId == ownerId && c.IsDeleted == false).ToListAsync();
         }
+
+
+        public async Task<IEnumerable<AssetCompensation>> QueryAsync(AssetCompensationQuery query, bool trackChanges = false)
+        {
+            IQueryable<AssetCompensation> AssetCompensation = _context.AssetCompensations;
+
+            if (!trackChanges)
+            {
+                AssetCompensation = AssetCompensation.AsNoTracking();
+            }
+
+            IEnumerable<AssetCompensation> enumeratedAssetCompensation = AssetCompensation.AsEnumerable();
+            return await Task.FromResult(enumeratedAssetCompensation);
+        }
+
         /// <summary>
         /// If reCheck = true, re-caculate asset compensation, else get directly from field (CompensationPrice)
         /// </summary>

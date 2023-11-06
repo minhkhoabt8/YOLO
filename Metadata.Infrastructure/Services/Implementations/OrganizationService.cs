@@ -82,7 +82,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<OrganizationType>(id);
             }
-            await EnsureOrganizationTypeCodeNotDuplicate(organizationTypeUpdateDTO.Code, organizationTypeUpdateDTO.Name);
+            await EnsureOrganizationTypeCodeNotDuplicateForUpdate(organizationTypeUpdateDTO.Code, organizationTypeUpdateDTO.Name,id);
             _mapper.Map(organizationTypeUpdateDTO, existOrganizationType);
        
             await _unitOfWork.CommitAsync();
@@ -111,6 +111,20 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             var organizationType1 = await _unitOfWork.OrganizationTypeRepository.FindByNameAndIsDeletedStatus(name, false);
             if (organizationType1 != null && organizationType1.Name == name)
+            {
+                throw new UniqueConstraintException<OrganizationType>(nameof(organizationType1.Name), name);
+            }
+        }
+        //EnsureOrganizationTypeCodeNotDuplicateforUpdate
+        private async Task EnsureOrganizationTypeCodeNotDuplicateForUpdate(string code, string name,string id)
+        {
+            var organizationType = await _unitOfWork.OrganizationTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id, false);
+            if (organizationType != null && organizationType.Code == code && organizationType.OrganizationTypeId != id)
+            {
+                throw new UniqueConstraintException<OrganizationType>(nameof(organizationType.Code), code);
+            }
+            var organizationType1 = await _unitOfWork.OrganizationTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name,id, false);
+            if (organizationType1 != null && organizationType1.Name == name && organizationType.OrganizationTypeId != id)
             {
                 throw new UniqueConstraintException<OrganizationType>(nameof(organizationType1.Name), name);
             }

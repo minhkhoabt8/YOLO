@@ -22,8 +22,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<AssetGroup>> QueryAsync(AssetGroupQuery query, bool trackChanges = false);
 
 
-      /*  Task<AssetGroup?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
-        Task<AssetGroup?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);*/
+        Task<AssetGroup?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<AssetGroup?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
 
 
     }

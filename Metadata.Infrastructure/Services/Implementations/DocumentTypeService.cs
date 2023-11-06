@@ -87,7 +87,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<DocumentType>(id);
             }
-            EnsureDocumentTypeCodeNotDuplicate(documentType.Code, documentType.Name);
+            await EnsureDocumentTypeCodeNotDuplicateForUpdate(documentType.Code, documentType.Name,id);
             _mapper.Map(documentType, documentTypeEntity);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<DocumentTypeReadDTO>(documentTypeEntity);
@@ -130,5 +130,22 @@ namespace Metadata.Infrastructure.Services.Implementations
             var documentTypes = await _unitOfWork.DocumentTypeRepository.QueryAsync(paginationQuery);
             return PaginatedResponse<DocumentTypeReadDTO>.FromEnumerableWithMapping(documentTypes, paginationQuery, _mapper);
         }
+
+        //EnsureDocumentTyoeNotExistForUpdate
+
+        private async Task EnsureDocumentTypeCodeNotDuplicateForUpdate(string code, string name, string id)
+        {
+            var documentTypeCode = await _unitOfWork.DocumentTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code, id, false);
+            if (documentTypeCode != null && documentTypeCode.Code == code && documentTypeCode.DocumentTypeId != id)
+            {
+                throw new UniqueConstraintException<DocumentType>(nameof(documentTypeCode.Code), code);
+            }
+            var documentTypeName = await _unitOfWork.DocumentTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name, id, false);
+            if (documentTypeName != null && documentTypeName.Name == name && documentTypeName.DocumentTypeId != id)
+            {
+                throw new UniqueConstraintException<DocumentType>(nameof(documentTypeName.Name), name);
+            }
+        }
+
     }
 }
