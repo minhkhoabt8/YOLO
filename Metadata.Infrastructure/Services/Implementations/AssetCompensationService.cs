@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetCompensation;
+using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 
 
@@ -23,6 +25,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper = mapper;
             _userContextService = userContextService;
             _attachFileService = attachFileService;
+        }
+
+        public async Task<IEnumerable<AssetCompensationReadDTO>> GetAssetCompensationsAsync(string ownerId)
+        {
+            var assetCompensations = await _unitOfWork.AssetCompensationRepository.GetAllAssetCompensationsOfOwnerAsync(ownerId);
+            if (assetCompensations == null)
+            {
+                  throw new EntityWithIDNotFoundException<AssetCompensation>(ownerId);
+            }
+            return _mapper.Map<IEnumerable<AssetCompensationReadDTO>>(assetCompensations);
         }
 
         public async Task<IEnumerable<AssetCompensationReadDTO>> CreateOwnerAssetCompensationsAsync(string ownerId, IEnumerable<AssetCompensationWriteDTO> dto)
@@ -63,7 +75,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (compensation == null) throw new EntityWithIDNotFoundException<AssetCompensation>(compensationId);
 
-            _unitOfWork.AssetCompensationRepository.Delete(compensation);
+            compensation.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
         }
@@ -79,6 +91,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AssetCompensationReadDTO>(compensation);
+        }
+
+
+        public async Task<PaginatedResponse<AssetCompensationReadDTO>> QueryAssetCompensationAsync(AssetCompensationQuery paginationQuery)
+        {
+            var asset = await _unitOfWork.AssetCompensationRepository.QueryAsync(paginationQuery);
+            return PaginatedResponse<AssetCompensationReadDTO>.FromEnumerableWithMapping(asset, paginationQuery, _mapper);
         }
     }
 }

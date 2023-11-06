@@ -19,6 +19,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<OrganizationType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<OrganizationType>?> GetAllActivedOrganizationTypes();
         Task<IEnumerable<OrganizationType>> QueryAsync(OrganizationTypeQuery query, bool trackChanges = false);
+
+        Task<OrganizationType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<OrganizationType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
  
 }

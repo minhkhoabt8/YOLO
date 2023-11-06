@@ -19,5 +19,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<DocumentType>?> GetAllActivedDocumentTypes();
         Task<DocumentType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<DocumentType>> QueryAsync(DocumentTypeQuery query, bool trackChanges = false);
+        Task<DocumentType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<DocumentType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
 }

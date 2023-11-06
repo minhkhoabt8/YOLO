@@ -12,7 +12,7 @@ namespace Metadata.Infrastructure.DTOs.Deduction
 
         public decimal? DeductionPrice { get; set; }
 
-        public string? OwnerId { get; set; }
+      /*  public string? OwnerId { get; set; }*/
 
         public string? DeductionTypeId { get; set; }
     }

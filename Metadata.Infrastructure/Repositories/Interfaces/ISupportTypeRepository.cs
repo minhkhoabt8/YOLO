@@ -19,6 +19,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<SupportType>?> GetAllActivedSupportType();
         Task<SupportType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<SupportType>> QueryAsync(SupportTypeQuery query, bool trackChanges = false);
+
+        Task<SupportType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<SupportType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
     
 }

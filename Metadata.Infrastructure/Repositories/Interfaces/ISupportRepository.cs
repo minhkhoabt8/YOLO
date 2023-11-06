@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.Support;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 
 namespace Metadata.Infrastructure.Repositories.Interfaces
@@ -11,5 +12,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
          IDelete<Support>
     {
         Task<IEnumerable<Support?>> GetAllSupportsOfOwnerAsync(string ownerId);
+        Task<IEnumerable<Support>> QueryAsync(SupportQuery query, bool trackChanges = false);
     }
 }

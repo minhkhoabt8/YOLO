@@ -74,7 +74,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<DeductionType>(id);
             }
-            await EnsureDeductionTypeNotExist(deductionType.Code, deductionType.Name);
+            await EnsureDeductionTypeNotExistForUpdate(deductionType.Code, deductionType.Name, id);
             _mapper.Map(deductionType, existDeductionType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<DeductionTypeReadDTO>(existDeductionType);
@@ -89,6 +89,21 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             var existDeductionType2 = await _unitOfWork.DeductionTypeRepository.FindByNameAndIsDeletedStatus(name, false);
             if (existDeductionType2 != null && existDeductionType2.Name == name)
+            {
+                throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType2.Name), name);
+            }
+        }
+
+        //EnsureDeductionTypeNotExistForUpdate
+        private async Task EnsureDeductionTypeNotExistForUpdate(string code, string name, string id)
+        {
+            var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id, false);
+            if (existDeductionType != null && existDeductionType.Code == code && existDeductionType.DeductionTypeId != id)
+            {
+                throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType.Code), code);
+            }
+            var existDeductionType2 = await _unitOfWork.DeductionTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(name,id, false);
+            if (existDeductionType2 != null && existDeductionType2.Name == name && existDeductionType2.DeductionTypeId != id)
             {
                 throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType2.Name), name);
             }

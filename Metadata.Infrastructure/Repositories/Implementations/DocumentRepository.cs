@@ -28,6 +28,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .ToListAsync();
         }
 
+
+
         public async Task<IEnumerable<Document>> QueryAsync(DocumentQuery query, bool trackChanges = false)
         {
             IQueryable<Document> documents = _context.Documents;

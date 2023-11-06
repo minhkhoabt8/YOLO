@@ -64,7 +64,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<AssetUnit>(id);
             }
-            await EnsureAssetUnitCodeNotDuplicate(assetUnitUpdateDTO.Code, assetUnitUpdateDTO.Name);
+            await EnsureAssetUnitCodeNotDuplicateForUpdate(assetUnitUpdateDTO.Code, assetUnitUpdateDTO.Name,  id);
             _mapper.Map(assetUnitUpdateDTO, existAssetUnit);
 
             await _unitOfWork.CommitAsync();
@@ -135,5 +135,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<AssetUnitReadDTO>.FromEnumerableWithMapping(assetUnits,paginationQuery, _mapper);
         }
 
+        private async Task EnsureAssetUnitCodeNotDuplicateForUpdate(string code, string name, string id)
+        {
+            var assetUnit = await _unitOfWork.AssetUnitRepository.FindByCodeAndIsDeletedStatusForUpdate(code, id, false);
+            if (assetUnit != null && assetUnit.Code == code && assetUnit.AssetUnitId != id)
+            {
+                throw new UniqueConstraintException<AssetGroup>(nameof(assetUnit.Code), code);
+            }
+            var assetUnitByName = await _unitOfWork.AssetUnitRepository.FindByCodeAndIsDeletedStatusForUpdate(name, id, false);
+            if (assetUnitByName != null && assetUnitByName.Name == name && assetUnitByName.AssetUnitId != id)
+            {
+                throw new UniqueConstraintException<AssetGroup>(nameof(assetUnitByName.Name), name);
+            }
+        }
     }
 }

@@ -19,5 +19,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<LandType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<LandType>?> GetAllActivedLandTypes();
         Task<IEnumerable<LandType>> QueryAsync(LandTypeQuery query, bool trackChanges = false);
+
+        Task<LandType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+
+        Task<LandType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
 }

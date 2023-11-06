@@ -62,7 +62,6 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        [HttpPost()]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<LandTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]

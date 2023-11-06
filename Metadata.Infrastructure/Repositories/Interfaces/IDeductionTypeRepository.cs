@@ -20,5 +20,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<DeductionType?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<DeductionType>?> GetActivedDeductionTypes();
         Task<IEnumerable<DeductionType>> QueryAsync(DeductionTypeQuery query, bool trackChanges = false);
+
+        Task<DeductionType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+
+        Task<DeductionType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
 }

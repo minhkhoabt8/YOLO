@@ -19,5 +19,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<LandGroup?> FindByNameAndIsDeletedStatus(string name, bool isDeleted);
         Task<IEnumerable<LandGroup>?> GetAllActivedLandGroups();
         Task<IEnumerable<LandGroup>> QueryAsync(LandGroupQuery query, bool trackChanges = false);
+        Task<LandGroup?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted);
+        Task<LandGroup?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted);
     }
 }

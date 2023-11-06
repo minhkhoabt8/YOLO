@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.AssetCompensation
+namespace Metadata.Infrastructure.DTOs.Support
 {
-    public class AssetCompensationQuery : PaginatedQuery
+    public class SupportQuery : PaginatedQuery
     {
     }
 }

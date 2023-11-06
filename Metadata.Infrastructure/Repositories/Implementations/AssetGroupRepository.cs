@@ -52,6 +52,21 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<AssetGroup> enumeratedAssetGroups = assetGroups.AsEnumerable();
             return await Task.FromResult(enumeratedAssetGroups);
         }
+
+        public async Task<AssetGroup?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted)
+        {
+            var check= await _context.AssetGroups.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.AssetGroupId.ToLower() != id.ToLower() && x.IsDeleted == isDeleted);
+            return check;
+        }
+
+        public async Task<AssetGroup?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted)
+        {
+            var check = await _context.AssetGroups.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.AssetGroupId.ToLower() != id.ToLower() && x.IsDeleted == isDeleted);
+            return check;
+        }
+
         
+        
+
     }
 }

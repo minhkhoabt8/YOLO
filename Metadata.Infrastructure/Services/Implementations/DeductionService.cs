@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Deduction;
+using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using SharedLib.Core.Exceptions;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 
 
@@ -47,6 +49,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<DeductionReadDTO>>(deductionList);
         }
 
+        public async Task<IEnumerable<DeductionReadDTO>> GetDeductionsAsync(string ownerId)
+        {
+              var deductions = await _unitOfWork.DeductionRepository.GetAllDeductionsOfOwnerAsync(ownerId);
+
+            if (deductions == null) throw new EntityWithIDNotFoundException<Deduction>(ownerId);
+
+            return _mapper.Map<IEnumerable<DeductionReadDTO>>(deductions);
+        }
+
         public async Task DeleteDeductionAsync(string deductionId)
         {
             var deduction = await _unitOfWork.DeductionRepository.FindAsync(deductionId);
@@ -69,6 +80,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<DeductionReadDTO>(deduction);
+        }
+
+        public async Task<PaginatedResponse<DeductionReadDTO>> QueryDeductionAsync(DeductionQuery paginationQuery)
+        {
+            var asset = await _unitOfWork.DeductionRepository.QueryAsync(paginationQuery);
+            return PaginatedResponse<DeductionReadDTO>.FromEnumerableWithMapping(asset, paginationQuery, _mapper);
         }
     }
 }

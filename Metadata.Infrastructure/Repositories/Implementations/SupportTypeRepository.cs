@@ -51,5 +51,17 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<SupportType> enumeratedSupportTypes = supportTypes.AsEnumerable();
             return await Task.FromResult(enumeratedSupportTypes);
         }
+
+        public async Task<SupportType?> FindByCodeAndIsDeletedStatusForUpdate(string code, string id, bool isDeleted)
+        {
+            var check = await _context.SupportTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.SupportTypeId.ToLower() != id.ToLower() && x.IsDeleted == isDeleted);
+            return check;
+        }
+
+        public async Task<SupportType?> FindByNameAndIsDeletedStatusForUpdate(string name, string id, bool isDeleted)
+        {
+            var check = await _context.SupportTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.SupportTypeId.ToLower() != id.ToLower() && x.IsDeleted == isDeleted);
+            return check;
+        }
     }
 }
