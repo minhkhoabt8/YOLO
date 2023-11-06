@@ -10,6 +10,8 @@ public partial class Notification
 
     public string UserId { get; set; } = null!;
 
+    public string SenderId { get; set; }
+
     public string NotificationContent { get; set; } = null!;
 
     public DateTime CreatedDate { get; set; } = DateTime.Now.SetKindUtc();

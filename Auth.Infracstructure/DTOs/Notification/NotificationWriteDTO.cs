@@ -11,6 +11,8 @@ namespace Auth.Infrastructure.DTOs.Notification
     {
         public string UserId { get; set; }
 
+        public string SenderId { get; set; }
+
         public string NotificationContent { get; set; }
 
     }
