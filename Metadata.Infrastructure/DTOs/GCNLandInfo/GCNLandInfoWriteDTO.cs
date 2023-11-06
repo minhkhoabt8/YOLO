@@ -28,8 +28,7 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
         public decimal GcnPlotArea { get; set; }
         [Required]
         public string GcnOwnerCertificate { get; set; }
-        [Required]
-        [MaxLength(50)]
+
         public string OwnerId { get; set; }
 
         public IEnumerable<MeasuredLandInfoWriteDTO>? MeasuredLandInfos { get; set; }

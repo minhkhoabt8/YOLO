@@ -23,7 +23,7 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
         public string? AssetCompensationId { get; set; }
 
         [Required]
-        public string FileName { get; set; }
+        public string Name { get; set; }
         [Required]
         public FileTypeEnum FileType { get; set; }
         [Required]

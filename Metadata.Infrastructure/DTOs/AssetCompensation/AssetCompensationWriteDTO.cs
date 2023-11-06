@@ -28,8 +28,7 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         [Required]
         [MaxLength(50)]
         public string UnitPriceAssetId { get; set; }
-        [Required]
-        [MaxLength(50)]
+
         public string OwnerId { get; set; }
         [Required]
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }

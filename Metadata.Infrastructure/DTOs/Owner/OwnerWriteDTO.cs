@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public string ProjectId { get; set; }
         [MaxLength(50)]
         public string PlanId { get; set; }
-        [EnumDataType(typeof(PlanStatusEnum))]
+        [EnumDataType(typeof(OwnerStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public OwnerStatusEnum OwnerStatus { get; set; }
         public DateTime PublishedDate { get; set; }

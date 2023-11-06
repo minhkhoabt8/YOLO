@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         public string? CompensationNote { get; set; }
         [Required]
         public string GcnLandInfoId { get; set; } = null!;
-        [Required]
+
         public string OwnerId { get; set; } = null!;
         [Required]
         public string UnitPriceLandId { get; set; } = null!;

@@ -36,7 +36,7 @@ namespace Auth.Infrastructure.Services.Implementations
             account.GernerateOTP();
 
             //call Send SMS
-            await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
+            await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
 
             await _unitOfWork.CommitAsync();
 
@@ -148,7 +148,7 @@ namespace Auth.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             ////call Send SMS
-            await _smsService.SendSmsAsync(account.Phone!, account.Otp!);
+            await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
 
             return account.Otp!;
         }

@@ -26,9 +26,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<SupportReadDTO>> CreateOwnerSupportsAsync(string ownerId, IEnumerable<SupportWriteDTO> dto)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+            //var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
-            if(owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId); 
+            //if(owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId); 
 
             if(dto == null) throw new InvalidActionException(nameof(dto));
 
@@ -39,11 +39,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var support = _mapper.Map<Support>(item);
 
                 support.OwnerId = ownerId;
-
+                
                 await _unitOfWork.SupportRepository.AddAsync(support);
 
                 supportList.Add(support);
             }
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<SupportReadDTO>>(supportList);

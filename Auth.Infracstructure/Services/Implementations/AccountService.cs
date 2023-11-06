@@ -50,9 +50,11 @@ namespace Auth.Infrastructure.Services.Implementations
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
             //call Send SMS
-            await _smsService.SendSmsAsync(newAccount.Phone!, newAccount.Otp!);
+            await _smsService.SendPasswordSmsAsync(newAccount.Phone!, newAccount.Password!);
 
             await _unitOfWork.CommitAsync();
+
+            newAccount.Role = await _unitOfWork.RoleRepository.FindAsync(writeDTO.RoleId);
 
             return _mapper.Map<AccountReadDTO>(newAccount);
         }

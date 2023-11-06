@@ -86,7 +86,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             owner.OwnerCreatedBy = _userContextService.Username!
                 ?? throw new CanNotAssignUserException();
 
-            await _unitOfWork.OwnerRepository.AddAsync(owner);
+            //await _unitOfWork.OwnerRepository.AddAsync(owner);
 
             await _unitOfWork.CommitAsync();
 

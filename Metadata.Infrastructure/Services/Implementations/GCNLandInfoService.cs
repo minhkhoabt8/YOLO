@@ -59,8 +59,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach(var dto in dtos)
             {
-                var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
-                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+                //var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
+                //?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
 
                 var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                     ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
@@ -83,12 +83,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     
                     foreach(var item in dto.MeasuredLandInfos!)
                     {
-                        //check if GCN Land Info And Measured Has the same owner
-                        if (item.OwnerId != dto.OwnerId) 
-                        {
-                            throw new InvalidActionException();
-                        }
-
+                       
                         var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(item);
 
                         await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
@@ -196,6 +191,32 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
 
                 await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
+
+                if (item.MeasuredLandInfos.IsNullOrEmpty())
+                {
+                    
+                    foreach (var measuredLandInfo in item.MeasuredLandInfos!)
+                    {
+                        
+                        var measuredLandInfoDto = _mapper.Map<MeasuredLandInfo>(item);
+
+                        measuredLandInfoDto.OwnerId = ownerId;
+
+                        await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfoDto);
+
+                        if (!item.AttachFiles.IsNullOrEmpty())
+                        {
+                            foreach (var file in measuredLandInfo.AttachFiles!)
+                            {
+                                file.MeasuredLandInfoId = measuredLandInfoDto.MeasuredLandInfoId;
+                            }
+
+                            await _attachFileService.UploadAttachFileAsync(measuredLandInfo.AttachFiles!);
+                        }
+
+                        landInfoList.ForEach(item => item.MeasuredLandInfos.Add(measuredLandInfoDto));
+                    }
+                }
 
                 landInfoList.Add(landInfo);
             }

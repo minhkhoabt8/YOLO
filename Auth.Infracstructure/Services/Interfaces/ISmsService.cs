@@ -8,6 +8,7 @@ namespace Auth.Infrastructure.Services.Interfaces
 {
     public interface ISmsService
     {
-        Task SendSmsAsync(string phone, string otp);
+        Task SendOtpSmsAsync(string phone, string otp);
+        Task SendPasswordSmsAsync(string phone, string password);
     }
 }

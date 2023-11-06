@@ -31,9 +31,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<AttachFileReadDTO>> CreateOwnerAttachFilesAsync(string ownerId, IEnumerable<AttachFileWriteDTO> dto)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+            //var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
-            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+            //if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
             if (dto == null) throw new InvalidActionException(nameof(dto));
 
@@ -45,7 +45,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var fileUpload = new UploadFileDTO
                 {
                     File = item.AttachFile!,
-                    FileName = $"{item.FileName}-{Guid.NewGuid()}",
+                    FileName = $"{item.Name}-{Guid.NewGuid()}",
                     FileType = FileTypeExtensions.ToFileMimeTypeString(item.FileType)
                     
                 };
@@ -54,20 +54,18 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 file.OwnerId = ownerId;
 
-                var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
-
-                file.ReferenceLink = returnUrl;
+                file.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
 
                 file.CreatedBy = _userContextService.Username! ??
                     throw new CanNotAssignUserException();
 
                 await _unitOfWork.AttachFileRepository.AddAsync(file);
 
+                await _unitOfWork.CommitAsync();
+
                 fileList.Add(file);
 
             }
-
-            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<AttachFileReadDTO>>(fileList);
         }
@@ -101,14 +99,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             foreach (var item in files)
             {
                 
-
                 //file.Name = item.AttachFile.Name;
                 //file.FileType = Path.GetExtension(item.AttachFile.Name);
 
                 var fileUpload = new UploadFileDTO
                 {
                     File = item.AttachFile!,
-                    FileName = $"{item.FileName}-{Guid.NewGuid()}",
+                    FileName = $"{item.Name}-{Guid.NewGuid()}",
                     FileType = FileTypeExtensions.ToFileMimeTypeString(item.FileType)
                 };
 

@@ -39,9 +39,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<AssetCompensationReadDTO>> CreateOwnerAssetCompensationsAsync(string ownerId, IEnumerable<AssetCompensationWriteDTO> dto)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+            //var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
-            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+            //if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
             if (dto == null) throw new InvalidActionException(nameof(dto));
 

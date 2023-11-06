@@ -76,6 +76,7 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
         public async Task<IActionResult> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
         {
+            
             var owner = await _ownerService.CreateOwnerWithFullInfomationAsync(dto);
 
             return ResponseFactory.Created(owner);
