@@ -65,15 +65,17 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(unitPriceLandId);
 
-            if (unitPriceLand == null) throw new EntityWithIDNotFoundException<UnitPriceLand>(unitPriceLand);
+            if (unitPriceLand == null) throw new EntityWithIDNotFoundException<UnitPriceLand>(unitPriceLandId);
 
             var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId)
                 ?? throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
-            var landType = await _unitOfWork.AssetGroupRepository.FindAsync(dto.LandTypeId)
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
             _mapper.Map(dto, unitPriceLand);
+
+            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<UnitPriceLandReadDTO>(unitPriceLand);
         }

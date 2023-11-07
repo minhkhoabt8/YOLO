@@ -140,9 +140,8 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.AttachFileId)
                 .HasMaxLength(50)
                 .HasColumnName("attach_file_id");
-            entity.Property(e => e.AssetCompensationId)
-                .HasMaxLength(50)
-                .HasColumnName("asset_compensation_id");
+            entity.Property(e => e.IsAssetCompensation)
+                .HasColumnName("is_asset_compensation");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(20)
                 .HasColumnName("created_by");
@@ -168,10 +167,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("plan_id");
             entity.Property(e => e.ReferenceLink).HasColumnName("reference_link");
-
-            entity.HasOne(d => d.AssetCompensation).WithMany(p => p.AttachFiles)
-                .HasForeignKey(d => d.AssetCompensationId)
-                .HasConstraintName("FK_AttachFiles_AssetCompensations");
 
             entity.HasOne(d => d.GcnLandInfo).WithMany(p => p.AttachFiles)
                 .HasForeignKey(d => d.GcnLandInfoId)

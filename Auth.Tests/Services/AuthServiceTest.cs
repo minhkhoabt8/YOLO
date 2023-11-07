@@ -134,7 +134,7 @@ namespace Auth.Tests.Services
             var mockSmsService = new Mock<ISmsService>();
 
             string capturedOtp = null;
-            mockSmsService.Setup(sms => sms.SendSmsAsync(It.IsAny<string>(), It.IsAny<string>()))
+            mockSmsService.Setup(sms => sms.SendOtpSmsAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Callback<string, string>((phone, otp) => capturedOtp = otp)
                 .Returns(Task.CompletedTask);
 

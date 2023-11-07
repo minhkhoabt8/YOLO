@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
@@ -13,6 +14,7 @@ using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
+using Owner = Metadata.Core.Entities.Owner;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -86,40 +88,45 @@ namespace Metadata.Infrastructure.Services.Implementations
             owner.OwnerCreatedBy = _userContextService.Username!
                 ?? throw new CanNotAssignUserException();
 
-            //await _unitOfWork.OwnerRepository.AddAsync(owner);
+            
+            if (!owner.AttachFiles.IsNullOrEmpty())
+            {
+                foreach (var file in owner.AttachFiles)
+                {
+                    file.OwnerId = owner.OwnerId;
+                }
+                await _attachFileService.CreateOwnerAttachFilesAsync(owner.OwnerId, dto.AttachFiles);
+            }
+
+            await _unitOfWork.OwnerRepository.AddAsync(owner);
 
             await _unitOfWork.CommitAsync();
 
             var ownerReadDto = _mapper.Map<OwnerReadDTO>(owner);
 
-            //2.Add Others Info
-            //2.1 Add Supports
-            if (!dto.Supports.IsNullOrEmpty())
-            {
-               ownerReadDto.Supports = await _supportService.CreateOwnerSupportsAsync(owner.OwnerId, dto.Supports!);
-            }
-            //2.2 Add Deductions
-            if(!dto.Deductions.IsNullOrEmpty())
-            {
-                ownerReadDto.Deductions = await _deductionService.CreateOwnerDeductionsAsync(owner.OwnerId, dto.Deductions!);
-            }
-            //2.3 Gcn Land Info
-            if(!dto.GcnlandInfos.IsNullOrEmpty())
-            {
-                ownerReadDto.GcnlandInfos =  await _gcNLandInfoService.CreateGCNLandInfosAsync(dto.GcnlandInfos!);
-            }
+            ////2.Add Others Info
+            ////2.1 Add Supports
+            //if (!dto.Supports.IsNullOrEmpty())
+            //{
+            //   ownerReadDto.Supports = await _supportService.CreateOwnerSupportsAsync(owner.OwnerId, dto.Supports!);
+            //}
+            ////2.2 Add Deductions
+            //if(!dto.Deductions.IsNullOrEmpty())
+            //{
+            //    ownerReadDto.Deductions = await _deductionService.CreateOwnerDeductionsAsync(owner.OwnerId, dto.Deductions!);
+            //}
+            ////2.3 Gcn Land Info
+            //if(!dto.GcnlandInfos.IsNullOrEmpty())
+            //{
+            //    ownerReadDto.GcnlandInfos =  await _gcNLandInfoService.CreateGCNLandInfosAsync(dto.GcnlandInfos!);
+            //}
 
-            //2.4 AssetCompensations
-            if (!dto.AssetCompensations.IsNullOrEmpty())
-            {
-                ownerReadDto.AssetCompensations = await _assetCompensationService.CreateOwnerAssetCompensationsAsync(owner.OwnerId, dto.AssetCompensations!);
-            }
+            ////2.4 AssetCompensations
+            //if (!dto.AssetCompensations.IsNullOrEmpty())
+            //{
+            //    ownerReadDto.AssetCompensations = await _assetCompensationService.CreateOwnerAssetCompensationsAsync(owner.OwnerId, dto.AssetCompensations!);
+            //}
 
-            //2.5 AttachFiles
-            if(!dto.AttachFiles.IsNullOrEmpty())
-            {
-                ownerReadDto.AttachFiles = await _attachFileService.CreateOwnerAttachFilesAsync(owner.OwnerId, dto.AttachFiles!);
-            }
             return ownerReadDto;
         }
 

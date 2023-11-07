@@ -41,7 +41,6 @@ namespace Metadata.Infrastructure.DTOs.Document
         [Required]
         public FileTypeEnum FileType { get; set; }
 
-        [Required]
         public byte[] FileAttach { get; set; }
 
     }

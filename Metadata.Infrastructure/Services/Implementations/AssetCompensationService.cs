@@ -55,15 +55,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _unitOfWork.AssetCompensationRepository.AddAsync(compensation);
 
-                foreach (var file in item.AttachFiles!)
-                {
-                    file.AssetCompensationId = compensation.AssetCompensationId;
-                }
-
-                await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
-
                 compensationList.Add(compensation);
             }
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<AssetCompensationReadDTO>>(compensationList);

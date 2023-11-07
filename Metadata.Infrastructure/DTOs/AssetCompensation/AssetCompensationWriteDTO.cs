@@ -30,7 +30,6 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         public string UnitPriceAssetId { get; set; }
 
         public string OwnerId { get; set; }
-        [Required]
-        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
+
     }
 }

@@ -28,9 +28,7 @@ public partial class AttachFile
 
     public string? OwnerId { get; set; }
 
-    public string? AssetCompensationId { get; set; }
-
-    public virtual AssetCompensation? AssetCompensation { get; set; }
+    public bool IsAssetCompensation { get; set; } = false;
 
     public virtual GcnlandInfo? GcnLandInfo { get; set; }
 

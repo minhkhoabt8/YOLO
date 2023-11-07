@@ -25,8 +25,7 @@ public partial class AssetCompensation
 
     public bool IsDeleted { get; set; } = false;
 
-    public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
-
+    
     public virtual Owner Owner { get; set; } = null!;
 
     public virtual UnitPriceAsset UnitPriceAsset { get; set; } = null!;
