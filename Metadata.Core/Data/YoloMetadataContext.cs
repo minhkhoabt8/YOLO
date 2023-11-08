@@ -153,18 +153,22 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("file_type");
             entity.Property(e => e.GcnLandInfoId)
                 .HasMaxLength(50)
+                .IsRequired(false)
                 .HasColumnName("GCN_land_info_id");
             entity.Property(e => e.MeasuredLandInfoId)
                 .HasMaxLength(50)
+                .IsRequired(false)
                 .HasColumnName("measured_land_info_id");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
             entity.Property(e => e.OwnerId)
                 .HasMaxLength(50)
+                .IsRequired(false)
                 .HasColumnName("owner_id");
             entity.Property(e => e.PlanId)
                 .HasMaxLength(50)
+                .IsRequired(false)
                 .HasColumnName("plan_id");
             entity.Property(e => e.ReferenceLink).HasColumnName("reference_link");
 

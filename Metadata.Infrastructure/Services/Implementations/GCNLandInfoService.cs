@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Support;
@@ -8,7 +10,8 @@ using Metadata.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-
+using SharedLib.Infrastructure.Services.Implementations;
+using SharedLib.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -18,12 +21,14 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IAttachFileService _attachFileService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public GCNLandInfoService(IUnitOfWork unitOfWork, IMapper mapper, IAttachFileService attachFileService)
+        public GCNLandInfoService(IUnitOfWork unitOfWork, IMapper mapper, IAttachFileService attachFileService, IUploadFileService uploadFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _attachFileService = attachFileService;
+            _uploadFileService = uploadFileService;
         }
 
         public async Task<GCNLandInfoReadDTO> CreateGCNLandInfoAsync(GCNLandInfoWriteDTO dto)
@@ -67,6 +72,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
 
+
                 await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
 
                 if (!dto.AttachFiles.IsNullOrEmpty())
@@ -85,6 +91,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                     {
                        
                         var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(item);
+
+                        measuredLandInfo.OwnerId = gcnLandInfo.OwnerId;
 
                         await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
 
@@ -183,8 +191,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 landInfo.OwnerId = ownerId;
 
-                await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
-
+                
                 foreach (var file in item.AttachFiles!)
                 {
                     file.GcnLandInfoId = landInfo.GcnLandInfoId;
@@ -192,38 +199,40 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
 
-                if (item.MeasuredLandInfos.IsNullOrEmpty())
+                if (!landInfo.MeasuredLandInfos.IsNullOrEmpty())
                 {
                     
-                    foreach (var measuredLandInfo in item.MeasuredLandInfos!)
+                    foreach (var measuredLandInfo in landInfo.MeasuredLandInfos!)
                     {
-                        
-                        var measuredLandInfoDto = _mapper.Map<MeasuredLandInfo>(item);
 
-                        measuredLandInfoDto.OwnerId = ownerId;
-
-                        await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfoDto);
+                        measuredLandInfo.OwnerId = ownerId;
 
                         if (!item.AttachFiles.IsNullOrEmpty())
                         {
                             foreach (var file in measuredLandInfo.AttachFiles!)
                             {
-                                file.MeasuredLandInfoId = measuredLandInfoDto.MeasuredLandInfoId;
+                                file.MeasuredLandInfoId = measuredLandInfo.MeasuredLandInfoId;
                             }
 
-                            await _attachFileService.UploadAttachFileAsync(measuredLandInfo.AttachFiles!);
+                            await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
                         }
 
-                        landInfoList.ForEach(item => item.MeasuredLandInfos.Add(measuredLandInfoDto));
+                        await _unitOfWork.CommitAsync();
+
+                        landInfoList.ForEach(item => item.MeasuredLandInfos.Add(measuredLandInfo));
                     }
                 }
+                
+                await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
 
                 landInfoList.Add(landInfo);
             }
-            await _unitOfWork.CommitAsync();
+            //await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<GCNLandInfoReadDTO>>(landInfoList);
         }
+
+        
 
     }
 }

@@ -151,6 +151,7 @@ public static class ServiceExtensions
         services.AddScoped<ILandPositionInfoService, LandPositionInfoService>();
         services.AddScoped<IUnitPriceAssetService, UnitPriceAssetService>();
         services.AddScoped<IUnitPriceLandService, UnitPriceLandService>();
+        services.AddScoped<IPriceAppliedCodeService, PriceAppliedCodeService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

@@ -38,6 +38,33 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<UnitPriceLandReadDTO>(unitPriceLand);
         }
 
+
+        public async Task<IEnumerable<UnitPriceLandReadDTO>> CreateUnitPriceLandsAsync(IEnumerable<UnitPriceLandWriteDTO> dtos)
+        {
+
+            var list = new List<UnitPriceLand>();
+
+            foreach(var item in dtos)
+            {
+                var project = await _unitOfWork.ProjectRepository.FindAsync(item.ProjectId)
+                ?? throw new EntityWithIDNotFoundException<Project>(item.ProjectId);
+
+                var landType = await _unitOfWork.AssetGroupRepository.FindAsync(item.LandTypeId)
+                    ?? throw new EntityWithIDNotFoundException<LandType>(item.LandTypeId);
+
+                var unitPriceLand = _mapper.Map<UnitPriceLand>(item);
+
+                await _unitOfWork.UnitPriceLandRepository.AddAsync(unitPriceLand);
+
+                await _unitOfWork.CommitAsync();
+
+                list.Add(unitPriceLand);
+            }
+
+            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(list);
+        }
+
+
         public async Task DeleteUnitPriceLand(string unitPriceLandId)
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(unitPriceLandId);

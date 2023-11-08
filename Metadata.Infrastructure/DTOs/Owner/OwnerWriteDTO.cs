@@ -8,7 +8,7 @@ using Metadata.Infrastructure.DTOs.Support;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Metadata.Infrastructure.DTOs.Owner
 {
@@ -53,12 +53,12 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [MaxLength(50)]
         public string OrganizationTypeId { get; set; }
 
-        public IEnumerable<SupportWriteDTO>? Supports { get; set; }
-        public IEnumerable<DeductionWriteDTO>? Deductions { get; set; }
-        public IEnumerable<GCNLandInfoWriteDTO>? GcnlandInfos { get; set;}
+        public IEnumerable<SupportWriteDTO>? OwnerSupports { get; set; }
+        public IEnumerable<DeductionWriteDTO>? OwnerDeductions { get; set; }
+        public IEnumerable<GCNLandInfoWriteDTO>? OwnerGcnlandInfos { get; set; }
         //public IEnumerable<MeasuredLandInfoWriteDTO>? MeasuredLandInfos { get; set; }
-        public IEnumerable<AssetCompensationWriteDTO>? AssetCompensations { get; set; }
-        public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
+        public IEnumerable<AssetCompensationWriteDTO>? OwnerAssetCompensations { get; set; }
+        public IEnumerable<AttachFileWriteDTO>? OwnerFiles { get; set; }
 
     }
 

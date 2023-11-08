@@ -18,6 +18,21 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Query  Asset Unit
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("query")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
+        public async Task<IActionResult> QueryAssetUnit([FromQuery] AssetUnitQuery query)
+        {
+            var assetUnits = await _assetUnitService.QueryAssetUnitAsync(query);
+            return ResponseFactory.Ok(assetUnits);
+        }
+
+
+
+        /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
@@ -141,18 +156,6 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Accepted();
         }
 
-        /// <summary>
-        /// Query  Asset Unit
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        [HttpGet("query")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetUnitReadDTO>>))]
-        public async Task<IActionResult> QueryAssetUnit([FromQuery] AssetUnitQuery query)
-        {
-            var assetUnits = await _assetUnitService.QueryAssetUnitAsync(query);
-            return ResponseFactory.Ok(assetUnits);
-        }
-
+        
     }
 }

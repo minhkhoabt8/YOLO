@@ -16,11 +16,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO);
         Task<AssetGroupReadDTO> UpdateAssetGroupAsync(string id ,AssetGroupWriteDTO assetGroupWriteDTO);
         Task<bool> DeleteAssetGroupAsync(string id);
-
         Task<SharedLib.Infrastructure.DTOs.PaginatedResponse<AssetGroupReadDTO>> QueryAssetGroupAsync(AssetGroupQuery paginationQuery);
-
         Task<IEnumerable<AssetGroupReadDTO>> CreateAssetGroupsAsync(IEnumerable<AssetGroupWriteDTO> assetGroupWriteDTOs);
-
         Task CheckNameAssetGroupNotDuplicate(string name);
         Task CheckCodeAssetGroupNotDuplicate(string code);
     }

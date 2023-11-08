@@ -29,7 +29,7 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         [MaxLength(50)]
         public string UnitPriceAssetId { get; set; }
 
-        public string OwnerId { get; set; }
+        public string? OwnerId { get; set; }
 
     }
 }

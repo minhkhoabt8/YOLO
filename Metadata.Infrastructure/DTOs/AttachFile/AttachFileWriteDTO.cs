@@ -12,15 +12,15 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
 {
     public class AttachFileWriteDTO
     {
-        public string? PlanId { get; set; }
+        public string? PlanId { get; set; } = null;
 
-        public string? GcnLandInfoId { get; set; }
+        public string? GcnLandInfoId { get; set; } = null;
 
-        public string? MeasuredLandInfoId { get; set; }
+        public string? MeasuredLandInfoId { get; set; } = null;
 
-        public string? OwnerId { get; set; }
+        public string? OwnerId { get; set; } = null;
 
-        public string? AssetCompensationId { get; set; }
+        public string? IsAssetCompensation { get; set; } = null;
 
         [Required]
         public string Name { get; set; }

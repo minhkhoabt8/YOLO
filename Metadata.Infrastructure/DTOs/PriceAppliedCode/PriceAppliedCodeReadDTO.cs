@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+
 
 namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
 {
@@ -15,5 +13,7 @@ namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
         public string? PriceContent { get; set; }
 
         public DateTime? ExpriredTime { get; set; }
+
+        public IEnumerable<UnitPriceAssetReadDTO> UnitPriceAssets { get; set; }
     }
 }

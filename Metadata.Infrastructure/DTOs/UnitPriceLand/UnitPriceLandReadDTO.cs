@@ -28,7 +28,7 @@ namespace Metadata.Infrastructure.DTOs.UnitPriceLand
 
         public decimal? LandPosition4 { get; set; }
 
-        public decimal? LandPositionRest { get; set; }
+        public decimal? LandPosition5 { get; set; }
 
         public virtual LandTypeReadDTO? LandType { get; set; }
 

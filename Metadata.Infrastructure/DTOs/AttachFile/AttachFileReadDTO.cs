@@ -24,10 +24,10 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
 
         public string GcnLandInfoId { get; set; }
 
-        public string MeasuredLandInfoId { get; set; }
-
         public string OwnerId { get; set; }
 
-        public string AssetCompensationId { get; set; }
+        public string MeasuredLandInfoId { get; set; }
+
+        public bool IsAssetCompensation { get; set; }
     }
 }
