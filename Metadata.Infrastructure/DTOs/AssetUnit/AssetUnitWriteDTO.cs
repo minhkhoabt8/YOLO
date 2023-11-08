@@ -8,10 +8,9 @@ namespace Metadata.Infrastructure.DTOs.AssetUnit
 {
     public class AssetUnitWriteDTO
     {
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
-        
     }
 }

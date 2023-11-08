@@ -10,11 +10,11 @@ namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
     public class PriceAppliedCodeWriteDTO
     {
         
-        public string UnitPriceCode { get; set; } = null!;
+        public string? UnitPriceCode { get; set; } = null!;
 
-        public string PriceContent { get; set; } = null!;
+        public string? PriceContent { get; set; } = null!;
 
-        public DateTime ExpriredTime { get; set; }
+        public DateTime? ExpriredTime { get; set; }
 
         public IEnumerable<UnitPriceAssetWriteDTO> UnitPriceAssets { get; set; }
 

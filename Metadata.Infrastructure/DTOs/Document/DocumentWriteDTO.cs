@@ -23,15 +23,15 @@ namespace Metadata.Infrastructure.DTOs.Document
         [Required]
         public DateTime PublishedDate { get; set; }
 
-        public DateTime EffectiveDate { get; set; }
+        public DateTime? EffectiveDate { get; set; }
         [Required]
-        public string Epitome { get; set; }
+        public string? Epitome { get; set; }
 
-        public string SignInfo { get; set; }
+        public string? SignInfo { get; set; }
 
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
-        public string Pen { get; set; }
+        public string? Pen { get; set; }
 
         public bool? IsPublic { get; set; } = false;
 

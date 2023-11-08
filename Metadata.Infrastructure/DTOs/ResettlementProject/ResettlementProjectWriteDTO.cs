@@ -12,9 +12,9 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string Name { get; set; }
 
-        public int LimitToResettlement { get; set; }
+        public int LimitToResettlement { get; set; } = 0;
 
-        public int LimitToConsideration { get; set; }
+        public int LimitToConsideration { get; set; } = 0;
 
         public string? Position { get; set; }
 
@@ -22,14 +22,14 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string? ImplementYear { get; set; }
 
-        public decimal LandPrice { get; set; }
+        public decimal LandPrice { get; set; } = 0;
 
         public string? Note { get; set; }
 
         public string? LastPersonEdit { get; set; }
 
-        public string DocumentId { get; set; }
+        public string? DocumentId { get; set; }
 
-        public string ProjectId { get; set; }
+        public string? ProjectId { get; set; }
     }
 }

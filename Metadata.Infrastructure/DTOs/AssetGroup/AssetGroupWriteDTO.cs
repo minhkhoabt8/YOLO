@@ -8,9 +8,9 @@ namespace Metadata.Infrastructure.DTOs.AssetGroup
 {
     public class AssetGroupWriteDTO
     {
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
     }
 }

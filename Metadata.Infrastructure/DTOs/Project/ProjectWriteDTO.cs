@@ -28,11 +28,11 @@ namespace Metadata.Infrastructure.DTOs.Project
         [MaxLength(200)]
         public string ProjectLocation { get; set; }
         [MaxLength(20)]
-        public string Province { get; set; }
+        public string? Province { get; set; }
         [MaxLength(20)]
-        public string District { get; set; }
+        public string? District { get; set; }
         [MaxLength(20)]
-        public string Ward { get; set; }
+        public string? Ward { get; set; }
 
         [InputType(typeof(decimal))]
         public decimal ProjectExpense { get; set; }
@@ -45,32 +45,32 @@ namespace Metadata.Infrastructure.DTOs.Project
         [Range(0, 9999)]
         public int ImplementationYear { get; set; } = 2023;
         [MaxLength(20)]
-        public string RegulatedUnitPrice { get; set; }
+        public string? RegulatedUnitPrice { get; set; }
         [Range(0, int.MaxValue)]
-        public int ProjectBriefNumber { get; set; } = 0;
+        public int? ProjectBriefNumber { get; set; } = 0;
         [MaxLength(50)]
-        public string ProjectNote { get; set; }
+        public string? ProjectNote { get; set; }
         [MaxLength(50)]
-        public string PriceAppliedCodeId { get; set; }
+        public string? PriceAppliedCodeId { get; set; }
         [MaxLength(20)]
-        public string CheckCode { get; set; }
+        public string? CheckCode { get; set; }
 
-        public string ReportSignal { get; set; }
+        public string? ReportSignal { get; set; }
         [Range(0, int.MaxValue)]
-        public int ReportNumber { get; set; } = 0;
+        public int? ReportNumber { get; set; } = 0;
         [MaxLength(20)]
-        public string PriceBasis { get; set; }
+        public string? PriceBasis { get; set; }
         [MaxLength(20)]
-        public string LandCompensationBasis { get; set; }
+        public string ?LandCompensationBasis { get; set; }
         [MaxLength(50)]
         [InputType(typeof(Guid))]
         public string? SignerId { get; set; } = "";
         [MaxLength(20)]
-        public string AssetCompensationBasis { get; set; }
+        public string? AssetCompensationBasis { get; set; }
 
         [EnumDataType(typeof(ProjectStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public ProjectStatusEnum ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
+        public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
 
         public IEnumerable<LandPositionInfoInProjectWriteDTO>? LandPositionInfos { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
@@ -80,7 +80,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
     public class DocumentInProjectWriteDTO
     {
-        public string DocumentTypeId { get; set; }
+        public string? DocumentTypeId { get; set; }
         [Required]
         [MaxLength(10)]
         public string Number { get; set; }
@@ -89,30 +89,30 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string Notation { get; set; }
         [Required]
         public DateTime PublishedDate { get; set; }
-        public DateTime EffectiveDate { get; set; }
+        public DateTime? EffectiveDate { get; set; }
         [Required]
         public string Epitome { get; set; }
 
-        public string SignInfo { get; set; }
+        public string? SignInfo { get; set; }
 
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
-        public string Pen { get; set; }
+        public string? Pen { get; set; }
 
         public bool? IsPublic { get; set; } = false;
 
         [Required]
-        public IFormFile FileAttach { get; set; }
+        public IFormFile? FileAttach { get; set; }
     }
 
     public class LandPositionInfoInProjectWriteDTO
     {
         [Required]
-        public string LocationName { get; set; }
+        public string? LocationName { get; set; }
 
         public string? Description { get; set; }
         [Required]
-        public string LandInfoType { get; set; }
+        public string? LandInfoType { get; set; }
     }
 
     public class UnitPriceLandInProjectWriteDTO
