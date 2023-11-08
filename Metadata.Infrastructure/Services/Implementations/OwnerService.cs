@@ -403,8 +403,6 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             plan.TotalPricePlantSupportCompensation -=  await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
 
-            plan.TotalPriceOtherSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Other);
-
             plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
             plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;

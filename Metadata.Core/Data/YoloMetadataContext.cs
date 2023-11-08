@@ -680,12 +680,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanEndedTime)
                 .HasColumnType("datetime")
                 .HasColumnName("plan_ended_time");
-            entity.Property(e => e.PlanLocation)
+            entity.Property(e => e.PlanReportInfo)
                 .HasMaxLength(200)
-                .HasColumnName("plan_location");
-            entity.Property(e => e.PlanName)
-                .HasMaxLength(200)
-                .HasColumnName("plan_name");
+                .HasColumnName("plan_report_info");
             entity.Property(e => e.PlanPhrase)
                 .HasMaxLength(10)
                 .HasColumnName("plan_phrase");
@@ -723,9 +720,6 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalPriceLandSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_price_land_support_compensation");
-            entity.Property(e => e.TotalPriceOtherSupportCompensation)
-                .HasColumnType("decimal(18, 0)")
-                .HasColumnName("total_price_other_support_compensation");
             entity.Property(e => e.TotalPricePlantSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_price_plant_support_compensation");

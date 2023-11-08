@@ -15,6 +15,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string ProjectLocation {  get; set; }
 
+        public string PlanReportInfo { get; set; }
+
         public string PlanName { get; set; }
 
         public string PlanLocation { get; set; }

@@ -13,9 +13,7 @@ public partial class Plan : ITextSearchableEntity
 
     public string ProjectId { get; set; } = null!;
 
-    public string PlanName { get; set; } = null!;
-
-    public string PlanLocation { get; set; } = null!;
+    public string PlanReportInfo { get; set; } = null!;
 
     public string PlanCode { get; set; } = null!;
 
@@ -50,8 +48,6 @@ public partial class Plan : ITextSearchableEntity
     public decimal TotalPriceArchitectureSupportCompensation { get; set; } = 0;
 
     public decimal TotalPricePlantSupportCompensation { get; set; } = 0;
-
-    public decimal TotalPriceOtherSupportCompensation { get; set; } = 0;
 
     public decimal TotalDeduction { get; set; } = 0;
 
