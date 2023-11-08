@@ -175,6 +175,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             _mapper.Map(dto, project);
 
+            await _unitOfWork.CommitAsync();
+
             return _mapper.Map<ProjectReadDTO>(project);
         }
 
