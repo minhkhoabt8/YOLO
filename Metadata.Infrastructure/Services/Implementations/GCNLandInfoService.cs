@@ -217,8 +217,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                             await _attachFileService.UploadAttachFileAsync(item.AttachFiles!);
                         }
 
-                        await _unitOfWork.CommitAsync();
-
                         landInfoList.ForEach(item => item.MeasuredLandInfos.Add(measuredLandInfo));
                     }
                 }
@@ -227,7 +225,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 landInfoList.Add(landInfo);
             }
-            //await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<GCNLandInfoReadDTO>>(landInfoList);
         }
