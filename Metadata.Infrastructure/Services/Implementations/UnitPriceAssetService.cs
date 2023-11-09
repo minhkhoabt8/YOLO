@@ -29,6 +29,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             var assetGroup = await _unitOfWork.AssetGroupRepository.FindAsync(dto.AssetGroupId)
                 ?? throw new EntityWithIDNotFoundException<AssetGroup>(dto.AssetGroupId);
 
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(dto.PriceAppliedCodeId)
+                   ?? throw new EntityWithIDNotFoundException<PriceAppliedCode>(dto.PriceAppliedCodeId);
+
             var unitPriceAsset = _mapper.Map<UnitPriceAsset>(dto);
 
             await _unitOfWork.UnitPriceAssetRepository.AddAsync(unitPriceAsset);
@@ -36,6 +39,33 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<UnitPriceAssetReadDTO>(unitPriceAsset);
+        }
+
+        public async Task<IEnumerable<UnitPriceAssetReadDTO>> CreateUnitPriceAssetsAsync(IEnumerable<UnitPriceAssetWriteDTO> dtos)
+        {
+            var list = new List<UnitPriceAsset>();
+
+            foreach(var dto in dtos)
+            {
+                var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(dto.AssetUnitId)
+                    ?? throw new EntityWithIDNotFoundException<AssetUnit>(dto.AssetUnitId);
+
+                var assetGroup = await _unitOfWork.AssetGroupRepository.FindAsync(dto.AssetGroupId)
+                    ?? throw new EntityWithIDNotFoundException<AssetGroup>(dto.AssetGroupId);
+
+                var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(dto.PriceAppliedCodeId)
+                    ?? throw new EntityWithIDNotFoundException<PriceAppliedCode>(dto.PriceAppliedCodeId);
+
+                var unitPriceAsset = _mapper.Map<UnitPriceAsset>(dto);
+
+                await _unitOfWork.UnitPriceAssetRepository.AddAsync(unitPriceAsset);
+
+                await _unitOfWork.CommitAsync();
+
+                list.Add(unitPriceAsset);
+            }
+
+            return _mapper.Map<IEnumerable<UnitPriceAssetReadDTO>>(list);
         }
 
         public async Task DeleteUnitPriceAsset(string unitPriceAssetId)
@@ -66,6 +96,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             var unitPriceAsset = await _unitOfWork.UnitPriceAssetRepository.FindAsync(unitPriceAssetId);
 
             if (unitPriceAsset == null) throw new EntityWithIDNotFoundException<UnitPriceAsset>(unitPriceAssetId);
+
+            var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(dto.AssetUnitId)
+                   ?? throw new EntityWithIDNotFoundException<AssetUnit>(dto.AssetUnitId);
+
+            var assetGroup = await _unitOfWork.AssetGroupRepository.FindAsync(dto.AssetGroupId)
+                ?? throw new EntityWithIDNotFoundException<AssetGroup>(dto.AssetGroupId);
+
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(dto.PriceAppliedCodeId)
+                ?? throw new EntityWithIDNotFoundException<PriceAppliedCode>(dto.PriceAppliedCodeId);
 
             _mapper.Map(dto, unitPriceAsset);
 

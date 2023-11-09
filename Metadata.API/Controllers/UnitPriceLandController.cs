@@ -69,7 +69,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<UnitPriceLandReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -78,6 +78,22 @@ namespace Metadata.API.Controllers
             var unitPriceLand = await _unitPriceLandService.CreateUnitPriceLandAsync(writeDTO);
 
             return ResponseFactory.Created(unitPriceLand);
+        }
+
+        /// <summary>
+        /// Create Unit Price Land From List
+        /// </summary>
+        /// <param name="writeDTO"></param>
+        /// <returns></returns>
+        [HttpPost("creates")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable< UnitPriceLandReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateUnitPriceLandsAsync(IEnumerable<UnitPriceLandWriteDTO> writeDTO)
+        {
+            var unitPriceLands = await _unitPriceLandService.CreateUnitPriceLandsAsync(writeDTO);
+
+            return ResponseFactory.Created(unitPriceLands);
         }
 
         /// <summary>

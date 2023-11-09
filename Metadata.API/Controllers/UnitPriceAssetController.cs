@@ -55,7 +55,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="writeDTO"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("create")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<UnitPriceAssetReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -64,6 +64,22 @@ namespace Metadata.API.Controllers
             var unitPriceAsset = await _unitPriceAssetService.CreateUnitPriceAssetAsync(writeDTO);
 
             return ResponseFactory.Created(unitPriceAsset);
+        }
+
+        /// <summary>
+        /// Create New Unit Price Asset From List
+        /// </summary>
+        /// <param name="writeDTOs"></param>
+        /// <returns></returns>
+        [HttpPost("creates")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<UnitPriceAssetReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateUnitPriceAssetsAsync(IEnumerable<UnitPriceAssetWriteDTO> writeDTOs)
+        {
+            var unitPriceAssets = await _unitPriceAssetService.CreateUnitPriceAssetsAsync(writeDTOs);
+
+            return ResponseFactory.Created(unitPriceAssets);
         }
 
 
