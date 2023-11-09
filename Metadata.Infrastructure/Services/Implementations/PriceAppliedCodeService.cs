@@ -83,7 +83,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PriceAppliedCodeReadDTO> GetPriceAppliedCodeAsync(string Id)
         {
-            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id);
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include: "UnitPriceAssets");
 
             return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
         }

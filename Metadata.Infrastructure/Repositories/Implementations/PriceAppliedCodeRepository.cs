@@ -26,7 +26,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
-            IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes.Include(c=>c.UnitPriceAssets);
+            IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes;
 
             if (!trackChanges)
             {

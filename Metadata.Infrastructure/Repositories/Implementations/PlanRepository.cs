@@ -22,7 +22,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId)
         {
-            return await Task.FromResult(_context.Plans.Where(c => c.ProjectId == projectId));
+            return await Task.FromResult(_context.Plans.Include(c =>c .AttachFiles).Include(c => c.Owners).Where(c => c.ProjectId == projectId));
         }
 
         public async Task<IEnumerable<Plan>> QueryAsync(PlanQuery query, bool trackChanges = false)

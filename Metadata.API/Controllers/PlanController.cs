@@ -51,6 +51,19 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Ok(plan);
         }
+        /// <summary>
+        /// Get Plans Of Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        public async Task<IActionResult> GetPlansOfProjectASync(string projectId)
+        {
+            var plans = await _planService.GetPlansOfProjectASync(projectId);
+
+            return ResponseFactory.Ok(plans);
+        }
 
 
         /// <summary>

@@ -372,5 +372,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             throw new NotImplementedException();
         }
+
+
+        public async Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectASync(string projectId)
+        {
+            return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
+        }
     }
 }
