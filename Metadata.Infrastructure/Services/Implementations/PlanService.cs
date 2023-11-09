@@ -111,6 +111,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> UpdatePlanAsync(string planId, PlanWriteDTO dto)
         {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+
             var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
 
             if (existProject == null)
@@ -118,16 +122,14 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
 
-            var existApprover = await _unitOfWork.OwnerRepository.FindAsync(dto.PlanApprovedBy);
+            var existApprover = await _authService.GetAccountByIdAsync(dto.PlanApprovedBy);
 
             if (existApprover == null)
             {
                 throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
             }
 
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
-
-            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+            if(existApprover.Role.Name != AuthRoleEnum.Approval.ToString()) throw new CannotAssignSignerException();
 
             _mapper.Map(dto, plan);
 
