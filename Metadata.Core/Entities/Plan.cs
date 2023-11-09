@@ -17,8 +17,6 @@ public partial class Plan : ITextSearchableEntity
 
     public string PlanCode { get; set; } = null!;
 
-    public string? PlanPhrase { get; set; }
-
     public string? PlanDescription { get; set; }
 
     public string? PlanCreateBase { get; set; }

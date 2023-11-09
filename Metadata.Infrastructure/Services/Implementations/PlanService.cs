@@ -276,7 +276,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ProjectName = project.ProjectName,
                 ProjectLocation = project.ProjectLocation,
 
-                PlanName = project.ProjectName + plan.PlanPhrase, //need change
+                PlanName = project.ProjectName, //need change
                 PlanLocation = project.ProjectLocation,
                 PlanBasedOn = plan.PlanCreateBase,
 

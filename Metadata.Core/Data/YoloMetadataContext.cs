@@ -683,9 +683,6 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanReportInfo)
                 .HasMaxLength(200)
                 .HasColumnName("plan_report_info");
-            entity.Property(e => e.PlanPhrase)
-                .HasMaxLength(10)
-                .HasColumnName("plan_phrase");
             entity.Property(e => e.PlanReportDate)
                 .HasColumnType("date")
                 .HasColumnName("plan_report_date");
@@ -813,9 +810,6 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ReportSignal)
                 .HasColumnType("ntext")
                 .HasColumnName("report_signal");
-            entity.Property(e => e.SignerId)
-                .HasMaxLength(50)
-                .HasColumnName("signer_id");
             entity.Property(e => e.Ward)
                 .HasMaxLength(20)
                 .HasColumnName("ward");

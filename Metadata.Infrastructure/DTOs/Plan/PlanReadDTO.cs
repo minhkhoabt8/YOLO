@@ -20,7 +20,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string PlanLocation { get; set; }
 
-        public string? PlanPhrase { get; set; }
+        public string? PlanCode { get; set; }
 
         public string? PlanDescription { get; set; }
 

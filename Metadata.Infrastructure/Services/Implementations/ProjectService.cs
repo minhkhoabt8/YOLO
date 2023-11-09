@@ -40,18 +40,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
-            if(!project.SignerId.IsNullOrEmpty())
-            {
-                var signer = await _authService.GetAccountByIdAsync(project.SignerId!);
-
-                if (signer == null || signer.Role.Id != ((int)AuthRoleEnum.Approval).ToString())
-                {
-                    throw new CannotAssignSignerException();
-                }
-
-                project.SignerId = signer.Id;
-            }
-            
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())
             {
                 foreach(var item in projectDto.LandPositionInfos!)
