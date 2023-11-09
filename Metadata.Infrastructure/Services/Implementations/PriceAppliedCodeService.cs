@@ -119,5 +119,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new UniqueConstraintException<PriceAppliedCode>(nameof(PriceAppliedCode.UnitPriceCode), code);
             return _mapper.Map<PriceAppliedCodeReadDTO>(existPriceAppliedCode);
         }
+
+        
     }
 }

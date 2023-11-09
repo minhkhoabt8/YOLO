@@ -19,5 +19,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<UnitPriceAssetReadDTO> UpdateUnitPriceAssetAsync(string unitPriceAssetId, UnitPriceAssetWriteDTO dto);
         Task<IEnumerable<UnitPriceAssetReadDTO>> CreateUnitPriceAssetsAsync(IEnumerable<UnitPriceAssetWriteDTO> dtos);
         Task DeleteUnitPriceAsset(string unitPriceAssetId);
+
+        Task<IEnumerable<UnitPriceAssetReadDTO>> GetUnitPriceAssetsOfProjectAsync(string projectId);
     }
 }

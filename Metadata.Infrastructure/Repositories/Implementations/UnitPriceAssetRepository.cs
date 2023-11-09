@@ -19,6 +19,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<IEnumerable<UnitPriceAsset>> GetUnitPriceAssetsOfProjectAsync(string projectId)
+        {
+            return await Task.FromResult(_context.UnitPriceAssets.Where(upa => upa.PriceAppliedCode.Projects.Any(p => p.ProjectId == projectId)));
+        }
+
         public async Task<IEnumerable<UnitPriceAsset>> QueryAsync(UnitPriceAssetQuery query, bool trackChanges = false)
         {
             IQueryable<UnitPriceAsset> unitPriceAssets = _context.UnitPriceAssets.Where(e => e.IsDeleted == false);

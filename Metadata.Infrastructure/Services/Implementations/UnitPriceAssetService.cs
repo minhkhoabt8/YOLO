@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -112,6 +113,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<UnitPriceAssetReadDTO>(unitPriceAsset);
 
+        }
+
+        public async Task<IEnumerable<UnitPriceAssetReadDTO>> GetUnitPriceAssetsOfProjectAsync(string projectId)
+        {
+            return _mapper.Map<IEnumerable<UnitPriceAssetReadDTO>>(await _unitOfWork.UnitPriceAssetRepository.GetUnitPriceAssetsOfProjectAsync(projectId));
         }
     }
 }

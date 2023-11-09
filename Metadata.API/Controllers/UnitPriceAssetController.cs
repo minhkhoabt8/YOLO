@@ -49,6 +49,20 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(unitPriceAsset);
         }
 
+        /// <summary>
+        /// Get Unit Price Assets Of Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<UnitPriceAssetReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> GetUnitPriceAssetsOfProjectAsync(string projectId)
+        {
+            var unitPriceAssets = await _unitPriceAssetService.GetUnitPriceAssetsOfProjectAsync(projectId);
+            return ResponseFactory.Ok(unitPriceAssets);
+        }
+
 
         /// <summary>
         /// Create New Unit Price Asset
