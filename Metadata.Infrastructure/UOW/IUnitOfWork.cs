@@ -1,5 +1,6 @@
 ﻿
 
+using Metadata.Core.Entities;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Metadata.Infrastructure.Services.Interfaces;
 
@@ -37,7 +38,7 @@ namespace Metadata.Infrastructure.UOW
         public IUnitPriceLandRepository UnitPriceLandRepository { get; }
 
         public IPriceAppliedCodeRepository PriceAppliedCodeRepository { get; }
-
+        public IResettlementProjectRepository ResettlementProjectRepository { get; }
         Task<int> CommitAsync();
     }
 }
