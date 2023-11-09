@@ -5,6 +5,7 @@ using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
 
 
@@ -59,13 +60,15 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string ProjectStatus { get; set; }
 
+        public PriceAppliedCodeReadDTO PriceAppliedCode { get; set; }
+
         public ICollection<LandPositionInfoReadDTO> LandPositionInfos { get; set; }
 
         public ICollection<OwnersInProjectDTO> Owners {  get; set; }
 
         public ICollection<PlansInProjectDTO> Plans { get; set; }
 
-        public PriceAppliedCodeReadDTO PriceAppliedCode { get; set; }
+        public IEnumerable<ResettlementProjectWriteDTO> ResettlementProjects { get; set; }
         //Attach Documents manual
         public IEnumerable<DocumentReadDTO>? Documents { get; set; }
 

@@ -4,6 +4,7 @@ using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.Project;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
@@ -46,11 +47,19 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     var landPosition = _mapper.Map<LandPositionInfo>(item);
                     landPosition.ProjectId = project.ProjectId;
-                    //await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
+                    
                 }
                 
             }
 
+            if(!projectDto.ResettlementProjects.IsNullOrEmpty())
+            {
+                foreach (var item in projectDto.ResettlementProjects!)
+                {
+                    var projectResetlement = _mapper.Map<ResettlementProject>(item);
+                    projectResetlement.ProjectId = project.ProjectId;
+                }
+            }
 
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
@@ -66,8 +75,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 
             }
-
-            
 
             await _unitOfWork.CommitAsync();
 

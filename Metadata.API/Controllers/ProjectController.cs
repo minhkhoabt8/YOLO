@@ -81,7 +81,7 @@ namespace Metadata.API.Controllers
 
 
         /// <summary>
-        /// Create Project
+        /// Create Project Document
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="documents"></param>
