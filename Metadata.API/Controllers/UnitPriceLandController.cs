@@ -50,6 +50,21 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Get Unit Price Land Of Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<UnitPriceLandReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> GetUnitPriceLandsOfProjectAsync(string projectId)
+        {
+            var unitPriceLand = await _unitPriceLandService.GetUnitPriceLandOfProjectAsync(projectId);
+
+            return ResponseFactory.Ok(unitPriceLand);
+        }
+
+        /// <summary>
         /// Create New Unit Price Land
         /// </summary>
         /// <param name="writeDTO"></param>

@@ -106,5 +106,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<UnitPriceLandReadDTO>(unitPriceLand);
         }
+
+        public async Task<IEnumerable<UnitPriceLandReadDTO>> GetUnitPriceLandOfProjectAsync(string projectId)
+        {
+            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>( await _unitOfWork.UnitPriceLandRepository.GetUnitPriceLandsOfProjectAsync(projectId));
+        }
     }
 }

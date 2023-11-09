@@ -10,5 +10,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<UnitPriceLand>,
         IQueryAsync<UnitPriceLand, UnitPriceLandQuery>
     {
+        Task<IEnumerable<UnitPriceLand>> GetUnitPriceLandsOfProjectAsync(string projectId);
     }
 }
