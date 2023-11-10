@@ -85,13 +85,13 @@ namespace Metadata.Infrastructure.Services.Implementations
                 // Map and set the PriceAppliedCodeId for each UnitPriceAsset
                 foreach (var asset in dto.UnitPriceAssets)
                 {
-                    var assetDto = _mapper.Map<UnitPriceAsset>(asset);
-                    assetDto.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
-                    priceAppliedCode.UnitPriceAssets.Add(assetDto);
+                    //var assetDto = _mapper.Map<UnitPriceAsset>(asset);
+                    asset.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
+                    //priceAppliedCode.UnitPriceAssets.Add(assetDto);
                 }
             }
 
-            //await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
+            await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
 
             await _unitOfWork.CommitAsync();
 
