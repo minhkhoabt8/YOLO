@@ -28,7 +28,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
             IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes
-                .Where(c => c.ExpriredTime <= DateTime.Now.SetKindUtc());
+                .Where(c => c.IsDeleted == false && c.ExpriredTime <= DateTime.Now.SetKindUtc());
 
             if (!trackChanges)
             {

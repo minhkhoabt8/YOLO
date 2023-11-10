@@ -41,7 +41,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         
         public async Task<IEnumerable<AssetUnit>> QueryAsync(AssetUnitQuery query, bool trackChanges = false)
         {
-            IQueryable<AssetUnit> assetUnits = _context.AssetUnits;
+            IQueryable<AssetUnit> assetUnits = _context.AssetUnits
+                  .Where(c => c.IsDeleted == false); ;
 
             if (!trackChanges)
             {

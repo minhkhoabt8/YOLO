@@ -40,7 +40,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<OrganizationType>> QueryAsync (OrganizationTypeQuery query , bool trackChanges = false)
         {
-            IQueryable<OrganizationType> organizationTypes = _context.OrganizationTypes;
+            IQueryable<OrganizationType> organizationTypes = _context.OrganizationTypes.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

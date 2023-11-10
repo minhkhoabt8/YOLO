@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<DocumentType>> QueryAsync (DocumentTypeQuery query , bool trackChanges = false)
         {
-            IQueryable<DocumentType> documentTypes = _context.DocumentTypes;
+            IQueryable<DocumentType> documentTypes = _context.DocumentTypes.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

@@ -28,7 +28,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<AssetCompensation>> QueryAsync(AssetCompensationQuery query, bool trackChanges = false)
         {
-            IQueryable<AssetCompensation> AssetCompensation = _context.AssetCompensations;
+            IQueryable<AssetCompensation> AssetCompensation = _context.AssetCompensations
+                .Where(c=>c.IsDeleted == false);
 
             if (!trackChanges)
             {
