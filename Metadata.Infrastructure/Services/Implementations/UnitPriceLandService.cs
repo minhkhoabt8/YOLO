@@ -69,7 +69,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(unitPriceLandId);
 
+
             if (unitPriceLand == null) throw new EntityWithIDNotFoundException<UnitPriceLand>(unitPriceLand);
+
+            var project = await _unitOfWork.ProjectRepository.FindAsync(unitPriceLand.ProjectId, include: "Owners")
+              ?? throw new EntityWithIDNotFoundException<Project>(unitPriceLand.ProjectId);
+
+            if (project.Owners.Count() > 0)
+            {
+                throw new InvalidActionException("Cannot Update Unit Price Land In Project That Aldready Have Owners");
+            }
 
             unitPriceLand.IsDeleted = true;
 
@@ -94,11 +103,16 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (unitPriceLand == null) throw new EntityWithIDNotFoundException<UnitPriceLand>(unitPriceLandId);
 
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId)
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId, include: "Owners")
                 ?? throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
+
+            if(project.Owners.Count() > 0)
+            {
+                throw new InvalidActionException("Cannot Update Unit Price Land In Project That Aldready Have Owners");
+            }
 
             _mapper.Map(dto, unitPriceLand);
 

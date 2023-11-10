@@ -164,9 +164,31 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ProjectReadDTO> UpdateProjectAsync(string projectId, ProjectWriteDTO dto)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId, include: "Owners");
 
             if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            //Project that have owners cannot update the price apply code
+
+            if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
+            {
+                if(project.Owners.Count > 0)
+                {
+                    throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
+                }
+            }
+
+            if(project.Owners.Count > 0)
+            {
+                if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
+                {
+                   
+                }
+                if(project.UnitPriceLands.Count > 0)
+                {
+
+                }
+            }
 
             _mapper.Map(dto, project);
 

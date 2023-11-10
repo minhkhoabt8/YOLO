@@ -100,17 +100,23 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeletePriceAppliedCodeAsync(string Id)
         {
-            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include:"UnitPriceAssets");
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include: "UnitPriceAssets, Projects");
 
             if (priceAppliedCode == null)
             {
                 throw new EntityWithIDNotFoundException<PriceAppliedCode>(Id);
             }
 
-            //Cannot Delete Price Applied Code that existed in UnitPrice Asset 
-            if(priceAppliedCode.UnitPriceAssets.Count() > 0)
+            //Cannot Delete Price Applied Code that existed in Project
+            if (priceAppliedCode.Projects.Count() > 0)
             {
                 throw new InvalidActionException();
+            }
+
+            
+            foreach(var asset in priceAppliedCode.UnitPriceAssets) 
+            {
+                _unitOfWork.UnitPriceAssetRepository.Delete(asset);
             }
 
             priceAppliedCode.IsDeleted = true;
