@@ -19,5 +19,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<PriceAppliedCodeReadDTO>> QueryPriceAppliedCodeAsync(PriceAppliedCodeQuery paginationQuery);
 
         Task<PriceAppliedCodeReadDTO> CheckDuplicateCodeAsync(string code);
+        Task<PriceAppliedCodeReadDTO> CreatePriceAppliedCodeAsync(PriceAppliedCodeWriteDTO dto);
     }
 }

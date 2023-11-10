@@ -59,6 +59,22 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Accepted();
         }
 
+
+        /// <summary>
+        /// Create New Price Applied Code
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPost("create")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreatePriceAplliedCodeAsync(PriceAppliedCodeWriteDTO dto)
+        {
+            var priceAppliedCode = await _priceAppliedCodeService.CreatePriceAppliedCodeAsync(dto);
+            return ResponseFactory.Created(priceAppliedCode);
+        }
+
         /// <summary>
         /// Create New Price Applied Code From List
         /// </summary>
@@ -68,7 +84,7 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreatePriceAplliedCode(IEnumerable<PriceAppliedCodeWriteDTO> dto)
+        public async Task<IActionResult> CreatePriceAplliedCodesAsync(IEnumerable<PriceAppliedCodeWriteDTO> dto)
         {
             var priceAppliedCode = await _priceAppliedCodeService.CreatePriceAppliedCodesAsync(dto);
             return ResponseFactory.Created(priceAppliedCode);

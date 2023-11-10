@@ -45,16 +45,57 @@ namespace Metadata.Infrastructure.Services.Implementations
                     throw new UniqueConstraintException<PriceAppliedCode>(nameof(PriceAppliedCode.UnitPriceCode), item.UnitPriceCode);
                 }
 
+
                 var priceAppliedCode = _mapper.Map<PriceAppliedCode>(item);
 
-               
+                if (!item.UnitPriceAssets.IsNullOrEmpty())
+                {
+                    // Map and set the PriceAppliedCodeId for each UnitPriceAsset
+                    foreach (var asset in item.UnitPriceAssets)
+                    {
+                        var assetDto = _mapper.Map<UnitPriceAsset>(asset);
+                        assetDto.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
+                        priceAppliedCode.UnitPriceAssets.Add(assetDto);
+                    }
+                }
+
                 //await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
-                
+
                 var priceAppliedCodeReadDTO = _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
                 priceAppliedCodes.Add(priceAppliedCodeReadDTO);
             }
             await _unitOfWork.CommitAsync();
             return priceAppliedCodes;
+        }
+
+        public async Task<PriceAppliedCodeReadDTO> CreatePriceAppliedCodeAsync(PriceAppliedCodeWriteDTO dto)
+        {
+            var existPriceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetPriceAppliedCodeByCodeAsync(dto.UnitPriceCode);
+
+            if (existPriceAppliedCode != null)
+            {
+                throw new UniqueConstraintException<PriceAppliedCode>(nameof(PriceAppliedCode.UnitPriceCode), dto.UnitPriceCode);
+            }
+
+
+            var priceAppliedCode = _mapper.Map<PriceAppliedCode>(dto);
+
+            if (!dto.UnitPriceAssets.IsNullOrEmpty())
+            {
+                // Map and set the PriceAppliedCodeId for each UnitPriceAsset
+                foreach (var asset in dto.UnitPriceAssets)
+                {
+                    var assetDto = _mapper.Map<UnitPriceAsset>(asset);
+                    assetDto.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
+                    priceAppliedCode.UnitPriceAssets.Add(assetDto);
+                }
+            }
+
+            //await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
         }
 
         public async Task DeletePriceAppliedCodeAsync(string Id)
