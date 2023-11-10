@@ -71,11 +71,18 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeleteUnitPriceAsset(string unitPriceAssetId)
         {
-            var unitPriceAsset = await _unitOfWork.UnitPriceAssetRepository.FindAsync(unitPriceAssetId);
+            var unitPriceAsset = await _unitOfWork.UnitPriceAssetRepository.FindAsync(unitPriceAssetId, include: "AssetCompensations");
 
             if (unitPriceAsset == null) throw new EntityWithIDNotFoundException<UnitPriceAssetReadDTO>(unitPriceAssetId);
 
+            if(unitPriceAsset.AssetCompensations.Count() > 0)
+            {
+                throw new InvalidActionException();
+            }
+
             unitPriceAsset.IsDeleted = true;
+
+            _unitOfWork.UnitPriceAssetRepository.Delete(unitPriceAsset);
 
             await _unitOfWork.CommitAsync();
         }

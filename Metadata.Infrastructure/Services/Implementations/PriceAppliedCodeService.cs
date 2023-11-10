@@ -47,17 +47,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 var priceAppliedCode = _mapper.Map<PriceAppliedCode>(item);
 
-                if (!item.UnitPriceAssets.IsNullOrEmpty())
-                {
-                    // Map and set the PriceAppliedCodeId for each UnitPriceAsset
-                    foreach (var asset in item.UnitPriceAssets)
-                    {
-                        var assetDto = _mapper.Map<UnitPriceAsset>(asset);
-                        assetDto.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
-                        priceAppliedCode.UnitPriceAssets.Add(assetDto);
-                    }
-                }
-
+               
                 //await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
                 
                 var priceAppliedCodeReadDTO = _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
@@ -69,12 +59,20 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeletePriceAppliedCodeAsync(string Id)
         {
-            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id);
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include:"UnitPriceAssets");
 
             if (priceAppliedCode == null)
             {
                 throw new EntityWithIDNotFoundException<PriceAppliedCode>(Id);
             }
+
+            //Cannot Delete Price Applied Code that existed in UnitPrice Asset 
+            if(priceAppliedCode.UnitPriceAssets.Count() > 0)
+            {
+                throw new InvalidActionException();
+            }
+
+            priceAppliedCode.IsDeleted = true;
 
             _unitOfWork.PriceAppliedCodeRepository.Delete(priceAppliedCode);
 

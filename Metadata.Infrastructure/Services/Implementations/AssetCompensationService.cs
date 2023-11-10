@@ -71,6 +71,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             compensation.IsDeleted = true;
 
+            _unitOfWork.AssetCompensationRepository.Delete(compensation);
+
             await _unitOfWork.CommitAsync();
         }
 

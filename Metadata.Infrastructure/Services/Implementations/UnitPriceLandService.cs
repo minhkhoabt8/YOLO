@@ -49,7 +49,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var project = await _unitOfWork.ProjectRepository.FindAsync(item.ProjectId)
                 ?? throw new EntityWithIDNotFoundException<Project>(item.ProjectId);
 
-                var landType = await _unitOfWork.AssetGroupRepository.FindAsync(item.LandTypeId)
+                var landType = await _unitOfWork.LandTypeRepository.FindAsync(item.LandTypeId)
                     ?? throw new EntityWithIDNotFoundException<LandType>(item.LandTypeId);
 
                 var unitPriceLand = _mapper.Map<UnitPriceLand>(item);

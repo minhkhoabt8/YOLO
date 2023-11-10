@@ -16,7 +16,5 @@ namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
 
         public DateTime? ExpriredTime { get; set; }
 
-        public IEnumerable<UnitPriceAssetWriteDTO> UnitPriceAssets { get; set; }
-
     }
 }

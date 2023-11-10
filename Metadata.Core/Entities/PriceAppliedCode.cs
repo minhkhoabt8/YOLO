@@ -16,6 +16,8 @@ public partial class PriceAppliedCode : ITextSearchableEntity
 
     public DateTime ExpriredTime { get; set; }
 
+    public bool IsDeleted { get; set; } = false;
+
     public virtual ICollection<Project> Projects { get; } = new List<Project>();
 
     public virtual ICollection<UnitPriceAsset> UnitPriceAssets { get; } = new List<UnitPriceAsset>();

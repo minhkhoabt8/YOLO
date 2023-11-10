@@ -24,7 +24,7 @@ namespace Metadata.Infrastructure.DTOs.UnitPriceAsset
         [EnumDataType(typeof(AssetOnLandTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public AssetOnLandTypeEnum AssetType { get; set; }
-        public string PriceAppliedCodeId { get; set; }
+        public string? PriceAppliedCodeId { get; set; }
         [Required]
         public string AssetUnitId { get; set; }
         [Required]

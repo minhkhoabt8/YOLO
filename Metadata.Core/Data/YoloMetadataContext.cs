@@ -743,6 +743,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.UnitPriceCode)
                 .HasMaxLength(20)
                 .HasColumnName("unit_price_code");
+            entity.Property(e => e.IsDeleted)
+                .HasMaxLength(20)
+                .HasColumnName("is_deleted");
         });
 
         modelBuilder.Entity<Project>(entity =>
