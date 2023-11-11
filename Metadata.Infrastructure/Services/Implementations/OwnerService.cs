@@ -107,6 +107,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             //2.1 Add Supports
             if (!dto.OwnerSupports.IsNullOrEmpty())
             {
+                
                 ownerReadDto.Supports = await _supportService.CreateOwnerSupportsAsync(owner.OwnerId, dto.OwnerSupports!);
             }
             //2.2 Add Deductions

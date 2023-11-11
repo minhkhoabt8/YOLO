@@ -17,7 +17,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<UnitPriceLand>> GetUnitPriceLandsOfProjectAsync(string projectId)
         {
-            return  await Task.FromResult(_context.UnitPriceLands.Where(c => c.ProjectId == projectId));
+            return  await Task.FromResult(_context.UnitPriceLands.Include(c=>c.LandType).Where(c => c.ProjectId == projectId));
         }
 
         public async Task<IEnumerable<UnitPriceLand>> QueryAsync(UnitPriceLandQuery query, bool trackChanges = false)
