@@ -45,7 +45,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         /// </summary>
         /// <param name="ownerId"></param>
         /// <param name="assetType"></param>
-        /// <param name="trackChange"></param>
+        /// <param name="reCheck"></param>
         /// <returns></returns>
         public async Task<decimal> CaculateTotalAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType, bool? reCheck = false)
         {

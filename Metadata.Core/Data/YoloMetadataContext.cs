@@ -105,6 +105,11 @@ public partial class YoloMetadataContext : DbContext
                 .HasForeignKey(d => d.UnitPriceAssetId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_AssetCompensations_UnitPriceAssets");
+
+            entity.HasOne(d => d.AssetUnit).WithMany(p => p.AssetCompensations)
+                .HasForeignKey(d => d.AssetUnitId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_AssetCompensations_AssetUnits");
         });
 
         modelBuilder.Entity<AssetGroup>(entity =>

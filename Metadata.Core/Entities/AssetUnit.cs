@@ -17,4 +17,5 @@ public partial class AssetUnit
 
     public virtual ICollection<UnitPriceAsset> UnitPriceAssets { get; } = new List<UnitPriceAsset>();
     public virtual ICollection<Support> Supports { get; } = new List<Support>();
+    public virtual ICollection<AssetCompensation> AssetCompensations { get; } = new List<AssetCompensation>();
 }

@@ -17,14 +17,15 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
         public int CompensationRate { get; set; }
         [Required]
         public int QuantityArea { get; set; }
-        [Required]
-        [MaxLength(20)]
-        public string CompensationUnit { get; set; }
+        
         [Required]
         public decimal CompensationPrice { get; set; }
-        [Required]
         [MaxLength(20)]
         public string CompensationType { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string AssetUnitId { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string UnitPriceAssetId { get; set; }

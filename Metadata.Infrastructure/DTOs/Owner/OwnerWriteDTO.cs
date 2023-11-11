@@ -41,7 +41,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [EnumDataType(typeof(OwnerStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public OwnerStatusEnum OwnerStatus { get; set; }
-        public DateTime PublishedDate { get; set; }
+        public DateTime? PublishedDate { get; set; }
         [MaxLength(50)]
         public string? PublishedPlace { get; set; }
         [MaxLength(50)]
@@ -49,7 +49,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [MaxLength(50)]
         public string? RepresentPerson { get; set; }
 
-        public DateTime TaxPublishedDate { get; set; }
+        public DateTime? TaxPublishedDate { get; set; }
         [MaxLength(50)]
         public string? OrganizationTypeId { get; set; }
 
