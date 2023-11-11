@@ -10,9 +10,11 @@ namespace Metadata.Infrastructure.DTOs.Support
     {
         public string? SupportContent { get; set; }
 
-        public string? SupportUnit { get; set; }
+        public string? AssetUnitId { get; set; }
 
         public string? SupportNumber { get; set; }
+
+        public decimal? SupportUnitPrice { get; set; }
 
         public decimal? SupportPrice { get; set; }
 
