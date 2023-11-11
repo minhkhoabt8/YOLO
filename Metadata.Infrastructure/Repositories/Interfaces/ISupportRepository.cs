@@ -11,6 +11,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
          IUpdate<Support>,
          IDelete<Support>
     {
+        Task<decimal> CaculateTotalSupportOfOwnerAsync(string ownerId);
         Task<IEnumerable<Support?>> GetAllSupportsOfOwnerAsync(string ownerId);
         Task<IEnumerable<Support>> QueryAsync(SupportQuery query, bool trackChanges = false);
     }

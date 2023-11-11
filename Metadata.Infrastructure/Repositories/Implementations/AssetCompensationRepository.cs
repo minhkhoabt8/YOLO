@@ -25,6 +25,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetCompensations.Where(c => c.OwnerId == ownerId && c.IsDeleted == false).ToListAsync();
         }
 
+        
+
 
         public async Task<IEnumerable<AssetCompensation>> QueryAsync(AssetCompensationQuery query, bool trackChanges = false)
         {

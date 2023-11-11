@@ -155,5 +155,16 @@ namespace Metadata.API.Controllers
             await _planService.DeletePlan(id);
             return ResponseFactory.NoContent();
         }
+
+
+        //get bth chi phi
+        [HttpGet("bthchiphi/{planId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DetailBTHChiPhiReadDTO>))]
+        public async Task<IActionResult> getDataForBTHChiPhiAsync(string planId)
+        {
+            var plan = await _planService.getDataForBTHChiPhiAsync(planId);
+
+            return ResponseFactory.Ok(plan);
+        }
     }
 }

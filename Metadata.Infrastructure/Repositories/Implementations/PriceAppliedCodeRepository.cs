@@ -24,6 +24,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.PriceAppliedCodes.Include(c=>c.UnitPriceAssets).Where(c=>c.UnitPriceCode == code).FirstOrDefaultAsync();
         }
 
+       
+
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
             IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes;

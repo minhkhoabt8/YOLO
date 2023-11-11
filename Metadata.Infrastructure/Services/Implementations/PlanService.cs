@@ -295,6 +295,54 @@ namespace Metadata.Infrastructure.Services.Implementations
             };
         }
 
+        public async Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId)
+        {   
+            List<DetailBTHChiPhiReadDTO> details = new List<DetailBTHChiPhiReadDTO>();
+            
+            var plan =await  _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var project =await  _unitOfWork.ProjectRepository.GetProjectByPlandIdAsync(planId) 
+                ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId);
+
+            var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
+                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+
+            foreach (var item in owners)
+            { 
+                var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
+                ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Owner.OwnerId), item.OwnerId);
+                int stt = 0;
+                foreach (var i in measuredLandInfos)
+                {
+                    DetailBTHChiPhiReadDTO detail = new DetailBTHChiPhiReadDTO();
+                    detail.Stt = stt + 1;
+                    detail.ProjectCode = project.ProjectCode;
+                    detail.OwnerCode = item.OwnerCode;
+                    detail.OwnerName = item.OwnerName;
+                    detail.Province = project.Province;
+                    detail.District = project.District;
+                    detail.Ward = project.Ward;
+                    detail.PriceAppliedCodeId = project.PriceAppliedCodeId;
+                    detail.MeasuredPageNumber = i.MeasuredPageNumber;
+                    detail.MeasuredPlotNumber = i.MeasuredPlotNumber;
+                    detail.MeasuredPlotArea = i.MeasuredPlotArea.ToString();
+                    detail.WithdrawArea = i.WithdrawArea;
+                    var laneType = await _unitOfWork.LandTypeRepository.GetLandTypesOfMeasureLandInfoAsync(i.LandTypeId);
+                    detail.CodeLandType = laneType.Code;
+                    detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId,true);
+                    detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.House);
+                    detail.SumTreeCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.Plants);
+                    detail.SumArchitectureCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.Architecture);
+                    detail.SumSupportPrice = await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(item.OwnerId);
+                    detail.SumDeductionPrice = await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(item.OwnerId);
+                    detail.SumBTHT = (decimal)(detail.SumLandCompensation + detail.SumHouseCompensationPrice + detail.SumTreeCompensationPrice + detail.SumArchitectureCompensationPrice + detail.SumSupportPrice - detail.SumDeductionPrice);
+                    details.Add(detail);
+                }
+            }
+            return details;
+        }
+
         /// <summary>
         /// Create Temp File To Export
         /// </summary>
@@ -380,5 +428,8 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
+
+
+        
     }
 }
