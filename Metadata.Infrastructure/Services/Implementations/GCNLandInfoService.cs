@@ -207,6 +207,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         measuredLandInfo.OwnerId = ownerId;
 
+                        if (measuredLandInfo.GcnLandInfoId.IsNullOrEmpty())
+                        {
+                            measuredLandInfo.GcnLandInfoId = landInfo.GcnLandInfoId;
+                        }
+
                         if (!item.AttachFiles.IsNullOrEmpty())
                         {
                             foreach (var file in measuredLandInfo.AttachFiles!)

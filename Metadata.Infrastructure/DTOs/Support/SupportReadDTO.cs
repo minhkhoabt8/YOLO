@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.SupportType;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace Metadata.Infrastructure.DTOs.Support
 
         public string SupportContent { get; set; }
 
-        public string SupportUnit { get; set; }
+        public string AssetUnitId { get; set; }
 
         public string SupportNumber { get; set; }
+
+        public decimal SupportUnitPrice { get; set; }
 
         public decimal SupportPrice { get; set; }
 
@@ -25,5 +28,7 @@ namespace Metadata.Infrastructure.DTOs.Support
         public string SupportTypeId { get; set; }
 
         public SupportTypeReadDTO? SupportType { get; set; }
+
+        public AssetUnitReadDTO? AssetUnit { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
@@ -28,7 +29,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
-            IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes;
+            IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes
+                .Where(c => c.IsDeleted == false && c.ExpriredTime >= DateTime.UtcNow);
 
             if (!trackChanges)
             {

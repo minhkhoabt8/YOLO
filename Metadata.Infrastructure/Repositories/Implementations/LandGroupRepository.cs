@@ -41,7 +41,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<LandGroup>> QueryAsync (LandGroupQuery query , bool trackChanges = false)
         {
-            IQueryable<LandGroup> landGroups = _context.LandGroups;
+            IQueryable<LandGroup> landGroups = _context.LandGroups.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

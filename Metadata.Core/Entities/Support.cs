@@ -11,7 +11,9 @@ public partial class Support
 
     public string SupportContent { get; set; } = null!;
 
-    public string? SupportUnit { get; set; }
+    public string AssetUnitId { get; set; } = null!;
+
+    public decimal SupportUnitPrice { get; set; } = 0;
 
     public int SupportNumber { get; set; } = 0;
 
@@ -24,4 +26,6 @@ public partial class Support
     public virtual Owner Owner { get; set; } = null!;
 
     public virtual SupportType SupportType { get; set; } = null!;
+
+    public virtual AssetUnit AssetUnit { get; set; } = null!;
 }

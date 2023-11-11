@@ -30,7 +30,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<AssetCompensation>> QueryAsync(AssetCompensationQuery query, bool trackChanges = false)
         {
-            IQueryable<AssetCompensation> AssetCompensation = _context.AssetCompensations;
+            IQueryable<AssetCompensation> AssetCompensation = _context.AssetCompensations
+                .Where(c=>c.IsDeleted == false);
 
             if (!trackChanges)
             {
@@ -46,7 +47,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         /// </summary>
         /// <param name="ownerId"></param>
         /// <param name="assetType"></param>
-        /// <param name="trackChange"></param>
+        /// <param name="reCheck"></param>
         /// <returns></returns>
         public async Task<decimal> CaculateTotalAssetCompensationOfOwnerAsync(string ownerId, AssetOnLandTypeEnum? assetType, bool? reCheck = false)
         {

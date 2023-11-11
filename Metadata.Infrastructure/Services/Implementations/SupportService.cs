@@ -5,6 +5,7 @@ using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
@@ -36,6 +37,18 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach(var item in dto)
             {
+                if (!item.SupportTypeId.IsNullOrEmpty())
+                {
+                    var supportType = await _unitOfWork.SupportTypeRepository.FindAsync(item.SupportTypeId!)
+                    ?? throw new EntityWithIDNotFoundException<SupportType>(item.SupportTypeId!);
+                }
+                
+                if(!item.AssetUnitId.IsNullOrEmpty())
+                {
+                    var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(item.AssetUnitId!)
+                    ?? throw new EntityWithIDNotFoundException<AssetUnit>(item.AssetUnitId!);
+                }
+
                 var support = _mapper.Map<Support>(item);
 
                 support.OwnerId = ownerId;
@@ -73,9 +86,21 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<SupportReadDTO> UpdateSupportAsync(string supportId, SupportWriteDTO dto)
         {
-            var support = await _unitOfWork.SupportRepository.FindAsync(supportId);
+            var support = await _unitOfWork.SupportRepository.FindAsync(supportId)
+                ??throw new EntityWithIDNotFoundException<Support>(supportId);
 
-            if (support == null) throw new EntityWithIDNotFoundException<Support>(supportId);
+            if (!dto.SupportTypeId.IsNullOrEmpty())
+            {
+                var supportType = await _unitOfWork.SupportTypeRepository.FindAsync(dto.SupportTypeId!)
+                ?? throw new EntityWithIDNotFoundException<SupportType>(dto.SupportTypeId!);
+            }
+
+            if (!dto.AssetUnitId.IsNullOrEmpty())
+            {
+                var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(dto.AssetUnitId!)
+                ?? throw new EntityWithIDNotFoundException<AssetUnit>(dto.AssetUnitId!);
+            }
+
 
             _mapper.Map(dto, support);
 

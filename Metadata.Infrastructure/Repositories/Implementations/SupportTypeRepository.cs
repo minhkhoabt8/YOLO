@@ -41,7 +41,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<SupportType>> QueryAsync(SupportTypeQuery query, bool trackChanges = false)
         {
-            IQueryable<SupportType> supportTypes = _context.SupportTypes;
+            IQueryable<SupportType> supportTypes = _context.SupportTypes.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

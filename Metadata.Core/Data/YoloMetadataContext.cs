@@ -105,6 +105,11 @@ public partial class YoloMetadataContext : DbContext
                 .HasForeignKey(d => d.UnitPriceAssetId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_AssetCompensations_UnitPriceAssets");
+
+            entity.HasOne(d => d.AssetUnit).WithMany(p => p.AssetCompensations)
+                .HasForeignKey(d => d.AssetUnitId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_AssetCompensations_AssetUnits");
         });
 
         modelBuilder.Entity<AssetGroup>(entity =>
@@ -767,13 +772,11 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.ImplementationYear).HasColumnName("implementation_year");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LandCompensationBasis)
-                .HasMaxLength(20)
                 .HasColumnName("land_compensation_basis");
             entity.Property(e => e.PriceAppliedCodeId)
                 .HasMaxLength(50)
                 .HasColumnName("price_applied_code_id");
             entity.Property(e => e.PriceBasis)
-                .HasMaxLength(20)
                 .HasColumnName("price_basis");
             entity.Property(e => e.ProjectApprovalDate)
                 .HasColumnType("date")
@@ -927,12 +930,15 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.SupportPrice)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("support_price");
+            entity.Property(e => e.SupportUnitPrice)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("support_unit_price");
             entity.Property(e => e.SupportTypeId)
                 .HasMaxLength(50)
                 .HasColumnName("support_type_id");
-            entity.Property(e => e.SupportUnit)
-                .HasMaxLength(20)
-                .HasColumnName("support_unit");
+            entity.Property(e => e.AssetUnitId)
+                .HasMaxLength(50)
+                .HasColumnName("asset_unit_id");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.Supports)
                 .HasForeignKey(d => d.OwnerId)
@@ -943,6 +949,11 @@ public partial class YoloMetadataContext : DbContext
                 .HasForeignKey(d => d.SupportTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Supports_SupportTypes");
+
+            entity.HasOne(d => d.AssetUnit).WithMany(p => p.Supports)
+               .HasForeignKey(d => d.AssetUnitId)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK_Supports_AssetUnits");
         });
 
         modelBuilder.Entity<SupportType>(entity =>

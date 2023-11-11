@@ -20,7 +20,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.MeasuredLandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
-
+        /// <summary>
+        /// If reCheck = true, re-caculate asset compensation, else get directly from field (UnitPriceLandCost)
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="reCheck"></param>
+        /// <returns></returns>
         public async Task<decimal> CaculateTotalLandCompensationPriceOfOwnerAsync(string ownerId, bool? reCheck = false)
         {
             var totalLandCompensationPrice =  _context.MeasuredLandInfos.Include(c=>c.UnitPriceLand).Where(c => c.OwnerId == ownerId);

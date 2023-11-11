@@ -21,7 +21,9 @@ namespace Metadata.Infrastructure.DTOs.AssetCompensation
 
         public decimal CompensationPrice { get; set; }
 
-        public string CompensationType { get; set; } 
+        public string CompensationType { get; set; }
+
+        public string AssetUnitId { get; set; }
 
         public string UnitPriceAssetId { get; set; } 
 

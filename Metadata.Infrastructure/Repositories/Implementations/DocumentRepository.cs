@@ -32,7 +32,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Document>> QueryAsync(DocumentQuery query, bool trackChanges = false)
         {
-            IQueryable<Document> documents = _context.Documents;
+            IQueryable<Document> documents = _context.Documents.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

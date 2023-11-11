@@ -21,6 +21,8 @@ public partial class AssetCompensation
 
     public string UnitPriceAssetId { get; set; } = null!;
 
+    public string AssetUnitId { get; set; } = null!;
+
     public string OwnerId { get; set; } = null!;
 
     public bool IsDeleted { get; set; } = false;
@@ -29,4 +31,5 @@ public partial class AssetCompensation
     public virtual Owner Owner { get; set; } = null!;
 
     public virtual UnitPriceAsset UnitPriceAsset { get; set; } = null!;
+    public virtual AssetUnit AssetUnit { get; set; } = null!;   
 }

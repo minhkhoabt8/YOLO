@@ -58,14 +58,11 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string? ReportSignal { get; set; }
         [Range(0, int.MaxValue)]
         public int? ReportNumber { get; set; } = 0;
-        [MaxLength(20)]
         public string? PriceBasis { get; set; }
-        [MaxLength(20)]
         public string ?LandCompensationBasis { get; set; }
         [MaxLength(50)]
         [InputType(typeof(Guid))]
         public string? SignerId { get; set; } = "";
-        [MaxLength(20)]
         public string? AssetCompensationBasis { get; set; }
 
         [EnumDataType(typeof(ProjectStatusEnum))]

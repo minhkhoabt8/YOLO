@@ -4,6 +4,7 @@ using Metadata.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Metadata.API.Migrations
 {
     [DbContext(typeof(YoloMetadataContext))]
-    partial class YoloMetadataContextModelSnapshot : ModelSnapshot
+    [Migration("20231111035708_UpdateSupportTable")]
+    partial class UpdateSupportTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,10 +31,6 @@ namespace Metadata.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("asset_compensation_id");
-
-                    b.Property<string>("AssetUnitId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("CompensationContent")
                         .IsRequired()
@@ -73,8 +72,6 @@ namespace Metadata.API.Migrations
                         .HasColumnName("unit_price_asset_id");
 
                     b.HasKey("AssetCompensationId");
-
-                    b.HasIndex("AssetUnitId");
 
                     b.HasIndex("OwnerId");
 
@@ -1567,12 +1564,6 @@ namespace Metadata.API.Migrations
 
             modelBuilder.Entity("Metadata.Core.Entities.AssetCompensation", b =>
                 {
-                    b.HasOne("Metadata.Core.Entities.AssetUnit", "AssetUnit")
-                        .WithMany("AssetCompensations")
-                        .HasForeignKey("AssetUnitId")
-                        .IsRequired()
-                        .HasConstraintName("FK_AssetCompensations_AssetUnits");
-
                     b.HasOne("Metadata.Core.Entities.Owner", "Owner")
                         .WithMany("AssetCompensations")
                         .HasForeignKey("OwnerId")
@@ -1584,8 +1575,6 @@ namespace Metadata.API.Migrations
                         .HasForeignKey("UnitPriceAssetId")
                         .IsRequired()
                         .HasConstraintName("FK_AssetCompensations_UnitPriceAssets");
-
-                    b.Navigation("AssetUnit");
 
                     b.Navigation("Owner");
 
@@ -1913,8 +1902,6 @@ namespace Metadata.API.Migrations
 
             modelBuilder.Entity("Metadata.Core.Entities.AssetUnit", b =>
                 {
-                    b.Navigation("AssetCompensations");
-
                     b.Navigation("Supports");
 
                     b.Navigation("UnitPriceAssets");

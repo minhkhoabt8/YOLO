@@ -42,7 +42,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<AssetGroup>> QueryAsync (AssetGroupQuery query , bool trackChanges = false)
         {
-            IQueryable<AssetGroup> assetGroups = _context.AssetGroups;
+            IQueryable<AssetGroup> assetGroups = _context.AssetGroups
+                .Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

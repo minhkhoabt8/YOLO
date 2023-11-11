@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<DeductionType>> QueryAsync(DeductionTypeQuery query, bool trackChanges = false)
         {
-            IQueryable<DeductionType> deductionTypes = _context.DeductionTypes;
+            IQueryable<DeductionType> deductionTypes = _context.DeductionTypes.Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {

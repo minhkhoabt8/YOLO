@@ -24,7 +24,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Support>> QueryAsync(SupportQuery query, bool trackChanges = false)
         {
-            IQueryable<Support> supports = _context.Supports;
+            IQueryable<Support> supports = _context.Supports
+                .Include(c=>c.AssetUnit)
+                .Include(c=>c.SupportType);
 
             if (!trackChanges)
             {
