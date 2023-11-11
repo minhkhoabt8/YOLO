@@ -78,9 +78,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
-            var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId);
-
-            if(plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId);
+            if (!dto.PlanId.IsNullOrEmpty())
+            {
+                var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!)
+                    ??throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
+            }
 
             //1.Add Owner
             var owner = _mapper.Map<Owner>(dto);
