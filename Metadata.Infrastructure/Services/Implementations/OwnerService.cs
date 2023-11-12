@@ -336,6 +336,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
+            if(dto.PlanId.IsNullOrEmpty())
+
             var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId);
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId);
