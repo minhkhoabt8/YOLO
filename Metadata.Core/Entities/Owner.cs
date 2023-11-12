@@ -51,7 +51,7 @@ public partial class Owner : ITextSearchableEntity
 
     public DateTime? TaxPublishedDate { get; set; }
 
-    public string OrganizationTypeId { get; set; } = null!;
+    public string? OrganizationTypeId { get; set; } 
 
     public bool IsDeleted { get; set; } = false;
 
@@ -65,7 +65,7 @@ public partial class Owner : ITextSearchableEntity
 
     public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();
 
-    public virtual OrganizationType OrganizationType { get; set; } = null!;
+    public virtual OrganizationType? OrganizationType { get; set; }
 
     public virtual Plan? Plan { get; set; }
 
