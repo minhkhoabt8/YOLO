@@ -84,6 +84,13 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ??throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
             }
 
+            if (!dto.OrganizationTypeId.IsNullOrEmpty())
+            {
+                var organizationType = await _unitOfWork.OrganizationTypeRepository.FindAsync(dto.OrganizationTypeId!)
+                    ?? throw new EntityWithIDNotFoundException<OrganizationType>(dto.OrganizationTypeId!);
+            }
+
+
             //1.Add Owner
             var owner = _mapper.Map<Owner>(dto);
 

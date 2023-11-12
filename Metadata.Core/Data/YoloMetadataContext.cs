@@ -92,9 +92,14 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("owner_id");
             entity.Property(e => e.QuantityArea).HasColumnName("quantity_area");
+
             entity.Property(e => e.UnitPriceAssetId)
                 .HasMaxLength(50)
                 .HasColumnName("unit_price_asset_id");
+
+            entity.Property(e => e.AssetUnitId)
+                .HasMaxLength(50)
+                .HasColumnName("asset_unit_id");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.AssetCompensations)
                 .HasForeignKey(d => d.OwnerId)
