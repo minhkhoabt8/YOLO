@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -106,6 +107,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 foreach (var file in owner.AttachFiles)
                 {
                     file.OwnerId = owner.OwnerId;
+
+                    
                 }
                 await _attachFileService.CreateOwnerAttachFilesAsync(owner.OwnerId, dto.OwnerFiles);
             }
@@ -312,7 +315,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations");
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations, Supports, Deductions");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
