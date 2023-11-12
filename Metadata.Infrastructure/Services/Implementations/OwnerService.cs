@@ -302,7 +302,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString()
                 || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString()
-                || owner.PlanId != null || owner.ProjectId !=null)
+                || owner.PlanId != null)
                 throw new InvalidActionException();
 
             owner.IsDeleted = true;
@@ -312,7 +312,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles");
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
