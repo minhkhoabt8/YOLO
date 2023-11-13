@@ -539,7 +539,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             newPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
 
-            if(!newPlan.RejectReason.IsNullOrEmpty())
+            newPlan.PlanCreatedBy = _userContextService.Username!
+                ?? throw new CanNotAssignUserException();
+
+            if (!newPlan.RejectReason.IsNullOrEmpty())
             {
                 newPlan.RejectReason = "";
             }
@@ -547,11 +550,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             foreach(var owner in newPlan.Owners)
             {
                 owner.OwnerId = Guid.NewGuid().ToString();
+                owner.OwnerCreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
             }
 
             foreach(var file in newPlan.AttachFiles)
             {
                 file.AttachFileId = Guid.NewGuid().ToString();
+                file.CreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
             }
 
             await _unitOfWork.PlanRepository.AddAsync(newPlan);
