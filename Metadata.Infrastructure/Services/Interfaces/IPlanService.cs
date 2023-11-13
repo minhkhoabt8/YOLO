@@ -27,5 +27,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
 
         //Bảng tổng hợp chi phí
         Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId);
+
+        Task<PlanReadDTO> ApprovePlanAsync(string planId);
+
     }
 }

@@ -143,6 +143,23 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Approve Plan
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpPut("approve")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> ApprovePlan(string planId)
+        {
+            var plan = await _planService.ApprovePlanAsync(planId);
+
+            return ResponseFactory.Ok(plan);
+        }
+
+        /// <summary>
         /// Delete Plan
         /// </summary>
         /// <param name="id"></param>

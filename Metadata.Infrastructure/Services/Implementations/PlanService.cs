@@ -28,14 +28,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUserContextService _userContextService;
         private readonly IAttachFileService _attachFileService;
         private readonly IAuthService _authService;
+        private readonly INotificationService _notificationService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _attachFileService = attachFileService;
             _authService = authService;
+            _notificationService = notificationService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -361,7 +363,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (mainPart != null)
                     {
                         // Define content
-                        var text = new Text("Hello Open XML world");
+                        var text = new Text("*Created By Yolo System");
                         var run = new Run(text);
                         var paragraph = new Paragraph(run);
 
@@ -429,7 +431,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
 
+        public async Task<PlanReadDTO> ApprovePlanAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
 
+            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+
+            foreach(var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+
+
+            plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+            await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
         
     }
 }
