@@ -1,10 +1,12 @@
-﻿using Metadata.Infrastructure.DTOs.Owner;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -33,6 +35,21 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryPlans([FromQuery] PlanQuery query)
         {
             var plans = await _planService.QueryPlanAsync(query);
+
+            return ResponseFactory.PaginatedOk(plans);
+        }
+
+        /// <summary>
+        /// Query Plans Of Creator
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="planStatus"></param>
+        /// <returns></returns>
+        [HttpGet("creator")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
+        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum planStatus)
+        {
+            var plans = await _planService.QueryPlansOfCreatorAsync(query, planStatus);
 
             return ResponseFactory.PaginatedOk(plans);
         }
@@ -81,6 +98,23 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Created(plan);
         }
+
+        /// <summary>
+        /// Create Plan Copy
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpPost("create/copy")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreatePlanCopyAsync(string planId)
+        {
+            var plan = await _planService.CreatePlanCopyAsync(planId);
+
+            return ResponseFactory.Created(plan);
+        }
+
 
         /// <summary>
         /// Import Plan From File
@@ -143,6 +177,24 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Send Plan Approve Request
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpPut("request")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> SendPlanApproveRequestAsync(string planId)
+        {
+            var plan = await _planService.SendPlanApproveRequestAsync(planId);
+
+            return ResponseFactory.Ok(plan);
+        }
+
+
+        /// <summary>
         /// Approve Plan
         /// </summary>
         /// <param name="planId"></param>
@@ -152,9 +204,27 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> ApprovePlan(string planId)
+        public async Task<IActionResult> ApprovePlanAsync(string planId)
         {
             var plan = await _planService.ApprovePlanAsync(planId);
+
+            return ResponseFactory.Ok(plan);
+        }
+
+        /// <summary>
+        /// Reject Plan
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        [HttpPut("reject")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> RejectPlanAsync([Required] string planId, [Required] string reason)
+        {
+            var plan = await _planService.RejectPlanAsync(planId, reason);
 
             return ResponseFactory.Ok(plan);
         }

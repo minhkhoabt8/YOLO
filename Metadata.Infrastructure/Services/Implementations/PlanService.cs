@@ -17,6 +17,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -28,16 +29,14 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUserContextService _userContextService;
         private readonly IAttachFileService _attachFileService;
         private readonly IAuthService _authService;
-        private readonly INotificationService _notificationService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, INotificationService notificationService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _attachFileService = attachFileService;
             _authService = authService;
-            _notificationService = notificationService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -89,6 +88,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
+            if (plan.PlanStatus == PlanStatusEnum.REJECTED.ToString()
+                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString()
+                || plan.PlanStatus == PlanStatusEnum.APPROVED.ToString())
+            {
+                throw new InvalidActionException($"Cannot Delete Plan With Status [{plan.PlanStatus}].");
+            }
+
             plan.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
@@ -117,6 +123,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
 
+            if(plan.PlanStatus == PlanStatusEnum.REJECTED.ToString() 
+                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString() 
+                || plan.PlanStatus ==PlanStatusEnum.APPROVED.ToString())
+            {
+                throw new InvalidActionException($"Cannot Update Plan With Status [{plan.PlanStatus}].");
+            }
+
             var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
 
             if (existProject == null)
@@ -124,6 +137,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
 
+           
             var existApprover = await _authService.GetAccountByIdAsync(dto.PlanApprovedBy);
 
             if (existApprover == null)
@@ -435,9 +449,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
 
-            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-            foreach(var owner in plan.Owners)
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Approve. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            //check all owner must be status accept compensation before accept plans
+            //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
+            foreach (var owner in plan.Owners)
             {
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
                     throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
@@ -448,10 +469,87 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
-            await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
 
             return _mapper.Map<PlanReadDTO>(plan);
         }
-        
+
+
+        public async Task<PlanReadDTO> SendPlanApproveRequestAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.DRAFT.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Send Approve Request. Must Be [{PlanStatusEnum.DRAFT}]");
+            }
+
+            //check all owner must be status accept compensation before send plan approve request
+            foreach (var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+
+
+            plan.PlanStatus = PlanStatusEnum.AWAITING.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+           // await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+        public async Task<PlanReadDTO> RejectPlanAsync(string planId, string reason)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Reject. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            plan.PlanStatus = PlanStatusEnum.REJECTED.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+        public async Task<PlanReadDTO> CreatePlanCopyAsync(string planId)
+        {
+            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners");
+
+            if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            originalPlan.PlanId = Guid.NewGuid().ToString();  
+
+            originalPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
+
+            await _unitOfWork.PlanRepository.AddAsync(originalPlan);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<PlanReadDTO>(originalPlan);
+
+        }
+
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus)
+        {
+            var currentCreatorName = _userContextService.Username!
+                ?? throw new InvalidActionException("Cannot Define Creator From Context");
+
+            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
     }
 }

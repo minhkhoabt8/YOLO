@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using SharedLib.Infrastructure.Repositories.Implementations;
@@ -20,5 +21,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<Plan, PlanQuery>
     {
         Task <IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId);
+        Task<IEnumerable<Plan>> QueryPlanOfCreatorAsync(PlanQuery query, string creatorName, PlanStatusEnum? planStatus, bool trackChanges = false);
     }
 }
