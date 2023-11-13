@@ -40,6 +40,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public string? PlanStatus { get; set; }
 
+        public string? RejectReason { get; set; }
+
         //Tong Chu So Huu Ho Tro Boi Thuong
         public int? TotalOwnerSupportCompensation { get; set; }
 

@@ -35,6 +35,8 @@ public partial class Plan : ITextSearchableEntity
 
     public string PlanStatus { get; set; } = null!;
 
+    public string? RejectReason { get; set; } = "";
+
     public int TotalOwnerSupportCompensation { get; set; } = 0;
 
     public decimal TotalPriceCompensation { get; set; } = 0;

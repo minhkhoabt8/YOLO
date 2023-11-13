@@ -516,6 +516,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             plan.PlanStatus = PlanStatusEnum.REJECTED.ToString();
 
+            plan.RejectReason = reason;
+
             await _unitOfWork.CommitAsync();
 
             //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
@@ -525,19 +527,38 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> CreatePlanCopyAsync(string planId)
         {
-            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners");
+            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners", trackChanges: false);
 
             if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-            originalPlan.PlanId = Guid.NewGuid().ToString();  
+            var newPlan = new Plan();
 
-            originalPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
+            newPlan = originalPlan;
 
-            await _unitOfWork.PlanRepository.AddAsync(originalPlan);
+            newPlan.PlanId = Guid.NewGuid().ToString();
+
+            newPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
+
+            if(!newPlan.RejectReason.IsNullOrEmpty())
+            {
+                newPlan.RejectReason = "";
+            }
+
+            foreach(var owner in newPlan.Owners)
+            {
+                owner.OwnerId = Guid.NewGuid().ToString();
+            }
+
+            foreach(var file in newPlan.AttachFiles)
+            {
+                file.AttachFileId = Guid.NewGuid().ToString();
+            }
+
+            await _unitOfWork.PlanRepository.AddAsync(newPlan);
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<PlanReadDTO>(originalPlan);
+            return _mapper.Map<PlanReadDTO>(newPlan);
 
         }
 
