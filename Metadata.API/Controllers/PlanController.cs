@@ -181,7 +181,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        [HttpPut("request")]
+        [HttpPut("request-approve")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
