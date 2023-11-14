@@ -643,11 +643,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
-                //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
-
                 ownerList.Add(owner);
             }
+
+            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
 
             await _unitOfWork.CommitAsync();
 
@@ -717,6 +717,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
-        
+     
+       
     }
 }

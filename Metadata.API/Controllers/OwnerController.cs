@@ -88,7 +88,7 @@ namespace Metadata.API.Controllers
         /// <param name="ownerId"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        [HttpPost("assign")]
+        [HttpPost("assign/project")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -98,6 +98,24 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Created(owner);
         }
+
+        /// <summary>
+        /// Assign Plan To Owners
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="ownerIds"></param>
+        /// <returns></returns>
+        [HttpPost("assign/plan")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> AssignPlanToOwnerAsync([Required] string planId, [Required] IEnumerable<string> ownerIds)
+        {
+            var owners = await _ownerService.AssignPlanToOwnerAsync(planId, ownerIds);
+
+            return ResponseFactory.Created(owners);
+        }
+
 
         /// <summary>
         /// Remove Owner From Plan

@@ -26,5 +26,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
 
         Task<IEnumerable<OwnerReadDTO>> GetAllOwner();
         Task<IEnumerable<OwnerReadDTO>> ImportOwnerFromExcelFileAsync(IFormFile file);
+        Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<string> ownerIds);
     }
 }
