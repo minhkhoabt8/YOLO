@@ -136,7 +136,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var unitPriceLand = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.UnitPriceLandId)
                 ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
 
-            var gcnLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.GcnLandInfoId)
+            var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(dto.GcnLandInfoId)
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
             if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
