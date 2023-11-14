@@ -1,5 +1,6 @@
 ﻿using Amazon.S3.Model;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
@@ -83,6 +84,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!)
                     ??throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
+
             }
 
             if (!dto.OrganizationTypeId.IsNullOrEmpty())
@@ -381,10 +383,50 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
 
         }
-        //TODO:Asign Owner To Plan
-        public async Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<OwnerWriteDTO> dtos)
+        
+
+        public async Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<string> ownerIds)
         {
-            throw new NotImplementedException();
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var ownerList = new List<Owner>();
+
+            foreach(var ownerId in ownerIds)
+            {
+                var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+
+                if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+                owner.PlanId = planId;
+
+                plan.TotalOwnerSupportCompensation += 1;
+
+                plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
+                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+                plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+                plan.TotalPriceHouseSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House);
+
+                plan.TotalPriceArchitectureSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture);
+
+                plan.TotalPricePlantSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
+
+                plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
+
+                plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+
+                //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+                ownerList.Add(owner);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
         }
 
 
