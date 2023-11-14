@@ -173,9 +173,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!);
 
-            if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
+            if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
 
             if (!dto.PlanId.IsNullOrEmpty())
             {
@@ -356,7 +356,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId);
 
-                plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+                plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId);
 
                 //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
                 plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
@@ -641,7 +641,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
-                plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+                plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
                 //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
                 plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
@@ -688,7 +688,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
-            plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+            plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
             //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
             plan.TotalGpmbServiceCost -= plan.TotalPriceCompensation - plan.TotalDeduction; 

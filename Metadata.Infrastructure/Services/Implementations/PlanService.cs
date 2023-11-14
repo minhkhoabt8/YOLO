@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
@@ -121,7 +122,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
 
-            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+            if (plan == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(planId);
 
             if(plan.PlanStatus == PlanStatusEnum.REJECTED.ToString() 
                 || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString() 
@@ -142,7 +143,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (existApprover == null)
             {
-                throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
+                throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.PlanApprovedBy);
             }
 
             if(existApprover.Role.Name != AuthRoleEnum.Approval.ToString()) throw new CannotAssignSignerException();
@@ -275,7 +276,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         /// <summary>
-        /// Lay Data Tu DB len cho BTHT Export File
+        /// Lay Data Tu DB len cho Phuong An Bao Cao Export File
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
@@ -298,14 +299,14 @@ namespace Metadata.Infrastructure.Services.Implementations
                 PlanLocation = project.ProjectLocation,
                 PlanBasedOn = plan.PlanCreateBase,
 
-                TotalLandRecoveryArea = 0, //need updated
+                TotalLandRecoveryArea = plan.TotalLandRecoveryArea, //need updated
                 TotalOwnerSupportCompensation = plan.TotalOwnerSupportCompensation,
                 LandAcquisitionAddress = plan.Project.ProjectLocation, //the same as PlanLocation value
                 TotalPriceLandSupportCompensation = plan.TotalPriceLandSupportCompensation,
                 TotalPriceHouseSupportCompensation = plan.TotalPriceHouseSupportCompensation,
                 TotalPriceArchitectureSupportCompensation = plan.TotalPriceArchitectureSupportCompensation,
                 TotalPricePlantSupportCompensation = plan.TotalPricePlantSupportCompensation,
-                TotalPriceOtherSupportCompensation = 0,
+                TotalPriceOtherSupportCompensation = plan.TotalPriceLandSupportCompensation,
                 TotalGpmbServiceCost = plan.TotalGpmbServiceCost// needd updated
 
             };
@@ -322,12 +323,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId);
 
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
-                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+                ?? throw new EntityWithAttributeNotFoundException<Core.Entities.Owner>(nameof(Plan.PlanId), planId);
 
             foreach (var item in owners)
             { 
                 var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
-                ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Owner.OwnerId), item.OwnerId);
+                ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Core.Entities.Owner.OwnerId), item.OwnerId);
                 int stt = 0;
                 foreach (var i in measuredLandInfos)
                 {
@@ -377,7 +378,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (mainPart != null)
                     {
                         // Define content
-                        var text = new Text("*Created By Yolo System");
+                        var text = new Text("*Created By Yolo Team");
                         var run = new Run(text);
                         var paragraph = new Paragraph(run);
 
@@ -398,12 +399,12 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         /// <summary>
-        /// Use this method to check and reassign prices value of plan when price settings or owners of plan were changed
+        /// Use this method to check all assets value of plan , save changed if apply change = true
         /// </summary>
         /// <param name="planId"></param>
+        /// <param name="applyChanged"></param>
         /// <returns></returns>
-        // TODO: Need Finish
-        public async Task ReCheckPricesOfPlanAsync(string planId)
+        public async Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
             if(plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
@@ -411,6 +412,50 @@ namespace Metadata.Infrastructure.Services.Implementations
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
             plan.TotalOwnerSupportCompensation = owners.Count();
             //2.For each owner, re-caculating related prices and reassign it to plan
+
+            plan.TotalPriceCompensation = 0;
+
+            plan.TotalPriceLandSupportCompensation = 0;
+
+            plan.TotalPriceHouseSupportCompensation = 0;
+
+            plan.TotalPriceArchitectureSupportCompensation = 0;
+
+            plan.TotalPricePlantSupportCompensation = 0;
+
+            plan.TotalDeduction = 0;
+
+            plan.TotalLandRecoveryArea = 0;
+
+            plan.TotalGpmbServiceCost = 0;
+
+            foreach (var owner in owners)
+            {
+                plan.TotalPriceCompensation = plan.TotalPriceCompensation + _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null, true).Result
+                                    +  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+
+                plan.TotalPriceLandSupportCompensation +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+
+                plan.TotalPriceHouseSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
+
+                plan.TotalPriceArchitectureSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture, true).Result;
+
+                plan.TotalPricePlantSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants, true).Result;
+
+                plan.TotalDeduction +=  _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId).Result;
+
+                plan.TotalLandRecoveryArea +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
+
+            }
+            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            if (!applyChanged)
+            {
+                await _unitOfWork.CommitAsync();
+            }
+
+            return _mapper.Map<PlanReadDTO>(plan);
         }
 
         /// <summary>
@@ -434,7 +479,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId); ;
 
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
-                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+                ?? throw new EntityWithAttributeNotFoundException<Core.Entities.Owner>(nameof(Plan.PlanId), planId);
 
             throw new NotImplementedException();
         }

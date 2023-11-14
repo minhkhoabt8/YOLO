@@ -41,6 +41,19 @@ namespace Metadata.Infrastructure.Repositories.Implementations
              
             return total;
         }
+        /// <summary>
+        /// Caculate Total Land Recovery Area Of Owner
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <returns></returns>
+        public async Task<decimal> CaculateTotalLandRecoveryAreaOfOwnerAsync(string ownerId)
+        {
+            var totalLandRecoveryOfOwner = _context.MeasuredLandInfos.Where(c => c.OwnerId == ownerId);
+
+            return await totalLandRecoveryOfOwner.SumAsync(c => c.WithdrawArea) ?? 0;
+
+        }
+
 
         public async Task<IEnumerable<MeasuredLandInfo>> QueryAsync(MeasuredLandInfoQuery query, bool trackChanges = false)
         {

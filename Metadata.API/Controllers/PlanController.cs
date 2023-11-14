@@ -68,6 +68,7 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Ok(plan);
         }
+
         /// <summary>
         /// Get Plans Of Project
         /// </summary>
@@ -80,6 +81,20 @@ namespace Metadata.API.Controllers
             var plans = await _planService.GetPlansOfProjectASync(projectId);
 
             return ResponseFactory.Ok(plans);
+        }
+
+        /// <summary>
+        /// Get ReCheck Prices Of Plan
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        [HttpGet("recheck")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        public async Task<IActionResult> ReCheckPricesOfPlanAsync([Required] string planId, bool applyChanged = false)
+        {
+            var plan = await _planService.ReCheckPricesOfPlanAsync(planId);
+
+            return ResponseFactory.Ok(plan);
         }
 
 
@@ -144,7 +159,7 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Export BTHT File Report (.docx)
+        /// Export Phuong An Bao Cao File Report (.docx)
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
