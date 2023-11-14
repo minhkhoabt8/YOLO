@@ -69,7 +69,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         [JsonConverter(typeof(StringEnumConverter))]
         public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
 
-        public IEnumerable<LandPositionInfoInProjectWriteDTO>? LandPositionInfos { get; set; }
+        public IEnumerable<LandPositionInfoWriteDTO>? LandPositionInfos { get; set; }
         public IEnumerable<ResettlementProjectWriteDTO>? ResettlementProjects { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
         public IEnumerable<DocumentWriteDTO>? Documents { get; set; }

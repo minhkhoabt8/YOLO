@@ -47,7 +47,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     var landPosition = _mapper.Map<LandPositionInfo>(item);
                     landPosition.ProjectId = project.ProjectId;
-                    
                 }
                 
             }
