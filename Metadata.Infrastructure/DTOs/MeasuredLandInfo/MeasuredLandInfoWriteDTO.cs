@@ -10,7 +10,7 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         public string? MeasuredPlotNumber { get; set; }
 
         public string? MeasuredPlotAddress { get; set; }
-
+        [Required]
         public string LandTypeId { get; set; } = null!;
         [Range(0, double.MaxValue)]
         public decimal? MeasuredPlotArea { get; set; } = 0;
@@ -23,8 +23,8 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         [Range(0, double.MaxValue)]
         public decimal? UnitPriceLandCost { get; set; } = 0;
         public string? CompensationNote { get; set; }
-
-        public string? GcnLandInfoId { get; set; }
+        [Required]
+        public string GcnLandInfoId { get; set; } = null!;
 
         public string? OwnerId { get; set; } = "";
         [Required]

@@ -42,7 +42,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
 
-            if (dto.AttachFiles.IsNullOrEmpty())
+            if (!dto.AttachFiles.IsNullOrEmpty())
             {
                 foreach (var file in dto.AttachFiles!)
                 {
