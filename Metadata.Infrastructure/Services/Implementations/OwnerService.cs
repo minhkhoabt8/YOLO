@@ -724,13 +724,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             var project = await _unitOfWork.ProjectRepository.FindAsync(projectId)
                 ?? throw new EntityWithIDNotFoundException<Project>(projectId);
 
-            var ownerInPlan = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
+            var ownerInPlan = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
+                ?? Enumerable.Empty<Owner>();
 
-            var ownerNotInPlan = await _unitOfWork.OwnerRepository.GetOwnerInProjectThatNotInAnyPlanAsync(projectId);
+            var ownerNotInPlan = await _unitOfWork.OwnerRepository.GetOwnerInProjectThatNotInAnyPlanAsync(projectId)
+                ?? Enumerable.Empty<Owner>();
 
-            ownerInPlan.Concat(ownerNotInPlan);
+            // Concatenate the collections
+            var allOwners = ownerInPlan.Concat(ownerNotInPlan);
 
-            return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(ownerInPlan, query, _mapper);
+            return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(allOwners, query, _mapper);
 
         }
 

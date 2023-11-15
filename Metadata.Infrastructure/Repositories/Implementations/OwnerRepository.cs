@@ -68,7 +68,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Owner>> GetOwnerInProjectThatNotInAnyPlanAsync(string projecId)
         {
-            return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projecId && o.PlanId.IsNullOrEmpty() == true));
+            return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projecId && o.PlanId == null));
         }
     }
 }
