@@ -29,8 +29,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<MeasuredLandInfoReadDTO> CreateMeasuredLandInfoAsync(MeasuredLandInfoWriteDTO dto)
         {
-            var unitPriceLand = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(dto.UnitPriceLandId)
+            var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
                 ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+
+
 
             var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(dto.GcnLandInfoId) 
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
