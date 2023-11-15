@@ -139,16 +139,16 @@ namespace Metadata.API.Controllers
         /// <summary>
         /// Remove Owner From Plan
         /// </summary>
-        /// <param name="ownerId"></param>
         /// <param name="planId"></param>
+        /// <param name="ownerIds"></param>
         /// <returns></returns>
-        [HttpPost("plan/remove")]
+        [HttpPost("remove/plan")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> RemoveOwnerFromPlanAsync([Required][FromQuery] string ownerId, [Required][FromQuery] string planId)
+        public async Task<IActionResult> RemoveOwnerFromPlanAsync([Required][FromQuery] string planId, [Required] IEnumerable<string> ownerIds)
         {
-            var owner = await _ownerService.RemoveOwnerFromPlanAsync(ownerId, planId);
+            var owner = await _ownerService.RemoveOwnerFromPlanAsync(planId, ownerIds);
 
             return ResponseFactory.Created(owner);
         }

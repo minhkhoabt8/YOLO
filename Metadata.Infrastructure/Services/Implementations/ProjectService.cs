@@ -2,6 +2,7 @@
 using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
@@ -13,6 +14,7 @@ using OfficeOpenXml;
 using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
+using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -24,14 +26,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUserContextService _userContextService;
         private readonly IDocumentService _documentService;
         private readonly IAuthService _authService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public ProjectService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IDocumentService documentService, IAuthService authService)
+        public ProjectService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IDocumentService documentService, IAuthService authService, IUploadFileService uploadFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _documentService = documentService;
             _authService = authService;
+            _uploadFileService = uploadFileService;
         }
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
@@ -41,12 +45,17 @@ namespace Metadata.Infrastructure.Services.Implementations
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
+            
+
+            await _unitOfWork.ProjectRepository.AddAsync(project);
+
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())
             {
                 foreach(var item in projectDto.LandPositionInfos!)
                 {
                     var landPosition = _mapper.Map<LandPositionInfo>(item);
                     landPosition.ProjectId = project.ProjectId;
+                    await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
                 }
                 
             }
@@ -57,22 +66,38 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     var projectResetlement = _mapper.Map<ResettlementProject>(item);
                     projectResetlement.ProjectId = project.ProjectId;
+                    await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
                 }
             }
 
-            await _unitOfWork.ProjectRepository.AddAsync(project);
-
-
-            if (!projectDto.Documents.IsNullOrEmpty())
+            if (!projectDto.ProjectDocuments.IsNullOrEmpty())
             {
 
-                var documents = await _documentService.CreateDocumentsAsync(projectDto.Documents!);
-
-                foreach(var document in documents)
+                foreach(var documentDto  in projectDto.ProjectDocuments!)
                 {
+                    var fileUpload = new UploadFileDTO
+                    {
+                        File = documentDto.FileAttach!,
+                        FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                        FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                    };
+
+                    var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                    var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                    document.ReferenceLink = returnUrl;
+
+                    document.FileName = documentDto.FileName!;
+
+                    document.FileSize = documentDto.FileAttach.Length;
+
+                    document.CreatedBy = _userContextService.Username! ??
+                        throw new CanNotAssignUserException();
+
                     await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
                 }
-                
+
             }
 
             await _unitOfWork.CommitAsync();

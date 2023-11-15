@@ -11,6 +11,7 @@ using SharedLib.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,11 +69,10 @@ namespace Metadata.Infrastructure.DTOs.Project
         [EnumDataType(typeof(ProjectStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
-
         public IEnumerable<LandPositionInfoWriteDTO>? LandPositionInfos { get; set; }
         public IEnumerable<ResettlementProjectWriteDTO>? ResettlementProjects { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
-        public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
+        public IEnumerable<DocumentWriteDTO>? ProjectDocuments { get; set; }
         
     }
 
