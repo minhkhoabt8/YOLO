@@ -4,8 +4,10 @@ using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
+using System.Numerics;
 
 namespace Metadata.Infrastructure.Repositories.Implementations
 {
@@ -64,6 +66,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(enumeratedOwner);
         }
 
-        
+        public async Task<IEnumerable<Owner>> GetOwnerInProjectThatNotInAnyPlanAsync(string projecId)
+        {
+            return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projecId && o.PlanId.IsNullOrEmpty() == true));
+        }
     }
 }

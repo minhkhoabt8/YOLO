@@ -624,5 +624,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
         }
 
+        
     }
 }

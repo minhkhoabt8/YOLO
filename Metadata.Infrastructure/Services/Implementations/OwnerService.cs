@@ -717,7 +717,24 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
-     
-       
+        public async Task<PaginatedResponse<OwnerReadDTO>> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(PaginatedQuery query, string planId, string projectId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId)
+                ?? throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            var ownerInPlan = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
+
+            var ownerNotInPlan = await _unitOfWork.OwnerRepository.GetOwnerInProjectThatNotInAnyPlanAsync(projectId);
+
+            ownerInPlan.Concat(ownerNotInPlan);
+
+            return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(ownerInPlan, query, _mapper);
+
+        }
+
+
+
     }
 }

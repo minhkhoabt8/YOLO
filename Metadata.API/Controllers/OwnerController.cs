@@ -3,6 +3,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using SharedLib.Filters;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
 
@@ -64,6 +65,24 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Ok(owner);
         }
+
+
+        /// <summary>
+        /// Get Owners In Plan By PlanId And Owners In Project That Not In Any Plan By Project Id
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="planId"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("plan/{planId}/project/{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PaginatedResponse<OwnerReadDTO>>))]
+        public async Task<IActionResult> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync([FromQuery] PaginatedQuery query, string planId, string projectId)
+        {
+            var owner = await _ownerService.GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(query,planId, projectId);
+
+            return ResponseFactory.Ok(owner);
+        }
+
 
         /// <summary>
         /// Create Owner
