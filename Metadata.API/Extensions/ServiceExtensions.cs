@@ -17,6 +17,9 @@ using Metadata.Infrastructure.Mappers;
 using SharedLib.Infrastructure.Attributes;
 using Polly.Extensions.Http;
 using Polly;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.Extensions.Configuration;
 
 namespace Metadata.API.Extensions;
 
@@ -152,6 +155,8 @@ public static class ServiceExtensions
         services.AddScoped<IUnitPriceAssetService, UnitPriceAssetService>();
         services.AddScoped<IUnitPriceLandService, UnitPriceLandService>();
         services.AddScoped<IPriceAppliedCodeService, PriceAppliedCodeService>();
+        //services.AddScoped<IFireBaseNotificationService, FireBaseNotificationService>();
+        services.AddScoped<INotificationService, NotificationService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)
@@ -208,6 +213,18 @@ public static class ServiceExtensions
     {
        
     }
+
+    //public static void AddFirebaseAdmin(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
+    //{
+    //    var googleCredential = hostingEnvironment.ContentRootPath;
+    //    var filePath = configuration.GetSection("FireBaseCredentials")["firebase-credentials.json"];
+    //    googleCredential = Path.Combine(googleCredential, filePath!);
+    //    var credential = GoogleCredential.FromFile(googleCredential);
+    //    FirebaseApp.Create(new AppOptions()
+    //    {
+    //        Credential = credential
+    //    });
+    //}
 
     public static void ConfigureApiOptions(this IServiceCollection services)
     {

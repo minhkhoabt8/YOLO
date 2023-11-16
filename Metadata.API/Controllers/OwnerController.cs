@@ -3,6 +3,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using SharedLib.Filters;
+using SharedLib.Infrastructure.DTOs;
 using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
 
@@ -65,6 +66,24 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(owner);
         }
 
+
+        /// <summary>
+        /// Get Owners In Plan By PlanId And Owners In Project That Not In Any Plan By Project Id
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="planId"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet("plan/{planId}/project/{projectId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PaginatedResponse<OwnerReadDTO>>))]
+        public async Task<IActionResult> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync([FromQuery] PaginatedQuery query, string planId, string projectId)
+        {
+            var owner = await _ownerService.GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(query,planId, projectId);
+
+            return ResponseFactory.Ok(owner);
+        }
+
+
         /// <summary>
         /// Create Owner
         /// </summary>
@@ -88,7 +107,7 @@ namespace Metadata.API.Controllers
         /// <param name="ownerId"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        [HttpPost("assign")]
+        [HttpPost("assign/project")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -100,18 +119,36 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Assign Plan To Owners
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="ownerIds"></param>
+        /// <returns></returns>
+        [HttpPost("assign/plan")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> AssignPlanToOwnerAsync([Required] string planId, [Required] IEnumerable<string> ownerIds)
+        {
+            var owners = await _ownerService.AssignPlanToOwnerAsync(planId, ownerIds);
+
+            return ResponseFactory.Created(owners);
+        }
+
+
+        /// <summary>
         /// Remove Owner From Plan
         /// </summary>
-        /// <param name="ownerId"></param>
         /// <param name="planId"></param>
+        /// <param name="ownerIds"></param>
         /// <returns></returns>
-        [HttpPost("plan/remove")]
+        [HttpPost("remove/plan")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> RemoveOwnerFromPlanAsync([Required][FromQuery] string ownerId, [Required][FromQuery] string planId)
+        public async Task<IActionResult> RemoveOwnerFromPlanAsync([Required][FromQuery] string planId, [Required] IEnumerable<string> ownerIds)
         {
-            var owner = await _ownerService.RemoveOwnerFromPlanAsync(ownerId, planId);
+            var owner = await _ownerService.RemoveOwnerFromPlanAsync(planId, ownerIds);
 
             return ResponseFactory.Created(owner);
         }

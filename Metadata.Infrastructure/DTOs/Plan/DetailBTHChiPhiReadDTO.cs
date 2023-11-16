@@ -4,46 +4,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Metadata.Infrastructure.DTOs.DetailBTHChiPhi
+namespace Metadata.Infrastructure.DTOs.Plan
 {
-    public class DetailBTHChiPhiDTO
+    public class DetailBTHChiPhiReadDTO
     {
 
-        public string Stt { get; set; } = Guid.NewGuid().ToString();
+        public int Stt { get; set; } 
+
         public string OwnerCode { get; set; }
 
         //PriceAppliedCode
         public string UnitPriceCode { get; set; }
 
+        //project 
         public string ProjectCode { get; set; }
+
+        //owner
         public string OwnerName { get; set; }
 
+        //project
         public string? Province { get; set; }
-
         public string? District { get; set; }
-
         public string? Ward { get; set; }
 
+        //measured landinfor
         public string? MeasuredPageNumber { get; set; }
-
         public string? MeasuredPlotNumber { get; set; }
-
-        public string CodeLandType { get; set; }
-
         public string? MeasuredPlotArea { get; set; }
-
         public decimal? WithdrawArea { get; set; }
 
-        public decimal? LandCompensationPrice { get; set; }
+        //Code in landtype
+        public string CodeLandType { get; set; }
 
 
-        public string AssetType { get; set; }
+        //mesured landinfo
+        public decimal? SumLandCompensation { get; set; }
 
-        public decimal AssetCompensationPrice { get; set; }
+        //AssetCompensation
+        public decimal SumHouseCompensationPrice { get; set; }
+        public decimal SumTreeCompensationPrice { get; set; }
+        public decimal SumArchitectureCompensationPrice { get; set; }
 
 
-        public decimal SupportPrice { get; set; }
-        public decimal DeductionPrice { get; set; }
+        //Support
+        public decimal SumSupportPrice { get; set; }
+        //Deduction
+        public decimal SumDeductionPrice { get; set; }
+
 
         public decimal SumBTHT { get; set; }
 

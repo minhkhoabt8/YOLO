@@ -148,9 +148,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<GCNLandInfoReadDTO> UpdateGCNLandInfoAsync(string id, GCNLandInfoWriteDTO dto)
         {
-            var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
+            var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(id);
 
-            if (measuredLandInfo == null) throw new EntityWithIDNotFoundException<GcnlandInfo>(id);
+            if (gcnLandInfo == null) throw new EntityWithIDNotFoundException<GcnlandInfo>(id);
 
             var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
                 ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
@@ -158,7 +158,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
-            _mapper.Map(dto, measuredLandInfo);
+            _mapper.Map(dto, gcnLandInfo);
 
             if (!dto.AttachFiles.IsNullOrEmpty())
             {
@@ -172,7 +172,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<GCNLandInfoReadDTO>(measuredLandInfo);
+            return _mapper.Map<GCNLandInfoReadDTO>(gcnLandInfo);
         }
 
         public async Task<IEnumerable<GCNLandInfoReadDTO>> CreateOwnerGcnLandInfosAsync(string ownerId, IEnumerable<GCNLandInfoWriteDTO> dto)

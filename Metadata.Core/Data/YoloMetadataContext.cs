@@ -702,6 +702,8 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PlanStatus)
                 .HasMaxLength(20)
                 .HasColumnName("plan_status");
+            entity.Property(e => e.RejectReason)
+               .HasColumnName("reject_reason");
             entity.Property(e => e.ProjectId)
                 .HasMaxLength(50)
                 .HasColumnName("project_id");

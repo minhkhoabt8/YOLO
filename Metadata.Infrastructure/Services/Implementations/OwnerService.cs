@@ -1,9 +1,11 @@
 ﻿using Amazon.S3.Model;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -13,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
+using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
 using Owner = Metadata.Core.Entities.Owner;
 
@@ -29,8 +32,9 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IDeductionService _deductionService;
         private readonly IAssetCompensationService _assetCompensationService;
         private readonly IAttachFileService _attachFileService;
+        private readonly IUploadFileService _uploadFileService;
 
-        public OwnerService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IGCNLandInfoService gcNLandInfoService, IMeasuredLandInfoService measuredLandInfoService, ISupportService supportService, IDeductionService deductionService, IAssetCompensationService assetCompensationService, IAttachFileService attachFileService)
+        public OwnerService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IGCNLandInfoService gcNLandInfoService, IMeasuredLandInfoService measuredLandInfoService, ISupportService supportService, IDeductionService deductionService, IAssetCompensationService assetCompensationService, IAttachFileService attachFileService, IUploadFileService uploadFileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -41,6 +45,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             _deductionService = deductionService;
             _assetCompensationService = assetCompensationService;
             _attachFileService = attachFileService;
+            _uploadFileService = uploadFileService;
         }
 
         public async Task<IEnumerable<OwnerReadDTO>> GetAllOwner()
@@ -72,7 +77,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
+        public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync1(OwnerWriteDTO dto)
         {
             var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
 
@@ -82,6 +87,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!)
                     ??throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
+
             }
 
             if (!dto.OrganizationTypeId.IsNullOrEmpty())
@@ -98,6 +104,32 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new CanNotAssignUserException();
 
             await _unitOfWork.OwnerRepository.AddAsync(owner);
+
+            if (!dto.PlanId.IsNullOrEmpty())
+            {
+                var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
+
+                plan.TotalOwnerSupportCompensation += 1;
+
+                plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null)
+                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalPriceHouseSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House);
+
+                plan.TotalPriceArchitectureSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture);
+
+                plan.TotalPricePlantSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants);
+
+                plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+
+                //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            }
 
             //await _unitOfWork.CommitAsync();
 
@@ -138,6 +170,204 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return ownerReadDto;
         }
+
+        public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
+        {
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!);
+
+            if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
+
+            if (!dto.PlanId.IsNullOrEmpty())
+            {
+                var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!)
+                    ?? throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
+            }
+
+            //1.Add Owner
+            var owner = _mapper.Map<Owner>(dto);
+
+            owner.OwnerCreatedBy = _userContextService.Username!
+                ?? throw new CanNotAssignUserException();
+
+            await _unitOfWork.OwnerRepository.AddAsync(owner);
+            //2.Add Owner Attach Files
+            if (!dto.OwnerFiles.IsNullOrEmpty())
+            {
+                foreach (var file in dto.OwnerFiles!)
+                {
+                    var fileUpload = new UploadFileDTO
+                    {
+                        File = file.AttachFile!,
+                        FileName = $"{file.Name}-{Guid.NewGuid()}",
+                        FileType = FileTypeExtensions.ToFileMimeTypeString(file.FileType)
+                    };
+
+                    var attachFile = _mapper.Map<AttachFile>(file);
+
+                    attachFile.OwnerId = owner.OwnerId;
+
+                    attachFile.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                    attachFile.CreatedBy = _userContextService.Username! ??
+                        throw new CanNotAssignUserException();
+
+                    await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+                }
+            }
+            //3.Add Owner Support
+            if (!dto.OwnerSupports.IsNullOrEmpty())
+            {
+                foreach (var item in dto.OwnerSupports!)
+                {
+                    if (!item.SupportTypeId.IsNullOrEmpty())
+                    {
+                        var supportType = await _unitOfWork.SupportTypeRepository.FindAsync(item.SupportTypeId!)
+                        ?? throw new EntityWithIDNotFoundException<SupportType>(item.SupportTypeId!);
+                    }
+
+                    if (!item.AssetUnitId.IsNullOrEmpty())
+                    {
+                        var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(item.AssetUnitId!)
+                        ?? throw new EntityWithIDNotFoundException<AssetUnit>(item.AssetUnitId!);
+                    }
+
+                    var support = _mapper.Map<Support>(item);
+
+                    support.OwnerId = owner.OwnerId;
+
+                    await _unitOfWork.SupportRepository.AddAsync(support);
+                }
+
+            }
+            //4. Add Owner Deduction
+            if (!dto.OwnerDeductions.IsNullOrEmpty())
+            {
+                foreach (var item in dto.OwnerDeductions!)
+                {
+                    var deduction = _mapper.Map<Deduction>(item);
+
+                    deduction.OwnerId = owner.OwnerId;
+
+                    await _unitOfWork.DeductionRepository.AddAsync(deduction);
+                }
+            }
+            //5. Add Owner Gcn Land Info
+            if (!dto.OwnerGcnlandInfos.IsNullOrEmpty())
+            {
+                foreach (var item in dto.OwnerGcnlandInfos!)
+                {
+                    
+                    var landInfo = new GcnlandInfo()
+                    {
+                        GcnPageNumber = item.GcnPageNumber,
+                        GcnPlotNumber = item.GcnPlotNumber,
+                        GcnPlotAddress = item.GcnPlotAddress,
+                        LandTypeId = item.LandTypeId,
+                        GcnPlotArea = item.GcnPlotArea,
+                        GcnOwnerCertificate = item.GcnOwnerCertificate,
+                        //OwnerId = item.OwnerId,
+                    };
+
+                    landInfo.OwnerId = owner.OwnerId;
+
+                    await _unitOfWork.GCNLandInfoRepository.AddAsync(landInfo);
+
+                    foreach (var file in item.AttachFiles!)
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = file.AttachFile!,
+                            FileName = $"{file.Name}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(file.FileType)
+                        };
+
+                        var attachFile = _mapper.Map<AttachFile>(file);
+
+                        attachFile.GcnLandInfoId = landInfo.GcnLandInfoId;
+
+                        attachFile.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                        attachFile.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
+
+                        await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+                    }
+
+                    if (!item.MeasuredLandInfos.IsNullOrEmpty())
+                    {
+
+                        foreach(var measuredLandDto in  item.MeasuredLandInfos!)
+                        {
+                            measuredLandDto.OwnerId = owner.OwnerId;
+
+                            var measuredLand = _mapper.Map<MeasuredLandInfo>(measuredLandDto);
+
+                            //measuredLand.OwnerId = owner.OwnerId;
+
+                            await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLand);
+
+                            foreach (var file in item.AttachFiles!)
+                            {
+                                var fileUpload = new UploadFileDTO
+                                {
+                                    File = file.AttachFile!,
+                                    FileName = $"{file.Name}-{Guid.NewGuid()}",
+                                    FileType = FileTypeExtensions.ToFileMimeTypeString(file.FileType)
+                                };
+
+                                var attachFile = _mapper.Map<AttachFile>(file);
+
+                                attachFile.MeasuredLandInfoId = measuredLand.MeasuredLandInfoId;
+
+                                attachFile.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                                attachFile.CreatedBy = _userContextService.Username! ??
+                                    throw new CanNotAssignUserException();
+
+                                await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            //6. Update Plan when add user
+            if (!dto.PlanId.IsNullOrEmpty())
+            {
+                var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
+
+                plan.TotalOwnerSupportCompensation += 1;
+
+                plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null)
+                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalPriceHouseSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House);
+
+                plan.TotalPriceArchitectureSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture);
+
+                plan.TotalPricePlantSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants);
+
+                plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId);
+
+                plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId);
+
+                //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OwnerReadDTO>(owner);
+        }
+
 
         public async Task<IEnumerable<OwnerWriteDTO>> ExtractOwnersFromFileAsync(IFormFile file)
         {
@@ -302,7 +532,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString()
                 || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString()
-                || owner.PlanId != null || owner.ProjectId !=null)
+                || owner.PlanId != null)
                 throw new InvalidActionException();
 
             owner.IsDeleted = true;
@@ -312,7 +542,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles");
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations, Supports, Deductions");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
@@ -333,9 +563,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
-            var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId);
+            if (!dto.PlanId.IsNullOrEmpty())
+            {
+                var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
 
-            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId);
+                if (plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
+            }
 
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
@@ -375,54 +608,98 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
 
         }
-        //TODO:Asign Owner To Plan
-        public async Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<OwnerWriteDTO> dtos)
+        
+
+        public async Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<string> ownerIds)
         {
-            throw new NotImplementedException();
-        }
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
 
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-        public async Task<OwnerReadDTO> RemoveOwnerFromPlanAsync(string ownerId, string planId)
-        {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
-                ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+            var ownerList = new List<Owner>();
 
-            if (owner.PlanId != planId) 
-                throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.PlanId), planId);
+            foreach(var ownerId in ownerIds)
+            {
+                var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
-            if(owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
-                throw new InvalidActionException();
+                if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
-            owner.PlanId = null;
+                owner.PlanId = planId;
 
-            //Update Plan Price Info
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
-                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+                plan.TotalOwnerSupportCompensation += 1;
 
-            plan.TotalOwnerSupportCompensation -= 1;
-
-            //Tong Cong Gia Den Bu =  (Dat + Tai San) cua Owner
-            plan.TotalPriceCompensation -= await  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null) 
+                plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
                 + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
-            plan.TotalPriceLandSupportCompensation -=  await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+                plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
-            plan.TotalPriceHouseSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House);
+                plan.TotalPriceHouseSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House);
 
-            plan.TotalPriceArchitectureSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture);
+                plan.TotalPriceArchitectureSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture);
 
-            plan.TotalPricePlantSupportCompensation -=  await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
+                plan.TotalPricePlantSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
 
-            plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
+                plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
-            plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
+                plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
+
+                ownerList.Add(owner);
+            }
 
             //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-            plan.TotalGpmbServiceCost -= plan.TotalPriceCompensation - plan.TotalDeduction; 
+            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<OwnerReadDTO>(owner);
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
+        }
+
+
+        public async Task<IEnumerable<OwnerReadDTO>> RemoveOwnerFromPlanAsync(string planId, IEnumerable<string> ownerIds)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var ownerList = new List<Owner>();
+            foreach (var ownerId in ownerIds)
+            {
+                var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+                if (owner.PlanId != planId)
+                    throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.PlanId), planId);
+
+                if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
+                    throw new InvalidActionException();
+                owner.PlanId = null;
+                //Update Plan Price Info
+
+                plan.TotalOwnerSupportCompensation -= 1;
+
+                //Tong Cong Gia Den Bu =  (Dat + Tai San) cua Owner
+                plan.TotalPriceCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
+                    + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+                plan.TotalPriceLandSupportCompensation -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+
+                plan.TotalPriceHouseSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House);
+
+                plan.TotalPriceArchitectureSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture);
+
+                plan.TotalPricePlantSupportCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants);
+
+                plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
+
+                plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
+
+            }
+            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+            plan.TotalGpmbServiceCost -= plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
         }
 
 
@@ -444,6 +721,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
-        
+        public async Task<PaginatedResponse<OwnerReadDTO>> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(PaginatedQuery query, string planId, string projectId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
+                ?? throw new EntityWithIDNotFoundException<Plan>(planId);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId)
+                ?? throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            var ownerInPlan = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
+                ?? Enumerable.Empty<Owner>();
+
+            var ownerNotInPlan = await _unitOfWork.OwnerRepository.GetOwnerInProjectThatNotInAnyPlanAsync(projectId)
+                ?? Enumerable.Empty<Owner>();
+
+            // Concatenate the collections
+            var allOwners = ownerInPlan.Concat(ownerNotInPlan);
+
+            return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(allOwners, query, _mapper);
+
+        }
+
+
+
     }
 }

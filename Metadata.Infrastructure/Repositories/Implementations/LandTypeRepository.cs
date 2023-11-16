@@ -23,6 +23,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.LandTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower());
         }
 
+        public async Task<LandType> GetLandTypesOfMeasureLandInfoAsync(string landTypeId)
+        {
+            return await _context.LandTypes.FirstOrDefaultAsync(c => c.LandTypeId == landTypeId);
+        }
+
         public async Task<LandType?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
         {
             return await _context.LandTypes.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
@@ -32,6 +37,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.LandTypes.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
         }
+
 
         public async Task<IEnumerable<LandType>?> GetAllActivedLandTypes()
         {

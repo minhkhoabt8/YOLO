@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
@@ -17,6 +18,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -87,6 +89,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
+            if (plan.PlanStatus == PlanStatusEnum.REJECTED.ToString()
+                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString()
+                || plan.PlanStatus == PlanStatusEnum.APPROVED.ToString())
+            {
+                throw new InvalidActionException($"Cannot Delete Plan With Status [{plan.PlanStatus}].");
+            }
+
             plan.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
@@ -113,7 +122,14 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
 
-            if (plan == null) throw new EntityWithIDNotFoundException<Owner>(planId);
+            if (plan == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(planId);
+
+            if(plan.PlanStatus == PlanStatusEnum.REJECTED.ToString() 
+                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString() 
+                || plan.PlanStatus ==PlanStatusEnum.APPROVED.ToString())
+            {
+                throw new InvalidActionException($"Cannot Update Plan With Status [{plan.PlanStatus}].");
+            }
 
             var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
 
@@ -122,11 +138,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
 
+           
             var existApprover = await _authService.GetAccountByIdAsync(dto.PlanApprovedBy);
 
             if (existApprover == null)
             {
-                throw new EntityWithIDNotFoundException<Owner>(dto.PlanApprovedBy);
+                throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.PlanApprovedBy);
             }
 
             if(existApprover.Role.Name != AuthRoleEnum.Approval.ToString()) throw new CannotAssignSignerException();
@@ -259,7 +276,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         /// <summary>
-        /// Lay Data Tu DB len cho BTHT Export File
+        /// Lay Data Tu DB len cho Phuong An Bao Cao Export File
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
@@ -282,14 +299,14 @@ namespace Metadata.Infrastructure.Services.Implementations
                 PlanLocation = project.ProjectLocation,
                 PlanBasedOn = plan.PlanCreateBase,
 
-                TotalLandRecoveryArea = 0, //need updated
+                TotalLandRecoveryArea = plan.TotalLandRecoveryArea, //need updated
                 TotalOwnerSupportCompensation = plan.TotalOwnerSupportCompensation,
                 LandAcquisitionAddress = plan.Project.ProjectLocation, //the same as PlanLocation value
                 TotalPriceLandSupportCompensation = plan.TotalPriceLandSupportCompensation,
                 TotalPriceHouseSupportCompensation = plan.TotalPriceHouseSupportCompensation,
                 TotalPriceArchitectureSupportCompensation = plan.TotalPriceArchitectureSupportCompensation,
                 TotalPricePlantSupportCompensation = plan.TotalPricePlantSupportCompensation,
-                TotalPriceOtherSupportCompensation = 0,
+                TotalPriceOtherSupportCompensation = plan.TotalPriceLandSupportCompensation,
                 TotalGpmbServiceCost = plan.TotalGpmbServiceCost// needd updated
 
             };
@@ -365,7 +382,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (mainPart != null)
                     {
                         // Define content
-                        var text = new Text("Hello Open XML world");
+                        var text = new Text("*Created By Yolo Team");
                         var run = new Run(text);
                         var paragraph = new Paragraph(run);
 
@@ -386,12 +403,12 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         /// <summary>
-        /// Use this method to check and reassign prices value of plan when price settings or owners of plan were changed
+        /// Use this method to check all assets value of plan , save changed if apply change = true
         /// </summary>
         /// <param name="planId"></param>
+        /// <param name="applyChanged"></param>
         /// <returns></returns>
-        // TODO: Need Finish
-        public async Task ReCheckPricesOfPlanAsync(string planId)
+        public async Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
             if(plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
@@ -399,6 +416,50 @@ namespace Metadata.Infrastructure.Services.Implementations
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
             plan.TotalOwnerSupportCompensation = owners.Count();
             //2.For each owner, re-caculating related prices and reassign it to plan
+
+            plan.TotalPriceCompensation = 0;
+
+            plan.TotalPriceLandSupportCompensation = 0;
+
+            plan.TotalPriceHouseSupportCompensation = 0;
+
+            plan.TotalPriceArchitectureSupportCompensation = 0;
+
+            plan.TotalPricePlantSupportCompensation = 0;
+
+            plan.TotalDeduction = 0;
+
+            plan.TotalLandRecoveryArea = 0;
+
+            plan.TotalGpmbServiceCost = 0;
+
+            foreach (var owner in owners)
+            {
+                plan.TotalPriceCompensation = plan.TotalPriceCompensation + _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null, true).Result
+                                    +  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+
+                plan.TotalPriceLandSupportCompensation +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+
+                plan.TotalPriceHouseSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
+
+                plan.TotalPriceArchitectureSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture, true).Result;
+
+                plan.TotalPricePlantSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants, true).Result;
+
+                plan.TotalDeduction +=  _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId).Result;
+
+                plan.TotalLandRecoveryArea +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
+
+            }
+            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
+            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            if (!applyChanged)
+            {
+                await _unitOfWork.CommitAsync();
+            }
+
+            return _mapper.Map<PlanReadDTO>(plan);
         }
 
         /// <summary>
@@ -422,7 +483,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId); ;
 
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
-                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+                ?? throw new EntityWithAttributeNotFoundException<Core.Entities.Owner>(nameof(Plan.PlanId), planId);
 
             throw new NotImplementedException();
         }
@@ -432,5 +493,141 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
+
+        public async Task<PlanReadDTO> ApprovePlanAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Approve. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            //check all owner must be status accept compensation before accept plans
+            //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
+            foreach (var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+
+
+            plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+
+        public async Task<PlanReadDTO> SendPlanApproveRequestAsync(string planId)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.DRAFT.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Send Approve Request. Must Be [{PlanStatusEnum.DRAFT}]");
+            }
+
+            //check all owner must be status accept compensation before send plan approve request
+            foreach (var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+
+
+            plan.PlanStatus = PlanStatusEnum.AWAITING.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+           // await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+        public async Task<PlanReadDTO> RejectPlanAsync(string planId, string reason)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Reject. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            plan.PlanStatus = PlanStatusEnum.REJECTED.ToString();
+
+            plan.RejectReason = reason;
+
+            await _unitOfWork.CommitAsync();
+
+            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+
+            return _mapper.Map<PlanReadDTO>(plan);
+        }
+
+        public async Task<PlanReadDTO> CreatePlanCopyAsync(string planId)
+        {
+            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners", trackChanges: false);
+
+            if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            var newPlan = new Plan();
+
+            newPlan = originalPlan;
+
+            newPlan.PlanId = Guid.NewGuid().ToString();
+
+            newPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
+
+            newPlan.PlanCreatedBy = _userContextService.Username!
+                ?? throw new CanNotAssignUserException();
+
+            if (!newPlan.RejectReason.IsNullOrEmpty())
+            {
+                newPlan.RejectReason = "";
+            }
+
+            foreach(var owner in newPlan.Owners)
+            {
+                owner.OwnerId = Guid.NewGuid().ToString();
+                owner.OwnerCreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
+            }
+
+            foreach(var file in newPlan.AttachFiles)
+            {
+                file.AttachFileId = Guid.NewGuid().ToString();
+                file.CreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
+            }
+
+            await _unitOfWork.PlanRepository.AddAsync(newPlan);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<PlanReadDTO>(newPlan);
+
+        }
+
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus)
+        {
+            var currentCreatorName = _userContextService.Username!
+                ?? throw new InvalidActionException("Cannot Define Creator From Context");
+
+            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
+        
     }
 }

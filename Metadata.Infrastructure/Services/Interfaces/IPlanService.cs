@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.Owner;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
@@ -22,7 +23,21 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId);
         //Bảng Tổng Hợp Thu Hồi 
         Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId);
-        Task ReCheckPricesOfPlanAsync(string planId);
+        Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false);
         Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectASync(string projectId);
+
+        //Bảng tổng hợp chi phí
+        Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId);
+
+        Task<PlanReadDTO> ApprovePlanAsync(string planId);
+
+        Task<PlanReadDTO> CreatePlanCopyAsync(string planId);
+
+        Task<PlanReadDTO> RejectPlanAsync(string planId, string reason);
+
+        Task<PlanReadDTO> SendPlanApproveRequestAsync(string planId);
+
+        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus);
+
     }
 }
