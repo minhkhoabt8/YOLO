@@ -662,6 +662,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
             var ownerList = new List<Owner>();
+
             foreach (var ownerId in ownerIds)
             {
                 var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
@@ -692,6 +693,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
+
+                ownerList.Add(owner);
 
             }
             //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
