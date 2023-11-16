@@ -51,6 +51,7 @@ public partial class YoloAuthContext : DbContext
             entity.Property(e => e.NotificationContent).HasMaxLength(100);
             entity.Property(e => e.UserId).HasMaxLength(50);
             entity.Property(e => e.SenderId).HasMaxLength(50);
+            entity.Property(e => e.PlanId).HasMaxLength(50);
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)

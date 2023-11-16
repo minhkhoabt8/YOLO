@@ -15,5 +15,7 @@ namespace Auth.Infrastructure.DTOs.Notification
 
         public string NotificationContent { get; set; }
 
+        public string PlanId { get; set; }
+
     }
 }

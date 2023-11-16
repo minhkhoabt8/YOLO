@@ -32,6 +32,9 @@ namespace Auth.Infrastructure.Services.Implementations
 
         public async Task<PaginatedResponse<NotificationReadDTO>> QueryNotification(NotificationQuery query)
         {
+            var account = await _unitOfWork.AccountRepository.FindAsync(query.AccountId)
+                ?? throw new EntityWithIDNotFoundException<Account>(query.AccountId);
+
             var notifications = await _unitOfWork.NotificationRepository.QueryAsync(query);
 
             return PaginatedResponse<NotificationReadDTO>.FromEnumerableWithMapping(notifications, query, _mapper);
