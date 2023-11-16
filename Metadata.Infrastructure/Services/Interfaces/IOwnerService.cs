@@ -1,4 +1,6 @@
-﻿using Metadata.Infrastructure.DTOs.Owner;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.Owner;
 using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -29,5 +31,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<OwnerReadDTO>> AssignPlanToOwnerAsync(string planId, IEnumerable<string> ownerIds);
 
         Task<PaginatedResponse<OwnerReadDTO>> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(PaginatedQuery query, string planId, string projectId);
+
+        Task<OwnerReadDTO> UpdateOwnerStatusAsync(string ownerId, OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file);
     }
 }

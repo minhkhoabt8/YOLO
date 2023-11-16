@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
+using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<ResettlementProjectReadDTO>> GetAllResettlementProjectsAsync();
         Task<ResettlementProjectReadDTO> UpdateResettlementProjectAsync(string id, ResettlementProjectWriteDTO dto);
         Task DeleteResettlementProjectAsync(string id);
-        Task<ProjectReadDTO> GetResettlementProjectAsync(string id);
+        Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id);
+        Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query);
     }
 }

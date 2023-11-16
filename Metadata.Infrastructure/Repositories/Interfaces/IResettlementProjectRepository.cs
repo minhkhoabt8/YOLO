@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IGetAllAsync<ResettlementProject>,
         IFindAsync<ResettlementProject>,
         IUpdate<ResettlementProject>,
-        IDelete<ResettlementProject>
+        IDelete<ResettlementProject>,
+        IQueryAsync<ResettlementProject,ResettlementProjectQuery>
     {
         Task<IEnumerable<ResettlementProject>> GetResettlementProjectsInProjectAsync(string projectId);
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,9 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string Name { get; set; }
 
-        public int LimitToResettlement { get; set; } = 0;
+        public decimal LimitToResettlement { get; set; } = 0;
 
-        public int LimitToConsideration { get; set; } = 0;
+        public decimal LimitToConsideration { get; set; } = 0;
 
         public string? Position { get; set; }
 
@@ -31,5 +32,7 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
         public string? DocumentId { get; set; }
 
         public string? ProjectId { get; set; }
+
+        public IEnumerable<DocumentWriteDTO>? ResettlementDocuments { get; set; }
     }
 }

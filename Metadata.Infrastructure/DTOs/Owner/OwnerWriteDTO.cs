@@ -1,8 +1,10 @@
-﻿using Metadata.Core.Enums;
+﻿using Metadata.Core.Entities;
+using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Deduction;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
+using Metadata.Infrastructure.DTOs.LandResettlement;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.Support;
 using Newtonsoft.Json;
@@ -15,7 +17,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
     public class OwnerWriteDTO
     {
         [MaxLength(20)]
-        public string? OwnerCode { get; set; }
+        public string? OwnerCode { get; set; } = "";
         [Required]
         public string OwnerName { get; set; }
         [MaxLength(20)]
@@ -57,6 +59,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public IEnumerable<GCNLandInfoWriteDTO>? OwnerGcnlandInfos { get; set; }
         //public IEnumerable<MeasuredLandInfoWriteDTO>? MeasuredLandInfos { get; set; }
         public IEnumerable<AssetCompensationWriteDTO>? OwnerAssetCompensations { get; set; }
+        public IEnumerable<LandResettlementWriteDTO> OwnersLandResettlements { get; }
         public IEnumerable<AttachFileWriteDTO>? OwnerFiles { get; set; }
 
     }

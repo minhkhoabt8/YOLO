@@ -18,7 +18,7 @@ public partial class ResettlementDocument
     public virtual ResettlementProject ResettlementProject { get; set; } = null!;
 
 
-    public static ResettlementDocument CreateProjectDocument(string resettlementProjectId, string documentId)
+    public static ResettlementDocument CreateResettlementDocument(string resettlementProjectId, string documentId)
     {
         var resettlementDocument = new ResettlementDocument
         {
