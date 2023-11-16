@@ -9,13 +9,13 @@ namespace Auth.Infrastructure.DTOs.Notification
 {
     public class NotificationWriteDTO
     {
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
-        public string SenderId { get; set; }
+        public string? SenderId { get; set; }
 
-        public string NotificationContent { get; set; }
+        public string? NotificationContent { get; set; }
 
-        public string PlanId { get; set; }
+        public string? PlanId { get; set; }
 
     }
 }
