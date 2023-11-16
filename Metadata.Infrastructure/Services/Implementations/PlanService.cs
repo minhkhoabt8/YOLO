@@ -323,14 +323,14 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId);
 
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
-                ?? throw new EntityWithAttributeNotFoundException<Owner>(nameof(Plan.PlanId), planId);
+                ?? throw new EntityWithAttributeNotFoundException<Core.Entities.Owner>(nameof(Plan.PlanId), planId);
             var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetUnitPriceCodeByProjectAsync(project.PriceAppliedCodeId)
                 ?? throw new EntityWithAttributeNotFoundException<PriceAppliedCode>(nameof(Project.PriceAppliedCodeId), project.PriceAppliedCodeId);
 
             foreach (var item in owners)
             { 
                 var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
-                ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Owner.OwnerId), item.OwnerId);
+                ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Core.Entities.Owner.OwnerId), item.OwnerId);
                 int stt = 0;
                 foreach (var i in measuredLandInfos)
                 {

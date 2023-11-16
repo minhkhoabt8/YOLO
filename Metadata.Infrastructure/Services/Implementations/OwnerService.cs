@@ -804,7 +804,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
                 ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
-            if (ownerStatus.Equals(OwnerStatusEnum.AcceptCompensation.ToString()))
+            if (ownerStatus == OwnerStatusEnum.AcceptCompensation)
             {
                 owner.OwnerStatus = OwnerStatusEnum.AcceptCompensation.ToString();
 
@@ -827,11 +827,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                         throw new CanNotAssignUserException();
 
                     await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
-                    owner.AttachFiles.Add(attachFile);
                 }
                 
             }
-            else if(ownerStatus.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+            else if(ownerStatus == OwnerStatusEnum.RejectCompensation)
             {
                 owner.OwnerStatus = OwnerStatusEnum.RejectCompensation.ToString();
                 owner.RejectReason = rejectReason ?? "";
