@@ -15,9 +15,9 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string Name { get; set; } 
 
-        public int LimitToResettlement { get; set; }
+        public decimal LimitToResettlement { get; set; }
 
-        public int LimitToConsideration { get; set; }
+        public decimal LimitToConsideration { get; set; }
 
         public string? Position { get; set; }
 

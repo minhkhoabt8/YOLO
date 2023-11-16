@@ -12,7 +12,7 @@ namespace Metadata.API.Controllers
     /// <summary>
     /// 
     /// </summary>
-    [Route("metadata/resettlement")]
+    [Route("metadata/resettlementProject")]
     [ApiController]
     public class ResettlementProjectController : ControllerBase
     {
@@ -62,9 +62,9 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> CreateUnitPriceAssetAsync(ResettlementProjectWriteDTO writeDTO)
         {
-            var unitPriceAsset = await _resettlementProjectService.CreateResettlementProjectAsync(writeDTO);
+            var resettlement = await _resettlementProjectService.CreateResettlementProjectAsync(writeDTO);
 
-            return ResponseFactory.Created(unitPriceAsset);
+            return ResponseFactory.Created(resettlement);
         }
 
 

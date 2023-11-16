@@ -158,6 +158,7 @@ public static class ServiceExtensions
         //services.AddScoped<IFireBaseNotificationService, FireBaseNotificationService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IResettlementProjectService, ResettlementProjectService>();
+        services.AddScoped<ILandResettlementService,LandResettlementService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)
@@ -189,6 +190,7 @@ public static class ServiceExtensions
         services.AddScoped<IUnitPriceLandRepository, UnitPriceLandRepository>();
         services.AddScoped<IPriceAppliedCodeRepository, PriceAppliedCodeRepository>();
         services.AddScoped<IResettlementProjectRepository, ResettlementProjectRepository>();
+        services.AddScoped<ILandResettlementRepository, LandResettlementRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

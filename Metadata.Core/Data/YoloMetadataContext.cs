@@ -905,8 +905,12 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.LastPersonEdit)
                 .HasMaxLength(50)
                 .HasColumnName("last_person_edit");
-            entity.Property(e => e.LimitToConsideration).HasColumnName("limit_to_consideration");
-            entity.Property(e => e.LimitToResettlement).HasColumnName("limit_to_resettlement");
+            entity.Property(e => e.LimitToConsideration)
+            .HasColumnType("decimal(18, 0)")
+            .HasColumnName("limit_to_consideration");
+            entity.Property(e => e.LimitToResettlement)
+            .HasColumnType("decimal(18, 0)")
+            .HasColumnName("limit_to_resettlement");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");

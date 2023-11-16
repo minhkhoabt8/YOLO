@@ -173,7 +173,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!, include: "ResettlementProjects");
 
             if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
 
@@ -182,6 +182,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!)
                     ?? throw new EntityWithIDNotFoundException<Plan>(dto.PlanId!);
             }
+
+            //this used to get widthdraw value from MeasuredLandinfo to caculate limitResettlementValue
+            decimal ownerWidthdrawArea = 0;
+            decimal ownerMeasuredPlotArea = 0;
 
             //1.Add Owner
             var owner = _mapper.Map<Owner>(dto);
@@ -304,6 +308,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                             //measuredLand.OwnerId = owner.OwnerId;
 
+                            ownerWidthdrawArea = measuredLand.WithdrawArea ?? 0;
+
+                            ownerMeasuredPlotArea = measuredLand.MeasuredPlotArea ?? 0;
+
                             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLand);
 
                             foreach (var file in item.AttachFiles!)
@@ -334,9 +342,42 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
+            //6.Add Owner Land Resettlement
+
+            if (project.ResettlementProjects.IsNullOrEmpty() && !dto.OwnersLandResettlements.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException("Cannot Create Owner Land Resettlement Because Project Does Not Support Any Resettlement");
+            }
+
+            if (!dto.OwnersLandResettlements.IsNullOrEmpty())
+            {
+                foreach(var landResettlementDto in dto.OwnersLandResettlements)
+                {
+                    //find Resettlement Project associate with Land Resettlement
+                    var associateResettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(landResettlementDto.ResettlementProjectId!)
+                        ?? throw new EntityWithIDNotFoundException<ResettlementProject>(landResettlementDto.ResettlementProjectId!);
+
+                    var limitResettlementValue = await CaculateLimitResettlementValueAsync(ownerWidthdrawArea, ownerMeasuredPlotArea);
+
+                    // case2: if: result < limit_to_consideration <  limit_to_resettlement : khong dc tao Land Resettlement
+                    if (associateResettlement.LimitToResettlement > associateResettlement.LimitToConsideration && associateResettlement.LimitToConsideration > limitResettlementValue)
+                    {
+                        throw new InvalidActionException($"Cannot Create Land Resettlement Because Owner Resettlement Limit Value: {limitResettlementValue}% < Project LimitToConsideration: {associateResettlement.LimitToConsideration}% < Project LimitToResettlement: {associateResettlement.LimitToResettlement}%.");
+                    }
+
+
+                    landResettlementDto.OwnerId = owner.OwnerId;
+
+                    var landResettlement = _mapper.Map<LandResettlement>(landResettlementDto);
+                    
+                    await _unitOfWork.LandResettlementRepository.AddAsync(landResettlement);
+                }
+
+            }
+
             await _unitOfWork.CommitAsync();
 
-            //6. Update Plan when add user
+            //7. Update Plan when add user
             if (!dto.PlanId.IsNullOrEmpty())
             {
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
@@ -368,7 +409,21 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
-
+        /// <summary>
+        /// Caculate Limit Resettlement Value Of an Owner
+        /// </summary>
+        /// <param name="ownerWidthdrawArea"></param>
+        /// <param name="ownerMeasuredPlotArea"></param>
+        /// <returns></returns>
+        private async Task<decimal> CaculateLimitResettlementValueAsync(decimal ownerWidthdrawArea, decimal ownerMeasuredPlotArea)
+        {
+            //devided by zero => return 0
+            if(ownerMeasuredPlotArea == 0)
+            {
+                return 0;
+            }
+            return await Task.FromResult( (ownerWidthdrawArea / ownerMeasuredPlotArea) * 100);
+        }
         public async Task<IEnumerable<OwnerWriteDTO>> ExtractOwnersFromFileAsync(IFormFile file)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

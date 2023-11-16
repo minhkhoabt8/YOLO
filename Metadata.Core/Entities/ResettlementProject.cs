@@ -15,9 +15,9 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public string Name { get; set; } = null!;
 
-    public int LimitToResettlement { get; set; } = 0;
+    public decimal LimitToResettlement { get; set; } = 0;
 
-    public int LimitToConsideration { get; set; } = 0;
+    public decimal LimitToConsideration { get; set; } = 0;
 
     public string? Position { get; set; }
 

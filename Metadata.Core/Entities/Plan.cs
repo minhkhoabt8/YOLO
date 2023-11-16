@@ -65,6 +65,6 @@ public partial class Plan : ITextSearchableEntity
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
-        {() => nameof(PlanCode), .5}
+        {() => nameof(PlanCode), .95}
     };
 }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using SharedLib.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.Core.Entities;
 
-public partial class LandResettlement
+public partial class LandResettlement : ITextSearchableEntity
 {
     [Key]
     public string LandResettlementId { get; set; } = Guid.NewGuid().ToString();
@@ -28,4 +29,9 @@ public partial class LandResettlement
     public virtual Owner Owner { get; set; } = null!;
 
     public virtual ResettlementProject ResettlementProject { get; set; } = null!;
+
+    public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
+    {
+        {() => nameof(Position), .95}
+    };
 }

@@ -24,6 +24,7 @@ using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
+using Metadata.Infrastructure.DTOs.LandResettlement;
 
 namespace Metadata.Infrastructure.Mappers
 {
@@ -144,6 +145,10 @@ namespace Metadata.Infrastructure.Mappers
             //Resettlement project
             CreateMap<ResettlementProject, ResettlementProjectReadDTO>();
             CreateMap<ResettlementProjectWriteDTO, ResettlementProject>();
+
+            //Land Resettlement
+            CreateMap<LandResettlement, LandResettlementReadDTO>();
+            CreateMap<LandResettlementWriteDTO, LandResettlement>();
         }
     }
 }
