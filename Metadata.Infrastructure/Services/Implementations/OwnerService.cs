@@ -6,6 +6,7 @@ using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -799,7 +800,46 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
+        public async Task<OwnerReadDTO> UpdateOwnerStatusAsync(string ownerId, OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
+                ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+            if (ownerStatus.Equals(OwnerStatusEnum.AcceptCompensation.ToString()))
+            {
+                owner.OwnerStatus = OwnerStatusEnum.AcceptCompensation.ToString();
 
+                if(file != null)
+                {
+                    var fileUpload = new UploadFileDTO
+                    {
+                        File = file.AttachFile!,
+                        FileName = $"Chap-Nhan-Den-Bu-{file.Name}-{Guid.NewGuid()}",
+                        FileType = FileTypeExtensions.ToFileMimeTypeString(file.FileType)
+                    };
+
+                    var attachFile = _mapper.Map<AttachFile>(file);
+
+                    attachFile.OwnerId = owner.OwnerId;
+
+                    attachFile.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                    attachFile.CreatedBy = _userContextService.Username! ??
+                        throw new CanNotAssignUserException();
+
+                    await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+                }
+                
+            }
+            else if(ownerStatus.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+            {
+                owner.OwnerStatus = OwnerStatusEnum.RejectCompensation.ToString();
+                owner.RejectReason = rejectReason ?? "";
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<OwnerReadDTO>(owner);
+        }
 
     }
 }

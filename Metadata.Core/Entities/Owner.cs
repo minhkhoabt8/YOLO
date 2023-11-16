@@ -51,6 +51,8 @@ public partial class Owner : ITextSearchableEntity
 
     public DateTime? TaxPublishedDate { get; set; }
 
+    public string? RejectReason { get; set; }
+
     public string? OrganizationTypeId { get; set; } 
 
     public bool IsDeleted { get; set; } = false;

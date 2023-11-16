@@ -649,6 +649,9 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("tax_published_date");
 
+            entity.Property(e => e.RejectReason)
+               .HasColumnName("reject_reason");
+
             entity.HasOne(d => d.OrganizationType).WithMany(p => p.Owners)
                 .HasForeignKey(d => d.OrganizationTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

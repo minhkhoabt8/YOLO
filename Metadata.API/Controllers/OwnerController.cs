@@ -1,4 +1,6 @@
-﻿using Metadata.Infrastructure.DTOs.Owner;
+﻿using Metadata.Core.Enums;
+using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
@@ -214,6 +216,26 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> UpdateOwner(string id, OwnerWriteDTO writeDTO)
         {
             var owner = await _ownerService.UpdateOwnerAsync(id, writeDTO);
+            return ResponseFactory.Ok(owner);
+        }
+
+        /// <summary>
+        /// Update Owner Status
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="ownerStatus"></param>
+        /// <param name="rejectReason"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPut("update/status")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> UpdateOwnerStatusAsync([Required] string ownerId, [Required] OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file)
+        {
+            var owner = await _ownerService.UpdateOwnerStatusAsync(ownerId, ownerStatus, rejectReason, file);
+
             return ResponseFactory.Ok(owner);
         }
 
