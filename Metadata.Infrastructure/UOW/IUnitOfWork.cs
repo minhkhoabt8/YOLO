@@ -39,6 +39,8 @@ namespace Metadata.Infrastructure.UOW
 
         public IPriceAppliedCodeRepository PriceAppliedCodeRepository { get; }
         public IResettlementProjectRepository ResettlementProjectRepository { get; }
+        public IResettlementDocumentRepository ResettlementDocumentRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

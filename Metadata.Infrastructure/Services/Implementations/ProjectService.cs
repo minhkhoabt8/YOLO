@@ -1,5 +1,6 @@
 ﻿using Amazon.Runtime.Internal.Auth;
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Word;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -46,7 +47,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new CanNotAssignUserException();
 
             
-
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())
@@ -57,7 +57,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                     landPosition.ProjectId = project.ProjectId;
                     await _unitOfWork.LandPositionInfoRepository.AddAsync(landPosition);
                 }
-                
             }
 
             if(!projectDto.ResettlementProjects.IsNullOrEmpty())
@@ -67,6 +66,38 @@ namespace Metadata.Infrastructure.Services.Implementations
                     var projectResetlement = _mapper.Map<ResettlementProject>(item);
                     projectResetlement.ProjectId = project.ProjectId;
                     await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
+
+                    if(!item.ResettlementDocuments.IsNullOrEmpty())
+                    {
+                        foreach (var documentDto in item.ResettlementDocuments!)
+                        {
+                            var fileUpload = new UploadFileDTO
+                            {
+                                File = documentDto.FileAttach!,
+                                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                                FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                            };
+
+                            var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                            var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                            document.ReferenceLink = returnUrl;
+
+                            document.FileName = documentDto.FileName!;
+
+                            document.FileSize = documentDto.FileAttach.Length;
+
+                            document.CreatedBy = _userContextService.Username! ??
+                                throw new CanNotAssignUserException();
+
+                            await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                            var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
+
+                            await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+                        }
+                    }
                 }
             }
 
@@ -95,7 +126,11 @@ namespace Metadata.Infrastructure.Services.Implementations
                     document.CreatedBy = _userContextService.Username! ??
                         throw new CanNotAssignUserException();
 
-                    await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
+                    await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                    var projectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, document.DocumentId);
+
+                    await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
                 }
 
             }
@@ -194,23 +229,23 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             //Project that have owners cannot update the price apply code
 
-            if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
-            {
-                if(project.Owners.Count > 0)
-                {
-                    throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
-                }
-            }
+            //if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
+            //{
+            //    if(project.Owners.Count > 0)
+            //    {
+            //        throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
+            //    }
+            //}
 
             if(project.Owners.Count > 0)
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
-                   
+                    throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
                 }
                 if(project.UnitPriceLands.Count > 0)
                 {
-
+                    
                 }
             }
 

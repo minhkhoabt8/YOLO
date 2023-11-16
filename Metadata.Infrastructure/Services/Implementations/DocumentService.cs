@@ -165,5 +165,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<IEnumerable<DocumentReadDTO>>(documents);
         }
+
+        public async Task AssignDocumentsToResettlementProjectAsync(string resettlementProjectId, string documentId)
+        {
+            var resettlementDocument = ResettlementDocument.CreateResettlementDocument(resettlementProjectId, documentId);
+
+            await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+
+            await _unitOfWork.CommitAsync();
+        }
     }
 }

@@ -23,6 +23,7 @@ using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 
 namespace Metadata.Infrastructure.Mappers
 {
@@ -140,7 +141,9 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<UnitPriceLandWriteDTO, UnitPriceLand>();
             CreateMap<UnitPriceLandInProjectWriteDTO, UnitPriceLand>();
 
-
+            //Resettlement project
+            CreateMap<ResettlementProject, ResettlementProjectReadDTO>();
+            CreateMap<ResettlementProjectWriteDTO, ResettlementProject>();
         }
     }
 }

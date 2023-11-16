@@ -15,7 +15,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
     public class OwnerWriteDTO
     {
         [MaxLength(20)]
-        public string? OwnerCode { get; set; }
+        public string? OwnerCode { get; set; } = "";
         [Required]
         public string OwnerName { get; set; }
         [MaxLength(20)]

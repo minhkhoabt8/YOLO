@@ -1,7 +1,20 @@
-﻿using Metadata.Infrastructure.DTOs.Project;
+﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
+using Metadata.Core.Entities;
+using Metadata.Core.Exceptions;
+using Metadata.Core.Extensions;
+using Metadata.Infrastructure.DTOs.LandType;
+using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Interfaces;
+using Metadata.Infrastructure.UOW;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.IdentityModel.Tokens;
+using SharedLib.Core.Exceptions;
+using SharedLib.Core.Extensions;
+using SharedLib.Infrastructure.DTOs;
+using SharedLib.Infrastructure.Services.Implementations;
+using SharedLib.Infrastructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +25,69 @@ namespace Metadata.Infrastructure.Services.Implementations
 {
     public class ResettlementProjectService : IResettlementProjectService
     {
-        public Task<ResettlementProjectReadDTO> CreateResettlementProjectAsync(ResettlementProjectWriteDTO dto)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly IUserContextService _userContextService;
+        private readonly IUploadFileService _uploadFileService;
+        private readonly IDocumentService _documentService;
+
+        public ResettlementProjectService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IUploadFileService uploadFileService, IDocumentService documentService)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _userContextService = userContextService;
+            _uploadFileService = uploadFileService;
+            _documentService = documentService;
+        }
+
+
+        public async Task<ResettlementProjectReadDTO> CreateResettlementProjectAsync(ResettlementProjectWriteDTO dto)
+        {
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!)
+                ?? throw new EntityWithIDNotFoundException<ResettlementProject>(dto.ProjectId!);
+
+            var resettlement = _mapper.Map<ResettlementProject>(dto);
+
+            resettlement.LastPersonEdit = _userContextService.Username! ??
+                throw new CanNotAssignUserException();
+            resettlement.LastDateEdit = DateTime.Now.SetKindUtc();
+
+            await _unitOfWork.ResettlementProjectRepository.AddAsync(resettlement);
+
+
+            if (!dto.ResettlementDocuments.IsNullOrEmpty())
+            {
+                foreach (var documentDto in dto.ResettlementDocuments!)
+                {
+                    var fileUpload = new UploadFileDTO
+                    {
+                        File = documentDto.FileAttach!,
+                        FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                        FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                    };
+
+                    var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                    var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                    document.ReferenceLink = returnUrl;
+
+                    document.FileName = documentDto.FileName!;
+
+                    document.FileSize = documentDto.FileAttach.Length;
+
+                    document.CreatedBy = _userContextService.Username! ??
+                        throw new CanNotAssignUserException();
+
+
+
+                    await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                }
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
         }
 
         public Task<IEnumerable<ResettlementProjectReadDTO>> CreateResettlementProjectsAsync(IEnumerable<ResettlementProjectWriteDTO> dto)
@@ -22,9 +95,20 @@ namespace Metadata.Infrastructure.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task DeleteResettlementProjectAsync(string id)
+        public async Task DeleteResettlementProjectAsync(string id)
         {
-            throw new NotImplementedException();
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id);
+
+            if (resettlement == null) throw new EntityWithIDNotFoundException<ResettlementProject>(id);
+
+            resettlement.IsDeleted = true;
+
+            resettlement.LastPersonEdit = _userContextService.Username! ??
+               throw new CanNotAssignUserException();
+
+            resettlement.LastDateEdit = DateTime.Now.SetKindUtc();
+
+            await _unitOfWork.CommitAsync();
         }
 
         public Task<IEnumerable<ResettlementProjectReadDTO>> GetAllResettlementProjectsAsync()
@@ -32,14 +116,37 @@ namespace Metadata.Infrastructure.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<ProjectReadDTO> GetResettlementProjectAsync(string id)
+        public async Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id)
         {
-            throw new NotImplementedException();
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id);
+
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
         }
 
-        public Task<ResettlementProjectReadDTO> UpdateResettlementProjectAsync(string id, ResettlementProjectWriteDTO dto)
+        public async Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query)
         {
-            throw new NotImplementedException();
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.QueryAsync(query);
+
+            return PaginatedResponse<ResettlementProjectReadDTO>.FromEnumerableWithMapping(resettlement, query, _mapper);
+        }
+
+        public async Task<ResettlementProjectReadDTO> UpdateResettlementProjectAsync(string id, ResettlementProjectWriteDTO dto)
+        {
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id);
+
+            if (resettlement == null)
+            {
+                throw new EntityWithIDNotFoundException<ResettlementProject>(id);
+            }
+
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!)
+                ?? throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
+
+            _mapper.Map(dto, resettlement);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement); ;
         }
     }
 }
