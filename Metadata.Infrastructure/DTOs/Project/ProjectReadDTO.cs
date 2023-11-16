@@ -131,9 +131,11 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string? ProjectId { get; set; }
 
-        public string? PlaneCode { get; set; }
+        public string PlanReportInfo { get; set; }
 
-        public string? PlanPhrase { get; set; }
+        public string PlanLocation { get; set; }
+
+        public string? PlanCode { get; set; }
 
         public string? PlanDescription { get; set; }
 
@@ -151,7 +153,34 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string? PlanCreatedBy { get; set; }
 
-        public bool? PlanStatus { get; set; }
+        public string? PlanStatus { get; set; }
+
+        public string? RejectReason { get; set; }
+
+        //Tong Chu So Huu Ho Tro Boi Thuong
+        public int? TotalOwnerSupportCompensation { get; set; }
+
+        //Tong Kinh Phi Boi Thuong
+        public decimal? TotalPriceCompensation { get; set; }
+
+        //Tong King Phi Boi Thuong Dat
+        public decimal? TotalPriceLandSupportCompensation { get; set; }
+
+        public decimal? TotalPriceHouseSupportCompensation { get; set; }
+
+        public decimal? TotalPriceArchitectureSupportCompensation { get; set; }
+
+        public decimal? TotalPricePlantSupportCompensation { get; set; }
+
+        public decimal? TotalPriceOtherSupportCompensation { get; set; }
+
+        //Tong Khau Tru
+        public decimal? TotalDeduction { get; set; }
+
+        //Tong dien tich thu hoi dat
+        public decimal TotalLandRecoveryArea { get; set; }
+
+        public decimal TotalGpmbServiceCost { get; set; }
 
         public bool? IsDeleted { get; set; }
     }
