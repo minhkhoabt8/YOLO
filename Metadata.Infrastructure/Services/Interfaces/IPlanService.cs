@@ -20,7 +20,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task DeletePlan(string planId);
         Task ImportPlan(IFormFile attachFile);
         Task<ExportFileDTO> ExportPlansFileAsync(string projectId);
-        Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId);
+        Task<ExportFileDTO> ExportPlanReportsWordAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx);
         //Bảng Tổng Hợp Thu Hồi 
         Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId);
         Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false);

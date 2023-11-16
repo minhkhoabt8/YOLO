@@ -8,10 +8,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+		<PackageReference Include="DocX" Version="2.5.0" />
 		<PackageReference Include="EPPlus" Version="6.2.10" />
+		<PackageReference Include="IronPdf" Version="2023.11.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 	</ItemGroup>
-	
   <ItemGroup>
     <ProjectReference Include="..\Metadata.Core\Metadata.Core.csproj" />
     <ProjectReference Include="..\SharedLib.Infrastructure\SharedLib.Infrastructure.csproj" />

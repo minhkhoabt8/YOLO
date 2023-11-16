@@ -20,6 +20,8 @@ using SharedLib.Infrastructure.Services.Interfaces;
 using System.Globalization;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
+using Xceed.Words.NET;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -196,11 +198,11 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         /// <summary>
-        /// Tao Boi Thuong Ho Tro File Doc
+        /// Phuong An Bao Cao File Doc
         /// </summary>
         /// <param name="planId"></param>
         /// <returns></returns>
-        public async Task<ExportFileDTO> ExportBTHTPlansWordAsync(string planId)
+        public async Task<ExportFileDTO> ExportPlanReportsWordAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx)
         {
             //Get Data BTHT
             var dataBTHT = await GetDataForBTHTPlanAsync(planId)
@@ -258,21 +260,61 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 wordDoc.Save();
                 var mainPart = wordDoc.MainDocumentPart;
-                wordDoc.Close();
+                //wordDoc.Close();
                 wordDoc.Dispose();
             }
-            byte[] fileBytes = File.ReadAllBytes(fileDest);
+
+
+            byte[] fileBytes;
+
+            if (filetype == FileTypeEnum.pdf)
+            {
+                fileBytes = await ConvertDocxToPdf(fileDest);
+            }
+
+            else if(filetype == FileTypeEnum.docx)
+            {
+                fileBytes = File.ReadAllBytes(fileDest);
+            }
+
+            else
+            {
+                throw new InvalidActionException($"Unsupported file type: {filetype}");
+            }
 
             File.Delete(fileDest);
 
             return new ExportFileDTO
             {
-                FileName = Path.GetFileName(fileDest),
+                FileName = Path.GetFileNameWithoutExtension(fileDest),
                 FileByte = fileBytes,
-                FileType = FileTypeExtensions.ToFileMimeTypeString(FileTypeEnum.docx) // Change this to the appropriate content type for Word documents
+                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) // Change this to the appropriate content type for Word documents
             };
 
             
+        }
+
+        public async Task<byte[]> ConvertDocxToPdf(string docxFilePath)
+        {
+
+            DocxToPdfRenderer renderer = new DocxToPdfRenderer();
+
+            PdfDocument pdf = renderer.RenderDocxAsPdf(docxFilePath);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                pdf.Stream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        private string GetParagraphStyle(Xceed.Document.NET.Paragraph paragraph)
+        {
+            // You may customize this method based on the paragraph styles you want to include
+            // For example, you can access paragraph properties like paragraph.Bold, paragraph.Italic, etc.
+            // and convert them to corresponding HTML styles.
+            // This is just a placeholder, and you should adjust it based on your needs
+            return "font-family: Arial; font-size: 12pt;";
         }
 
         /// <summary>

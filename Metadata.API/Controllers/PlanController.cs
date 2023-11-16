@@ -159,15 +159,16 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Export Phuong An Bao Cao File Report (.docx)
+        /// Export Phuong An Bao Cao File Report
         /// </summary>
         /// <param name="planId"></param>
+        /// <param name="filetype">default: .docx, 0: .pdf</param>
         /// <returns></returns>
         [HttpGet("export/btht/{planId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ExportBthtFile(string planId)
+        public async Task<IActionResult> ExportPlanReportsWordAsync([Required] string planId, FileTypeEnum filetype = FileTypeEnum.docx)
         {
-            var result = await _planService.ExportBTHTPlansWordAsync(planId);
+            var result = await _planService.ExportPlanReportsWordAsync(planId, filetype);
 
             return File(result.FileByte, result.FileType, result.FileName);
         }
