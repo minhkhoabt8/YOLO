@@ -12,7 +12,8 @@ namespace Metadata.Infrastructure.DTOs.DetailBTHChiPhi
         public string Stt { get; set; } = Guid.NewGuid().ToString();
         public string OwnerCode { get; set; }
 
-        public string PriceAppliedCodeId { get; set; }
+        //PriceAppliedCode
+        public string UnitPriceCode { get; set; }
 
         public string ProjectCode { get; set; }
         public string OwnerName { get; set; }

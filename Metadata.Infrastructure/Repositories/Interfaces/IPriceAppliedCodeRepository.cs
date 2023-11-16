@@ -17,5 +17,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<PriceAppliedCode, PriceAppliedCodeQuery>
     {
         Task<PriceAppliedCode?> GetPriceAppliedCodeByCodeAsync(string code);
+        Task<PriceAppliedCode?> GetUnitPriceCodeByProjectAsync(string priceAppliedCodeID);
     }
 }

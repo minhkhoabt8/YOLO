@@ -25,6 +25,16 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.PriceAppliedCodes.Include(c=>c.UnitPriceAssets).Where(c=>c.UnitPriceCode == code).FirstOrDefaultAsync();
         }
 
+        //get UnitPriceCode in PriceAppliedCode through price_applied_code_id 
+       public async Task<PriceAppliedCode?> GetUnitPriceCodeByProjectAsync(string priceAppliedCodeID)
+        {
+            return await _context.PriceAppliedCodes.Include(c => c.Projects).Where(c => c.PriceAppliedCodeId == priceAppliedCodeID).FirstOrDefaultAsync();
+        }
+       
+
+
+
+
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
             IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes
