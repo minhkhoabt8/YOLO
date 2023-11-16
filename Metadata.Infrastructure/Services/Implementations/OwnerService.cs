@@ -827,6 +827,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         throw new CanNotAssignUserException();
 
                     await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+                    owner.AttachFiles.Add(attachFile);
                 }
                 
             }
