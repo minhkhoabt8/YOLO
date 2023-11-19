@@ -48,7 +48,7 @@ public partial class YoloAuthContext : DbContext
         {
             entity.Property(e => e.Id).HasMaxLength(50);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-            entity.Property(e => e.NotificationContent).HasMaxLength(100);
+            entity.Property(e => e.NotificationContent);
             entity.Property(e => e.UserId).HasMaxLength(50);
             entity.Property(e => e.SenderId).HasMaxLength(50);
             entity.Property(e => e.PlanId).HasMaxLength(50);

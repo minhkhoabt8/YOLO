@@ -23,7 +23,7 @@ namespace Auth.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<Notification>> QueryAsync(NotificationQuery query, bool trackChanges = false)
         {
             IQueryable<Notification> notifications = _context.Notifications
-                .Include(c=>c.User.Name)
+                .Include(c => c.User)
                 .Where(n => n.IsDeleted == false && n.UserId == query.AccountId)
                 .OrderBy( n => n.IsRead == true)
                 .ThenByDescending(n=>n.CreatedDate);

@@ -15,7 +15,7 @@ namespace Auth.Infrastructure.DTOs.Notification
 
         public string? SenderId {  get; set; }
 
-        public string? Name { get; set; }
+        public string? SenderName { get; set; }
 
         public string? NotificationContent { get; set; } 
 

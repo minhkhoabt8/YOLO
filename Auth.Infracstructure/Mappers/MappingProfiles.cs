@@ -18,7 +18,8 @@ namespace Auth.Infrastructure.Mappers
             CreateMap<Account, AccountReadDTO>();
             CreateMap<AccountWriteDTO, Account>();
             //Notification
-            CreateMap<Notification,NotificationReadDTO>();
+            CreateMap<Notification,NotificationReadDTO>()
+                .ForMember(des => des.SenderName, act=>act.MapFrom(src=>src.User.Name));
             CreateMap<NotificationWriteDTO, Notification>();
         }
     }
