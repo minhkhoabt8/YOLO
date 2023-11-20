@@ -13,8 +13,7 @@ namespace Metadata.Infrastructure.DTOs.LandPositionInfo
         public string LocationName { get; set; }
 
         public string? Description { get; set; }
-        [Required]
-        public string ProjectId { get; set; }
+        public string? ProjectId { get; set; }
         [Required]
         public string? LandInfoType { get; set; }
     }

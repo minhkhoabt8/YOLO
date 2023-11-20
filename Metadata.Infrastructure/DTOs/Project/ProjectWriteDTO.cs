@@ -1,20 +1,13 @@
 ﻿using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandPositionInfo;
-using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
-using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SharedLib.Core.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Metadata.Infrastructure.DTOs.Project
 {
@@ -61,16 +54,14 @@ namespace Metadata.Infrastructure.DTOs.Project
         public int? ReportNumber { get; set; } = 0;
         public string? PriceBasis { get; set; }
         public string ?LandCompensationBasis { get; set; }
-        [MaxLength(50)]
-        [InputType(typeof(Guid))]
-        public string? SignerId { get; set; } = "";
+
         public string? AssetCompensationBasis { get; set; }
 
         [EnumDataType(typeof(ProjectStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
         public IEnumerable<LandPositionInfoWriteDTO>? LandPositionInfos { get; set; }
-        public IEnumerable<ResettlementProjectWriteDTO>? ResettlementProjects { get; set; }
+        public ResettlementProjectWriteDTO? ResettlementProject { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
         public IEnumerable<DocumentWriteDTO>? ProjectDocuments { get; set; }
         

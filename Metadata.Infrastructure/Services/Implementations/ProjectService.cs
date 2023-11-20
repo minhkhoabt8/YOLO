@@ -59,44 +59,41 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if(!projectDto.ResettlementProjects.IsNullOrEmpty())
+            if(projectDto.ResettlementProject != null )
             {
-                foreach (var item in projectDto.ResettlementProjects!)
+                var projectResetlement = _mapper.Map<ResettlementProject>(projectDto.ResettlementProject);
+                projectResetlement.ProjectId = project.ProjectId;
+                await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
+
+                if (!projectDto.ResettlementProject.ResettlementDocuments.IsNullOrEmpty())
                 {
-                    var projectResetlement = _mapper.Map<ResettlementProject>(item);
-                    projectResetlement.ProjectId = project.ProjectId;
-                    await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
-
-                    if(!item.ResettlementDocuments.IsNullOrEmpty())
+                    foreach (var documentDto in projectDto.ResettlementProject.ResettlementDocuments!)
                     {
-                        foreach (var documentDto in item.ResettlementDocuments!)
+                        var fileUpload = new UploadFileDTO
                         {
-                            var fileUpload = new UploadFileDTO
-                            {
-                                File = documentDto.FileAttach!,
-                                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                                FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                            };
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
 
-                            var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                            var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                            document.ReferenceLink = returnUrl;
+                        document.ReferenceLink = returnUrl;
 
-                            document.FileName = documentDto.FileName!;
+                        document.FileName = documentDto.FileName!;
 
-                            document.FileSize = documentDto.FileAttach.Length;
+                        document.FileSize = documentDto.FileAttach.Length;
 
-                            document.CreatedBy = _userContextService.Username! ??
-                                throw new CanNotAssignUserException();
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
 
-                            await _unitOfWork.DocumentRepository.AddAsync(document);
+                        await _unitOfWork.DocumentRepository.AddAsync(document);
 
-                            var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
+                        var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
 
-                            await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
-                        }
+                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
                     }
                 }
             }
