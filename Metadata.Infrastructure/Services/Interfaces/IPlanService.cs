@@ -38,6 +38,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PlanReadDTO> SendPlanApproveRequestAsync(string planId);
 
         Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus);
+        Task<ExportFileDTO> ExportBTHChiPhiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx);
+        Task<ExportFileDTO> ExportBTHThuHoiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx);
 
     }
 }

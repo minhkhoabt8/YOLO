@@ -18,6 +18,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         //project 
         public string ProjectCode { get; set; }
+        public string ProjectName { get; set; }
 
         //owner
         public string OwnerName { get; set; }
