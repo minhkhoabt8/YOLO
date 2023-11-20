@@ -269,5 +269,25 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Ok(plan);
         }
+
+        // Bảng Tổng Hợp Chi Phí Report Excel
+        [HttpGet("export/bthchiphi/{planId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportBTHChiPhiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
+        {
+            var result = await _planService.ExportBTHChiPhiToExcelAsync(planId, filetype);
+
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
+
+        //ExportBTHThuHoiToExcelAsync
+        [HttpGet("export/bththuhoi/{planId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ExportBTHThuHoiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
+        {
+            var result = await _planService.ExportBTHThuHoiToExcelAsync(planId, filetype);
+
+            return File(result.FileByte, result.FileType, result.FileName);
+        }
     }
 }

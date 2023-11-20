@@ -1,5 +1,6 @@
 ﻿using Amazon.S3.Model;
 using AutoMapper;
+using BitMiracle.LibTiff.Classic;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
@@ -18,6 +19,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Globalization;
+using System.IO.Packaging;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
@@ -197,102 +199,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
-        /// <summary>
-        /// Phuong An Bao Cao File Doc
-        /// </summary>
-        /// <param name="planId"></param>
-        /// <returns></returns>
-        public async Task<ExportFileDTO> ExportPlanReportsWordAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx)
-        {
-            //Get Data BTHT
-            var dataBTHT = await GetDataForBTHTPlanAsync(planId)
-                ?? throw new Exception("Value is null");
-
-            //Get File Template
-            var fileName = GetFileTemplateDirectory.Get("PhuongAn_BaoCao");
-
-            //Create new File Based on Template
-            var fileDest = Path.Combine(Directory.GetCurrentDirectory(),"Temp"
-                , $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
-            
-            if (!CopyTemplate(fileName, fileDest)) throw new Exception("Cannot Create File");
-
-            //Fill in data
-            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(fileDest, true, new OpenSettings { AutoSave = false }))
-            {
-                var body = wordDoc.MainDocumentPart.Document.Body;
-                var paras = body.Elements<Paragraph>();
-                foreach (var para in paras)
-                {
-                    foreach (var run in para.Elements<Run>())
-                    {
-                        foreach (var text in run.Elements<Text>())
-                        {
-                            Console.Write(text.Text + "\n");
-                            if (text.Text.Contains("tenduan"))
-                                text.Text = text.Text.Replace("tenduan", dataBTHT.ProjectName);
-                            if (text.Text.Contains("cancu"))
-                                text.Text = text.Text.Replace("cancu", dataBTHT.PlanBasedOn == null ? "" : dataBTHT.PlanBasedOn);
-                            if (text.Text.Contains("diadiem"))
-                                text.Text = text.Text.Replace("diadiem", dataBTHT.PlanLocation);
-                            if (text.Text.Contains("Sumdientichthuhoi"))
-                                text.Text = text.Text.Replace("Sumdientichthuhoi", string.Format("{0:#,###.## m2}", dataBTHT.TotalLandRecoveryArea));
-                            if (text.Text.Contains("countvanban"))
-                                text.Text = text.Text.Replace("countvanban", string.Format("{0:#,##0}", dataBTHT.TotalOwnerSupportCompensation));
-                            if (text.Text.Contains("diachithuhoi"))
-                                text.Text = text.Text.Replace("diachithuhoi", dataBTHT.LandAcquisitionAddress);
-                            if (text.Text.Contains("boithuongdat"))
-                                text.Text = text.Text.Replace("boithuongdat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceLandSupportCompensation));
-                            if (text.Text.Contains("boithuongnha"))
-                                text.Text = text.Text.Replace("boithuongnha", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceHouseSupportCompensation));
-                            if (text.Text.Contains("boithuongvat"))
-                                text.Text = text.Text.Replace("boithuongvat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceArchitectureSupportCompensation));
-                            if (text.Text.Contains("boithuongcay"))
-                                text.Text = text.Text.Replace("boithuongcay", string.Format("{0:#,##0đ}", dataBTHT.TotalPricePlantSupportCompensation));
-                            if (text.Text.Contains("boithuongkhac"))
-                                text.Text = text.Text.Replace("boithuongkhac", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceOtherSupportCompensation));
-                            if (text.Text.Contains("chiphiphucvu"))
-                                text.Text = text.Text.Replace("chiphiphucvu", string.Format("{0:#,##0đ}", dataBTHT.TotalGpmbServiceCost));
-                        }
-
-                    }
-                }
-                wordDoc.Save();
-                var mainPart = wordDoc.MainDocumentPart;
-                //wordDoc.Close();
-                wordDoc.Dispose();
-            }
-
-
-            byte[] fileBytes;
-
-            if (filetype == FileTypeEnum.pdf)
-            {
-                fileBytes = await ConvertDocxToPdf(fileDest);
-            }
-
-            else if(filetype == FileTypeEnum.docx)
-            {
-                fileBytes = File.ReadAllBytes(fileDest);
-            }
-
-            else
-            {
-                throw new InvalidActionException($"Unsupported file type: {filetype}");
-            }
-
-            File.Delete(fileDest);
-
-            return new ExportFileDTO
-            {
-                FileName = Path.GetFileNameWithoutExtension(fileDest),
-                FileByte = fileBytes,
-                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) // Change this to the appropriate content type for Word documents
-            };
-
-            
-        }
+       
 
         public async Task<byte[]> ConvertDocxToPdf(string docxFilePath)
         {
@@ -354,6 +261,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             };
         }
 
+       
+        
         public async Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId)
         {   
             List<DetailBTHChiPhiReadDTO> details = new List<DetailBTHChiPhiReadDTO>();
@@ -384,6 +293,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     detail.Province = project.Province;
                     detail.District = project.District;
                     detail.Ward = project.Ward;
+                    detail.ProjectName = project.ProjectName;
                     //
                     detail.UnitPriceCode = priceAppliedCode.UnitPriceCode;
                     //
@@ -404,6 +314,268 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
             return details;
+        }
+
+
+        /// <summary>
+        /// export Bảng Tổng Hợp Chi Phí 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="filetype"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<ExportFileDTO> ExportBTHChiPhiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
+        {
+            var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
+
+            var templateFileName = GetFileTemplateDirectory.Get("BangTongHopChiPhiBT");
+            var templateFile = new FileInfo(templateFileName);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (!templateFile.Exists)
+            {
+                throw new Exception("File not found");
+            }
+
+          
+            var tempFile = new FileInfo(Path.GetTempFileName());
+
+            byte[] fileBytes;
+            using (var package = new ExcelPackage(templateFile))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int row = 11;
+                int sttCounter = 1;
+                foreach (var item in detail)
+                {
+                    string maVanBan = $"{item.OwnerCode} / {item.UnitPriceCode} - {item.ProjectCode}";
+                    string diaDiemThuHoiDat = $"{item.Ward} / {item.District} /{item.Province} ";
+                    for (int col = 1; col <= 20; col++) 
+                    {
+                        worksheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+                    }
+
+
+                    worksheet.Cells[row, 1].Value = sttCounter;
+                    worksheet.Cells[row, 2].Value = maVanBan;
+                    worksheet.Cells[row, 3].Value = item.OwnerName;
+                    worksheet.Cells[row, 4].Value = diaDiemThuHoiDat;
+                    worksheet.Cells[row, 5].Value = item.MeasuredPageNumber;
+                    worksheet.Cells[row, 6].Value = item.MeasuredPlotNumber;
+                    worksheet.Cells[row, 7].Value = item.CodeLandType;
+                    worksheet.Cells[row, 8].Value = item.MeasuredPlotArea;
+                    /*worksheet.Cells[row, 9].Value = item.MeasuredPageNumber;*/
+                    worksheet.Cells[row, 10].Value = item.WithdrawArea;
+                    worksheet.Cells[row, 11].Value = item.SumLandCompensation;
+                    worksheet.Cells[row, 12].Value = item.SumHouseCompensationPrice;
+                    worksheet.Cells[row, 13].Value = item.SumArchitectureCompensationPrice;
+                    worksheet.Cells[row, 14].Value = item.SumTreeCompensationPrice;
+                    worksheet.Cells[row, 15].Value = item.SumSupportPrice;
+                    worksheet.Cells[row, 16].Value = item.SumDeductionPrice;
+                    worksheet.Cells[row, 17].Value = item.SumBTHT;
+
+                    worksheet.Cells[6, 4].Value = "Dự án: " + item.ProjectName;
+
+                    row++;
+                    sttCounter++;
+                }
+
+                // Save to the temporary file
+                package.SaveAs(tempFile);
+            }
+
+            
+            fileBytes = File.ReadAllBytes(tempFile.FullName);
+
+            
+            File.Delete(tempFile.FullName);
+
+           
+            var exportFileName = $"{Path.GetFileNameWithoutExtension(templateFileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(templateFileName)}";
+
+            return new ExportFileDTO
+            {
+                FileName = exportFileName,
+                FileByte = fileBytes,
+                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) 
+            };
+        }
+
+        /// <summary>
+        /// export Bảng Tổng Hợp Thu Hồi
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="filetype"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<ExportFileDTO> ExportBTHThuHoiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
+        {
+            var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
+
+            var templateFileName = GetFileTemplateDirectory.Get("BangTongHopThuHoi");
+            var templateFile = new FileInfo(templateFileName);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (!templateFile.Exists)
+            {
+                throw new Exception("File not found");
+            }
+
+
+            var tempFile = new FileInfo(Path.GetTempFileName());
+
+            byte[] fileBytes;
+            using (var package = new ExcelPackage(templateFile))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int row = 10;
+                int sttCounter = 1;
+                foreach (var item in detail)
+                {
+                    string maVanBan = $"{item.OwnerCode} / {item.UnitPriceCode} - {item.ProjectCode}";
+                    string diaDiemThuHoiDat = $"{item.Ward} / {item.District} /{item.Province} ";
+                    for (int col = 1; col <= 20; col++)
+                    {
+                        worksheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+                    }
+
+
+                    worksheet.Cells[row, 1].Value = sttCounter;
+                    worksheet.Cells[row, 2].Value = maVanBan;
+                    worksheet.Cells[row, 3].Value = item.OwnerName;
+                    worksheet.Cells[row, 4].Value = diaDiemThuHoiDat;
+                    worksheet.Cells[row, 5].Value = item.MeasuredPageNumber;
+                    worksheet.Cells[row, 6].Value = item.MeasuredPlotNumber;
+                    worksheet.Cells[row, 7].Value = item.CodeLandType;
+                    worksheet.Cells[row, 8].Value = item.MeasuredPlotArea;
+                    /*worksheet.Cells[row, 9].Value = item.MeasuredPageNumber;*/
+                    worksheet.Cells[row, 9].Value = item.WithdrawArea;
+
+
+                    
+
+                    worksheet.Cells[6, 3].Value =  item.ProjectName;
+
+                    row++;
+                    sttCounter++;
+                }
+
+                // Save to the temporary file
+                package.SaveAs(tempFile);
+            }
+
+
+            fileBytes = File.ReadAllBytes(tempFile.FullName);
+
+
+            File.Delete(tempFile.FullName);
+
+
+            var exportFileName = $"{Path.GetFileNameWithoutExtension(templateFileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(templateFileName)}";
+
+            return new ExportFileDTO
+            {
+                FileName = exportFileName,
+                FileByte = fileBytes,
+                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype)
+            };
+        }
+
+        /// <summary>
+        /// Phuong An Bao Cao File Doc
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task<ExportFileDTO> ExportPlanReportsWordAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx)
+        {
+            //Get Data BTHT
+            var dataBTHT = await GetDataForBTHTPlanAsync(planId)
+                ?? throw new Exception("Value is null");
+
+            //Get File Template
+            var fileName = GetFileTemplateDirectory.Get("PhuongAn_BaoCao");
+
+            //Create new File Based on Template
+            var fileDest = Path.Combine(Directory.GetCurrentDirectory(), "Temp"
+                , $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
+
+            if (!CopyTemplate(fileName, fileDest)) throw new Exception("Cannot Create File");
+
+            //Fill in data
+            NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(fileDest, true, new OpenSettings { AutoSave = false }))
+            {
+                var body = wordDoc.MainDocumentPart.Document.Body;
+                var paras = body.Elements<Paragraph>();
+                foreach (var para in paras)
+                {
+                    foreach (var run in para.Elements<Run>())
+                    {
+                        foreach (var text in run.Elements<Text>())
+                        {
+                            Console.Write(text.Text + "\n");
+                            if (text.Text.Contains("tenduan"))
+                                text.Text = text.Text.Replace("tenduan", dataBTHT.ProjectName);
+                            if (text.Text.Contains("cancu"))
+                                text.Text = text.Text.Replace("cancu", dataBTHT.PlanBasedOn == null ? "" : dataBTHT.PlanBasedOn);
+                            if (text.Text.Contains("diadiem"))
+                                text.Text = text.Text.Replace("diadiem", dataBTHT.PlanLocation);
+                            if (text.Text.Contains("Sumdientichthuhoi"))
+                                text.Text = text.Text.Replace("Sumdientichthuhoi", string.Format("{0:#,###.## m2}", dataBTHT.TotalLandRecoveryArea));
+                            if (text.Text.Contains("countvanban"))
+                                text.Text = text.Text.Replace("countvanban", string.Format("{0:#,##0}", dataBTHT.TotalOwnerSupportCompensation));
+                            if (text.Text.Contains("diachithuhoi"))
+                                text.Text = text.Text.Replace("diachithuhoi", dataBTHT.LandAcquisitionAddress);
+                            if (text.Text.Contains("boithuongdat"))
+                                text.Text = text.Text.Replace("boithuongdat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceLandSupportCompensation));
+                            if (text.Text.Contains("boithuongnha"))
+                                text.Text = text.Text.Replace("boithuongnha", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceHouseSupportCompensation));
+                            if (text.Text.Contains("boithuongvat"))
+                                text.Text = text.Text.Replace("boithuongvat", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceArchitectureSupportCompensation));
+                            if (text.Text.Contains("boithuongcay"))
+                                text.Text = text.Text.Replace("boithuongcay", string.Format("{0:#,##0đ}", dataBTHT.TotalPricePlantSupportCompensation));
+                            if (text.Text.Contains("boithuongkhac"))
+                                text.Text = text.Text.Replace("boithuongkhac", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceOtherSupportCompensation));
+                            if (text.Text.Contains("chiphiphucvu"))
+                                text.Text = text.Text.Replace("chiphiphucvu", string.Format("{0:#,##0đ}", dataBTHT.TotalGpmbServiceCost));
+                        }
+
+                    }
+                }
+                wordDoc.Save();
+                var mainPart = wordDoc.MainDocumentPart;
+                //wordDoc.Close();
+                wordDoc.Dispose();
+            }
+
+
+            byte[] fileBytes;
+
+            if (filetype == FileTypeEnum.pdf)
+            {
+                fileBytes = await ConvertDocxToPdf(fileDest);
+            }
+
+            else if (filetype == FileTypeEnum.docx)
+            {
+                fileBytes = File.ReadAllBytes(fileDest);
+            }
+
+            else
+            {
+                throw new InvalidActionException($"Unsupported file type: {filetype}");
+            }
+
+            File.Delete(fileDest);
+
+            return new ExportFileDTO
+            {
+                FileName = Path.GetFileNameWithoutExtension(fileDest),
+                FileByte = fileBytes,
+                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) // Change this to the appropriate content type for Word documents
+            };
+
+
         }
 
         /// <summary>

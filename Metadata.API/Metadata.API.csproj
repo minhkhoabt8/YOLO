@@ -12,7 +12,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-	  <PackageReference Include="EPPlus" Version="6.2.10" />
+	  <PackageReference Include="EPPlus" Version="7.0.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
 	  <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.4" />

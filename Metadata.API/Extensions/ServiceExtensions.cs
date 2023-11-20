@@ -158,7 +158,7 @@ public static class ServiceExtensions
         services.AddScoped<IUnitPriceLandService, UnitPriceLandService>();
         services.AddScoped<IPriceAppliedCodeService, PriceAppliedCodeService>();
         //services.AddScoped<IFireBaseNotificationService, FireBaseNotificationService>();
-        //services.AddScoped<INotificationService, NotificationService>();
+       /* services.AddScoped<INotificationService, NotificationService>();*/
         services.AddScoped<IResettlementProjectService, ResettlementProjectService>();
         services.AddScoped<ILandResettlementService,LandResettlementService>();
     }
