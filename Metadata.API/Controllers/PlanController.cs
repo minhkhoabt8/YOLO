@@ -164,7 +164,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <param name="filetype">default: .docx, 0: .pdf</param>
         /// <returns></returns>
-        [HttpGet("export/btht/{planId}")]
+        [HttpGet("export/planReport/{planId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportPlanReportsWordAsync([Required] string planId, FileTypeEnum filetype = FileTypeEnum.docx)
         {

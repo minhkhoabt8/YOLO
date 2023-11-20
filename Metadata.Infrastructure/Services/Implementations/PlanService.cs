@@ -665,8 +665,13 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalLandRecoveryArea +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
 
             }
-            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+
+            
+            plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
+                + plan.TotalPriceHouseSupportCompensation
+                + plan.TotalPriceArchitectureSupportCompensation
+                + plan.TotalPricePlantSupportCompensation + plan.TotalDeduction;
+
 
             if (!applyChanged)
             {
