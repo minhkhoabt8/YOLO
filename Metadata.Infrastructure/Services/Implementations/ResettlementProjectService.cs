@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
+using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandType;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
@@ -150,5 +151,28 @@ namespace Metadata.Infrastructure.Services.Implementations
             var resettlement = await _unitOfWork.ResettlementProjectRepository.GetResettlementProjectInProjectAsync(projectId);
             return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
         }
+
+        public async Task<ResettlementProjectReadDTO> CreateResettlementProjectDocumentsAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documentDtos)
+        {
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(resettlementId);
+
+            if (resettlement == null) throw new EntityWithIDNotFoundException<ResettlementProject>(resettlementId);
+
+
+            if (!documentDtos.IsNullOrEmpty())
+            {
+
+                var documents = await _documentService.CreateDocumentsAsync(documentDtos);
+
+                foreach (var document in documents)
+                {
+                    await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                }
+
+            }
+
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+        }
+
     }
 }

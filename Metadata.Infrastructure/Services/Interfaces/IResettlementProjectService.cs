@@ -1,11 +1,7 @@
-﻿using Metadata.Infrastructure.DTOs.Project;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
 using SharedLib.Infrastructure.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Services.Interfaces
 {
@@ -19,5 +15,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id);
         Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query);
         Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId);
+        Task<ResettlementProjectReadDTO> CreateResettlementProjectDocumentsAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documentDtos);
     }
 }

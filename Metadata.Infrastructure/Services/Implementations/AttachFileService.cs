@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -53,6 +54,50 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var file = _mapper.Map<AttachFile>(item);
 
                 file.OwnerId = ownerId;
+
+                file.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                file.CreatedBy = _userContextService.Username! ??
+                    throw new CanNotAssignUserException();
+
+                await _unitOfWork.AttachFileRepository.AddAsync(file);
+
+                await _unitOfWork.CommitAsync();
+
+                fileList.Add(file);
+
+            }
+
+            return _mapper.Map<IEnumerable<AttachFileReadDTO>>(fileList);
+        }
+
+        public async Task<AttachFileReadDTO> GetAttachFileDetailsAsync(string id)
+        {
+            return _mapper.Map<AttachFileReadDTO>(await _unitOfWork.AttachFileRepository.FindAsync(id));
+        }
+
+        public async Task<IEnumerable<AttachFileReadDTO>> GetAllAttachFileAsync()
+        {
+            return _mapper.Map<IEnumerable<AttachFileReadDTO>>(await _unitOfWork.AttachFileRepository.GetAllAsync());
+        }
+
+
+        public async Task<IEnumerable<AttachFileReadDTO>> CreateAttachFilesAsync(IEnumerable<AttachFileWriteDTO> dto)
+        {
+            var fileList = new List<Core.Entities.AttachFile>();
+
+            foreach (var item in dto)
+            {
+
+                var fileUpload = new UploadFileDTO
+                {
+                    File = item.AttachFile!,
+                    FileName = $"{item.Name}-{Guid.NewGuid()}",
+                    FileType = FileTypeExtensions.ToFileMimeTypeString(item.FileType)
+
+                };
+
+                var file = _mapper.Map<AttachFile>(item);
 
                 file.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
 

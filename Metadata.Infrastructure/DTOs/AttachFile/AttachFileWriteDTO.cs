@@ -29,6 +29,5 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
         [Required]
         public byte[] AttachFile { get; set; }
         
-
     }
 }

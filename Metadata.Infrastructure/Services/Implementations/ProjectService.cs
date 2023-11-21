@@ -271,7 +271,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
                 }
-
+                
             }
 
             return _mapper.Map<ProjectReadDTO>(project);

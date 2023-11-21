@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.ResettlementProject;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.Services.Implementations;
@@ -73,12 +74,30 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateUnitPriceAssetAsync(ResettlementProjectWriteDTO writeDTO)
+        public async Task<IActionResult> CreateResettlementProjectAsync(ResettlementProjectWriteDTO writeDTO)
         {
             var resettlement = await _resettlementProjectService.CreateResettlementProjectAsync(writeDTO);
 
             return ResponseFactory.Created(resettlement);
         }
+
+        /// <summary>
+        /// Create New Resettlement Document
+        /// </summary>
+        /// <param name="resettlementId"></param>
+        /// <param name="documents"></param>
+        /// <returns></returns>
+        [HttpPost("create/document")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateResettlementProjectDocumentAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documents)
+        {
+            var resettlement = await _resettlementProjectService.CreateResettlementProjectDocumentsAsync(resettlementId, documents);
+
+            return ResponseFactory.Created(resettlement);
+        }
+
 
 
         /// <summary>
