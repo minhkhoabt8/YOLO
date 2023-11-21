@@ -21,8 +21,17 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<ResettlementProject>> GetResettlementProjectsInProjectAsync(string projectId)
         {
-            return await Task.FromResult(_context.ResettlementProjects.Where(c => c.ProjectId == projectId));
+            
+            throw new NotImplementedException();
         }
+
+        public async Task<ResettlementProject?> GetResettlementProjectInProjectAsync(string projectId)
+        {
+            return await Task.FromResult(_context.Projects
+                .Include(c => c.ResettlementProject)
+                .FirstOrDefault(p => p.ProjectId == projectId)?.ResettlementProject);
+        }
+
 
         public async Task<IEnumerable<ResettlementProject>> QueryAsync(ResettlementProjectQuery query, bool trackChanges = false)
         {

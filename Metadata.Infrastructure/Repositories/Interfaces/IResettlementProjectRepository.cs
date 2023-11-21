@@ -17,5 +17,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<ResettlementProject,ResettlementProjectQuery>
     {
         Task<IEnumerable<ResettlementProject>> GetResettlementProjectsInProjectAsync(string projectId);
+        Task<ResettlementProject?> GetResettlementProjectInProjectAsync(string projectId);
     }
 }

@@ -27,3 +27,10 @@ services:
       context: .
       dockerfile: Metadata.API/Dockerfile
 
+
+  signature.api:
+    image: ${DOCKER_REGISTRY-}signatureapi
+    build:
+      context: .
+      dockerfile: Signature.API/Dockerfile
+

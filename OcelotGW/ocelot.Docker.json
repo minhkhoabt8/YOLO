@@ -28,7 +28,7 @@
       "UpstreamPathTemplate": "/metadata/{everything}",
       "SwaggerKey": "metadata"
     },
-    
+
     {
       "DownstreamPathTemplate": "/document/{everything}",
       "DownstreamScheme": "http",
@@ -42,6 +42,20 @@
       ],
       "UpstreamPathTemplate": "/document/{everything}",
       "SwaggerKey": "document"
+    },
+    {
+      "DownstreamPathTemplate": "/signature/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "signature.api",
+          "Port": "80"
+        }
+      ],
+      "UpstreamHttpMethod": [
+      ],
+      "UpstreamPathTemplate": "/signature/{everything}",
+      "SwaggerKey": "signature"
     }
   ],
   "SwaggerEndPoints": [
@@ -76,6 +90,17 @@
           "Name": "Document API",
           "Version": "v1",
           "Url": "http://document.api/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "signature",
+      "TransformByOcelotConfig": false,
+      "Config": [
+        {
+          "Name": "Signature API",
+          "Version": "v1",
+          "Url": "http://signature.api/swagger/v1/swagger.json"
         }
       ]
     }

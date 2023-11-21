@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.ResettlementProject;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.Services.Implementations;
@@ -50,6 +51,19 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(resettlement);
         }
 
+        /// <summary>
+        /// Get Resettlement Of A Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> GetResettlementProjectByProjectIdAsync(string projectId)
+        {
+            var resettlement = await _resettlementProjectService.GetResettlementProjectByProjectIdAsync(projectId);
+            return ResponseFactory.Ok(resettlement);
+        }
 
         /// <summary>
         /// Create New Resettlement
@@ -60,12 +74,30 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CreateUnitPriceAssetAsync(ResettlementProjectWriteDTO writeDTO)
+        public async Task<IActionResult> CreateResettlementProjectAsync(ResettlementProjectWriteDTO writeDTO)
         {
             var resettlement = await _resettlementProjectService.CreateResettlementProjectAsync(writeDTO);
 
             return ResponseFactory.Created(resettlement);
         }
+
+        /// <summary>
+        /// Create New Resettlement Document
+        /// </summary>
+        /// <param name="resettlementId"></param>
+        /// <param name="documents"></param>
+        /// <returns></returns>
+        [HttpPost("create/document")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CreateResettlementProjectDocumentAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documents)
+        {
+            var resettlement = await _resettlementProjectService.CreateResettlementProjectDocumentsAsync(resettlementId, documents);
+
+            return ResponseFactory.Created(resettlement);
+        }
+
 
 
         /// <summary>

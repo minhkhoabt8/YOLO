@@ -41,6 +41,8 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string PriceAppliedCodeId { get; set; }
 
+        public string ResettlementProjectId { get; set; }
+
         public string CheckCode { get; set; }
 
         public string ReportSignal { get; set; }
@@ -60,19 +62,19 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public string ProjectStatus { get; set; }
 
-        public PriceAppliedCodeReadDTO PriceAppliedCode { get; set; }
+        public PriceAppliedCodeReadDTO? PriceAppliedCode { get; set; }
 
-        public ICollection<LandPositionInfoReadDTO> LandPositionInfos { get; set; }
+        public IEnumerable<LandPositionInfoReadDTO>? LandPositionInfos { get; set; }
 
-        public ICollection<OwnersInProjectDTO> Owners {  get; set; }
+        public IEnumerable<OwnersInProjectDTO>? Owners {  get; set; }
 
-        public ICollection<PlansInProjectDTO> Plans { get; set; }
+        public IEnumerable<PlansInProjectDTO>? Plans { get; set; }
 
-        public IEnumerable<ResettlementProjectWriteDTO> ResettlementProjects { get; set; }
+        public ResettlementProjectReadDTO? ResettlementProject { get; set; }
         //Attach Documents manual
         public IEnumerable<DocumentReadDTO>? Documents { get; set; }
 
-        public ICollection<UnitPriceLandReadDTO>? UnitPriceLands { get; set; }
+        public IEnumerable<UnitPriceLandReadDTO>? UnitPriceLands { get; set; }
 
     }
 

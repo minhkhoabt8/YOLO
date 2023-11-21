@@ -36,7 +36,7 @@ public partial class Project : ITextSearchableEntity
     public string? ProjectNote { get; set; }
 
     public string? PriceAppliedCodeId { get; set; }
-
+    public string? ResettlementProjectId { get; set; }
     public string? CheckCode { get; set; }
 
     public string? ReportSignal { get; set; }
@@ -67,7 +67,7 @@ public partial class Project : ITextSearchableEntity
 
     public virtual ICollection<ProjectDocument> ProjectDocuments { get; } = new List<ProjectDocument>();
 
-    public virtual ICollection<ResettlementProject> ResettlementProjects { get; } = new List<ResettlementProject>();
+    public virtual ResettlementProject? ResettlementProject { get; set; }
 
     public virtual ICollection<UnitPriceLand> UnitPriceLands { get; } = new List<UnitPriceLand>();
 
