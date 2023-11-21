@@ -37,7 +37,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)
         {
-            IQueryable<Project> projects = _context.Projects.Include(p => p.LandPositionInfos).Where(e => e.IsDeleted == false);
+            IQueryable<Project> projects = _context.Projects
+                .Include(p => p.LandPositionInfos)
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {

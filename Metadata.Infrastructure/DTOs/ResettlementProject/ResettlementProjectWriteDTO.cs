@@ -31,8 +31,6 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string? DocumentId { get; set; }
 
-        public string? ProjectId { get; set; }
-
         public IEnumerable<DocumentWriteDTO>? ResettlementDocuments { get; set; }
     }
 }

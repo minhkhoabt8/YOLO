@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -43,8 +44,6 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ResettlementProjectReadDTO> CreateResettlementProjectAsync(ResettlementProjectWriteDTO dto)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!)
-                ?? throw new EntityWithIDNotFoundException<ResettlementProject>(dto.ProjectId!);
 
             var resettlement = _mapper.Map<ResettlementProject>(dto);
 
@@ -139,14 +138,17 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<ResettlementProject>(id);
             }
 
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!)
-                ?? throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
-
             _mapper.Map(dto, resettlement);
 
             await _unitOfWork.CommitAsync();
 
-            return _mapper.Map<ResettlementProjectReadDTO>(resettlement); ;
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+        }
+
+        public async Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId)
+        {
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.GetResettlementProjectInProjectAsync(projectId);
+            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
         }
     }
 }

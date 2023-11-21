@@ -50,6 +50,19 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(resettlement);
         }
 
+        /// <summary>
+        /// Get Resettlement Of A Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpGet("project")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> GetResettlementProjectByProjectIdAsync(string projectId)
+        {
+            var resettlement = await _resettlementProjectService.GetResettlementProjectByProjectIdAsync(projectId);
+            return ResponseFactory.Ok(resettlement);
+        }
 
         /// <summary>
         /// Create New Resettlement

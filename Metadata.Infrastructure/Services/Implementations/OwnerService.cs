@@ -174,7 +174,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync(OwnerWriteDTO dto)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!, include: "ResettlementProjects");
+            var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!, include: "ResettlementProject");
 
             if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
 
@@ -345,14 +345,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             //6.Add Owner Land Resettlement
 
-            if (project.ResettlementProjects.IsNullOrEmpty() && !dto.OwnersLandResettlements.IsNullOrEmpty())
+            if (project.ResettlementProject == null && !dto.OwnersLandResettlements.IsNullOrEmpty())
             {
                 throw new InvalidOperationException("Cannot Create Owner Land Resettlement Because Project Does Not Support Any Resettlement");
             }
 
             if (!dto.OwnersLandResettlements.IsNullOrEmpty())
             {
-                foreach(var landResettlementDto in dto.OwnersLandResettlements)
+                foreach(var landResettlementDto in dto.OwnersLandResettlements!)
                 {
                     //find Resettlement Project associate with Land Resettlement
                     var associateResettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(landResettlementDto.ResettlementProjectId!)

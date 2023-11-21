@@ -786,6 +786,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.PriceAppliedCodeId)
                 .HasMaxLength(50)
                 .HasColumnName("price_applied_code_id");
+            entity.Property(e => e.ResettlementProjectId)
+                .HasMaxLength(50)
+                .HasColumnName("resettlement_project_id");
             entity.Property(e => e.PriceBasis)
                 .HasColumnName("price_basis");
             entity.Property(e => e.ProjectApprovalDate)
@@ -833,6 +836,11 @@ public partial class YoloMetadataContext : DbContext
             entity.HasOne(d => d.PriceAppliedCode).WithMany(p => p.Projects)
                 .HasForeignKey(d => d.PriceAppliedCodeId)
                 .HasConstraintName("FK_Projects_PriceAppliedCodes");
+
+            entity.HasOne(d => d.ResettlementProject).WithMany(p => p.Projects)
+                .HasForeignKey(d => d.ResettlementProjectId)
+                .HasConstraintName("FK_Projects_ResettlementProjects");
+
         });
 
         modelBuilder.Entity<ProjectDocument>(entity =>
@@ -921,14 +929,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Position)
                 .HasMaxLength(50)
                 .HasColumnName("position");
-            entity.Property(e => e.ProjectId)
-                .HasMaxLength(50)
-                .HasColumnName("project_id");
 
-            entity.HasOne(d => d.Project).WithMany(p => p.ResettlementProjects)
-                .HasForeignKey(d => d.ProjectId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_ResettlementProjects_Projects");
         });
 
         modelBuilder.Entity<Support>(entity =>

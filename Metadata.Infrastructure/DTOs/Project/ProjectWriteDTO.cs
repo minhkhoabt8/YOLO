@@ -46,9 +46,10 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string? ProjectNote { get; set; }
         [MaxLength(50)]
         public string? PriceAppliedCodeId { get; set; }
+        [MaxLength(50)]
+        public string? ResettlementProjectId { get; set; }
         [MaxLength(20)]
         public string? CheckCode { get; set; }
-
         public string? ReportSignal { get; set; }
         [Range(0, int.MaxValue)]
         public int? ReportNumber { get; set; } = 0;

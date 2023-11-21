@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task DeleteResettlementProjectAsync(string id);
         Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id);
         Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query);
+        Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId);
     }
 }

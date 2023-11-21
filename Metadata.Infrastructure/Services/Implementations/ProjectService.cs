@@ -62,8 +62,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             if(projectDto.ResettlementProject != null )
             {
                 var projectResetlement = _mapper.Map<ResettlementProject>(projectDto.ResettlementProject);
-                projectResetlement.ProjectId = project.ProjectId;
+
                 await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
+
+                project.ResettlementProjectId = projectResetlement.ResettlementProjectId;
 
                 if (!projectDto.ResettlementProject.ResettlementDocuments.IsNullOrEmpty())
                 {
@@ -200,7 +202,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<ProjectReadDTO> GetProjectAsync(string projectId)
         {
             var project = await _unitOfWork.ProjectRepository
-                .FindAsync(projectId, include: "LandPositionInfos, Owners, Plans, PriceAppliedCode, UnitPriceLands, ProjectDocuments");
+                .FindAsync(projectId, include: "LandPositionInfos, Owners, Plans, PriceAppliedCode, UnitPriceLands, ProjectDocuments, ResettlementProject");
             
             var projectReadDto =  _mapper.Map<ProjectReadDTO>(project);
 

@@ -35,13 +35,11 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public string DocumentId { get; set; } = null!;
 
-    public string? ProjectId { get; set; } 
-
     public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();
 
-    public virtual Project Project { get; set; } = null!;
+    public virtual ICollection<Project> Projects { get; } = new List<Project>();
 
     public virtual ICollection<ResettlementDocument> ResettlementDocuments { get; } = new List<ResettlementDocument>();
 
