@@ -71,7 +71,7 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         public ResettlementProjectReadDTO? ResettlementProject { get; set; }
         //Attach Documents manual
-        public IEnumerable<DocumentReadDTO>? Documents { get; set; }
+        public IEnumerable<DocumentReadDTO>? ProjectDocuments { get; set; }
 
         public IEnumerable<UnitPriceLandReadDTO>? UnitPriceLands { get; set; }
 
