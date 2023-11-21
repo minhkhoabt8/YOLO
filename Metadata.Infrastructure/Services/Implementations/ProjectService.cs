@@ -100,10 +100,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if (!projectDto.ProjectDocuments.IsNullOrEmpty())
+            if (!projectDto.Documents.IsNullOrEmpty())
             {
 
-                foreach(var documentDto  in projectDto.ProjectDocuments!)
+                foreach(var documentDto  in projectDto.Documents!)
                 {
                     var fileUpload = new UploadFileDTO
                     {

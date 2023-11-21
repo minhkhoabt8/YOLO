@@ -64,7 +64,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         public IEnumerable<LandPositionInfoWriteDTO>? LandPositionInfos { get; set; }
         public ResettlementProjectWriteDTO? ResettlementProject { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
-        public IEnumerable<DocumentWriteDTO>? ProjectDocuments { get; set; }
+        public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
         
     }
 
