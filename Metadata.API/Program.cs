@@ -6,6 +6,7 @@ using Serilog.Events;
 using SharedLib.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+Directory.CreateDirectory(builder.Configuration["StoragePath"]);
 builder.Host.UseSerilog((ctx, lc) =>
 {
     if (ctx.HostingEnvironment.IsEnvironment("VPS"))

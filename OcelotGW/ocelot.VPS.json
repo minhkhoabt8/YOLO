@@ -43,17 +43,18 @@
       "SwaggerKey": "document"
     },
     {
-      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamPathTemplate": "/signature/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "5601"
+          "Port": "8005"
         }
       ],
       "UpstreamHttpMethod": [
       ],
-      "UpstreamPathTemplate": "/logs/{everything}"
+      "UpstreamPathTemplate": "/signature/{everything}",
+      "SwaggerKey": "signature"
     }
   ],
   "SwaggerEndPoints": [
@@ -84,6 +85,16 @@
           "Name": "Document API",
           "Version": "v1",
           "Url": "http://localhost:8008/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "signature",
+      "Config": [
+        {
+          "Name": "Signature API",
+          "Version": "v1",
+          "Url": "http://localhost:8005/swagger/v1/swagger.json"
         }
       ]
     }
