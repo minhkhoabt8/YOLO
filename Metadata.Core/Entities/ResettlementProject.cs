@@ -33,7 +33,7 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public string? LastPersonEdit { get; set; }
 
-    public string DocumentId { get; set; } = null!;
+    public string? DocumentId { get; set; }
 
     public bool IsDeleted { get; set; } = false;
 

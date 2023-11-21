@@ -27,8 +27,6 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public string? Note { get; set; }
 
-        public string? LastPersonEdit { get; set; }
-
         public string? DocumentId { get; set; }
 
         public IEnumerable<DocumentWriteDTO>? ResettlementDocuments { get; set; }

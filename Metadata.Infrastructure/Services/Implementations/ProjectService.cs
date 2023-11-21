@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Auth;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Google.Api.Gax.ResourceNames;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
@@ -18,6 +19,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
+using Xceed.Document.NET;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -87,11 +89,27 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(projectDto.ResettlementProject != null )
             {
-                var projectResetlement = _mapper.Map<ResettlementProject>(projectDto.ResettlementProject);
+                var projectResetlement = new ResettlementProject
+                {
+                    Code = projectDto.ResettlementProject.Code,
+                    Name = projectDto.ResettlementProject.Name,
+                    LimitToResettlement = projectDto.ResettlementProject.LimitToResettlement,
+                    LimitToConsideration = projectDto.ResettlementProject.LimitToConsideration,
+                    Position = projectDto.ResettlementProject.Position,
+                    LandNumber = projectDto.ResettlementProject.LandNumber,
+                    ImplementYear = projectDto.ResettlementProject.ImplementYear,
+                    LandPrice = projectDto.ResettlementProject.LandPrice,
+                    Note = projectDto.ResettlementProject.Note,
+                    DocumentId = projectDto.ResettlementProject.DocumentId
+                };
+                
 
                 await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
 
                 project.ResettlementProjectId = projectResetlement.ResettlementProjectId;
+
+                projectResetlement.LastPersonEdit = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
 
                 if (!projectDto.ResettlementProject.ResettlementDocuments.IsNullOrEmpty())
                 {
@@ -121,7 +139,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
 
-                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+                        //await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
                     }
                 }
             }
