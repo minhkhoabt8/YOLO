@@ -57,23 +57,23 @@ public partial class Project : ITextSearchableEntity
 
     public bool IsDeleted { get; set; } = false;
 
-    public virtual ICollection<LandPositionInfo> LandPositionInfos { get; } = new List<LandPositionInfo>();
+    public virtual ICollection<LandPositionInfo>? LandPositionInfos { get; } = new List<LandPositionInfo>();
 
-    public virtual ICollection<Owner> Owners { get; } = new List<Owner>();
+    public virtual ICollection<Owner>? Owners { get; } = new List<Owner>();
 
-    public virtual ICollection<Plan> Plans { get; } = new List<Plan>();
+    public virtual ICollection<Plan>? Plans { get; } = new List<Plan>();
 
     public virtual PriceAppliedCode? PriceAppliedCode { get; set; }
 
-    public virtual ICollection<ProjectDocument> ProjectDocuments { get; } = new List<ProjectDocument>();
+    public virtual ICollection<ProjectDocument>? ProjectDocuments { get; } = new List<ProjectDocument>();
 
     public virtual ResettlementProject? ResettlementProject { get; set; }
 
-    public virtual ICollection<UnitPriceLand> UnitPriceLands { get; } = new List<UnitPriceLand>();
+    public virtual ICollection<UnitPriceLand>? UnitPriceLands { get; } = new List<UnitPriceLand>();
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
-        {() => nameof(ProjectCode), .5},
-        {() => nameof(ProjectName), .5}
+        {() => nameof(ProjectCode), .85},
+        {() => nameof(ProjectName), .75}
     };
 }

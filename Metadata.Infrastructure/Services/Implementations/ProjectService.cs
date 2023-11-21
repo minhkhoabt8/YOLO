@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Auth;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Word;
+using Google.Api.Gax.ResourceNames;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -41,7 +42,32 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
-            var project = _mapper.Map<Project>(projectDto);
+            var project = new Project
+            {
+                ProjectCode = projectDto.ProjectCode,
+                ProjectName = projectDto.ProjectName,
+                ProjectLocation = projectDto.ProjectLocation,
+                Province = projectDto.Province,
+                District = projectDto.District,
+                Ward = projectDto.Ward,
+                ProjectExpense = projectDto.ProjectExpense,
+                ProjectApprovalDate = projectDto.ProjectApprovalDate,
+                ProjectCreatedTime = projectDto.ProjectCreatedTime,
+                ImplementationYear = projectDto.ImplementationYear,
+                RegulatedUnitPrice = projectDto.RegulatedUnitPrice,
+                ProjectBriefNumber = projectDto.ProjectBriefNumber,
+                ProjectNote = projectDto.ProjectNote,
+                PriceAppliedCodeId = projectDto.PriceAppliedCodeId,
+                ResettlementProjectId = projectDto.ResettlementProjectId,
+                CheckCode = projectDto.CheckCode,
+                ReportSignal = projectDto.ReportSignal,
+                ReportNumber = projectDto.ReportNumber,
+                PriceBasis = projectDto.PriceBasis,
+                LandCompensationBasis = projectDto.LandCompensationBasis,
+                AssetCompensationBasis = projectDto.AssetCompensationBasis,
+                ProjectStatus = projectDto.ProjectStatus.ToString(),
+
+            };
 
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
@@ -100,10 +126,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if (!projectDto.Documents.IsNullOrEmpty())
+            if (!projectDto.ProjectDocuments.IsNullOrEmpty())
             {
 
-                foreach(var documentDto  in projectDto.Documents!)
+                foreach(var documentDto  in projectDto.ProjectDocuments!)
                 {
                     var fileUpload = new UploadFileDTO
                     {

@@ -35,7 +35,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         public DateTime ProjectApprovalDate { get; set; }
 
         [InputType(typeof(DateTime))]
-        public DateTime? ProjectCreatedTime { get; set; }
+        public DateTime ProjectCreatedTime { get; set; }
         [Range(0, 9999)]
         public int ImplementationYear { get; set; } = 2023;
         [MaxLength(20)]
@@ -60,11 +60,11 @@ namespace Metadata.Infrastructure.DTOs.Project
 
         [EnumDataType(typeof(ProjectStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public ProjectStatusEnum? ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
+        public ProjectStatusEnum ProjectStatus { get; set; } = ProjectStatusEnum.INPROGRESS;
         public IEnumerable<LandPositionInfoWriteDTO>? LandPositionInfos { get; set; }
         public ResettlementProjectWriteDTO? ResettlementProject { get; set; }
         //public IEnumerable<UnitPriceLandInProjectWriteDTO> UnitPriceLands { get; set; }
-        public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
+        public IEnumerable<DocumentWriteDTO>? ProjectDocuments { get; set; }
         
     }
 
