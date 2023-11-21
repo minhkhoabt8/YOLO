@@ -25,6 +25,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .Where(pd => pd.ProjectId == projectId)
                 .Include(pd => pd.Document)
                 .Select(pd => pd.Document)
+                .Include(pd=>pd.DocumentType)
                 .ToListAsync();
         }
 
