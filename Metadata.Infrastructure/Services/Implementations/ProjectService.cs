@@ -138,7 +138,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
 
-                        //await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
                     }
                 }
             }
