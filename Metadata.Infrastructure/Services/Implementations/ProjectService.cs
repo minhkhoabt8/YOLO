@@ -293,13 +293,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             //    }
             //}
 
-            if(project.Owners.Count > 0)
+            if(project.Owners != null)
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
                     throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
                 }
-                if(project.UnitPriceLands.Count > 0)
+                if(project.UnitPriceLands != null)
                 {
                     
                 }
