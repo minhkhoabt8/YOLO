@@ -379,9 +379,24 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             }
 
+            //7. Add Asset Compensation
+
+            if (!dto.OwnerAssetCompensations.IsNullOrEmpty())
+            {
+                foreach(var item in dto.OwnerAssetCompensations!)
+                {
+                    var compensation = _mapper.Map<AssetCompensation>(item);
+
+                    compensation.OwnerId = owner.OwnerId;
+
+                    await _unitOfWork.AssetCompensationRepository.AddAsync(compensation);
+                }
+
+            }
+
             await _unitOfWork.CommitAsync();
 
-            //7. Update Plan when add user
+            //8. Update Plan when add user
             if (!dto.PlanId.IsNullOrEmpty())
             {
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
@@ -601,7 +616,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations, Supports, Deductions, AttachFiles");
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, 
+                include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
+                " AssetCompensations, Supports, Deductions, Deductions.DeductionType, AttachFiles," +
+                " LandResettlements, LandResettlements.ResettlementProject");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 

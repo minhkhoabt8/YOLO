@@ -153,6 +153,7 @@ namespace Metadata.Infrastructure.Mappers
 
             //Land Resettlement
             CreateMap<LandResettlement, LandResettlementReadDTO>();
+            CreateMap<LandResettlement, LandResettlementInProjectReadDTO>();
             CreateMap<LandResettlementWriteDTO, LandResettlement>();
 
         }
