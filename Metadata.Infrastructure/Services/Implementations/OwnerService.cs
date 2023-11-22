@@ -306,6 +306,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                         {
                             measuredLandDto.OwnerId = owner.OwnerId;
 
+                            measuredLandDto.GcnLandInfoId = landInfo.GcnLandInfoId;
+
                             var measuredLand = _mapper.Map<MeasuredLandInfo>(measuredLandDto);
 
                             //measuredLand.OwnerId = owner.OwnerId;
