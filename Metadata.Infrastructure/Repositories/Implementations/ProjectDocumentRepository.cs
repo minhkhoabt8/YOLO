@@ -15,5 +15,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public ProjectDocumentRepository(YoloMetadataContext context) : base(context)
         {
         }
+
+        public async Task<IEnumerable<ProjectDocument>> FindByDocumentIdAsync(string documentId)
+        {
+            return await Task.FromResult(_context.ProjectDocuments.Where(c => c.DocumentId == documentId));
+        }
     }
 }

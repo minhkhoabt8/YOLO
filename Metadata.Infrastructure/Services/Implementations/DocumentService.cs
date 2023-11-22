@@ -117,6 +117,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             document.ReferenceLink = returnUrl;
 
+            document.FileSize = documentDto.FileAttach.Length;
+
             document.CreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
@@ -132,6 +134,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             var document = await _unitOfWork.DocumentRepository.FindAsync(documentId);
 
             if (document == null) throw new EntityWithIDNotFoundException<Core.Entities.Document>(documentId);
+
+            var projectDocuments = await _unitOfWork.ProjectDocumentRepository.FindByDocumentIdAsync(documentId);
+            
+            if (projectDocuments != null)
+            {
+                foreach (var projectDoc in projectDocuments)
+                {
+                    _unitOfWork.ProjectDocumentRepository.Delete(projectDoc);
+                }
+            }
+
+            var resettlementDocument = await _unitOfWork.ResettlementDocumentRepository.FindByDocumentIdAsync(documentId);
+
+            if (resettlementDocument != null)
+            {
+                foreach(var resettlementDoc in resettlementDocument)
+                {
+                    _unitOfWork.ResettlementDocumentRepository.Delete(resettlementDoc);
+                }
+            }
+
 
             document.IsDeleted = true;
 

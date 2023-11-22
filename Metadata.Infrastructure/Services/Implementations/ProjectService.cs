@@ -262,7 +262,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             if(!projectReadDto.ResettlementProjectId.IsNullOrEmpty() || projectReadDto.ResettlementProject != null)
             {
                 //Attach Resettlement Document
-                var resettlementProjectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(projectReadDto.ResettlementProjectId);
+                var resettlementProjectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(projectReadDto.ResettlementProjectId!);
 
                 projectReadDto.ResettlementProject!.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(resettlementProjectDocuments);
             }
@@ -324,6 +324,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 var documents =await _documentService.CreateDocumentsAsync(documentDtos);
 
+                
                 foreach (var document in documents)
                 {
                     await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
