@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.Project;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.Project;
 using SharedLib.Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,8 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
         public bool? IsDeleted { get; set; }
 
         public IEnumerable<ProjectInResettlementReadDTO>? Projects { get; set; }
+
+        public IEnumerable<DocumentReadDTO>? ResettlementDocuments { get; set; }
     }
 
     public class ProjectInResettlementReadDTO

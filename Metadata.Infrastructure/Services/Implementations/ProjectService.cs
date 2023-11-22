@@ -249,9 +249,23 @@ namespace Metadata.Infrastructure.Services.Implementations
             
             var projectReadDto =  _mapper.Map<ProjectReadDTO>(project);
 
+            if(projectReadDto.ResettlementProject != null)
+            {
+                //set to null to avoid model mapping again
+                projectReadDto.ResettlementProject.Projects = null;
+            }
+
             var projectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfProjectAsync(projectId);
 
             projectReadDto.ProjectDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(projectDocuments);
+
+            if(!projectReadDto.ResettlementProjectId.IsNullOrEmpty() || projectReadDto.ResettlementProject != null)
+            {
+                //Attach Resettlement Document
+                var resettlementProjectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(projectReadDto.ResettlementProjectId);
+
+                projectReadDto.ResettlementProject!.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(resettlementProjectDocuments);
+            }
 
             return projectReadDto;
         }

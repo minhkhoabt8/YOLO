@@ -17,5 +17,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<Document, DocumentQuery>
     {
         Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId);
+        Task<IEnumerable<Document?>> GetDocumentsOfResettlemtProjectAsync(string resettlementProjectId);
     }
 }

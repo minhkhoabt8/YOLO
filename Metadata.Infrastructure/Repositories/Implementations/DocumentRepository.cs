@@ -29,7 +29,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                     .ToListAsync();
         }
 
-
+        public async Task<IEnumerable<Document?>> GetDocumentsOfResettlemtProjectAsync(string resettlementProjectId)
+        {
+            return await _context.ResettlementDocuments
+                    .Where(pd => pd.ResettlementProjectId == resettlementProjectId)
+                    .Include(pd => pd.Document)
+                        .ThenInclude(d => d.DocumentType)
+                    .Select(pd => pd.Document)
+                    .ToListAsync();
+        }
 
         public async Task<IEnumerable<Document>> QueryAsync(DocumentQuery query, bool trackChanges = false)
         {
