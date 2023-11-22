@@ -23,7 +23,7 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public int LandNumber { get; set; } = 0;
 
-    public string? ImplementYear { get; set; }
+    public int? ImplementYear { get; set; } = 2023;
 
     public decimal LandPrice { get; set; } = 0;
 

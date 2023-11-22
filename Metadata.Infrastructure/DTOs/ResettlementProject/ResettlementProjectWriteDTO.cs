@@ -21,7 +21,7 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public int LandNumber { get; set; }
 
-        public string? ImplementYear { get; set; }
+        public int? ImplementYear { get; set; } = 2023;
 
         public decimal LandPrice { get; set; } = 0;
 
