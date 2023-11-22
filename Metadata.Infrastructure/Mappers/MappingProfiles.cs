@@ -36,6 +36,7 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<Project, ProjectReadDTO>()
                 .ForMember(des => des.ProjectDocuments, act => act.MapFrom(src => src.ProjectDocuments.Select(pd=>pd.Document)));
             CreateMap<ProjectWriteDTO, Project>();
+            CreateMap<Project, ProjectInResettlementReadDTO>();
 
             // Document
             CreateMap<Document, DocumentReadDTO>();

@@ -22,11 +22,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId)
         {
             return await _context.ProjectDocuments
-                .Where(pd => pd.ProjectId == projectId)
-                .Include(pd => pd.Document)
-                .Select(pd => pd.Document)
-                .Include(pd=>pd.DocumentType)
-                .ToListAsync();
+                    .Where(pd => pd.ProjectId == projectId)
+                    .Include(pd => pd.Document)
+                        .ThenInclude(d => d.DocumentType)
+                    .Select(pd => pd.Document)
+                    .ToListAsync();
         }
 
 

@@ -118,7 +118,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id)
         {
-            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id);
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id, include:"Projects");
 
             return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
         }

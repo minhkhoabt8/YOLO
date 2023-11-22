@@ -33,8 +33,6 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public string? LastPersonEdit { get; set; }
 
-    public string? DocumentId { get; set; }
-
     public bool IsDeleted { get; set; } = false;
 
     public virtual ICollection<LandResettlement> LandResettlements { get; } = new List<LandResettlement>();

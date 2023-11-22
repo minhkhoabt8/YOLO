@@ -99,8 +99,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     LandNumber = projectDto.ResettlementProject.LandNumber,
                     ImplementYear = projectDto.ResettlementProject.ImplementYear,
                     LandPrice = projectDto.ResettlementProject.LandPrice,
-                    Note = projectDto.ResettlementProject.Note,
-                    DocumentId = projectDto.ResettlementProject.DocumentId
+                    Note = projectDto.ResettlementProject.Note
                 };
                 
 
