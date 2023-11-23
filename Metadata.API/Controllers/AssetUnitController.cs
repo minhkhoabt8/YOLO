@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -156,6 +157,39 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Accepted();
         }
 
-        
+        //import data from excel
+        [HttpPost("import")]       
+        public async Task<IActionResult> ImportAssetUnitsFromExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            string filePath = Path.GetTempFileName();
+
+            // Save the uploaded file to a temporary file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            try
+            {
+                await _assetUnitService.ImportAssetUnitFromExcelAsync(filePath);
+                return Ok("Asset unit imported successfully");
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+            finally
+            {
+                
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+        }
     }
 }

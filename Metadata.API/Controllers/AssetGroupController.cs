@@ -153,5 +153,40 @@ namespace Metadata.API.Controllers
             var assetGroups = await _assetGroupService.QueryAssetGroupAsync(query);
             return ResponseFactory.Ok(assetGroups);
         }
+
+        //import data from excel
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportAssetGroups(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            string filePath = Path.GetTempFileName();
+
+            // Save the uploaded file to a temporary file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            try
+            {
+                await _assetGroupService.ImportAssetGroupsFromExcelAsync(filePath);
+                return Ok("Asset groups imported successfully");
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+            finally
+            {
+                
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+        }
     }
 }

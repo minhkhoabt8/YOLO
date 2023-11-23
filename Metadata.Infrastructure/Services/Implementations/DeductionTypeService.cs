@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -151,6 +153,34 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
+        //import data from excel
+        public async Task ImportDeductionTypeFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
 
+            List<DeductionTypeWriteDTO> deductionTypes = new List<DeductionTypeWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    deductionTypes.Add(new DeductionTypeWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var deduction in deductionTypes)
+            {
+                await AddDeductionType(deduction);
+            }
+        }
     }
 }

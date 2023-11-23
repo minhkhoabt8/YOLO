@@ -74,7 +74,20 @@ namespace Metadata.Infrastructure.Services.Implementations
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
-            
+
+            //valid check duplicate project name and project code
+            var projectNameDuplicate = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(project.ProjectName);
+            if (projectNameDuplicate != null)
+            {
+                throw new UniqueConstraintException<Project>(projectNameDuplicate.ProjectName ,project.ProjectName);
+            }
+            var projectCodeDuplicate = await _unitOfWork.ProjectRepository.GetProjectByProjectCodeAsync(project.ProjectCode);
+            if(projectCodeDuplicate != null)
+            {
+                throw new UniqueConstraintException<Project>(projectCodeDuplicate.ProjectCode , project.ProjectCode);
+            }
+            ///
+
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
             if (!projectDto.LandPositionInfos.IsNullOrEmpty())

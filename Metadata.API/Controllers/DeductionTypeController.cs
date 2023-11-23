@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.LandGroup;
+using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -150,6 +151,41 @@ namespace Metadata.API.Controllers
         {
             var deductionTypes = await _deductionTypeService.QueryDeductionTypesAsync(query);
             return ResponseFactory.Ok(deductionTypes);
+        }
+
+        //import data from excel
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportDeductionType(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            string filePath = Path.GetTempFileName();
+
+            // Save the uploaded file to a temporary file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            try
+            {
+                await _deductionTypeService.ImportDeductionTypeFromExcelAsync(filePath);
+                return Ok("Deduction types imported successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+            finally
+            {
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
         }
     }
 }

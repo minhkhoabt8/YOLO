@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.LandType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 
@@ -164,6 +166,36 @@ namespace Metadata.Infrastructure.Services.Implementations
         public Task<IEnumerable<LandTypeReadDTO>> GetAllDeletedLandTypeAsync()
         {
             throw new NotImplementedException();
+        }
+
+        //import data from excel
+        public async Task ImportLandTypeFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<LandTypeWriteDTO> landTypes = new List<LandTypeWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+                    string landGroupId = worksheet.Cells[row, 3].Text;
+                    landTypes.Add(new LandTypeWriteDTO { Code = code, Name = name , LandGroupId = landGroupId });
+                }
+            }
+
+            foreach (var lt in landTypes)
+            {
+                await CreateLandTypeAsync(lt);
+            }
         }
     }
 }

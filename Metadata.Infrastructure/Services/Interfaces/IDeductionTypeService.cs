@@ -23,5 +23,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task ChecknameDeductionTypeNotDuplicate(string name);
         Task<IEnumerable<DeductionTypeReadDTO>> CreateListDeductionTypes(IEnumerable<DeductionTypeWriteDTO> WriteDTOs);
         Task<PaginatedResponse<DeductionTypeReadDTO>> QueryDeductionTypesAsync(DeductionTypeQuery paginationQuery);
+
+        Task ImportDeductionTypeFromExcelAsync(string filePath);
     }
 }

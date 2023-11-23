@@ -33,7 +33,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.Projects.Where(p => p.ProjectName == projectName).FirstOrDefaultAsync();
         }
-
+        //get project by project code
+        public async Task<Project?> GetProjectByProjectCodeAsync(string projectCode)
+        {
+            return await _context.Projects.Where(p => p.ProjectCode == projectCode).FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)
         {

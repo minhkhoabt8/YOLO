@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -152,6 +154,36 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var organizationTypes = await _unitOfWork.OrganizationTypeRepository.QueryAsync(paginationQuery);
             return PaginatedResponse<OrganizationTypeReadDTO>.FromEnumerableWithMapping(organizationTypes, paginationQuery, _mapper);
+        }
+
+        //import data from excel
+        public async Task ImportOrganizationTypeFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<OrganizationTypeWriteDTO> organizationType = new List<OrganizationTypeWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    organizationType.Add(new OrganizationTypeWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var or in organizationType)
+            {
+                await CreateOrganizationTypeAsync(or);
+            }
         }
     }
 }

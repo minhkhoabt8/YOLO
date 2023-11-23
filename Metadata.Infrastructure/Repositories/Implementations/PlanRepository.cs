@@ -25,7 +25,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await Task.FromResult(_context.Plans.Include(c =>c .AttachFiles).Include(c => c.Owners).Where(c => c.ProjectId == projectId));
         }
-
+        //get plan by plan code
+        public async Task<Plan?> GetPlanByPlanCodeAsync(string planCode)
+        {
+            return await _context.Plans.Where(p => p.PlanCode == planCode).FirstOrDefaultAsync();
+        }
         public async Task<IEnumerable<Plan>> QueryAsync(PlanQuery query, bool trackChanges = false)
         {
             IQueryable <Plan> plans = _context.Plans.Where(e => e.IsDeleted == false);

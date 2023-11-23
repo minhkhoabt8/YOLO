@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.DocumentType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -144,6 +146,37 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (documentTypeName != null && documentTypeName.Name == name && documentTypeName.DocumentTypeId != id)
             {
                 throw new UniqueConstraintException<DocumentType>(nameof(documentTypeName.Name), name);
+            }
+        }
+
+
+        //import data from excel
+        public async Task ImportDocumenTypeFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<DocumentTypeWriteDTO> documentType = new List<DocumentTypeWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    documentType.Add(new DocumentTypeWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var docs in documentType)
+            {
+                await CreateDocumentTypeAsync(docs);
             }
         }
 

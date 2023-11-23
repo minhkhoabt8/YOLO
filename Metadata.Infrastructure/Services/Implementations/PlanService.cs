@@ -70,6 +70,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             plan.PlanCreatedBy = _userContextService.Username!
                 ?? throw new CanNotAssignUserException();
 
+            //valid check duplicate plan code
+            var plancode = await _unitOfWork.PlanRepository.GetPlanByPlanCodeAsync(plan.PlanCode);
+            if (plancode != null)
+            {
+                throw new UniqueConstraintException<Plan>(nameof(plan.PlanCode), plancode.PlanCode);
+            }
+            ///
+
             await _unitOfWork.PlanRepository.AddAsync(plan);
 
             if (!dto.AttachFiles.IsNullOrEmpty())
@@ -400,6 +408,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) 
             };
         }
+
+
 
         /// <summary>
         /// export Bảng Tổng Hợp Thu Hồi
@@ -854,6 +864,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
         }
 
+        
         
     }
 }
