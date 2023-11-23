@@ -831,6 +831,11 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ?? throw new CanNotAssignUserException();
             }
 
+            foreach(var oldOwner in originalPlan.Owners)
+            {
+                oldOwner.IsDeleted = true;
+            }
+
             await _unitOfWork.PlanRepository.AddAsync(newPlan);
 
             await _unitOfWork.CommitAsync();
