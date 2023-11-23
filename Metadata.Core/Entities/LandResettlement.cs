@@ -22,13 +22,13 @@ public partial class LandResettlement : ITextSearchableEntity
 
     public decimal? TotalLandPrice { get; set; } = 0;
 
-    public string ResettlementProjectId { get; set; } = null!;
+    public string? ResettlementProjectId { get; set; } 
 
-    public string OwnerId { get; set; } = null!;
+    public string? OwnerId { get; set; } 
 
-    public virtual Owner Owner { get; set; } = null!;
+    public virtual Owner? Owner { get; set; } 
 
-    public virtual ResettlementProject ResettlementProject { get; set; } = null!;
+    public virtual ResettlementProject? ResettlementProject { get; set; } = null!;
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {

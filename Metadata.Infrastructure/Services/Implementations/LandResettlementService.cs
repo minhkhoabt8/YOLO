@@ -20,7 +20,12 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        
+        public LandResettlementService(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        }
+
         public async Task<LandResettlementReadDTO> CreateLandResettlementAsync(LandResettlementWriteDTO dto)
         {
             if (!dto.ResettlementProjectId.IsNullOrEmpty())
