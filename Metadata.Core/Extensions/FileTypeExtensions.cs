@@ -25,7 +25,7 @@ public static class FileTypeExtensions
     }
 
 
-    public static string ToFileMimeTypeString(FileTypeEnum fileType)
+    public static string ToFileMimeTypeString(FileTypeEnum? fileType)
     {
         return fileType switch
         {

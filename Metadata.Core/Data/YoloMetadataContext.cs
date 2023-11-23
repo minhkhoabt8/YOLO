@@ -899,11 +899,7 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Code)
                 .HasMaxLength(50)
                 .HasColumnName("code");
-            entity.Property(e => e.DocumentId)
-                .HasMaxLength(50)
-                .HasColumnName("document_id");
             entity.Property(e => e.ImplementYear)
-                .HasMaxLength(4)
                 .HasColumnName("implement_year");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
             entity.Property(e => e.LandNumber).HasColumnName("land_number");

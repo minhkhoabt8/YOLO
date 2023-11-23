@@ -8,6 +8,7 @@
         "auth.api": "StartDebugging",
         "document.api": "StartDebugging",
         "metadata.api": "StartDebugging",
+        "signature.api": "StartDebugging"
         //"auth-sqlserver:": "StartWithoutDebugging",
         //"metadata-sqlserver": "StartWithoutDebugging"
       }

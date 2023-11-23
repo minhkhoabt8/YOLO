@@ -21,15 +21,11 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 
         public int LandNumber { get; set; }
 
-        public string? ImplementYear { get; set; }
+        public int? ImplementYear { get; set; } = 2023;
 
         public decimal LandPrice { get; set; } = 0;
 
         public string? Note { get; set; }
-
-        public string? LastPersonEdit { get; set; }
-
-        public string? DocumentId { get; set; }
 
         public IEnumerable<DocumentWriteDTO>? ResettlementDocuments { get; set; }
     }

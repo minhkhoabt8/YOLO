@@ -7,6 +7,7 @@ using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
@@ -116,6 +117,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             document.ReferenceLink = returnUrl;
 
+            document.FileSize = documentDto.FileAttach.Length;
+
             document.CreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
 
@@ -132,6 +135,27 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (document == null) throw new EntityWithIDNotFoundException<Core.Entities.Document>(documentId);
 
+            var projectDocuments = await _unitOfWork.ProjectDocumentRepository.FindByDocumentIdAsync(documentId);
+            
+            if (projectDocuments != null)
+            {
+                foreach (var projectDoc in projectDocuments)
+                {
+                    _unitOfWork.ProjectDocumentRepository.Delete(projectDoc);
+                }
+            }
+
+            var resettlementDocument = await _unitOfWork.ResettlementDocumentRepository.FindByDocumentIdAsync(documentId);
+
+            if (resettlementDocument != null)
+            {
+                foreach(var resettlementDoc in resettlementDocument)
+                {
+                    _unitOfWork.ResettlementDocumentRepository.Delete(resettlementDoc);
+                }
+            }
+
+
             document.IsDeleted = true;
 
             await _unitOfWork.CommitAsync();
@@ -142,6 +166,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             var document = await _unitOfWork.DocumentRepository.FindAsync(documentId);
 
             if (document == null) throw new EntityWithIDNotFoundException<Core.Entities.Document>(documentId);
+
+            if (!dto.FileAttach.IsNullOrEmpty())
+            {
+                var fileUpload = new UploadFileDTO
+                {
+                    File = dto.FileAttach!,
+                    FileName = $"{dto.Number}-{dto.Notation}-{Guid.NewGuid()}",
+                    FileType = FileTypeExtensions.ToFileMimeTypeString(dto.FileType)
+                };
+
+                document.ReferenceLink =  await _uploadFileService.UploadFileAsync(fileUpload);
+            }
 
             _mapper.Map(dto, document);
 

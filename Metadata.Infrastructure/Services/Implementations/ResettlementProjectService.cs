@@ -118,9 +118,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ResettlementProjectReadDTO> GetResettlementProjectAsync(string id)
         {
-            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id);
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindAsync(id, include: "Projects");
 
-            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+            var result = _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+
+            result.ResettlementDocuments =  _mapper.Map<IEnumerable<DocumentReadDTO>>( await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(result.ResettlementProjectId!));
+            
+            return result;
         }
 
         public async Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query)
@@ -149,7 +153,12 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId)
         {
             var resettlement = await _unitOfWork.ResettlementProjectRepository.GetResettlementProjectInProjectAsync(projectId);
-            return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+            
+            var result = _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+
+            result.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(result.ResettlementProjectId!));
+
+            return result;
         }
 
         public async Task<ResettlementProjectReadDTO> CreateResettlementProjectDocumentsAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documentDtos)

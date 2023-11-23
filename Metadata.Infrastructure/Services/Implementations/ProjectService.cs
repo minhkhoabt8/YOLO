@@ -1,6 +1,8 @@
 ﻿using Amazon.Runtime.Internal.Auth;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Google.Api.Gax.ResourceNames;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -17,6 +19,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
+using Xceed.Document.NET;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -41,7 +44,32 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
-            var project = _mapper.Map<Project>(projectDto);
+            var project = new Project
+            {
+                ProjectCode = projectDto.ProjectCode,
+                ProjectName = projectDto.ProjectName,
+                ProjectLocation = projectDto.ProjectLocation,
+                Province = projectDto.Province,
+                District = projectDto.District,
+                Ward = projectDto.Ward,
+                ProjectExpense = projectDto.ProjectExpense,
+                ProjectApprovalDate = projectDto.ProjectApprovalDate,
+                ProjectCreatedTime = projectDto.ProjectCreatedTime,
+                ImplementationYear = projectDto.ImplementationYear,
+                RegulatedUnitPrice = projectDto.RegulatedUnitPrice,
+                ProjectBriefNumber = projectDto.ProjectBriefNumber,
+                ProjectNote = projectDto.ProjectNote,
+                PriceAppliedCodeId = projectDto.PriceAppliedCodeId,
+                ResettlementProjectId = projectDto.ResettlementProjectId,
+                CheckCode = projectDto.CheckCode,
+                ReportSignal = projectDto.ReportSignal,
+                ReportNumber = projectDto.ReportNumber,
+                PriceBasis = projectDto.PriceBasis,
+                LandCompensationBasis = projectDto.LandCompensationBasis,
+                AssetCompensationBasis = projectDto.AssetCompensationBasis,
+                ProjectStatus = projectDto.ProjectStatus.ToString(),
+
+            };
 
             project.ProjectCreatedBy = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
@@ -74,11 +102,26 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(projectDto.ResettlementProject != null )
             {
-                var projectResetlement = _mapper.Map<ResettlementProject>(projectDto.ResettlementProject);
+                var projectResetlement = new ResettlementProject
+                {
+                    Code = projectDto.ResettlementProject.Code,
+                    Name = projectDto.ResettlementProject.Name,
+                    LimitToResettlement = projectDto.ResettlementProject.LimitToResettlement,
+                    LimitToConsideration = projectDto.ResettlementProject.LimitToConsideration,
+                    Position = projectDto.ResettlementProject.Position,
+                    LandNumber = projectDto.ResettlementProject.LandNumber,
+                    ImplementYear = projectDto.ResettlementProject.ImplementYear,
+                    LandPrice = projectDto.ResettlementProject.LandPrice,
+                    Note = projectDto.ResettlementProject.Note
+                };
+                
 
                 await _unitOfWork.ResettlementProjectRepository.AddAsync(projectResetlement);
 
                 project.ResettlementProjectId = projectResetlement.ResettlementProjectId;
+
+                projectResetlement.LastPersonEdit = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
 
                 if (!projectDto.ResettlementProject.ResettlementDocuments.IsNullOrEmpty())
                 {
@@ -219,9 +262,23 @@ namespace Metadata.Infrastructure.Services.Implementations
             
             var projectReadDto =  _mapper.Map<ProjectReadDTO>(project);
 
+            if(projectReadDto.ResettlementProject != null)
+            {
+                //set to null to avoid model mapping again
+                projectReadDto.ResettlementProject.Projects = null;
+            }
+
             var projectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfProjectAsync(projectId);
 
-            projectReadDto.Documents = _mapper.Map<IEnumerable<DocumentReadDTO>>(projectDocuments);
+            projectReadDto.ProjectDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(projectDocuments);
+
+            if(!projectReadDto.ResettlementProjectId.IsNullOrEmpty() || projectReadDto.ResettlementProject != null)
+            {
+                //Attach Resettlement Document
+                var resettlementProjectDocuments = await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(projectReadDto.ResettlementProjectId!);
+
+                projectReadDto.ResettlementProject!.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(resettlementProjectDocuments);
+            }
 
             return projectReadDto;
         }
@@ -249,13 +306,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             //    }
             //}
 
-            if(project.Owners.Count > 0)
+            if(project.Owners != null)
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
                     throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
                 }
-                if(project.UnitPriceLands.Count > 0)
+                if(project.UnitPriceLands != null)
                 {
                     
                 }
@@ -280,6 +337,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 var documents =await _documentService.CreateDocumentsAsync(documentDtos);
 
+                
                 foreach (var document in documents)
                 {
                     await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);

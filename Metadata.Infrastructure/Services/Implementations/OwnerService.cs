@@ -264,6 +264,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     
                     var landInfo = new GcnlandInfo()
                     {
+                        GcnLandInfoId = Guid.NewGuid().ToString(),
                         GcnPageNumber = item.GcnPageNumber,
                         GcnPlotNumber = item.GcnPlotNumber,
                         GcnPlotAddress = item.GcnPlotAddress,
@@ -304,6 +305,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                         foreach(var measuredLandDto in  item.MeasuredLandInfos!)
                         {
                             measuredLandDto.OwnerId = owner.OwnerId;
+
+                            measuredLandDto.GcnLandInfoId = landInfo.GcnLandInfoId;
 
                             var measuredLand = _mapper.Map<MeasuredLandInfo>(measuredLandDto);
 
@@ -361,10 +364,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                     var limitResettlementValue = await CaculateLimitResettlementValueAsync(ownerWidthdrawArea, ownerMeasuredPlotArea);
 
                     // case2: if: result < limit_to_consideration <  limit_to_resettlement : khong dc tao Land Resettlement
-                    if (associateResettlement.LimitToResettlement > associateResettlement.LimitToConsideration && associateResettlement.LimitToConsideration > limitResettlementValue)
-                    {
-                        throw new InvalidActionException($"Cannot Create Land Resettlement Because Owner Resettlement Limit Value: {limitResettlementValue}% < Project LimitToConsideration: {associateResettlement.LimitToConsideration}% < Project LimitToResettlement: {associateResettlement.LimitToResettlement}%.");
-                    }
+                    //if (associateResettlement.LimitToResettlement > associateResettlement.LimitToConsideration && associateResettlement.LimitToConsideration > limitResettlementValue)
+                    //{
+                    //    throw new InvalidActionException($"Cannot Create Land Resettlement Because Owner Resettlement Limit Value: {limitResettlementValue}% < Project LimitToConsideration: {associateResettlement.LimitToConsideration}% < Project LimitToResettlement: {associateResettlement.LimitToResettlement}%.");
+                    //}
 
 
                     landResettlementDto.OwnerId = owner.OwnerId;
@@ -376,9 +379,24 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             }
 
+            //7. Add Asset Compensation
+
+            if (!dto.OwnerAssetCompensations.IsNullOrEmpty())
+            {
+                foreach(var item in dto.OwnerAssetCompensations!)
+                {
+                    var compensation = _mapper.Map<AssetCompensation>(item);
+
+                    compensation.OwnerId = owner.OwnerId;
+
+                    await _unitOfWork.AssetCompensationRepository.AddAsync(compensation);
+                }
+
+            }
+
             await _unitOfWork.CommitAsync();
 
-            //7. Update Plan when add user
+            //8. Update Plan when add user
             if (!dto.PlanId.IsNullOrEmpty())
             {
                 var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId!);
@@ -598,7 +616,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles, AssetCompensations, Supports, Deductions");
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, 
+                include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
+                " AssetCompensations, Supports, Deductions, Deductions.DeductionType, AttachFiles," +
+                " LandResettlements, LandResettlements.ResettlementProject");
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 

@@ -15,5 +15,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public ResettlementDocumentRepository(YoloMetadataContext context) : base(context)
         {
         }
+
+        public async Task<IEnumerable<ResettlementDocument>> FindByDocumentIdAsync(string documentId)
+        {
+            return await Task.FromResult(_context.ResettlementDocuments.Where(c => c.DocumentId == documentId));
+        }
     }
 }

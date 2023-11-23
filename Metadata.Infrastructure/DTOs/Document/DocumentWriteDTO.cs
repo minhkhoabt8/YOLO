@@ -35,13 +35,11 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public bool? IsPublic { get; set; } = false;
 
-        [Required]
         public string? FileName { get; set; }
 
-        [Required]
-        public FileTypeEnum FileType { get; set; }
+        public FileTypeEnum? FileType { get; set; }
 
-        public byte[] FileAttach { get; set; }
+        public byte[]? FileAttach { get; set; }
 
     }
 }

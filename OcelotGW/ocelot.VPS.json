@@ -48,7 +48,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "8005"
+          "Port": "8004"
         }
       ],
       "UpstreamHttpMethod": [
@@ -94,7 +94,7 @@
         {
           "Name": "Signature API",
           "Version": "v1",
-          "Url": "http://localhost:8005/swagger/v1/swagger.json"
+          "Url": "http://localhost:8004/swagger/v1/swagger.json"
         }
       ]
     }

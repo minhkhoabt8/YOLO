@@ -23,7 +23,7 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public int LandNumber { get; set; } = 0;
 
-    public string? ImplementYear { get; set; }
+    public int? ImplementYear { get; set; } = 2023;
 
     public decimal LandPrice { get; set; } = 0;
 
@@ -32,8 +32,6 @@ public partial class ResettlementProject : ITextSearchableEntity
     public DateTime? LastDateEdit { get; set; } = DateTime.Now.SetKindUtc();
 
     public string? LastPersonEdit { get; set; }
-
-    public string DocumentId { get; set; } = null!;
 
     public bool IsDeleted { get; set; } = false;
 

@@ -22,12 +22,9 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
 
         public bool IsAssetCompensation { get; set; } = false;
 
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public FileTypeEnum FileType { get; set; }
-        [Required]
-        public byte[] AttachFile { get; set; }
+        public string? Name { get; set; }
+        public FileTypeEnum? FileType { get; set; }
+        public byte[]? AttachFile { get; set; }
         
     }
 }

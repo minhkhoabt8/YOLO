@@ -3,10 +3,12 @@ using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Deduction;
 using Metadata.Infrastructure.DTOs.GCNLandInfo;
+using Metadata.Infrastructure.DTOs.LandResettlement;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
+using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.DTOs.Support;
 using System;
 using System.Collections.Generic;
@@ -70,9 +72,32 @@ namespace Metadata.Infrastructure.DTOs.Owner
         //public ProjectReadDTO? Project { get; set; }
         public IEnumerable<SupportReadDTO>? Supports { get; set; }
         public IEnumerable<DeductionReadDTO>? Deductions { get; set; }
+        public IEnumerable<LandResettlementInProjectReadDTO>? LandResettlements { get; set; }
         public IEnumerable<GCNLandInfoReadDTO>? GcnlandInfos { get; set; }
         public IEnumerable<MeasuredLandInfoReadDTO>? MeasuredLandInfos { get; set; }
         public IEnumerable<AssetCompensationReadDTO>? AssetCompensations { get; set; }
         public IEnumerable<AttachFileReadDTO>? AttachFiles { get; set; }
+    }
+
+    public class LandResettlementInProjectReadDTO
+    {
+        public string? LandResettlementId { get; set; }
+
+        public string? Position { get; set; }
+
+        public string? PlotNumber { get; set; }
+
+        public string? PageNumber { get; set; }
+
+        public string? PlotAddress { get; set; }
+
+        public decimal? LandSize { get; set; }
+
+        public decimal? TotalLandPrice { get; set; }
+
+        public string? ResettlementProjectId { get; set; }
+
+        public string? OwnerId { get; set; }
+        public ResettlementProjectReadDTO? ResettlementProject { get; set; }
     }
 }
