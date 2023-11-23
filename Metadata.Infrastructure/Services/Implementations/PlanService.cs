@@ -819,6 +819,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 owner.OwnerId = Guid.NewGuid().ToString();
                 owner.PlanId = newPlan.PlanId;
+                owner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
                 owner.OwnerCreatedBy = _userContextService.Username!
                     ?? throw new CanNotAssignUserException();
             }
