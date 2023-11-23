@@ -54,7 +54,7 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<GCNLandInfoReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateGCNLandInfoAsync([FromForm] GCNLandInfoWriteDTO dto)
+        public async Task<IActionResult> CreateGCNLandInfoAsync(GCNLandInfoWriteDTO dto)
         {
             var gcnLandInfo = await _gcnLandInfoService.CreateGCNLandInfoAsync(dto);
 

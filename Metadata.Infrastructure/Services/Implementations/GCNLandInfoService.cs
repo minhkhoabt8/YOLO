@@ -75,6 +75,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
 
+
+
                 if (!dto.AttachFiles.IsNullOrEmpty())
                 {
                     foreach (var item in dto.AttachFiles!)
