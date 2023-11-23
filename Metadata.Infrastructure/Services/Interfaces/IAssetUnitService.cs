@@ -20,5 +20,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task CheckCodeAssetUnitNotDuplicate(string code);
         Task<IEnumerable<AssetUnitReadDTO>> CreateListAssetUnitAsync(IEnumerable<AssetUnitWriteDTO> assetUnitWriteDTOs);
         Task<PaginatedResponse<AssetUnitReadDTO>> QueryAssetUnitAsync(AssetUnitQuery paginationQuery);
+        Task ImportAssetUnitFromExcelAsync(string filePath);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Office.CustomUI;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -148,5 +150,36 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetUnitByName.Name), name);
             }
         }
+
+        //import data from excel
+        public async Task ImportAssetUnitFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<AssetUnitWriteDTO> assetUnit = new List<AssetUnitWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    assetUnit.Add(new AssetUnitWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var aUnit in assetUnit)
+            {
+                await CreateAssetUnitAsync(aUnit);
+            }
+        }
     }
+   
 }

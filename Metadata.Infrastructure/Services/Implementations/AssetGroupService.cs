@@ -5,6 +5,7 @@ using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AuditTrail;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -26,18 +27,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO)
-        {
-            await EnsureAssetGroupCodeNotDuplicate(assetGroupWriteDTO.Code , assetGroupWriteDTO.Name);
-           
-            var assetGroup = _mapper.Map<AssetGroup>(assetGroupWriteDTO);
-
-            await _unitOfWork.AssetGroupRepository.AddAsync(assetGroup);
-            
-            await _unitOfWork.CommitAsync();
-            return _mapper.Map<AssetGroupReadDTO>(assetGroup);
-
-        }
+       
         public async Task<IEnumerable<AssetGroupReadDTO>> CreateAssetGroupsAsync(IEnumerable<AssetGroupWriteDTO> assetGroupWriteDTOs)
         {
             var assetGroups = new List<AssetGroupReadDTO>();
@@ -157,5 +147,48 @@ namespace Metadata.Infrastructure.Services.Implementations
             return SharedLib.Infrastructure.DTOs.PaginatedResponse<AssetGroupReadDTO>.FromEnumerableWithMapping(assetGroups, paginationQuery, _mapper);
         }
 
+
+        //import data from excel
+        public async Task ImportAssetGroupsFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<AssetGroupWriteDTO> assetGroups = new List<AssetGroupWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++) 
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    assetGroups.Add(new AssetGroupWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var assetGroup in assetGroups)
+            {
+                await CreateAssetGroupAsync(assetGroup);
+            }
+        }
+
+         public async Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO)
+        {
+            await EnsureAssetGroupCodeNotDuplicate(assetGroupWriteDTO.Code , assetGroupWriteDTO.Name);
+           
+            var assetGroup = _mapper.Map<AssetGroup>(assetGroupWriteDTO);
+
+            await _unitOfWork.AssetGroupRepository.AddAsync(assetGroup);
+            
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<AssetGroupReadDTO>(assetGroup);
+
+        }
     }
 }

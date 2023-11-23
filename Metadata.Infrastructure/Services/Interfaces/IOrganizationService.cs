@@ -21,5 +21,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task CheckNameOrganizationTypeNotDuplicate(string name);
         Task CheckCodeOrganizationTypeNotDuplicate(string code);
         Task<PaginatedResponse<OrganizationTypeReadDTO>> QueryOrganizationTypeAsync(OrganizationTypeQuery paginationQuery);
+        Task ImportOrganizationTypeFromExcelAsync(string filePath);
     }
 }

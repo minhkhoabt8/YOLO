@@ -21,5 +21,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task CheckCodeLandGroupNotDuplicate(string code);
         Task<PaginatedResponse<LandTypeReadDTO>> QueryLandTypeAsync(LandTypeQuery paginationQuery);
         Task<IEnumerable<LandTypeReadDTO>> GetAllDeletedLandTypeAsync();
+        Task ImportLandTypeFromExcelAsync(string filePath);
     }
 }

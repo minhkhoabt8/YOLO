@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -156,5 +158,36 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<LandGroupReadDTO>.FromEnumerableWithMapping(landGroups, paginationQuery, _mapper);
         }
 
+
+
+        //import data from excel
+        public async Task ImportLandGroupsFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<LandGroupWriteDTO> landGroups = new List<LandGroupWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    landGroups.Add(new LandGroupWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var landgr in landGroups)
+            {
+                await CreateLandgroupAsync(landgr);
+            }
+        }
     }
 }

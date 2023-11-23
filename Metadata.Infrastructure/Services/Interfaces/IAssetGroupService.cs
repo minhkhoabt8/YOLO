@@ -20,5 +20,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<AssetGroupReadDTO>> CreateAssetGroupsAsync(IEnumerable<AssetGroupWriteDTO> assetGroupWriteDTOs);
         Task CheckNameAssetGroupNotDuplicate(string name);
         Task CheckCodeAssetGroupNotDuplicate(string code);
+        Task ImportAssetGroupsFromExcelAsync(string filePath);
     }
 }

@@ -21,8 +21,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<Project?> GetProjectByPlandIdAsync(string planId);
 
         Task<IEnumerable<Project>> GetProjectsOfOwnerAsync(string ownerId);
+        Task<Project?> GetProjectByProjectCodeAsync(string projectCode);
 
-        
+
         Task<Project?> GetProjectByNameAsync(string projectName);
     }
 }

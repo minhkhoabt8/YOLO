@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -141,6 +143,36 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var supportTypes = await _unitOfWork.SupportTypeRepository.QueryAsync(paginationQuery);
             return PaginatedResponse<SupportTypeReadDTO>.FromEnumerableWithMapping(supportTypes, paginationQuery, _mapper);
+        }
+
+        //import data from excel
+        public async Task ImportSupportTypesFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<SupportTypeWriteDTO> supportTypes = new List<SupportTypeWriteDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+
+                    supportTypes.Add(new SupportTypeWriteDTO { Code = code, Name = name });
+                }
+            }
+
+            foreach (var sp in supportTypes)
+            {
+                await CreateLandTypeAsync(sp);
+            }
         }
     }
 }

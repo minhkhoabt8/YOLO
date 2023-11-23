@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.DTOs.DocumentType;
+using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -148,6 +149,42 @@ namespace Metadata.API.Controllers
         {
             var documentTypes = await _documentTypeService.QueryDocumentTypeAsync(query);
             return ResponseFactory.Ok(documentTypes);
+        }
+
+
+        //import data from excel
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportDocumentType(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            string filePath = Path.GetTempFileName();
+
+            // Save the uploaded file to a temporary file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            try
+            {
+                await _documentTypeService.ImportDocumenTypeFromExcelAsync(filePath);
+                return Ok("Document types imported successfully");
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+            finally
+            {
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
         }
     }
 }
