@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -35,14 +36,58 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
 
             var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
-                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+                ?? throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.OwnerId);
 
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId) 
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
-            var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
+            //var gcnLandInfo = _mapper.Map<GcnlandInfo>(dto);
+            var gcnLandInfo = new GcnlandInfo()
+            {
+                GcnLandInfoId = Guid.NewGuid().ToString(),
+                GcnPageNumber = dto.GcnPageNumber,
+                GcnPlotNumber = dto.GcnPlotNumber,
+                GcnPlotAddress = dto.GcnPlotAddress,
+                LandTypeId = dto.LandTypeId,
+                GcnPlotArea = dto.GcnPlotArea,
+                GcnOwnerCertificate = dto.GcnOwnerCertificate,
+                OwnerId = dto.OwnerId,
+                IsDeleted = false
+            };
 
             await _unitOfWork.GCNLandInfoRepository.AddAsync(gcnLandInfo);
+
+            if(!dto.MeasuredLandInfos.IsNullOrEmpty())
+            {
+                foreach(var measuredDto in dto.MeasuredLandInfos!)
+                {
+                    var measuredLandInfo = new MeasuredLandInfo()
+                    {
+                        MeasuredLandInfoId =  Guid.NewGuid().ToString(),
+                        MeasuredPageNumber = measuredDto.MeasuredPageNumber,
+                        MeasuredPlotNumber= measuredDto.MeasuredPlotNumber,
+                        MeasuredPlotAddress = measuredDto.MeasuredPlotAddress,
+                        LandTypeId = measuredDto.LandTypeId,
+                        MeasuredPlotArea= measuredDto.MeasuredPlotArea,
+                        WithdrawArea = measuredDto.WithdrawArea,
+                        CompensationPrice = measuredDto.CompensationPrice,
+                        CompensationRate = measuredDto.CompensationRate,
+                        CompensationNote = measuredDto.CompensationNote,
+                        UnitPriceLandCost= measuredDto.UnitPriceLandCost ?? 0,
+                        GcnLandInfoId = measuredDto.GcnLandInfoId!,
+                        OwnerId = measuredDto.OwnerId!,
+                        UnitPriceLandId = measuredDto.UnitPriceLandId,
+                        IsDeleted = false
+
+                    };
+                    await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
+                    foreach (var item in measuredDto.AttachFiles!)
+                    {
+                        item.MeasuredLandInfoId = measuredLandInfo.MeasuredLandInfoId;
+                    }
+                    await _attachFileService.UploadAttachFileAsync(dto.AttachFiles!);
+                }
+            }
 
             if (!dto.AttachFiles.IsNullOrEmpty())
             {
@@ -155,7 +200,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (gcnLandInfo == null) throw new EntityWithIDNotFoundException<GcnlandInfo>(id);
 
             var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
-                ?? throw new EntityWithIDNotFoundException<Owner>(dto.OwnerId);
+                ?? throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.OwnerId);
 
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
@@ -181,7 +226,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
-            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+            if (owner == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(ownerId);
 
             if (dto == null) throw new InvalidActionException(nameof(dto));
 

@@ -14,14 +14,14 @@ namespace Metadata.Infrastructure.DTOs.AuditTrail
 
         public string? Type { get; set; } = null!;
 
-        public string? TableName { get; set; }
+        public string? TableName { get; set; } = "";
 
         public string? OldValue { get; set; }
 
-        public string? NewValue { get; set; }
+        public string? NewValue { get; set; } = "";
 
         public string? AffectedColumn { get; set; }
 
-        public string? PrimaryKey { get; set; }
+        public string? PrimaryKey { get; set; } = "";
     }
 }

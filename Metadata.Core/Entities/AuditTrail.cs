@@ -21,7 +21,7 @@ public partial class AuditTrail : ITextSearchableEntity
 
     public string? OldValue { get; set; }
 
-    public string NewValue { get; set; } = null!;
+    public string? NewValue { get; set; }
 
     public string? AffectedColumn { get; set; }
 

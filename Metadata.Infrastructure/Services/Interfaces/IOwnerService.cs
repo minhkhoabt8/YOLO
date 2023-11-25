@@ -33,5 +33,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<OwnerReadDTO>> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(PaginatedQuery query, string planId, string projectId);
 
         Task<OwnerReadDTO> UpdateOwnerStatusAsync(string ownerId, OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file);
+
+        Task DeleteOldOwnerWhenCreatePlanCopy(string ownerId);
     }
 }

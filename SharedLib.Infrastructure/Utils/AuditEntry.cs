@@ -32,7 +32,7 @@ namespace SharedLib.Infrastructure.Utils
             audit.CreatedDate = DateTime.Now.SetKindUtc();
             audit.PrimaryKey = JsonConvert.SerializeObject(KeyValues);
             audit.OldValue = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues);
-            audit.NewValue = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues);
+            audit.NewValue = NewValues.Count == 0 ? "Completely Deleted" : JsonConvert.SerializeObject(NewValues);
             audit.AffectedColumn = ChangedColumns.Count == 0 ? null : JsonConvert.SerializeObject(ChangedColumns);
             return audit;
         }

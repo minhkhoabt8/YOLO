@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
+using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
 using System.Globalization;
@@ -34,14 +35,16 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IUserContextService _userContextService;
         private readonly IAttachFileService _attachFileService;
         private readonly IAuthService _authService;
+        private readonly IOwnerService _ownerService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, IOwnerService ownerService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _attachFileService = attachFileService;
             _authService = authService;
+            _ownerService = ownerService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -809,9 +812,47 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
+
             var newPlan = new Plan();
 
             newPlan = originalPlan;
+
+            //Assign Version Copy
+            if (originalPlan.PlanCode.Contains(" - Copy"))
+            {
+                var parts = originalPlan.PlanCode.Split(" - Copy");
+
+                // Extract the base plan code without the version number
+                var basePlanCode = parts[0].Trim();
+
+                // Extract the version number (if any)
+                var versionNumber = 1;
+                if (parts.Length > 1 && parts[1].Contains("("))
+                {
+                    var versionString = parts[1]
+                        .Split('(')[1]
+                        .Split(')')[0]
+                        .Trim();
+
+                    if (int.TryParse(versionString, out var parsedVersion))
+                    {
+                        versionNumber = parsedVersion + 1;
+                    }
+                }
+
+                // Create the new plan code with the incremented version number
+                newPlan.PlanCode = $"{basePlanCode} - Copy ({versionNumber})";
+            }
+            else
+            {
+                // If the original plan code doesn't contain " - Copy," simply append it
+                newPlan.PlanCode = $"{originalPlan.PlanCode} - Copy";
+            }
+
+            if(newPlan.PlanCode.Count() > 50)
+            {
+                throw new InvalidActionException($"Cannot Create Plan Copy. Plan Code Exceed 50 Characters");
+            }
 
             newPlan.PlanId = Guid.NewGuid().ToString();
 
@@ -825,14 +866,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 newPlan.RejectReason = "";
             }
 
-            foreach(var owner in newPlan.Owners)
-            {
-                owner.OwnerId = Guid.NewGuid().ToString();
-                owner.PlanId = newPlan.PlanId;
-                owner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
-                owner.OwnerCreatedBy = _userContextService.Username!
-                    ?? throw new CanNotAssignUserException();
-            }
 
             foreach(var file in newPlan.AttachFiles)
             {
@@ -841,12 +874,28 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ?? throw new CanNotAssignUserException();
             }
 
-            foreach(var oldOwner in originalPlan.Owners)
+            
+
+            foreach (var oldOwner in originalPlan.Owners)
             {
-                oldOwner.IsDeleted = true;
+                await _ownerService.DeleteOldOwnerWhenCreatePlanCopy(oldOwner.OwnerId);
+            }
+
+
+            foreach (var newOwner in newPlan.Owners)
+            {
+                newOwner.OwnerId = Guid.NewGuid().ToString();
+                newOwner.PlanId = newPlan.PlanId;
+                newOwner.OwnerCode = newOwner.OwnerCode + "- Copy from " + newPlan.PlanCode;
+                newOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
+                newOwner.OwnerCreatedTime = DateTime.Now.SetKindUtc();
+                newOwner.IsDeleted = false;
+                newOwner.OwnerCreatedBy = _userContextService.Username!
+                    ?? throw new CanNotAssignUserException();
             }
 
             await _unitOfWork.PlanRepository.AddAsync(newPlan);
+
 
             await _unitOfWork.CommitAsync();
 

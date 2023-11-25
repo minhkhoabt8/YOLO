@@ -614,6 +614,19 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
+
+        public async Task DeleteOldOwnerWhenCreatePlanCopy(string ownerId)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+
+            if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            owner.IsDeleted = true;
+
+            await _unitOfWork.CommitAsync();
+        }
+
+
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, 
