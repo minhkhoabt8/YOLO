@@ -41,6 +41,8 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public string ReferenceLink { get; set; }
 
+        public bool IsUnitPriceLand { get; set; }
+
         public bool IsPublic { get; set; }
 
         public bool IsDeleted { get; set; }

@@ -35,6 +35,8 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public bool? IsPublic { get; set; } = false;
 
+        public bool? IsUnitPriceLand { get; set; } = false;
+
         public string? FileName { get; set; }
 
         public FileTypeEnum? FileType { get; set; }

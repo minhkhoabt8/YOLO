@@ -39,6 +39,8 @@ public partial class Document : ITextSearchableEntity
 
     public string ReferenceLink { get; set; } = null!;
 
+    public bool IsUnitPriceLand { get; set; } = false;
+
     public bool IsPublic { get; set; } = false;
 
     public bool IsDeleted { get; set; } = false;

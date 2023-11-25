@@ -315,7 +315,8 @@ public partial class YoloMetadataContext : DbContext
 
             entity.Property(e => e.FileSize)
                 .HasColumnName("file_size");
-
+            entity.Property(e=>e.IsUnitPriceLand)
+            .HasColumnName("is_unit_price_land");
             entity.HasOne(d => d.DocumentType).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.DocumentTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
