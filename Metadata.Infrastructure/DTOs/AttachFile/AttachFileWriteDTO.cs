@@ -20,7 +20,7 @@ namespace Metadata.Infrastructure.DTOs.AttachFile
 
         public string? OwnerId { get; set; } = null;
 
-        public bool IsAssetCompensation { get; set; } = false;
+        public bool IsAssetCompensation { get; set; }
 
         public string? Name { get; set; }
         public FileTypeEnum? FileType { get; set; }

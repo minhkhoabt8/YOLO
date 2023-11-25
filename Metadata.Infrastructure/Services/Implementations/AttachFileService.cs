@@ -121,7 +121,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (file == null) throw new EntityWithIDNotFoundException<AttachFile>(fileId);
 
-            _unitOfWork.AttachFileRepository.Delete(file);
+            file.GcnLandInfoId= null;
+            file.MeasuredLandInfoId= null;
+            file.OwnerId = null;
+            file.PlanId = null;
 
             await _unitOfWork.CommitAsync();
         }
