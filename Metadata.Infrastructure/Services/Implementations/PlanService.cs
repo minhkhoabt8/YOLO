@@ -12,6 +12,7 @@ using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Enums;
@@ -36,8 +37,9 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IAttachFileService _attachFileService;
         private readonly IAuthService _authService;
         private readonly IOwnerService _ownerService;
+        private readonly IGetFileTemplateDirectory _getFileTemplateDirectory;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, IOwnerService ownerService)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, IOwnerService ownerService, IGetFileTemplateDirectory getFileTemplateDirectory)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -45,13 +47,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             _attachFileService = attachFileService;
             _authService = authService;
             _ownerService = ownerService;
+            _getFileTemplateDirectory = getFileTemplateDirectory;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
         {
             var existProject = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
 
-            if(existProject == null)
+            if (existProject == null)
             {
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
@@ -139,9 +142,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(planId);
 
-            if(plan.PlanStatus == PlanStatusEnum.REJECTED.ToString() 
-                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString() 
-                || plan.PlanStatus ==PlanStatusEnum.APPROVED.ToString())
+            if (plan.PlanStatus == PlanStatusEnum.REJECTED.ToString()
+                || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString()
+                || plan.PlanStatus == PlanStatusEnum.APPROVED.ToString())
             {
                 throw new InvalidActionException($"Cannot Update Plan With Status [{plan.PlanStatus}].");
             }
@@ -153,7 +156,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
             }
 
-           
+
             var existApprover = await _authService.GetAccountByIdAsync(dto.PlanApprovedBy);
 
             if (existApprover == null)
@@ -161,7 +164,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.PlanApprovedBy);
             }
 
-            if(existApprover.Role.Name != AuthRoleEnum.Approval.ToString()) throw new CannotAssignSignerException();
+            if (existApprover.Role.Name != AuthRoleEnum.Approval.ToString()) throw new CannotAssignSignerException();
 
             _mapper.Map(dto, plan);
 
@@ -210,7 +213,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
-       
+
 
         public async Task<byte[]> ConvertDocxToPdf(string docxFilePath)
         {
@@ -272,16 +275,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             };
         }
 
-       
-        
+
+
         public async Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId)
-        {   
+        {
             List<DetailBTHChiPhiReadDTO> details = new List<DetailBTHChiPhiReadDTO>();
-            
-            var plan =await  _unitOfWork.PlanRepository.FindAsync(planId)
+
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
                 ?? throw new EntityWithIDNotFoundException<Plan>(planId);
 
-            var project =await  _unitOfWork.ProjectRepository.GetProjectByPlandIdAsync(planId) 
+            var project = await _unitOfWork.ProjectRepository.GetProjectByPlandIdAsync(planId)
                 ?? throw new EntityWithAttributeNotFoundException<Project>(nameof(Plan.PlanId), planId);
 
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId)
@@ -290,7 +293,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<PriceAppliedCode>(nameof(Project.PriceAppliedCodeId), project.PriceAppliedCodeId);
 
             foreach (var item in owners)
-            { 
+            {
                 var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
                 ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Core.Entities.Owner.OwnerId), item.OwnerId);
                 int stt = 0;
@@ -314,10 +317,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                     detail.WithdrawArea = i.WithdrawArea;
                     var laneType = await _unitOfWork.LandTypeRepository.GetLandTypesOfMeasureLandInfoAsync(i.LandTypeId);
                     detail.CodeLandType = laneType.Code;
-                    detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId,true);
-                    detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.House);
-                    detail.SumTreeCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.Plants);
-                    detail.SumArchitectureCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId,AssetOnLandTypeEnum.Architecture);
+                    detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId, true);
+                    detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.House);
+                    detail.SumTreeCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Plants);
+                    detail.SumArchitectureCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Architecture);
                     detail.SumSupportPrice = await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(item.OwnerId);
                     detail.SumDeductionPrice = await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(item.OwnerId);
                     detail.SumBTHT = (decimal)(detail.SumLandCompensation + detail.SumHouseCompensationPrice + detail.SumTreeCompensationPrice + detail.SumArchitectureCompensationPrice + detail.SumSupportPrice - detail.SumDeductionPrice);
@@ -339,7 +342,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = GetFileTemplateDirectory.Get("BangTongHopChiPhiBT");
+            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopChiPhiBT");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -348,7 +351,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new Exception("File not found");
             }
 
-          
+
             var tempFile = new FileInfo(Path.GetTempFileName());
 
             byte[] fileBytes;
@@ -361,7 +364,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     string maVanBan = $"{item.OwnerCode} / {item.UnitPriceCode} - {item.ProjectCode}";
                     string diaDiemThuHoiDat = $"{item.Ward} / {item.District} /{item.Province} ";
-                    for (int col = 1; col <= 20; col++) 
+                    for (int col = 1; col <= 20; col++)
                     {
                         worksheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
                     }
@@ -395,20 +398,20 @@ namespace Metadata.Infrastructure.Services.Implementations
                 package.SaveAs(tempFile);
             }
 
-            
+
             fileBytes = File.ReadAllBytes(tempFile.FullName);
 
-            
+
             File.Delete(tempFile.FullName);
 
-           
+
             var exportFileName = $"{Path.GetFileNameWithoutExtension(templateFileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(templateFileName)}";
 
             return new ExportFileDTO
             {
                 FileName = exportFileName,
                 FileByte = fileBytes,
-                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype) 
+                FileType = FileTypeExtensions.ToFileMimeTypeString(filetype)
             };
         }
 
@@ -425,7 +428,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = GetFileTemplateDirectory.Get("BangTongHopThuHoi");
+            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopThuHoi");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -465,9 +468,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                     worksheet.Cells[row, 9].Value = item.WithdrawArea;
 
 
-                    
 
-                    worksheet.Cells[6, 3].Value =  item.ProjectName;
+
+                    worksheet.Cells[6, 3].Value = item.ProjectName;
 
                     row++;
                     sttCounter++;
@@ -506,13 +509,15 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new Exception("Value is null");
 
             //Get File Template
-            var fileName = GetFileTemplateDirectory.Get("PhuongAn_BaoCao");
+            var fileName = _getFileTemplateDirectory.Get("PhuongAn_BaoCao");
 
+            var a = Path.Combine(_getFileTemplateDirectory.GetStoragePath(), "Temp");
             //Create new File Based on Template
-            var fileDest = Path.Combine(Directory.GetCurrentDirectory(), "Temp"
-                , $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
+            var fileDest = Path.Combine(
+                _getFileTemplateDirectory.GetStoragePath(), "Temp",
+                $"{Path.GetFileNameWithoutExtension(fileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(fileName)}");
 
-            if (!CopyTemplate(fileName, fileDest)) throw new Exception("Cannot Create File");
+            if (!CopyTemplate(fileName, fileDest)) throw new InvalidActionException("Cannot Create File");
 
             //Fill in data
             NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
@@ -601,6 +606,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             try
             {
+
                 File.Copy(fileSource, fileDest);
 
                 using (var wordDocument = WordprocessingDocument.Open(fileDest, true))
@@ -620,7 +626,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         mainPart.Document.Save();
                     }
                 }
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -638,7 +644,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
-            if(plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
             //1.Caculate all owner of a plan with status isDelete = false, => Sum total_owner_support_compensation
             var owners = await _unitOfWork.OwnerRepository.GetOwnersOfPlanAsync(planId);
             plan.TotalOwnerSupportCompensation = owners.Count();
@@ -663,23 +669,23 @@ namespace Metadata.Infrastructure.Services.Implementations
             foreach (var owner in owners)
             {
                 plan.TotalPriceCompensation = plan.TotalPriceCompensation + _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null, true).Result
-                                    +  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+                                    + _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
 
-                plan.TotalPriceLandSupportCompensation +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
+                plan.TotalPriceLandSupportCompensation += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
 
-                plan.TotalPriceHouseSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
+                plan.TotalPriceHouseSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
 
-                plan.TotalPriceArchitectureSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture, true).Result;
+                plan.TotalPriceArchitectureSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture, true).Result;
 
-                plan.TotalPricePlantSupportCompensation +=  _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants, true).Result;
+                plan.TotalPricePlantSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants, true).Result;
 
-                plan.TotalDeduction +=  _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId).Result;
+                plan.TotalDeduction += _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId).Result;
 
-                plan.TotalLandRecoveryArea +=  _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
+                plan.TotalLandRecoveryArea += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
 
             }
 
-            
+
             plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
                 + plan.TotalPriceHouseSupportCompensation
                 + plan.TotalPriceArchitectureSupportCompensation
@@ -728,7 +734,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> ApprovePlanAsync(string planId)
         {
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "Owners");
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
@@ -779,7 +785,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
-           // await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
+            // await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
 
             return _mapper.Map<PlanReadDTO>(plan);
         }
@@ -849,7 +855,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 newPlan.PlanCode = $"{originalPlan.PlanCode} - Copy";
             }
 
-            if(newPlan.PlanCode.Count() > 50)
+            if (newPlan.PlanCode.Count() > 50)
             {
                 throw new InvalidActionException($"Cannot Create Plan Copy. Plan Code Exceed 50 Characters");
             }
@@ -867,14 +873,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
 
 
-            foreach(var file in newPlan.AttachFiles)
+            foreach (var file in newPlan.AttachFiles)
             {
                 file.AttachFileId = Guid.NewGuid().ToString();
                 file.CreatedBy = _userContextService.Username!
                     ?? throw new CanNotAssignUserException();
             }
 
-            
+
 
             foreach (var oldOwner in originalPlan.Owners)
             {
@@ -913,7 +919,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
         }
 
-        
-        
+
+
     }
 }

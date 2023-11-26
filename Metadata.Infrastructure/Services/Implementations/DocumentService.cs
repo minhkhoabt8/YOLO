@@ -21,13 +21,15 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IUserContextService _userContextService;
         private readonly IUploadFileService _uploadFileService;
+        private readonly IGetFileTemplateDirectory _getFileTemplateDirectory;
 
-        public DocumentService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IUploadFileService uploadFileService)
+        public DocumentService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IUploadFileService uploadFileService, IGetFileTemplateDirectory getFileTemplateDirectory)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userContextService = userContextService;
             _uploadFileService = uploadFileService;
+            _getFileTemplateDirectory = getFileTemplateDirectory;
         }
 
         public async Task AssignDocumentsToProjectAsync(string projectId, string documentId)
@@ -47,7 +49,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (name.ToLower().Equals("owner"))
             {
-                fileName = GetFileTemplateDirectory.Get("BangNhapChuSoHuu");
+                fileName = _getFileTemplateDirectory.Get("BangNhapChuSoHuu");
             }
 
             if (!File.Exists(fileName))
