@@ -163,6 +163,7 @@ public static class ServiceExtensions
         services.AddScoped<IResettlementProjectService, ResettlementProjectService>();
         services.AddScoped<ILandResettlementService,LandResettlementService>();
         services.AddScoped<IGetFileTemplateDirectory, GetFileTemplateDirectory>();
+        services.AddScoped<IDigitalSignatureService, DigitalSignatureService>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

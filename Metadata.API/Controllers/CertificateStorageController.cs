@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
@@ -11,10 +12,12 @@ namespace Metadata.API.Controllers
     public class CertificateStorageController : ControllerBase
     {
         private readonly string _storagePath;
+        private readonly IDigitalSignatureService _digitalSignatureService;
 
-        public CertificateStorageController(IConfiguration configuration)
+        public CertificateStorageController(IConfiguration configuration, IDigitalSignatureService digitalSignatureService)
         {
             _storagePath = configuration["StoragePath"]!;
+            _digitalSignatureService = digitalSignatureService;
         }
 
         [HttpPost]
@@ -32,6 +35,21 @@ namespace Metadata.API.Controllers
             return Url.Action(nameof(GetFile), new { name = dto.Name })!;
         }
 
+        /// <summary>
+        /// Sign Document Async
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="documentFile"></param>
+        /// <param name="signaturePassword"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword)
+        {
+            var signedDocument = await _digitalSignatureService.SignDocumentAsync(userId, documentFile, signaturePassword);
+
+            return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
+        }
+
 
         [HttpGet("{name}")]
         public IActionResult GetFile(string name)
@@ -45,7 +63,6 @@ namespace Metadata.API.Controllers
 
             return File(System.IO.File.ReadAllBytes(filePath), "application/octet-stream");
         }
-
 
 
         [HttpDelete("{name}")]
