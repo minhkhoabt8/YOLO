@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                unitPriceAssets = unitPriceAssets.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                unitPriceAssets = unitPriceAssets.Where(c => c.AssetName.Contains(query.SearchText)); ;
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

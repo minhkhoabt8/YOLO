@@ -56,7 +56,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                owners = owners.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                owners = owners.Where(c => c.OwnerName.Contains(query.SearchText)); ;
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

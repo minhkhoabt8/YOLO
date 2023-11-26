@@ -26,7 +26,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
            
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                audits = audits.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                audits = audits.Where(c => c.UserName.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

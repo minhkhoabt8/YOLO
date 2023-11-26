@@ -53,7 +53,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                documents = documents.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                documents = documents.Where(c => c.Number.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

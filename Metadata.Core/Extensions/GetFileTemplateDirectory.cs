@@ -18,6 +18,8 @@ namespace Metadata.Core.Extensions
         {
             string templateDirectory = Path.Combine(Environment.CurrentDirectory, "ReportTemplates");
 
+            
+
             switch (fileName)
             {
                 case "BangTongHopChiPhiBT":

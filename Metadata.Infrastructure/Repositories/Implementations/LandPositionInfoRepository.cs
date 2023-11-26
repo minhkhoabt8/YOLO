@@ -33,7 +33,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                landPositionInfos = landPositionInfos.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                landPositionInfos = landPositionInfos.Where(c => c.LocationName.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

@@ -16,5 +16,6 @@ public static class TextSearchableEntityQueryExtensions
                     kv.Value * Fuzz.PartialRatio(searchText.ToLower(), kv.Key.Invoke().ToLower()))
             }).Where(es => es.Similarity >= minSimiliarity).OrderBy(es => -es.Similarity).Select(es => es.Entity)
             .AsQueryable();
+        
     }
 }

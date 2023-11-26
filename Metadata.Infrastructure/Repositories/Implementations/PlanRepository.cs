@@ -44,7 +44,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                plans = plans.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                plans = plans.Where(c => c.PlanCode.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
