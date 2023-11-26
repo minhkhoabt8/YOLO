@@ -71,7 +71,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                measuredLandInfos = measuredLandInfos.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                measuredLandInfos = measuredLandInfos.Where(c => c.MeasuredPageNumber.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

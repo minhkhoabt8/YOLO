@@ -20,6 +20,7 @@ using Polly;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
+using Metadata.Core.Extensions;
 
 namespace Metadata.API.Extensions;
 
@@ -161,6 +162,7 @@ public static class ServiceExtensions
        /* services.AddScoped<INotificationService, NotificationService>();*/
         services.AddScoped<IResettlementProjectService, ResettlementProjectService>();
         services.AddScoped<ILandResettlementService,LandResettlementService>();
+        services.AddScoped<IGetFileTemplateDirectory, GetFileTemplateDirectory>();
     }
 
     public static void AddRepositories(this IServiceCollection services)

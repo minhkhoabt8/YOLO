@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,16 +8,24 @@ using System.Threading.Tasks;
 
 namespace Metadata.Core.Extensions
 {
-    public class GetFileTemplateDirectory
+    public class GetFileTemplateDirectory : IGetFileTemplateDirectory
     {
         /// <summary>
         /// Get File Template Path Based on FileName
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string Get(string fileName)
+        /// 
+        private readonly string _storagePath;
+
+        public GetFileTemplateDirectory(IConfiguration configuration)
         {
-            string templateDirectory = Path.Combine(Environment.CurrentDirectory, "ReportTemplates");
+            _storagePath = configuration["StoragePath"]!;
+        }
+
+        public string Get(string fileName)
+        {
+            string templateDirectory = Path.Combine(_storagePath, "ReportTemplates");
 
             switch (fileName)
             {
@@ -46,6 +55,10 @@ namespace Metadata.Core.Extensions
                 default:
                     return "File not found";
             }
+        }
+        public string GetStoragePath()
+        {
+            return Path.Combine(_storagePath);
         }
     }
 }

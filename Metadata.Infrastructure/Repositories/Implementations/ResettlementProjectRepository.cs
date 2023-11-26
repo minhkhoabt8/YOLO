@@ -47,7 +47,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                resettlementProjects = resettlementProjects.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                resettlementProjects = resettlementProjects.Where(c => c.Name.Contains(query.SearchText)); ;
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

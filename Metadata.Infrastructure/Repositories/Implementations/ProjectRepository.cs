@@ -55,7 +55,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                projects = projects.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                projects = projects.Where(c => c.ProjectName.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

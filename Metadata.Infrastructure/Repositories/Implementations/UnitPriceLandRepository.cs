@@ -34,7 +34,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                unitPriceLands = unitPriceLands.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                unitPriceLands = unitPriceLands.Where(c => c.StreetAreaName.Contains(query.SearchText)); ;
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

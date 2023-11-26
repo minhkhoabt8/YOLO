@@ -36,7 +36,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                gcnLandInfos = gcnLandInfos.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                gcnLandInfos = gcnLandInfos.Where(c => c.GcnPageNumber.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
