@@ -191,11 +191,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 
                 // Get or create the folder based on the user's GUID
-                string folderPath = Path.Combine("C:\\Storage\\YOLO\\YOLO-Certificates", signer.Id);
+                string folderPath = Path.Combine(_storagePath,"YOLO-Certificates", signer.Id);
 
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
+                }
+
+                if (Directory.Exists(folderPath) && Directory.EnumerateFiles(folderPath).Any())
+                {
+                    throw new InvalidActionException("User Already Has Certificate");
                 }
 
                 // Export private key
