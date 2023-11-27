@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
@@ -11,60 +13,41 @@ namespace Metadata.API.Controllers
     public class CertificateStorageController : ControllerBase
     {
         private readonly string _storagePath;
+        private readonly IDigitalSignatureService _digitalSignatureService;
 
-        public CertificateStorageController(IConfiguration configuration)
+        public CertificateStorageController(IConfiguration configuration, IDigitalSignatureService digitalSignatureService)
         {
             _storagePath = configuration["StoragePath"]!;
+            _digitalSignatureService = digitalSignatureService;
         }
 
-        [HttpPost]
-        public string UploadFile([Required] UploadDTO dto)
+        /// <summary>
+        /// Sign Document Async
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="documentFile"></param>
+        /// <param name="signaturePassword"></param>
+        /// <returns></returns>
+        [HttpPost("sign")]
+        public async Task<IActionResult> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword)
         {
-            var filePath = Path.Combine(_storagePath, dto.Name);
+            var signedDocument = await _digitalSignatureService.SignDocumentAsync(userId, documentFile, signaturePassword);
 
-            if (System.IO.File.Exists(filePath))
-            {
-                throw new Exception("File already exists");
-            }
-
-            System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(dto.Data));
-
-            return Url.Action(nameof(GetFile), new { name = dto.Name })!;
+            return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
         }
 
-
-        [HttpGet("{name}")]
-        public IActionResult GetFile(string name)
+        /// <summary>
+        /// Create Signer Signature Async
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <param name="secretPassword"></param>
+        /// <returns></returns>
+        [HttpPost("generate/certificate")]
+        public async Task<IActionResult> CreateSignatureAsync([Required]string signerId, [Required]string secretPassword)
         {
-            var filePath = Path.Combine(_storagePath, name);
+            await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
 
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
-
-            return File(System.IO.File.ReadAllBytes(filePath), "application/octet-stream");
-        }
-
-
-
-        [HttpDelete("{name}")]
-        public NoContentResult DeleteFile(string name)
-        {
-            var filePath = Path.Combine(_storagePath, name);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            return NoContent();
-        }
-
-        public struct UploadDTO
-        {
-            [Required] public string Name { get; set; }
-            [Required] public string Data { get; set; }
+            return ResponseFactory.NoContent();
         }
 
     }
