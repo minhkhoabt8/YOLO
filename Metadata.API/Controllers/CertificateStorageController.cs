@@ -21,21 +21,6 @@ namespace Metadata.API.Controllers
             _digitalSignatureService = digitalSignatureService;
         }
 
-        [HttpPost]
-        public string UploadFile([Required] UploadDTO dto)
-        {
-            var filePath = Path.Combine(_storagePath, dto.Name);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                throw new Exception("File already exists");
-            }
-
-            System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(dto.Data));
-
-            return Url.Action(nameof(GetFile), new { name = dto.Name })!;
-        }
-
         /// <summary>
         /// Sign Document Async
         /// </summary>
@@ -63,40 +48,6 @@ namespace Metadata.API.Controllers
             await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
 
             return ResponseFactory.NoContent();
-        }
-
-
-        [HttpGet("{name}")]
-        public IActionResult GetFile(string name)
-        {
-            var filePath = Path.Combine(_storagePath, name);
-
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
-
-            return File(System.IO.File.ReadAllBytes(filePath), "application/octet-stream");
-        }
-
-
-        [HttpDelete("{name}")]
-        public NoContentResult DeleteFile(string name)
-        {
-            var filePath = Path.Combine(_storagePath, name);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            return NoContent();
-        }
-
-        public struct UploadDTO
-        {
-            [Required] public string Name { get; set; }
-            [Required] public string Data { get; set; }
         }
 
     }
