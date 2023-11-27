@@ -170,5 +170,60 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
+        public async Task<AttachFileReadDTO> UploadSignedPdfAttachFileAsync(AttachFileWriteDTO file)
+        {
+            var fileUpload = new UploadFileDTO
+            {
+                File = file.AttachFile!,
+                FileName = $"{file.Name}-{Guid.NewGuid()}",
+                FileType = FileTypeExtensions.ToFileMimeTypeString(file.FileType)
+            };
+
+            var attachFile = _mapper.Map<AttachFile>(file);
+
+            attachFile.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+            attachFile.CreatedBy = _userContextService.Username! ??
+                throw new CanNotAssignUserException();
+
+            await _unitOfWork.AttachFileRepository.AddAsync(attachFile);
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<AttachFileReadDTO>(attachFile);
+        }
+
+        public async Task<AttachFileReadDTO> CreateAttachFilesAsync(AttachFileWriteDTO dto)
+        {
+
+            var fileUpload = new UploadFileDTO
+            {
+                File = dto.AttachFile!,
+                FileName = $"{dto.Name}-{Guid.NewGuid()}",
+                FileType = FileTypeExtensions.ToFileMimeTypeString(dto.FileType)
+
+            };
+
+            var file = _mapper.Map<AttachFile>(dto);
+
+            file.ReferenceLink = await _uploadFileService.UploadFileAsync(fileUpload);
+
+            file.CreatedBy = _userContextService.Username! ??
+                throw new CanNotAssignUserException();
+
+            await _unitOfWork.AttachFileRepository.AddAsync(file);
+
+            await _unitOfWork.CommitAsync();
+
+
+            return _mapper.Map<AttachFileReadDTO>(file);
+        }
+
+
+
+        public Task<AttachFileReadDTO> GetReferenceAttachFile(string refId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

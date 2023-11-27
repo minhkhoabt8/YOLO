@@ -11,5 +11,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<AttachFileReadDTO>> CreateAttachFilesAsync(IEnumerable<AttachFileWriteDTO> dto);
         Task<AttachFileReadDTO> GetAttachFileDetailsAsync(string id);
         Task<IEnumerable<AttachFileReadDTO>> GetAllAttachFileAsync();
+        Task<AttachFileReadDTO> UploadSignedPdfAttachFileAsync(AttachFileWriteDTO file);
+
     }
 }

@@ -212,23 +212,46 @@ namespace Metadata.API.Controllers
 
         /// <summary>
         /// Approve Plan
+        /// Must Use Corect Signer Token
         /// </summary>
         /// <param name="planId"></param>
+        /// <param name="signaturePassword"></param>
+        /// <param name="signingFile">File need sign</param>
         /// <returns></returns>
         [HttpPut("approve")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> ApprovePlanAsync(string planId)
+        public async Task<IActionResult> ApprovePlanAsync([Required] string planId, [Required] string signaturePassword,[Required] IFormFile signingFile)
         {
-            var plan = await _planService.ApprovePlanAsync(planId);
+            var plan = await _planService.ApprovePlanAsync(planId, signaturePassword, signingFile);
+
+            return ResponseFactory.Ok(plan);
+        }
+
+        /// <summary>
+        /// Approve Plan With Signed Document
+        /// Must Use Corect Signer Token
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="signedFile">File that have signature</param>
+        /// <returns></returns>
+        [HttpPut("approve/signed")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> ApprovePlanWithSignedAsync([Required] string planId, [Required] IFormFile signedFile)
+        {
+            var plan = await _planService.ApprovePlanWithSignedDocumentAsync(planId, signedFile);
 
             return ResponseFactory.Ok(plan);
         }
 
         /// <summary>
         /// Reject Plan
+        /// Must Use Corect Signer Token
         /// </summary>
         /// <param name="planId"></param>
         /// <param name="reason"></param>

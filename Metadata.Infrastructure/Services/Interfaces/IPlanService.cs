@@ -31,6 +31,10 @@ namespace Metadata.Infrastructure.Services.Interfaces
 
         Task<PlanReadDTO> ApprovePlanAsync(string planId);
 
+        Task<PlanReadDTO> ApprovePlanAsync(string planId, string signaturePassword, IFormFile signedFile);
+
+        Task<PlanReadDTO> ApprovePlanWithSignedDocumentAsync(string planId, IFormFile signedFile);
+
         Task<PlanReadDTO> CreatePlanCopyAsync(string planId);
 
         Task<PlanReadDTO> RejectPlanAsync(string planId, string reason);

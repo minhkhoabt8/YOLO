@@ -1,9 +1,12 @@
 ﻿using Amazon.Runtime.Internal;
 using Aspose.Pdf;
+using Aspose.Pdf.Facades;
 using Aspose.Pdf.Forms;
 using Aspose.Pdf.Text;
+using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.AccountMapping;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -266,5 +269,35 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             File.WriteAllBytes(fileName, content);
         }
+
+        public async Task<bool> VerifySignedDocument(IFormFile signedFile)
+        {
+            PdfFileSignature pdfSign = new PdfFileSignature();
+            try
+            {
+                using (var fileStream = signedFile.OpenReadStream())
+                {
+                    pdfSign.BindPdf(fileStream);
+
+                    if (!pdfSign.ContainsSignature())
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                // Ensure that pdfSign.Close() is always called
+                pdfSign.Close();
+            }
+
+            return true;
+        }
+
+
     }
 }

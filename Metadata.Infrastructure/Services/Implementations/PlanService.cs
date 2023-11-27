@@ -1,4 +1,5 @@
 ﻿using Amazon.S3.Model;
+using Aspose.Pdf.Operators;
 using AutoMapper;
 using BitMiracle.LibTiff.Classic;
 using DocumentFormat.OpenXml.Packaging;
@@ -7,6 +8,7 @@ using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -38,8 +40,9 @@ namespace Metadata.Infrastructure.Services.Implementations
         private readonly IAuthService _authService;
         private readonly IOwnerService _ownerService;
         private readonly IGetFileTemplateDirectory _getFileTemplateDirectory;
+        private readonly IDigitalSignatureService _digitalSignatureService;
 
-        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, IOwnerService ownerService, IGetFileTemplateDirectory getFileTemplateDirectory)
+        public PlanService(IUnitOfWork unitOfWork, IMapper mapper, IUserContextService userContextService, IAttachFileService attachFileService, IAuthService authService, IOwnerService ownerService, IGetFileTemplateDirectory getFileTemplateDirectory, IDigitalSignatureService digitalSignatureService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -48,6 +51,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             _authService = authService;
             _ownerService = ownerService;
             _getFileTemplateDirectory = getFileTemplateDirectory;
+            _digitalSignatureService = digitalSignatureService;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
@@ -732,6 +736,114 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
 
+        public async Task<PlanReadDTO> ApprovePlanAsync(string planId, string signaturePassword, IFormFile signingFile)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "Owners");
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Approve. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            //check all owner must be status accept compensation before accept plans
+            //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
+            foreach (var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+            var signerId = _userContextService.AccountID!
+                ?? throw new CanNotAssignUserException();
+
+            if(signerId != plan.PlanApprovedBy) 
+            {
+                throw new ForbiddenException("Current user is not authorized to perform this action.");
+            }
+
+            var file = await _digitalSignatureService.SignDocumentAsync(plan.PlanApprovedBy ?? signerId, signingFile, signaturePassword);
+
+            var attachFile = new AttachFileWriteDTO
+            {
+                PlanId = plan.PlanId,
+                IsAssetCompensation = false,
+                AttachFile = file.FileByte,
+                FileType = FileTypeEnum.pdf,
+                Name = file.FileName
+            };
+
+            var attachFileRead = await _attachFileService.UploadSignedPdfAttachFileAsync(attachFile);
+
+            plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+            var result =  _mapper.Map<PlanReadDTO>(plan);
+
+            result.AttachFiles.Add(attachFileRead);
+
+            return result;
+        }
+
+        public async Task<PlanReadDTO> ApprovePlanWithSignedDocumentAsync(string planId, IFormFile signedFile)
+        {
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "Owners");
+
+            if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
+
+            if (plan.PlanStatus != PlanStatusEnum.AWAITING.ToString())
+            {
+                throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Approve. Must Be [{PlanStatusEnum.AWAITING}]");
+            }
+
+            var signerId = _userContextService.AccountID!
+                ?? throw new CanNotAssignUserException();
+
+            if (signerId != plan.PlanApprovedBy)
+            {
+                throw new ForbiddenException("Current user is not authorized to perform this action.");
+            }
+
+            //check all owner must be status accept compensation before accept plans
+            //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
+            foreach (var owner in plan.Owners)
+            {
+                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+                    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
+            }
+
+
+            var isSigned = await _digitalSignatureService.VerifySignedDocument(signedFile);
+
+            if (!isSigned)
+            {
+                throw new InvalidActionException("Cannot Verify File Signature");
+            }
+
+            var attachFile = new AttachFileWriteDTO
+            {
+                PlanId = plan.PlanId,
+                IsAssetCompensation = false,
+                AttachFile = ReadIFormFileAsBytes(signedFile),
+                FileType = FileTypeEnum.pdf,
+                Name = signedFile.FileName
+            };
+
+            var attachFileRead = await _attachFileService.UploadSignedPdfAttachFileAsync(attachFile);
+
+            plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
+
+            await _unitOfWork.CommitAsync();
+
+            var result = _mapper.Map<PlanReadDTO>(plan);
+
+            result.AttachFiles.Add(attachFileRead);
+
+            return result;
+        }
+
+
         public async Task<PlanReadDTO> ApprovePlanAsync(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "Owners");
@@ -751,12 +863,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                     throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
             }
 
-
             plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
 
             await _unitOfWork.CommitAsync();
-
-            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
 
             return _mapper.Map<PlanReadDTO>(plan);
         }
@@ -785,8 +894,6 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
 
-            // await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
-
             return _mapper.Map<PlanReadDTO>(plan);
         }
 
@@ -801,13 +908,19 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new InvalidActionException($"Plan With Status [{plan.PlanStatus}] Is Not Valid To Reject. Must Be [{PlanStatusEnum.AWAITING}]");
             }
 
+            var signerId = _userContextService.AccountID!
+                ?? throw new CanNotAssignUserException();
+
+            if (signerId != plan.PlanApprovedBy)
+            {
+                throw new ForbiddenException("Current user is not authorized to perform this action.");
+            }
+
             plan.PlanStatus = PlanStatusEnum.REJECTED.ToString();
 
             plan.RejectReason = reason;
 
             await _unitOfWork.CommitAsync();
-
-            //await _notificationService.SendNotificationToUserAsync(plan.PlanApprovedBy, "Approve Plan Success", $"Plan with code: {plan.PlanCode!} successfully approved ");
 
             return _mapper.Map<PlanReadDTO>(plan);
         }
@@ -919,7 +1032,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
         }
 
-
+        public byte[] ReadIFormFileAsBytes(IFormFile file)
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                file.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
 
     }
 }
