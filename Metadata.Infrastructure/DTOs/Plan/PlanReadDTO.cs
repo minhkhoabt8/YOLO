@@ -1,4 +1,5 @@
 ﻿using Metadata.Core.Entities;
+using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Project;
 using SharedLib.Core.Extensions;
@@ -69,7 +70,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public bool? IsDeleted { get; set; }
 
-        public  ICollection<Core.Entities.AttachFile> AttachFiles { get; set; }
+        public  ICollection<AttachFileReadDTO> AttachFiles { get; set; }
 
         public  ICollection<OwnerReadDTO> Owners { get; set; }
 
