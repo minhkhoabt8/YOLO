@@ -11,5 +11,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
     public interface IDigitalSignatureService
     {
         Task<ExportFileDTO> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword);
+        Task GenerateSignerCertificateAsync(string signerId, string secretPassword);
     }
 }

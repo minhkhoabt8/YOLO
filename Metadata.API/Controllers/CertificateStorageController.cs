@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
@@ -42,12 +43,26 @@ namespace Metadata.API.Controllers
         /// <param name="documentFile"></param>
         /// <param name="signaturePassword"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("sign")]
         public async Task<IActionResult> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword)
         {
             var signedDocument = await _digitalSignatureService.SignDocumentAsync(userId, documentFile, signaturePassword);
 
             return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
+        }
+
+        /// <summary>
+        /// Create Signer Signature Async
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <param name="secretPassword"></param>
+        /// <returns></returns>
+        [HttpPost("generate/certificate")]
+        public async Task<IActionResult> CreateSignatureAsync([Required]string signerId, [Required]string secretPassword)
+        {
+            await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
+
+            return ResponseFactory.NoContent();
         }
 
 
