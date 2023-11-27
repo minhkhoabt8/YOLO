@@ -125,7 +125,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> GetPlanAsync(string planId)
         {
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles");
             return _mapper.Map<PlanReadDTO>(plan);
         }
 
