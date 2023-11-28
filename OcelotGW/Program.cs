@@ -6,7 +6,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(opt => opt.Limits.MaxRequestBodySize = uint.MaxValue);
-builder.Configuration.AddJsonFile($"ocelot.{builder.Environment.EnvironmentName}.json", true, true);
+builder.Configuration.AddJsonFile($"ocelot.json", true, true);
 builder.Services.AddCors();
 builder.Services.AddOcelot().AddPolly();
 builder.Services.AddHttpClient();
@@ -32,7 +32,7 @@ app.UseMiddleware<TokenTransformMiddleware>();
 app.UseSwagger();
 app.UseSwaggerForOcelotUI(opt => { opt.PathToSwaggerGenerator = "/swagger/docs"; });
 app.UseRouting();
-app.UseCors(opt => opt.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseWebSockets();
 await app.UseOcelot();
 app.Run();
