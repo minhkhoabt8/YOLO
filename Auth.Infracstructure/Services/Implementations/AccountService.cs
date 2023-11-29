@@ -52,6 +52,8 @@ namespace Auth.Infrastructure.Services.Implementations
             //call Send SMS
             await _smsService.SendPasswordSmsAsync(newAccount.Phone!, newAccount.Password!);
 
+            await _smsService.SendPasswordEmail(newAccount.Email!, newAccount.Password!);
+
             await _unitOfWork.CommitAsync();
 
             newAccount.Role = await _unitOfWork.RoleRepository.FindAsync(writeDTO.RoleId);

@@ -38,6 +38,8 @@ namespace Auth.Infrastructure.Services.Implementations
             //call Send SMS
             await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
 
+            await _smsService.SendOtpEmail(account.Email!, account.Otp!);
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AccountReadDTO>(account);
@@ -151,6 +153,8 @@ namespace Auth.Infrastructure.Services.Implementations
 
             ////call Send SMS
             await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
+
+            await _smsService.SendOtpEmail(account.Email!, account.Otp!);
 
             return account.Otp!;
         }
