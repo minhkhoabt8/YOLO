@@ -40,6 +40,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 unitPriceAssets = unitPriceAssets.Where(c => c.AssetName.Contains(query.SearchText)); ;
             }
+
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
                 unitPriceAssets = unitPriceAssets.OrderByDynamic(query.OrderBy);

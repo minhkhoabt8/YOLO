@@ -11,6 +11,7 @@ namespace Metadata.Infrastructure.DTOs.DocumentType
     {
         public string? Include { get; set; }
         public string? SearchText { get; set; }
+        public string? SearchByNames { get; set; }
         public string? OrderBy { get; set; }
     }
 }

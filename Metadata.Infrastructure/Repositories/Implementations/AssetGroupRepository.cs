@@ -35,7 +35,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetGroups.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
         }
 
-
+        
         public async Task<IEnumerable<AssetGroup>?> GetAllActivedDeletedAssetGroup()
         {
             return await _context.AssetGroups.Where(x => x.IsDeleted == false).ToListAsync();

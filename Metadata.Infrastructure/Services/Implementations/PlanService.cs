@@ -4,6 +4,7 @@ using AutoMapper;
 using BitMiracle.LibTiff.Classic;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Google.Api.Gax.ResourceNames;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
@@ -52,6 +53,17 @@ namespace Metadata.Infrastructure.Services.Implementations
             _ownerService = ownerService;
             _getFileTemplateDirectory = getFileTemplateDirectory;
             _digitalSignatureService = digitalSignatureService;
+        }
+
+        //api check not allow duplicate plan code
+        public async Task<bool> CheckDuplicatePlanCodeAsync(string planCode)
+        {
+            var plan = await _unitOfWork.PlanRepository.GetPlanByPlanCodeAsync(planCode);
+            if (plan != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(plan.PlanCode), planCode);
+            }
+            return true;
         }
 
         public async Task<PlanReadDTO> CreatePlanAsync(PlanWriteDTO dto)
