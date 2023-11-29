@@ -18,7 +18,7 @@ public partial class RefreshToken
 
     public bool IsExpired => DateTime.Now >= Expires;
 
-    public int ExpiresIn => (int)Expires.Subtract(DateTime.Now).TotalSeconds;
+    public int ExpiresIn => (int)Expires.Subtract(DateTime.UtcNow).TotalSeconds;
 
     public string? AccountId { get; set; }
 
