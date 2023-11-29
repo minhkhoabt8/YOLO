@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.LandGroup
 {
-    public class LandGroupQuery : PaginatedQuery
+    public class LandGroupQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

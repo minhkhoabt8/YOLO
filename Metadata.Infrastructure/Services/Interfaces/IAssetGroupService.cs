@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
+using Metadata.Infrastructure.DTOs.DeductionType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<AssetGroupReadDTO>> CreateAssetGroupsAsync(IEnumerable<AssetGroupWriteDTO> assetGroupWriteDTOs);
         Task CheckNameAssetGroupNotDuplicate(string name);
         Task CheckCodeAssetGroupNotDuplicate(string code);
-        Task ImportAssetGroupsFromExcelAsync(string filePath);
+        Task<List<AssetGroupReadDTO>> ImportAssetGroupsFromExcelAsync(string filePath);
     }
 }

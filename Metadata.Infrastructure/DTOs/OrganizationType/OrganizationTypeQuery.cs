@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.OrganizationType
 {
-    public class OrganizationTypeQuery : PaginatedQuery
+    public class OrganizationTypeQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

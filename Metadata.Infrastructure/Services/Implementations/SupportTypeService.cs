@@ -146,7 +146,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         //import data from excel
-        public async Task ImportSupportTypesFromExcelAsync(string filePath)
+        public async Task<List<SupportTypeReadDTO>> ImportSupportTypesFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -169,10 +169,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
+            List<SupportTypeReadDTO> importedObjects = new List<SupportTypeReadDTO>();
             foreach (var sp in supportTypes)
             {
-                await CreateLandTypeAsync(sp);
+                var importedObject = await CreateLandTypeAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
     }
 }

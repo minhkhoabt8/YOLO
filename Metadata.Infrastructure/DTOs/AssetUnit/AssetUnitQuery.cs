@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.AssetUnit
 {
-    public class AssetUnitQuery : PaginatedQuery
+    public class AssetUnitQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
-
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

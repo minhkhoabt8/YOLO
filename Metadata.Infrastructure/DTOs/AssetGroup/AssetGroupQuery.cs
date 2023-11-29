@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.AssetGroup
 {
-    public class AssetGroupQuery : PaginatedQuery
+    public class AssetGroupQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? SearchByNames { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

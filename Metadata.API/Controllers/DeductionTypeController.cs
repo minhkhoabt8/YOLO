@@ -170,8 +170,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _deductionTypeService.ImportDeductionTypeFromExcelAsync(filePath);
-                return Ok("Deduction types imported successfully");
+                var dataImport = await _deductionTypeService.ImportDeductionTypeFromExcelAsync(filePath);
+                return Ok(new { Message = "Deduction types imported successfully", Data = dataImport });
+               
             }
             catch (Exception ex)
             {

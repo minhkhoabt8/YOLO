@@ -168,8 +168,8 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _supportTypeService.ImportSupportTypesFromExcelAsync(filePath);
-                return Ok("Support types imported successfully");
+                var dataImport = await _supportTypeService.ImportSupportTypesFromExcelAsync(filePath);
+                return Ok(new { Message = "Support types imported successfully", Data = dataImport });
             }
             catch (Exception ex)
             {

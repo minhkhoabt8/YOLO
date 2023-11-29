@@ -2,6 +2,7 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.DocumentType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -151,7 +152,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
         //import data from excel
-        public async Task ImportDocumenTypeFromExcelAsync(string filePath)
+        public async Task<List<DocumentTypeReadDTO>> ImportDocumenTypeFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -174,10 +175,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var docs in documentType)
+            List<DocumentTypeReadDTO> importedObjects = new List<DocumentTypeReadDTO>();
+            foreach (var sp in documentType)
             {
-                await CreateDocumentTypeAsync(docs);
+                var importedObject = await CreateDocumentTypeAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
 
     }

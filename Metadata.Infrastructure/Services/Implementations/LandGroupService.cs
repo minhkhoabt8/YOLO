@@ -161,7 +161,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
         //import data from excel
-        public async Task ImportLandGroupsFromExcelAsync(string filePath)
+        public async Task<List<LandGroupReadDTO>> ImportLandGroupsFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -184,10 +184,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var landgr in landGroups)
+            List<LandGroupReadDTO> importedObjects = new List<LandGroupReadDTO>();
+            foreach (var sp in landGroups)
             {
-                await CreateLandgroupAsync(landgr);
+                var importedObject = await CreateLandgroupAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
     }
 }

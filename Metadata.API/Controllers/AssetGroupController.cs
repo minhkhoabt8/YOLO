@@ -171,8 +171,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _assetGroupService.ImportAssetGroupsFromExcelAsync(filePath);
-                return Ok("Asset groups imported successfully");
+                var dataImport = await _assetGroupService.ImportAssetGroupsFromExcelAsync(filePath);
+                
+                return Ok(new { Message = "Asset groups imported successfully", Data = dataImport });
             }
             catch (Exception ex)
             {
