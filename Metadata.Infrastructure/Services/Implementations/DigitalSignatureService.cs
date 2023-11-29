@@ -298,6 +298,17 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
+        public async Task<bool> VerifySignerSignatureExistAsync(string signerId)
+        {
+            // Get or create the folder based on the user's GUID
+            string folderPath = Path.Combine(_storagePath, "YOLO-Certificates", signerId);
+
+            if (Directory.Exists(folderPath) && Directory.EnumerateFiles(folderPath).Any())
+            {
+                throw new InvalidActionException("User Already Has Certificate");
+            }
+            return true;
+        }
 
     }
 }

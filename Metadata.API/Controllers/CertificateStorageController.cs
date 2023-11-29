@@ -50,5 +50,19 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
+
+        /// <summary>
+        /// Verify Signer Signature Exist
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <returns></returns>
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifySignerSignatureExistAsync([Required] string signerId)
+        {
+            var result = await _digitalSignatureService.VerifySignerSignatureExistAsync(signerId);
+
+            return ResponseFactory.Accepted(result.ToString());
+        }
+
     }
 }
