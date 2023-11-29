@@ -762,7 +762,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new ForbiddenException("Current user is not authorized to perform this action.");
             }
 
-            var file = await _digitalSignatureService.SignDocumentAsync(plan.PlanApprovedBy ?? signerId, signingFile, signaturePassword);
+            var file = await _digitalSignatureService.SignDocumentWithPictureAsync(plan.PlanApprovedBy ?? signerId, signingFile, signaturePassword, true);
 
             var attachFile = new AttachFileWriteDTO
             {

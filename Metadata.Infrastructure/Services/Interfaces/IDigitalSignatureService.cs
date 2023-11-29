@@ -15,5 +15,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task GenerateSignerCertificateAsync(string signerId, string secretPassword);
         Task<bool> VerifySignedDocument(IFormFile signedFile);
         Task<bool> VerifySignerSignatureExistAsync(string signerId);
+
+        Task<ExportFileDTO> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = false);
     }
 }

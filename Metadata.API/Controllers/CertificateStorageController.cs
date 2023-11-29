@@ -27,14 +27,16 @@ namespace Metadata.API.Controllers
         /// <param name="userId"></param>
         /// <param name="documentFile"></param>
         /// <param name="signaturePassword"></param>
+        /// <param name="replaceSignatureWithPicture"></param>
         /// <returns></returns>
-        [HttpPost("sign")]
-        public async Task<IActionResult> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword)
+        [HttpPost("signPicture")]
+        public async Task<IActionResult> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = false)
         {
-            var signedDocument = await _digitalSignatureService.SignDocumentAsync(userId, documentFile, signaturePassword);
+            var signedDocument = await _digitalSignatureService.SignDocumentWithPictureAsync(userId, documentFile, signaturePassword, replaceSignatureWithPicture);
 
             return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
         }
+
 
         /// <summary>
         /// Create Signer Signature Async
