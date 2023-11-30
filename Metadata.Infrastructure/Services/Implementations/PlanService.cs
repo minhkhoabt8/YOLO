@@ -743,10 +743,18 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectASync(string projectId)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query)
+        {
+            var plan = await _unitOfWork.PlanRepository.QueryPlansOfProjectAsync(projectId, query);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
+        public async Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectAsync(string projectId)
         {
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
+
 
         public async Task<PlanReadDTO> ApprovePlanAsync(string planId, string signaturePassword, IFormFile signingFile)
         {
