@@ -20,6 +20,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task CheckNameLandGroupNotDuplicate(string name);
         Task CheckCodeLandGroupNotDuplicate(string code);
         Task<PaginatedResponse<LandGroupReadDTO>> QueryLandGroupAsync(LandGroupQuery paginationQuery);
-        Task ImportLandGroupsFromExcelAsync(string filePath);
+        Task<List<LandGroupReadDTO>> ImportLandGroupsFromExcelAsync(string filePath);
     }
 }

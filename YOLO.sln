@@ -49,7 +49,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signature", "Signature", "{416A8A4E-3FBD-4F18-8067-8ECD0963A6B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signature.API", "Signature.API\Signature.API.csproj", "{6C5D7A96-F524-4174-B0B6-F842130C17C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.API", "Signature.API\Signature.API.csproj", "{6C5D7A96-F524-4174-B0B6-F842130C17C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Signature.Infrastructure", "..\Signature.Infrastructure\Signature.Infrastructure.csproj", "{635CC5EC-15CD-430A-8315-CCD0F8333E8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,10 @@ Global
 		{6C5D7A96-F524-4174-B0B6-F842130C17C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C5D7A96-F524-4174-B0B6-F842130C17C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C5D7A96-F524-4174-B0B6-F842130C17C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{635CC5EC-15CD-430A-8315-CCD0F8333E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635CC5EC-15CD-430A-8315-CCD0F8333E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635CC5EC-15CD-430A-8315-CCD0F8333E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635CC5EC-15CD-430A-8315-CCD0F8333E8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +151,7 @@ Global
 		{84D794E6-A369-427A-9D94-F4D2B245AC15} = {9C7FD3A9-6EF9-4B30-8B47-89881D802D8A}
 		{416A8A4E-3FBD-4F18-8067-8ECD0963A6B2} = {798E10B6-6CAA-4A82-883B-9DB022FA6762}
 		{6C5D7A96-F524-4174-B0B6-F842130C17C0} = {416A8A4E-3FBD-4F18-8067-8ECD0963A6B2}
+		{635CC5EC-15CD-430A-8315-CCD0F8333E8E} = {416A8A4E-3FBD-4F18-8067-8ECD0963A6B2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {335E15B0-30C8-417D-97A2-97A797FE5B2C}

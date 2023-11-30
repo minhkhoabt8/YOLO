@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 assetUnits = assetUnits.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                assetUnits = assetUnits.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                assetUnits = assetUnits.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                assetUnits = assetUnits.Where(c => c.Code.Contains(query.SearchText)); ;
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                assetUnits = assetUnits.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<AssetUnit> enumeratedAssetUnits = assetUnits.AsEnumerable();
             return await Task.FromResult(enumeratedAssetUnits);
         }

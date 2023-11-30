@@ -142,5 +142,23 @@ namespace Metadata.API.Controllers
             await _projectService.DeleteProjectAsync(id);
             return ResponseFactory.NoContent();
         }
+
+        //check duplicate project name
+        [HttpGet("check-duplicate-name")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateProjectName(string projectName)
+        {
+            var result = await _projectService.CheckDuplicateProjectNameAsync(projectName);
+            return ResponseFactory.Ok(result);
+        }
+
+        //check duplicate project code
+        [HttpGet("check-duplicate-code")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateProjectCode(string projectCode)
+        {
+            var result = await _projectService.CheckDuplicateProjectCodeAsync(projectCode);
+            return ResponseFactory.Ok(result);
+        }
     }
 }

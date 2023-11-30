@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.DeductionType
 {
-    public class DeductionTypeQuery : PaginatedQuery
+    public class DeductionTypeQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? SearchByNames { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

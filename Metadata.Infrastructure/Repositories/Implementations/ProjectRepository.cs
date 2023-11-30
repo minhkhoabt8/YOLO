@@ -31,12 +31,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<Project?> GetProjectByNameAsync(string projectName)
         {
-            return await _context.Projects.Where(p => p.ProjectName == projectName).FirstOrDefaultAsync();
+            return await _context.Projects.Where(p => p.ProjectName == projectName && p.IsDeleted== false).FirstOrDefaultAsync();
         }
         //get project by project code
         public async Task<Project?> GetProjectByProjectCodeAsync(string projectCode)
         {
-            return await _context.Projects.Where(p => p.ProjectCode == projectCode).FirstOrDefaultAsync();
+            return await _context.Projects.Where(p => p.ProjectCode == projectCode && p.IsDeleted == false).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Project>> QueryAsync(ProjectQuery query, bool trackChanges = false)

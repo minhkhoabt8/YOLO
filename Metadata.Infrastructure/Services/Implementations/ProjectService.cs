@@ -42,6 +42,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             _uploadFileService = uploadFileService;
         }
 
+        //api check not allow duplicate project name 
+        public async Task<bool> CheckDuplicateProjectNameAsync(string projectName)
+        {
+            var project = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(projectName);
+            if (project != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(project.ProjectName), projectName);
+            }
+            return true;
+        }
+        //api check not allow duplicate project code
+        public async Task<bool> CheckDuplicateProjectCodeAsync(string projectCode)
+        {
+            var project = await _unitOfWork.ProjectRepository.GetProjectByProjectCodeAsync(projectCode);
+            if (project != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(project.ProjectCode), projectCode);
+            }
+            return true;
+        }
+
         public async Task<ProjectReadDTO> CreateProjectAsync(ProjectWriteDTO projectDto)
         {
             var project = new Project

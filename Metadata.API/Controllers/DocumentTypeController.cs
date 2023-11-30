@@ -169,8 +169,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _documentTypeService.ImportDocumenTypeFromExcelAsync(filePath);
-                return Ok("Document types imported successfully");
+                var dataImport = await _documentTypeService.ImportDocumenTypeFromExcelAsync(filePath);
+                return Ok(new { Message = "Document types imported successfully", Data = dataImport });
+               
             }
             catch (Exception ex)
             {

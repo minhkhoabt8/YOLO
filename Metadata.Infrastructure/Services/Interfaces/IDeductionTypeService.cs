@@ -24,6 +24,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<DeductionTypeReadDTO>> CreateListDeductionTypes(IEnumerable<DeductionTypeWriteDTO> WriteDTOs);
         Task<PaginatedResponse<DeductionTypeReadDTO>> QueryDeductionTypesAsync(DeductionTypeQuery paginationQuery);
 
-        Task ImportDeductionTypeFromExcelAsync(string filePath);
+        Task<List<DeductionTypeReadDTO>> ImportDeductionTypeFromExcelAsync(string filePath);
     }
 }

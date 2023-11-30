@@ -4,11 +4,13 @@ using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xceed.Document.NET;
 
 namespace Metadata.Infrastructure.Repositories.Implementations
 {
@@ -47,7 +49,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 landGroups = landGroups.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                landGroups = landGroups.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                landGroups = landGroups.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                landGroups = landGroups.Where(c => c.Code.Contains(query.SearchByNames)); ;
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                landGroups = landGroups.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<LandGroup> enumeratedLandGroups = landGroups.AsEnumerable();
             return await Task.FromResult(enumeratedLandGroups);
         }

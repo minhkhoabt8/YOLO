@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Office.CustomUI;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using OfficeOpenXml;
@@ -103,12 +104,12 @@ namespace Metadata.Infrastructure.Services.Implementations
              var assetUnit = await _unitOfWork.AssetUnitRepository.FindByCodeAndIsDeletedStatus(code,false);
             if (assetUnit != null && assetUnit.Code == code)
             {
-                throw new UniqueConstraintException<LandGroup>(nameof(assetUnit.Code), code);
+                throw new UniqueConstraintException<AssetUnit>(nameof(assetUnit.Code), code);
             }
             var assetUnitt = await _unitOfWork.AssetUnitRepository.FindByNameAndIsDeletedStatus(name,false);
             if (assetUnitt != null && assetUnitt.Name == name)
             {
-                throw new UniqueConstraintException<LandGroup>(nameof(assetUnit.Name), name);
+                throw new UniqueConstraintException<AssetUnit>(nameof(assetUnit.Name), name);
             }
         }
 
@@ -152,7 +153,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         //import data from excel
-        public async Task ImportAssetUnitFromExcelAsync(string filePath)
+        public async Task<List<AssetUnitReadDTO>> ImportAssetUnitFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -175,10 +176,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var aUnit in assetUnit)
+            List<AssetUnitReadDTO> importedObjects = new List<AssetUnitReadDTO>();
+            foreach (var sp in assetUnit)
             {
-                await CreateAssetUnitAsync(aUnit);
+                var importedObject = await CreateAssetUnitAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
     }
    

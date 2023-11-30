@@ -77,6 +77,7 @@ namespace Metadata.Infrastructure.Mappers
             //LandType
             CreateMap<LandType, LandTypeReadDTO>();
             CreateMap<LandTypeWriteDTO, LandType>();
+            CreateMap<LandTypeWriteForImportDTO, LandType>();
 
             //SupportType
             CreateMap<SupportType, SupportTypeReadDTO>();

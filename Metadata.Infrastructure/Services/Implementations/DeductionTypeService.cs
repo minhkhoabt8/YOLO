@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.LandGroup;
+using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using OfficeOpenXml;
@@ -154,7 +155,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
         //import data from excel
-        public async Task ImportDeductionTypeFromExcelAsync(string filePath)
+        public async Task<List<DeductionTypeReadDTO>> ImportDeductionTypeFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -177,10 +178,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var deduction in deductionTypes)
+            List<DeductionTypeReadDTO> importedObjects = new List<DeductionTypeReadDTO>();
+            foreach (var sp in deductionTypes)
             {
-                await AddDeductionType(deduction);
+                var importedObject = await AddDeductionType(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.DTOs.LandType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -32,6 +33,20 @@ namespace Metadata.Infrastructure.Services.Implementations
             await EnsureLandGroupCodeNotDuplicate(landTypeWriteDTO.Code , landTypeWriteDTO.Name);
             
             var landType = _mapper.Map<LandType>(landTypeWriteDTO);
+            await _unitOfWork.LandTypeRepository.AddAsync(landType);
+            await _unitOfWork.CommitAsync();
+            return _mapper.Map<LandTypeReadDTO>(landType);
+        }
+        public async Task<LandTypeReadDTO?> CreateLandTypeForImportAsync(LandTypeWriteForImportDTO landTypeWriteDTO)
+        {
+            var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAsync(landTypeWriteDTO.LandGroupCode!)
+                ?? throw new EntityWithIDNotFoundException<LandGroup>("LandGroup not found with provided code");
+
+
+            await EnsureLandGroupCodeNotDuplicate(landTypeWriteDTO.Code, landTypeWriteDTO.Name);
+
+            var landType = _mapper.Map<LandType>(landTypeWriteDTO);
+            landType.LandGroupId = landGroup.LandGroupId;
             await _unitOfWork.LandTypeRepository.AddAsync(landType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(landType);
@@ -168,8 +183,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             throw new NotImplementedException();
         }
 
-        //import data from excel
-        public async Task ImportLandTypeFromExcelAsync(string filePath)
+        /*//import data from excel
+        public async Task<List<LandTypeReadDTO>> ImportLandTypeFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -192,10 +207,51 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var lt in landTypes)
+            List<LandTypeReadDTO> importedObjects = new List<LandTypeReadDTO>();
+            foreach (var sp in landTypes)
             {
-                await CreateLandTypeAsync(lt);
+                var importedObject = await CreateLandTypeAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
+        }*/
+        //import data from excel
+        public async Task<List<LandTypeReadDTO>> ImportLandTypeFromExcelAsync(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists)
+                throw new FileNotFoundException("File not found", filePath);
+
+            List<LandTypeWriteForImportDTO> landTypes = new List<LandTypeWriteForImportDTO>();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(fileInfo))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int totalRows = worksheet.Dimension.End.Row;
+
+                for (int row = 4; row <= totalRows; row++)
+                {
+                    string code = worksheet.Cells[row, 1].Text;
+                    string name = worksheet.Cells[row, 2].Text;
+                    string landGroupCode = worksheet.Cells[row, 3].Text;
+                    landTypes.Add(new LandTypeWriteForImportDTO { Code = code, Name = name, LandGroupCode = landGroupCode });
+                }
+            }
+
+            List<LandTypeReadDTO> importedObjects = new List<LandTypeReadDTO>();
+            foreach (var sp in landTypes)
+            {
+                var importedObject = await CreateLandTypeForImportAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
+            }
+            return importedObjects;
         }
     }
 }
