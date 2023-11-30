@@ -31,7 +31,7 @@ namespace Metadata.API.Controllers
         {
             var unitPriceLand = await _unitPriceLandService.UnitPriceLandQueryAsync(query);
 
-            return ResponseFactory.Ok(unitPriceLand);
+            return ResponseFactory.PaginatedOk(unitPriceLand);
         }
 
         /// <summary>

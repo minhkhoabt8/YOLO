@@ -151,7 +151,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryAssetGroup([FromQuery] AssetGroupQuery query)
         {
             var assetGroups = await _assetGroupService.QueryAssetGroupAsync(query);
-            return ResponseFactory.Ok(assetGroups);
+            return ResponseFactory.PaginatedOk(assetGroups);
         }
 
         //import data from excel
@@ -172,7 +172,7 @@ namespace Metadata.API.Controllers
             try
             {
                 var dataImport = await _assetGroupService.ImportAssetGroupsFromExcelAsync(filePath);
-                
+
                 return Ok(new { Message = "Asset groups imported successfully", Data = dataImport });
             }
             catch (Exception ex)

@@ -24,8 +24,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         //Bảng Tổng Hợp Thu Hồi 
         Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId);
         Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false);
-        Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectASync(string projectId);
-
+        Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectAsync(string projectId);
+        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query);
         //Bảng tổng hợp chi phí
         Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId);
 

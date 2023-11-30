@@ -151,7 +151,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryOrganizationType([FromQuery] OrganizationTypeQuery query)
         {
             var organizationTypes = await _organizationService.QueryOrganizationTypeAsync(query);
-            return ResponseFactory.Ok(organizationTypes);
+            return ResponseFactory.PaginatedOk(organizationTypes);
         }
 
         //import data from excel

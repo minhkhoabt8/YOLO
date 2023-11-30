@@ -22,8 +22,12 @@ namespace Metadata.Core.Extensions
         {
             _storagePath = configuration["StoragePath"]!;
         }
-
-        public string Get(string fileName)
+        /// <summary>
+        /// Get File Export Storage Path Based On Name
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public string GetExport(string fileName)
         {
             string templateDirectory = Path.Combine(_storagePath, "ReportTemplates");
 
@@ -56,9 +60,64 @@ namespace Metadata.Core.Extensions
                     return "File not found";
             }
         }
+
+        /// <summary>
+        /// Get Machine Configured Storage Path
+        /// </summary>
+        /// <returns></returns>
         public string GetStoragePath()
         {
             return Path.Combine(_storagePath);
         }
+
+        /// <summary>
+        /// Get File Import Storage Path Based On Name
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public string GetImport(string fileName)
+        {
+            string templateDirectory = Path.Combine(_storagePath, "ImportCauHinhTemplates");
+
+            switch (fileName)
+            {
+                case "OwnerImportTemplate":
+
+                    return Path.Combine(templateDirectory, "OwnerImportTemplate.xlsx");
+
+                case "AssetGroupTemplate":
+
+                    return Path.Combine(templateDirectory, "AssetGroupTemplate.xlsx");
+
+                case "AssetUnitTemplate":
+
+                    return Path.Combine(templateDirectory, "AssetUnitTemplate.xlsx");
+
+                case "DeductionTypeTemplate":
+
+                    return Path.Combine(templateDirectory, "DeductionTypeTemplate.xlsx");
+
+                case "DocumentType":
+
+                    return Path.Combine(templateDirectory, "DocumentType.xlsx");
+
+                case "LandGroupTemplate":
+
+                    return Path.Combine(templateDirectory, "LandGroupTemplate.xlsx");
+                case "LandTypeTemplate":
+
+                    return Path.Combine(templateDirectory, "LandTypeTemplate.xlsx");
+                case "OrganizationTypeTemplate":
+
+                    return Path.Combine(templateDirectory, "OrganizationTypeTemplate.xlsx");
+                case "SupportTypeTemplate":
+
+                    return Path.Combine(templateDirectory, "SupportTypeTemplate.xlsx");
+
+                default:
+                    return "File not found";
+            }
+        }
+
     }
 }

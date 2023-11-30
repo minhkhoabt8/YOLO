@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+﻿using Metadata.Infrastructure.DTOs.Document;
+using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,8 @@ namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
         public DateTime? ExpriredTime { get; set; }
 
         public IEnumerable<UnitPriceAssetWriteDTO> UnitPriceAssets { get; set; }
+
+        public IEnumerable<DocumentWriteDTO>? Documents { get; set; }
+
     }
 }

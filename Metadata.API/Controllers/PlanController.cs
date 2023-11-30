@@ -70,17 +70,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get Plans Of Project
+        /// Query Plans Of Project
         /// </summary>
         /// <param name="projectId"></param>
+        /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("project")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> GetPlansOfProjectASync(string projectId)
+        public async Task<IActionResult> QueryPlansOfProjectAsync([FromQuery] string projectId, [FromQuery] PlanQuery query)
         {
-            var plans = await _planService.GetPlansOfProjectASync(projectId);
+            var plans = await _planService.QueryPlansOfProjectAsync(projectId, query);
 
-            return ResponseFactory.Ok(plans);
+            return ResponseFactory.PaginatedOk(plans);
         }
 
         /// <summary>

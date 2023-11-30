@@ -8,7 +8,8 @@ namespace Metadata.Core.Extensions
 {
     public interface IGetFileTemplateDirectory
     {
-        string Get(string fileName);
+        string GetExport(string fileName);
+        string GetImport(string fileName);
         string GetStoragePath();
     }
 }

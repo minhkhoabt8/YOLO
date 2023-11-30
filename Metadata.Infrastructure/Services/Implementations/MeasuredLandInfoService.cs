@@ -30,15 +30,29 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<MeasuredLandInfoReadDTO> CreateMeasuredLandInfoAsync(MeasuredLandInfoWriteDTO dto)
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
-                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+                ?? throw new EntityWithIDNotFoundException<UnitPriceLand>(dto.UnitPriceLandId);
 
             var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(dto.GcnLandInfoId) 
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
             if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
 
-
-            var measuredLandInfo = _mapper.Map<MeasuredLandInfo>(dto);
+            var measuredLandInfo = new MeasuredLandInfo()
+            {
+                MeasuredPageNumber = dto.MeasuredPageNumber,
+                MeasuredPlotNumber = dto.MeasuredPlotNumber,
+                MeasuredPlotAddress = dto.MeasuredPlotAddress,
+                LandTypeId = dto.LandTypeId,
+                MeasuredPlotArea = dto.MeasuredPlotArea,
+                WithdrawArea = dto.WithdrawArea,
+                CompensationPrice = dto.CompensationPrice,
+                CompensationRate = dto.CompensationRate,
+                UnitPriceLandCost = dto.UnitPriceLandCost ?? 0,
+                CompensationNote = dto.CompensationNote,
+                GcnLandInfoId = dto.GcnLandInfoId,
+                OwnerId = dto.OwnerId,
+                UnitPriceLandId = dto.UnitPriceLandId,
+            };
 
             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLandInfo);
 
@@ -74,14 +88,29 @@ namespace Metadata.Infrastructure.Services.Implementations
             foreach (var item in dto)
             {
                 var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(item.UnitPriceLandId)
-                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(item.UnitPriceLandId);
+                ?? throw new EntityWithIDNotFoundException<UnitPriceLand>(item.UnitPriceLandId);
 
                 var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(item.GcnLandInfoId)
                     ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(item.GcnLandInfoId);
 
                 if (gcnLandInfo.OwnerId != item.OwnerId) throw new InvalidActionException();
 
-                var landInfo = _mapper.Map<MeasuredLandInfo>(item);
+                var landInfo = new MeasuredLandInfo()
+                {
+                    MeasuredPageNumber = item.MeasuredPageNumber,
+                    MeasuredPlotNumber = item.MeasuredPlotNumber,
+                    MeasuredPlotAddress = item.MeasuredPlotAddress,
+                    LandTypeId = item.LandTypeId,
+                    MeasuredPlotArea = item.MeasuredPlotArea,
+                    WithdrawArea = item.WithdrawArea,
+                    CompensationPrice = item.CompensationPrice,
+                    CompensationRate = item.CompensationRate,
+                    UnitPriceLandCost = item.UnitPriceLandCost ?? 0,
+                    CompensationNote = item.CompensationNote,
+                    GcnLandInfoId = item.GcnLandInfoId,
+                    OwnerId = item.OwnerId,
+                    UnitPriceLandId = item.UnitPriceLandId,
+                };
 
                 landInfo.OwnerId = ownerId;
 
@@ -136,10 +165,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
                 ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
 
-            var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(dto.GcnLandInfoId)
+            if (!dto.GcnLandInfoId.IsNullOrEmpty())
+            {
+                var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(dto.GcnLandInfoId)
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
-            if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
+                if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException("Gcn Land Info And Measured Land Info Owner Mismatch.");
+            }
 
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
 

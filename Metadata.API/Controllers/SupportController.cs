@@ -90,7 +90,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QuerySupport([FromQuery] SupportQuery query)
         {
             var supports = await _supportService.QuerySupportAsync(query);
-            return ResponseFactory.Ok(supports);
+            return ResponseFactory.PaginatedOk(supports);
         }
     }
 }

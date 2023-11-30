@@ -79,8 +79,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                     document.CreatedBy = _userContextService.Username! ??
                         throw new CanNotAssignUserException();
 
-
-
                     await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
                 }
             }
