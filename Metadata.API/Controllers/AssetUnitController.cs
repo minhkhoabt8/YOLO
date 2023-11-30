@@ -28,7 +28,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryAssetUnit([FromQuery] AssetUnitQuery query)
         {
             var assetUnits = await _assetUnitService.QueryAssetUnitAsync(query);
-            return ResponseFactory.Ok(assetUnits);
+            return ResponseFactory.PaginatedOk(assetUnits);
         }
 
 

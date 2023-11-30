@@ -89,7 +89,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryAssetCompensation([FromQuery] AssetCompensationQuery query)
         {
             var assetCompensations = await _assetCompensationService.QueryAssetCompensationAsync(query);
-            return ResponseFactory.Ok(assetCompensations);
+            return ResponseFactory.PaginatedOk(assetCompensations);
         }
     }
 }
