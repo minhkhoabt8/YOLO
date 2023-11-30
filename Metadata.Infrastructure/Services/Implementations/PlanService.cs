@@ -358,7 +358,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopChiPhiBT");
+            var templateFileName = _getFileTemplateDirectory.GetExport("BangTongHopChiPhiBT");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -444,7 +444,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopThuHoi");
+            var templateFileName = _getFileTemplateDirectory.GetExport("BangTongHopThuHoi");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -525,7 +525,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new Exception("Value is null");
 
             //Get File Template
-            var fileName = _getFileTemplateDirectory.Get("PhuongAn_BaoCao");
+            var fileName = _getFileTemplateDirectory.GetExport("PhuongAn_BaoCao");
 
             var a = Path.Combine(_getFileTemplateDirectory.GetStoragePath(), "Temp");
             //Create new File Based on Template
