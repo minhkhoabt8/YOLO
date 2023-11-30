@@ -3,6 +3,7 @@ using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AuditTrail;
+using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using OfficeOpenXml;
@@ -149,7 +150,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
         //import data from excel
-        public async Task ImportAssetGroupsFromExcelAsync(string filePath)
+        public async Task<List<AssetGroupReadDTO>> ImportAssetGroupsFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -172,10 +173,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var assetGroup in assetGroups)
+            List<AssetGroupReadDTO> importedObjects = new List<AssetGroupReadDTO>();
+            foreach (var sp in assetGroups)
             {
-                await CreateAssetGroupAsync(assetGroup);
+                var importedObject = await CreateAssetGroupAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
         }
 
          public async Task<AssetGroupReadDTO> CreateAssetGroupAsync(AssetGroupWriteDTO assetGroupWriteDTO)

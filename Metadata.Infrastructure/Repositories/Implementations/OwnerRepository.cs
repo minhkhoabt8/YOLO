@@ -70,5 +70,30 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projecId && o.PlanId == null));
         }
+
+        //get owner by code and is deleted status 
+        public async Task<Owner?> FindByCodeAndIsDeletedStatus(string code)
+        {
+            return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerCode.ToLower() == code.ToLower() && x.IsDeleted == false);
+        }
+
+        //get owner by  only OwnerIdCode property and is delete status
+        public async Task<Owner?> FindByOwnerIdCodeAsync(string iDcode)
+        {
+            return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerIdCode == iDcode && x.IsDeleted == false);
+        }
+
+        //get owner by  only ownertaxcode property and is delete status
+        public async Task<Owner?> FindByTaxCodeAsync(string taxCode)
+        {
+            return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerTaxCode == taxCode && x.IsDeleted == false);
+        }
+
+
+       
+       
+
+
+
     }
 }

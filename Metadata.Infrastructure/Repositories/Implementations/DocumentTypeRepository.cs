@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.DocumentType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             if (!trackChanges)
             {
                 documentTypes = documentTypes.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                documentTypes = documentTypes.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                documentTypes = documentTypes.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                documentTypes = documentTypes.Where(c => c.Code.Contains(query.SearchByNames)); ;
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                documentTypes = documentTypes.OrderByDynamic(query.OrderBy);
             }
 
             IEnumerable<DocumentType> enumeratedDocumentTypes = documentTypes.AsEnumerable();

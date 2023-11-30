@@ -21,5 +21,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<int> GetTotalOwnerInPlanAsync(string planId);
         Task<IEnumerable<Owner>> GetOwnerInProjectThatNotInAnyPlanAsync(string projecId);
         Task<IEnumerable<Owner>> GetAllOwner();
+        Task<Owner?> FindByCodeAndIsDeletedStatus(string code);
+        Task<Owner?> FindByOwnerIdCodeAsync(string iDcode);
+        Task<Owner?> FindByTaxCodeAsync(string taxCode);
     }
 }

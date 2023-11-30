@@ -1,26 +1,17 @@
-﻿using Amazon.Runtime.Internal;
-using Aspose.Pdf;
+﻿using Aspose.Pdf;
 using Aspose.Pdf.Facades;
 using Aspose.Pdf.Forms;
 using Aspose.Pdf.Text;
-using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.AccountMapping;
-using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {

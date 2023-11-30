@@ -252,5 +252,35 @@ namespace Metadata.API.Controllers
             await _ownerService.DeleteOwner(id);
             return ResponseFactory.NoContent();
         }
+
+        //api check duplicate owner code
+        [HttpGet("check-duplicate-code")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CheckDuplicateOwnerCode(string code)
+        {
+            var result = await _ownerService.CheckDuplicateOwnerCodeAsync(code);
+            return ResponseFactory.Ok(result);
+        }
+
+        //api check duplicate owner id code
+        [HttpGet("check-duplicate-id-code")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CheckDuplicateOwnerIdCode(string idCode)
+        {
+            var result = await _ownerService.CheckDuplicateOwnerIdCodeAsync(idCode);
+            return ResponseFactory.Ok(result);
+        }
+
+        //api check duplicate owner tax code
+        [HttpGet("check-duplicate-tax-code")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        public async Task<IActionResult> CheckDuplicateOwnerTaxCode(string taxCode)
+        {
+            var result = await _ownerService.CheckDuplicateOwnerTaxCodeAsync(taxCode);
+            return ResponseFactory.Ok(result);
+        }
     }
 }

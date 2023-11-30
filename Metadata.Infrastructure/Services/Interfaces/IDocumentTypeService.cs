@@ -21,6 +21,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<IEnumerable<DocumentTypeReadDTO>> CreateListDocumentTypeAsync(IEnumerable<DocumentTypeWriteDTO> documentTypeWrites);
 
         Task<PaginatedResponse<DocumentTypeReadDTO>> QueryDocumentTypeAsync(DocumentTypeQuery paginationQuery);
-        Task ImportDocumenTypeFromExcelAsync(string filePath);
+        Task<List<DocumentTypeReadDTO>> ImportDocumenTypeFromExcelAsync(string filePath);
     }
 }

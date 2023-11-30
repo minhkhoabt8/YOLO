@@ -28,7 +28,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         //get plan by plan code
         public async Task<Plan?> GetPlanByPlanCodeAsync(string planCode)
         {
-            return await _context.Plans.Where(p => p.PlanCode == planCode).FirstOrDefaultAsync();
+            return await _context.Plans.Where(p => p.PlanCode == planCode && p.IsDeleted==false).FirstOrDefaultAsync();
         }
         public async Task<IEnumerable<Plan>> QueryAsync(PlanQuery query, bool trackChanges = false)
         {

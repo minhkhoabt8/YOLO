@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.AssetGroups.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
         }
 
-
+        
         public async Task<IEnumerable<AssetGroup>?> GetAllActivedDeletedAssetGroup()
         {
             return await _context.AssetGroups.Where(x => x.IsDeleted == false).ToListAsync();
@@ -49,7 +50,23 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 assetGroups = assetGroups.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                assetGroups = assetGroups.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                assetGroups = assetGroups.Where(c => c.Code.Contains(query.SearchText)); 
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                assetGroups = assetGroups.Where(c => c.Name.Contains(query.SearchByNames));
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                assetGroups = assetGroups.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<AssetGroup> enumeratedAssetGroups = assetGroups.AsEnumerable();
             return await Task.FromResult(enumeratedAssetGroups);
         }
