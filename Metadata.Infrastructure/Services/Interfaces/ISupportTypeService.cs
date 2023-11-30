@@ -21,6 +21,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task CheckCodeSupportTypeNotDuplicate(string code);
         Task<IEnumerable<SupportTypeReadDTO>> CreateLandTypesAsync(IEnumerable<SupportTypeWriteDTO> supportTypeWriteDTOs);
         Task<PaginatedResponse<SupportTypeReadDTO>> QuerySupportTypeAsync(SupportTypeQuery paginationQuery);
-        Task ImportSupportTypesFromExcelAsync(string filePath);
+        Task<List<SupportTypeReadDTO>> ImportSupportTypesFromExcelAsync(string filePath);
     }
 }

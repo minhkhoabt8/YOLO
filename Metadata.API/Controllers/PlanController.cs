@@ -312,5 +312,15 @@ namespace Metadata.API.Controllers
 
             return File(result.FileByte, result.FileType, result.FileName);
         }
+
+        //api check not allow duplicate plan code
+        [HttpGet("checknotallowduplicateplan/{planCode}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckNotAllowDuplicatePlanCode(string planCode)
+        {
+            var result = await _planService.CheckDuplicatePlanCodeAsync(planCode);
+
+            return ResponseFactory.Ok(result);
+        }
     }
 }

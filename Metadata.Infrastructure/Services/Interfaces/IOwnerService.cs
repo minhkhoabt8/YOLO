@@ -35,5 +35,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<OwnerReadDTO> UpdateOwnerStatusAsync(string ownerId, OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file);
 
         Task DeleteOldOwnerWhenCreatePlanCopy(string ownerId);
+        Task<bool> CheckDuplicateOwnerCodeAsync(string ownerCode);
+        Task<bool> CheckDuplicateOwnerIdCodeAsync(string ownerIdCode);
+        Task<bool> CheckDuplicateOwnerTaxCodeAsync(string ownerTaxCode);
     }
 }

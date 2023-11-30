@@ -171,8 +171,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _landGroupService.ImportLandGroupsFromExcelAsync(filePath);
-                return Ok("Land group imported successfully");
+                var dataImport = await _landGroupService.ImportLandGroupsFromExcelAsync(filePath);
+                return Ok(new { Message = "Land group imported successfully", Data = dataImport });
+                
             }
             catch (Exception ex)
             {

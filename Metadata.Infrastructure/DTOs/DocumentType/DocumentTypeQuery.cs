@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.DTOs.DocumentType
 {
-    public class DocumentTypeQuery : PaginatedQuery
+    public class DocumentTypeQuery : PaginatedQuery, ISearchTextQuery, IOrderedQuery
     {
+        public string? Include { get; set; }
+        public string? SearchText { get; set; }
+        public string? SearchByNames { get; set; }
+        public string? OrderBy { get; set; }
     }
 }

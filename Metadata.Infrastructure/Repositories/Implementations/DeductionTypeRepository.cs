@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 deductionTypes = deductionTypes.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                deductionTypes = deductionTypes.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                deductionTypes = deductionTypes.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                deductionTypes = deductionTypes.Where(c => c.Code.Contains(query.SearchByNames)); ;
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                deductionTypes = deductionTypes.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<DeductionType> enumeratedDeductionTypes = deductionTypes.AsEnumerable();
             return await Task.FromResult(enumeratedDeductionTypes);
         }

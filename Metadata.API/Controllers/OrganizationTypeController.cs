@@ -171,8 +171,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _organizationService.ImportOrganizationTypeFromExcelAsync(filePath);
-                return Ok("Organization type imported successfully");
+                var dataImport = await _organizationService.ImportOrganizationTypeFromExcelAsync(filePath);
+                return Ok(new { Message = "Organization type imported successfully", Data = dataImport });
+                
             }
             catch (Exception ex)
             {

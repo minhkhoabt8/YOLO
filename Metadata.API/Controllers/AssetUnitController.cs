@@ -174,8 +174,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _assetUnitService.ImportAssetUnitFromExcelAsync(filePath);
-                return Ok("Asset unit imported successfully");
+                var dataImport = await _assetUnitService.ImportAssetUnitFromExcelAsync(filePath);
+                return Ok(new { Message = "Asset unit imported successfully", Data = dataImport });
+               
             }
             catch (Exception ex)
             {

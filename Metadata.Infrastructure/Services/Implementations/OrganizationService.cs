@@ -2,6 +2,7 @@
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -157,7 +158,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
         //import data from excel
-        public async Task ImportOrganizationTypeFromExcelAsync(string filePath)
+        public async Task<List<OrganizationTypeReadDTO>> ImportOrganizationTypeFromExcelAsync(string filePath)
         {
             FileInfo fileInfo = new FileInfo(filePath);
             if (!fileInfo.Exists)
@@ -180,10 +181,18 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            foreach (var or in organizationType)
+            List<OrganizationTypeReadDTO> importedObjects = new List<OrganizationTypeReadDTO>();
+            foreach (var sp in organizationType)
             {
-                await CreateOrganizationTypeAsync(or);
+                var importedObject = await CreateOrganizationTypeAsync(sp);
+                if (importedObject != null)
+                {
+                    importedObjects.Add(importedObject);
+                }
             }
+            return importedObjects;
+
+            
         }
     }
 }

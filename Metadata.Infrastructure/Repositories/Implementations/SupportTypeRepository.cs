@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 supportTypes = supportTypes.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                supportTypes = supportTypes.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                supportTypes = supportTypes.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                supportTypes = supportTypes.Where(c => c.Code.Contains(query.SearchByNames)); ;
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                supportTypes = supportTypes.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<SupportType> enumeratedSupportTypes = supportTypes.AsEnumerable();
             return await Task.FromResult(enumeratedSupportTypes);
         }

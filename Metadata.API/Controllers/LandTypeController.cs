@@ -172,8 +172,9 @@ namespace Metadata.API.Controllers
 
             try
             {
-                await _landTypeService.ImportLandTypeFromExcelAsync(filePath);
-                return Ok("Land Type imported successfully");
+                var dataImport = await _landTypeService.ImportLandTypeFromExcelAsync(filePath);
+                return Ok(new { Message = "Land Type imported successfully", Data = dataImport });
+               
             }
             catch (Exception ex)
             {

@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
+using SharedLib.Infrastructure.Repositories.QueryExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 organizationTypes = organizationTypes.AsNoTracking();
             }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                organizationTypes = organizationTypes.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                organizationTypes = organizationTypes.Where(c => c.Name.Contains(query.SearchText)); ;
+            }
+            //search by code
+            if (!string.IsNullOrWhiteSpace(query.SearchByNames))
+            {
+                organizationTypes = organizationTypes.Where(c => c.Code.Contains(query.SearchByNames)); ;
+            }
 
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                organizationTypes = organizationTypes.OrderByDynamic(query.OrderBy);
+            }
             IEnumerable<OrganizationType> enumeratedOrganizationTypes = organizationTypes.AsEnumerable();
             return await Task.FromResult(enumeratedOrganizationTypes);
         }

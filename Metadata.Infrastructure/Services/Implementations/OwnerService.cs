@@ -18,6 +18,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
+using System.Numerics;
 using Owner = Metadata.Core.Entities.Owner;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -874,6 +875,38 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<OwnerReadDTO>(owner);
         }
+        // api check duplicate owner code
+        public async Task<bool> CheckDuplicateOwnerCodeAsync(string ownerCode)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(ownerCode);
+            if (owner != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(owner.OwnerCode), ownerCode);
+            }
+            return true;
+        }
 
+        // api check duplicate owner id code
+        public async Task<bool> CheckDuplicateOwnerIdCodeAsync(string ownerIdCode)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(ownerIdCode);
+            if (owner != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(owner.OwnerIdCode), ownerIdCode);
+            }
+            return true;
+        }
+
+        //api check duplicate owner tax code
+        public async Task<bool> CheckDuplicateOwnerTaxCodeAsync(string ownerTaxCode)
+        {
+            var owner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(ownerTaxCode);
+            if (owner != null)
+            {
+                throw new UniqueConstraintException<Project>(nameof(owner.OwnerTaxCode), ownerTaxCode);
+            }
+            return true;
+        }
     }
+
 }
