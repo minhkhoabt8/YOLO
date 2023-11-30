@@ -680,7 +680,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("plan_code");
             entity.Property(e => e.PlanCreateBase)
-                .HasMaxLength(50)
                 .HasColumnName("plan_create_base");
             entity.Property(e => e.PlanCreatedBy)
                 .HasMaxLength(20)
