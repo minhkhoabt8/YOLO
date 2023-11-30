@@ -33,7 +33,7 @@ namespace Metadata.API.Controllers
         {
             var priceAppliedCode = await _priceAppliedCodeService.QueryPriceAppliedCodeAsync(query);
 
-            return ResponseFactory.Ok(priceAppliedCode);
+            return ResponseFactory.PaginatedOk(priceAppliedCode);
         }
 
         /// <summary>

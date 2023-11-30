@@ -907,6 +907,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             return true;
         }
+
+        public async Task<PaginatedResponse<OwnerReadDTO>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query)
+        {
+            var owner = await _unitOfWork.OwnerRepository.QueryOwnersOfProjectAsync(projectId, query);
+            return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(owner, query, _mapper);
+        }
     }
 
 }

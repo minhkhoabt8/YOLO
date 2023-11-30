@@ -150,7 +150,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryDeductionTypes([FromQuery] DeductionTypeQuery query)
         {
             var deductionTypes = await _deductionTypeService.QueryDeductionTypesAsync(query);
-            return ResponseFactory.Ok(deductionTypes);
+            return ResponseFactory.PaginatedOk(deductionTypes);
         }
 
         //import data from excel

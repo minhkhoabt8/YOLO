@@ -2,6 +2,7 @@
 using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Owner;
+using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,6 +17,38 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public OwnerRepository(YoloMetadataContext context) : base(context)
         {
         }
+
+        public async Task<IEnumerable<Owner>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query, bool trackChanges = false)
+        {
+            IQueryable<Owner> owners = _context.Owners
+                .Include(o => o.Supports)
+                .Include(o => o.Deductions)
+                .Include(o => o.GcnlandInfos)
+                .Include(o => o.AssetCompensations)
+                .Include(o => o.AttachFiles)
+                .Where(e => e.IsDeleted == false && e.ProjectId == projectId);
+
+            if (!trackChanges)
+            {
+                owners = owners.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                owners = owners.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                owners = owners.Where(c => c.OwnerName.Contains(query.SearchText)); ;
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                owners = owners.OrderByDynamic(query.OrderBy);
+            }
+            IEnumerable<Owner> enumeratedOwner = owners.AsEnumerable();
+            return await Task.FromResult(enumeratedOwner);
+
+        }
+
 
         public async Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId)
         {

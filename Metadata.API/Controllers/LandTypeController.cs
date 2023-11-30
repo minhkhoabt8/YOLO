@@ -152,7 +152,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryLandType([FromQuery] LandTypeQuery query)
         {
             var landTypes = await _landTypeService.QueryLandTypeAsync(query);
-            return ResponseFactory.Ok(landTypes);
+            return ResponseFactory.PaginatedOk(landTypes);
         }
 
         //import data from excel

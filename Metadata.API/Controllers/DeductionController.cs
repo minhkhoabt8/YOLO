@@ -89,7 +89,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QuerySupport([FromQuery] DeductionQuery query)
         {
             var deductions = await _deductionService.QueryDeductionAsync(query);
-            return ResponseFactory.Ok(deductions);
+            return ResponseFactory.PaginatedOk(deductions);
         }
     }
 }

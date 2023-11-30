@@ -31,7 +31,7 @@ namespace Metadata.API.Controllers
         {
             var unitPriceAsset = await _unitPriceAssetService.UnitPriceAssetQueryAsync(query);
 
-            return ResponseFactory.Ok(unitPriceAsset);
+            return ResponseFactory.PaginatedOk(unitPriceAsset);
         }
 
 

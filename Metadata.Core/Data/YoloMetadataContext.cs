@@ -680,7 +680,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("plan_code");
             entity.Property(e => e.PlanCreateBase)
-                .HasMaxLength(50)
                 .HasColumnName("plan_create_base");
             entity.Property(e => e.PlanCreatedBy)
                 .HasMaxLength(20)
@@ -762,6 +761,29 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasMaxLength(20)
                 .HasColumnName("is_deleted");
+        });
+
+        modelBuilder.Entity<PriceAppliedCodeDocument>(entity =>
+        {
+            entity.Property(e => e.PriceAppliedCodeDocumentId)
+                .HasMaxLength(50)
+                .HasColumnName("price_applied_code_document_id");
+            entity.Property(e => e.DocumentId)
+                .HasMaxLength(50)
+                .HasColumnName("document_id");
+            entity.Property(e => e.PriceAppliedCodeId)
+                .HasMaxLength(50)
+                .HasColumnName("price_applied_code_id");
+
+            entity.HasOne(d => d.Document).WithMany(p => p.PriceAppliedCodeDocuments)
+                .HasForeignKey(d => d.DocumentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PriceAppliedCodeDocuments_Documents");
+
+            entity.HasOne(d => d.PriceAppliedCode).WithMany(p => p.PriceAppliedCodeDocuments)
+                .HasForeignKey(d => d.PriceAppliedCodeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PriceAppliedCodeDocuments_PriceAppliedCodes");
         });
 
         modelBuilder.Entity<Project>(entity =>

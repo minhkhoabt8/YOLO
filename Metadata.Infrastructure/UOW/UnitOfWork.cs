@@ -67,6 +67,8 @@ namespace Metadata.Infrastructure.UOW
 
         public ILandResettlementRepository LandResettlementRepository => GetSingletonRepository<ILandResettlementRepository>();
 
+        public IPriceAppliedCodeDocumentRepository PriceAppliedCodeDocumentRepository => GetSingletonRepository<IPriceAppliedCodeDocumentRepository>();
+
         public Task<int> CommitAsync()
         {
             OnBeforeSaveChanges();

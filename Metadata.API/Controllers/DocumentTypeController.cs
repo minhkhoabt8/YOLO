@@ -148,7 +148,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryDocumentType([FromQuery] DocumentTypeQuery query)
         {
             var documentTypes = await _documentTypeService.QueryDocumentTypeAsync(query);
-            return ResponseFactory.Ok(documentTypes);
+            return ResponseFactory.PaginatedOk(documentTypes);
         }
 
 
