@@ -46,7 +46,8 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<DocumentInProjectWriteDTO,Document>();
 
             //PriceApplyCode
-            CreateMap<PriceAppliedCode, PriceAppliedCodeReadDTO>();
+            CreateMap<PriceAppliedCode, PriceAppliedCodeReadDTO>()
+                .ForMember(des => des.Documents, act => act.MapFrom(src => src.PriceAppliedCodeDocuments.Select(pd => pd.Document)));
             CreateMap<PriceAppliedCodeWriteDTO, PriceAppliedCode>();
 
             //Owner

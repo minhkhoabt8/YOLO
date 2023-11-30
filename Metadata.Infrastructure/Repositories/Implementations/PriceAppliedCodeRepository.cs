@@ -38,6 +38,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
             IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes
+                //.Include(c=>c.UnitPriceAssets)
                 .Where(c => c.IsDeleted == false && c.ExpriredTime >= DateTime.UtcNow);
 
             if (!trackChanges)

@@ -51,6 +51,8 @@ public partial class Document : ITextSearchableEntity
 
     public virtual ICollection<ResettlementDocument> ResettlementDocuments { get; } = new List<ResettlementDocument>();
 
+    public virtual ICollection<PriceAppliedCodeDocument> PriceAppliedCodeDocuments { get; } = new List<PriceAppliedCodeDocument>();
+
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
         {() => nameof(Number), .5},
