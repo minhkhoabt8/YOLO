@@ -27,7 +27,7 @@ public class JWTTokenService : ITokenService
         var refreshToken = new RefreshToken
         {
             Token = Convert.ToBase64String(randomBytes),
-            Expires = DateTime.UtcNow.AddMinutes(45),
+            Expires = DateTime.UtcNow.AddHours(4),
             AccountId = account.Id
         };
 
@@ -50,7 +50,7 @@ public class JWTTokenService : ITokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(40),
+            Expires = DateTime.UtcNow.AddHours(3),
             Issuer = _configuration["JWT:Issuer"],
             SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
         };
