@@ -16,7 +16,7 @@ public partial class RefreshToken
 
     public DateTime Expires { get; set; }
 
-    public bool IsExpired => DateTime.Now >= Expires;
+    public bool IsExpired => DateTime.UtcNow >= Expires;
 
     public int ExpiresIn => (int)Expires.Subtract(DateTime.UtcNow).TotalSeconds;
 
@@ -24,7 +24,7 @@ public partial class RefreshToken
 
     public string? ReplacedBy { get; set; }
 
-    public DateTime? CreatedAt { get; set; } = DateTime.Now.SetKindUtc();
+    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow.SetKindUtc();
 
     public bool IsRevoked { get; set; } = false;
 
