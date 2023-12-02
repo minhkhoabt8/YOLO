@@ -1,26 +1,17 @@
-﻿using Amazon.Runtime.Internal;
-using Aspose.Pdf;
+﻿using Aspose.Pdf;
 using Aspose.Pdf.Facades;
 using Aspose.Pdf.Forms;
 using Aspose.Pdf.Text;
-using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
 using Metadata.Infrastructure.DTOs.AccountMapping;
-using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -174,6 +165,122 @@ namespace Metadata.Infrastructure.Services.Implementations
             return null;
         }
 
+        public async Task<ExportFileDTO> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = true)
+        {
+            try
+            {
+                if (documentFile == null || Path.GetExtension(documentFile.FileName)?.ToLower() != ".pdf")
+                {
+                    throw new InvalidOperationException("Invalid file format. Please provide a PDF file.");
+                }
+                var validUser = await _authService.GetAccountByIdAsync(userId);
+                if (validUser == null)
+                {
+                    throw new EntityWithIDNotFoundException<AccountMappping>(userId);
+                }
+                // Retrieve the storage path from configuration
+                string storagePath = _storagePath
+                    ?? throw new InvalidOperationException("Storage Path not configured.");
+                // Build the path for the user's certificate folder
+                string userCertificatePath = Path.Combine(storagePath, "YOLO-Certificates", userId);
+                // Check if the user's certificate folder exists, create it if not
+                if (!Directory.Exists(userCertificatePath))
+                {
+                    throw new DirectoryNotFoundException($"Certificate folder not found for user [{userId}].");
+                }
+                string certificatePath = Path.Combine(userCertificatePath, $"{userId}.pfx");
+                if (!File.Exists(certificatePath))
+                {
+                    throw new FileNotFoundException($"Certificate file not found for user [{userId}].");
+                }
+                PKCS7 pkcs = new PKCS7(certificatePath, signaturePassword);
+                TimestampSettings timestampSettings = new TimestampSettings("https://freetsa.org/tsr", string.Empty); // User/Password can be omitted
+
+                pkcs.TimestampSettings = timestampSettings;
+                // Load the PDF document
+                var pdfDoc = new Document();
+                MemoryStream memoryStream = new MemoryStream();
+                documentFile.CopyTo(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                pdfDoc = new Document(memoryStream);
+                // Specify the name of the field
+                string fieldName = "Người ký";
+                // Iterate through all pages in the PDF document
+                for (int pageIndex = 1; pageIndex <= pdfDoc.Pages.Count; pageIndex++)
+                {
+                    // Create TextFragmentAbsorber object to search text
+                    TextFragmentAbsorber textFragmentAbsorber = new TextFragmentAbsorber(fieldName);
+                    // Accept the absorber for the current page only
+                    pdfDoc.Pages[pageIndex].Accept(textFragmentAbsorber);
+                    var textFragments = textFragmentAbsorber.TextFragments;
+                    if (textFragments != null && textFragments.Count > 0)
+                    {
+                        TextFragment firstTextFragment = textFragments[1];
+                        
+                        // Instantiate the PdfFileSignature for the loaded PDF document
+                        Aspose.Pdf.Facades.PdfFileSignature pdfSignature = new Aspose.Pdf.Facades.PdfFileSignature(pdfDoc);
+                        // Assign the access permissions
+                        DocMDPSignature docMdpSignature = new DocMDPSignature(pkcs, DocMDPAccessPermissions.FillingInForms);
+                        
+                        // Sign the PDF file with the certify method
+                        if (replaceSignatureWithPicture)
+                        {
+                            pdfSignature.BindPdf(pdfDoc);
+                            System.Drawing.Rectangle stampRect = new System.Drawing.Rectangle(
+                            Convert.ToInt32(firstTextFragment.Rectangle.LLX),
+                            Convert.ToInt32(firstTextFragment.Rectangle.LLY - 110),
+                            Convert.ToInt32(firstTextFragment.Rectangle.Width + 100),
+                            Convert.ToInt32(firstTextFragment.Rectangle.Height) + 100);
+                            
+                            pdfSignature.SignatureAppearance = Path.Combine(_storagePath, "yolo-signature.png");
+       
+                            pdfSignature.Certify(pageIndex, $"Sign {Path.GetFileName(documentFile.FileName)}", $"{validUser.Phone}", "Binh-Dinh", true, stampRect, docMdpSignature);
+                        }
+                        else
+                        {
+                            // Get the position of the field
+                            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(
+                                Convert.ToInt32(firstTextFragment.Rectangle.LLX),
+                                Convert.ToInt32(firstTextFragment.Rectangle.LLY - 100),
+                                Convert.ToInt32(firstTextFragment.Rectangle.Width + 1000),
+                                Convert.ToInt32(firstTextFragment.Rectangle.Height) + 88);
+                            pdfSignature.Certify(pageIndex, $"Sign {Path.GetFileName(documentFile.FileName)}", $"{validUser.Phone}", "Binh-Dinh", true, rect, docMdpSignature);
+                        }
+                        // Set the certificate
+                        pdfSignature.SetCertificate(certificatePath, signaturePassword);
+                        // Save digitally signed PDF file in the user's folder
+                        string userFolderPath = Path.Combine(userCertificatePath, "SignedPDFs");
+                        Directory.CreateDirectory(userFolderPath); // Ensure the folder exists
+                        string signedPdfFileName = $"DigitallySignedPDF-{Path.GetFileNameWithoutExtension(documentFile.FileName)}-{Guid.NewGuid()}.pdf";
+                        string signedPdfFilePath = Path.Combine(userFolderPath, signedPdfFileName);
+                        var signedPdfFileStream = new FileStream(signedPdfFilePath, FileMode.Create);
+                        pdfSignature.Save(signedPdfFileStream);
+                        signedPdfFileStream.Close();
+                        // Read the file content for ExportFileDTO
+                        byte[] signedPdfFileBytes = File.ReadAllBytes(signedPdfFilePath);
+                        pdfSignature.Close();
+                        // Delete the signed PDF file if needed
+                        // File.Delete(signedPdfFilePath);
+                        return new ExportFileDTO
+                        {
+                            FileName = signedPdfFileName,
+                            FileByte = signedPdfFileBytes,
+                            FileType = "application/pdf"
+                        };
+                    }
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw new InvalidActionException($"File not found");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidActionException("Cannot Sign Document");
+            }
+            return null;
+        }
+
 
         public async Task GenerateSignerCertificateAsync(string signerId, string secretPassword)
         {
@@ -298,6 +405,17 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
+        public async Task<bool> VerifySignerSignatureExistAsync(string signerId)
+        {
+            // Get or create the folder based on the user's GUID
+            string folderPath = Path.Combine(_storagePath, "YOLO-Certificates", signerId);
+
+            if (Directory.Exists(folderPath) && Directory.EnumerateFiles(folderPath).Any())
+            {
+                throw new InvalidActionException("User Already Has Certificate");
+            }
+            return true;
+        }
 
     }
 }

@@ -23,8 +23,40 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId)
         {
-            return await Task.FromResult(_context.Plans.Include(c =>c .AttachFiles).Include(c => c.Owners).Where(c => c.ProjectId == projectId));
+            return await Task.FromResult(_context.Plans.Include(c => c.AttachFiles).Include(c => c.Owners).Where(c => c.ProjectId == projectId));
         }
+
+        public async Task<IEnumerable<Plan>> QueryPlansOfProjectAsync(string projectId, PlanQuery query, bool trackChanges = false)
+        {
+            IQueryable<Plan> plans = _context.Plans
+                .Include(c => c.AttachFiles)
+                .Include(c => c.Owners)
+                .Where(e => e.IsDeleted == false && e.ProjectId == projectId);
+
+            if (!trackChanges)
+            {
+                plans = plans.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                plans = plans.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                plans = plans.Where(c => c.PlanCode.Contains(query.SearchText));
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                plans = plans.OrderByDynamic(query.OrderBy);
+            }
+
+            IEnumerable<Plan> enumeratedPlan = plans.AsEnumerable();
+
+            return await Task.FromResult(enumeratedPlan);
+
+        }
+        
+
         //get plan by plan code
         public async Task<Plan?> GetPlanByPlanCodeAsync(string planCode)
         {

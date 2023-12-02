@@ -21,8 +21,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public string PlanReportInfo { get; set; }
 
         [MaxLength(10)]
-        public string? PlanCode { get; set; } = null ?? "Generated";
-        
+        public string? PlanCode { get; set; } = null ?? GeneratePlanCode();
+
         public string? PlanDescription { get; set; }
         [MaxLength(50)]
         public string? PlanCreateBase { get; set; }
@@ -47,5 +47,24 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public PlanStatusEnum? PlanStatus { get; set; } = PlanStatusEnum.DRAFT;
         //public IEnumerable<OwnerWriteDTO>? Owners { get; set; }
         public IEnumerable<AttachFileWriteDTO>? AttachFiles { get; set; }
+
+        public static string GeneratePlanCode()
+        {
+            const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string numbers = "0123456789";
+            Random random = new Random();
+
+            string firstPart = new string(Enumerable.Repeat(alphabet, 3)
+                                                     .Select(s => s[random.Next(s.Length)])
+                                                     .ToArray());
+
+            string secondPart = new string(Enumerable.Repeat(numbers, 2)
+                                                      .Select(s => s[random.Next(s.Length)])
+                                                      .ToArray());
+
+            string planCode = $"YOLO-{firstPart}{secondPart}";
+
+            return planCode;
+        }
     }
 }

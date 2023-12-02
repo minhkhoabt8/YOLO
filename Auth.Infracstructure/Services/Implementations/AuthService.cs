@@ -38,6 +38,8 @@ namespace Auth.Infrastructure.Services.Implementations
             //call Send SMS
             await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
 
+            await _smsService.SendOtpEmail(account.Email!, account.Otp!);
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<AccountReadDTO>(account);
@@ -92,7 +94,6 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = refreshToken!.Account.Username,
                 Role = refreshToken!.Account.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(refreshToken.Account),
-                //This is set to 3 Hours which mean value is 10800 but local machine time zone -1 hour so the value is 2 hour = 7200s
                 TokenExpires = 7200,
                 RefreshToken = newRefreshToken.Token,
                 RefreshTokenExpires = newRefreshToken.ExpiresIn
@@ -127,7 +128,6 @@ namespace Auth.Infrastructure.Services.Implementations
                 UserName = account!.Username,
                 Role = account!.Role.Name,
                 Token = await _tokenService.GenerateTokenAsync(account),
-                //This is set to 3 Hours which mean value is 10800 but local machine time zone -1 hour so the value is 2 hour = 7200s
                 TokenExpires = 7200,
                 RefreshToken = refreshToken.Token!,
                 RefreshTokenExpires = refreshToken.ExpiresIn
@@ -151,6 +151,8 @@ namespace Auth.Infrastructure.Services.Implementations
 
             ////call Send SMS
             await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
+
+            await _smsService.SendOtpEmail(account.Email!, account.Otp!);
 
             return account.Otp!;
         }

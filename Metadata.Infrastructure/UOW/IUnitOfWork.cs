@@ -41,6 +41,9 @@ namespace Metadata.Infrastructure.UOW
         public IResettlementProjectRepository ResettlementProjectRepository { get; }
         public IResettlementDocumentRepository ResettlementDocumentRepository { get; }
         public ILandResettlementRepository  LandResettlementRepository { get; }
+
+        public IPriceAppliedCodeDocumentRepository PriceAppliedCodeDocumentRepository { get; }
+
         Task<int> CommitAsync();
     }
 }

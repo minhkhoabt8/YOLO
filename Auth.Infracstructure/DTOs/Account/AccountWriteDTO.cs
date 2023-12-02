@@ -16,5 +16,7 @@ namespace Auth.Infrastructure.DTOs.Account
         public string Phone { get; set; }
         [Required]
         public string RoleId { get; set; }
+        [Required]
+        public string Email { get; set; }
     }
 }

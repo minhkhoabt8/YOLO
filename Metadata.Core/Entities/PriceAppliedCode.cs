@@ -22,6 +22,8 @@ public partial class PriceAppliedCode : ITextSearchableEntity
 
     public virtual ICollection<UnitPriceAsset> UnitPriceAssets { get; } = new List<UnitPriceAsset>();
 
+    public virtual ICollection<PriceAppliedCodeDocument> PriceAppliedCodeDocuments { get; } = new List<PriceAppliedCodeDocument>();
+
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
         {() => nameof(UnitPriceCode), .100}

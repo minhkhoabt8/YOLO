@@ -49,7 +49,47 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (name.ToLower().Equals("owner"))
             {
-                fileName = _getFileTemplateDirectory.Get("BangNhapChuSoHuu");
+                fileName = _getFileTemplateDirectory.GetImport("OwnerImportTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("assetgroup"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("AssetGroupTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("assetunit"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("AssetUnitTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("deductiontype"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("DeductionTypeTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("documenttype"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("DocumentType");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("landgroup"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("LandGroupTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("landtype"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("LandTypeTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("organizationtype"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("OrganizationTypeTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("supporttype"))
+            {
+                fileName = _getFileTemplateDirectory.GetExport("SupportTypeTemplate");
             }
 
             if (!File.Exists(fileName))
@@ -212,5 +252,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
         }
+
+
+
+
     }
 }

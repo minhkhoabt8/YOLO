@@ -358,7 +358,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopChiPhiBT");
+            var templateFileName = _getFileTemplateDirectory.GetExport("BangTongHopChiPhiBT");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -444,7 +444,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var detail = await getDataForBTHChiPhiAsync(planId) ?? throw new Exception("Value is null");
 
-            var templateFileName = _getFileTemplateDirectory.Get("BangTongHopThuHoi");
+            var templateFileName = _getFileTemplateDirectory.GetExport("BangTongHopThuHoi");
             var templateFile = new FileInfo(templateFileName);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -525,7 +525,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new Exception("Value is null");
 
             //Get File Template
-            var fileName = _getFileTemplateDirectory.Get("PhuongAn_BaoCao");
+            var fileName = _getFileTemplateDirectory.GetExport("PhuongAn_BaoCao");
 
             var a = Path.Combine(_getFileTemplateDirectory.GetStoragePath(), "Temp");
             //Create new File Based on Template
@@ -743,10 +743,18 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectASync(string projectId)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query)
+        {
+            var plan = await _unitOfWork.PlanRepository.QueryPlansOfProjectAsync(projectId, query);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
+        public async Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectAsync(string projectId)
         {
             return _mapper.Map<IEnumerable<PlanReadDTO>>(await _unitOfWork.PlanRepository.GetPlansOfProjectAsync(projectId));
         }
+
 
         public async Task<PlanReadDTO> ApprovePlanAsync(string planId, string signaturePassword, IFormFile signingFile)
         {
@@ -774,7 +782,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new ForbiddenException("Current user is not authorized to perform this action.");
             }
 
-            var file = await _digitalSignatureService.SignDocumentAsync(plan.PlanApprovedBy ?? signerId, signingFile, signaturePassword);
+            var file = await _digitalSignatureService.SignDocumentWithPictureAsync(plan.PlanApprovedBy ?? signerId, signingFile, signaturePassword, true);
 
             var attachFile = new AttachFileWriteDTO
             {

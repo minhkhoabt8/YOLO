@@ -27,14 +27,16 @@ namespace Metadata.API.Controllers
         /// <param name="userId"></param>
         /// <param name="documentFile"></param>
         /// <param name="signaturePassword"></param>
+        /// <param name="replaceSignatureWithPicture"></param>
         /// <returns></returns>
-        [HttpPost("sign")]
-        public async Task<IActionResult> SignDocumentAsync(string userId, IFormFile documentFile, string signaturePassword)
+        [HttpPost("signPicture")]
+        public async Task<IActionResult> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = false)
         {
-            var signedDocument = await _digitalSignatureService.SignDocumentAsync(userId, documentFile, signaturePassword);
+            var signedDocument = await _digitalSignatureService.SignDocumentWithPictureAsync(userId, documentFile, signaturePassword, replaceSignatureWithPicture);
 
             return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
         }
+
 
         /// <summary>
         /// Create Signer Signature Async
@@ -48,6 +50,20 @@ namespace Metadata.API.Controllers
             await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
 
             return ResponseFactory.NoContent();
+        }
+
+
+        /// <summary>
+        /// Verify Signer Signature Exist
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <returns></returns>
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifySignerSignatureExistAsync([Required] string signerId)
+        {
+            var result = await _digitalSignatureService.VerifySignerSignatureExistAsync(signerId);
+
+            return ResponseFactory.Accepted(result.ToString());
         }
 
     }

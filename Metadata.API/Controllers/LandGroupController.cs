@@ -150,7 +150,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QueryLandGroup([FromQuery] LandGroupQuery query)
         {
             var landGroups = await _landGroupService.QueryLandGroupAsync(query);
-            return ResponseFactory.Ok(landGroups);
+            return ResponseFactory.PaginatedOk(landGroups);
         }
 
 

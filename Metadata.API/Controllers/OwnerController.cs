@@ -55,17 +55,18 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get All Owners Of Project
+        /// Query Owners Of Project
         /// </summary>
         /// <param name="projectId"></param>
+        /// <param name="query"></param>
         /// <returns></returns>
-        [HttpGet("project/{projectId}")]
+        [HttpGet("project")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
-        public async Task<IActionResult> GetOwnersOfProjectAsync(string projectId)
+        public async Task<IActionResult> QueryOwnersOfProjectAsync([FromQuery] string projectId, [FromQuery] OwnerQuery query)
         {
-            var owner = await _ownerService.GetOwnersOfProjectAsync(projectId);
+            var owner = await _ownerService.QueryOwnersOfProjectAsync(projectId, query);
 
-            return ResponseFactory.Ok(owner);
+            return ResponseFactory.PaginatedOk(owner);
         }
 
 

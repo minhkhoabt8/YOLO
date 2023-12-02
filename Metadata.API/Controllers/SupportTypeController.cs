@@ -148,7 +148,7 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> QuerySupportType([FromQuery] SupportTypeQuery query)
         {
             var supportTypes = await _supportTypeService.QuerySupportTypeAsync(query);
-            return ResponseFactory.Ok(supportTypes);
+            return ResponseFactory.PaginatedOk(supportTypes);
         }
 
         //import data from excel
