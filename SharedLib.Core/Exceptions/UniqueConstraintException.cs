@@ -7,7 +7,8 @@ public class UniqueConstraintException : HandledException
     }
 
     public UniqueConstraintException(string entityClassName, string propertyName, object duplicateValue) : this(
-        $"Unique property {propertyName} with value ({duplicateValue}) already existed in another {entityClassName}")
+        /*$"Unique property {propertyName} with value ({duplicateValue}) already existed in another {entityClassName}"*/
+        $"Thuộc tính {propertyName} có giá trị ({duplicateValue}) đã tồn tại trong một {entityClassName} khác")
     {
     }
 }

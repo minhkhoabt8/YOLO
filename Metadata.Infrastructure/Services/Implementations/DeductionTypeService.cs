@@ -105,7 +105,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType.Code), code);
             }
-            var existDeductionType2 = await _unitOfWork.DeductionTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(name,id, false);
+            var existDeductionType2 = await _unitOfWork.DeductionTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name,id, false);
             if (existDeductionType2 != null && existDeductionType2.Name == name && existDeductionType2.DeductionTypeId != id)
             {
                 throw new UniqueConstraintException<DeductionType>(nameof(existDeductionType2.Name), name);
