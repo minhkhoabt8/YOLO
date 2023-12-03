@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -179,6 +180,28 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
 
             return _mapper.Map<ResettlementProjectReadDTO>(resettlement);
+        }
+
+        //CheckNameResettlementProjectNotDuplicate
+        public async Task<bool> CheckNameResettlementProjectNotDuplicateAsync(string name)
+        {
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindByNameAndIsDeletedStatus(name , false);
+
+            if (resettlement != null && resettlement.Name == name)
+            {
+                throw new UniqueConstraintException<ResettlementProject>(nameof(resettlement.Name), name);
+            }
+            return true;
+        }
+        public async Task<bool> CheckCodeResettlementProjectNotDuplicateAsync(string code)
+        {
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.FindByCodeAndIsDeletedStatus(code, false);
+
+            if (resettlement != null && resettlement.Code == code)
+            {
+                throw new UniqueConstraintException<ResettlementProject>(nameof(resettlement.Code), code);
+            }
+            return true;
         }
 
     }

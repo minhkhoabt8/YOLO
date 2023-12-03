@@ -18,5 +18,8 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<ResettlementProject>> GetResettlementProjectsInProjectAsync(string projectId);
         Task<ResettlementProject?> GetResettlementProjectInProjectAsync(string projectId);
+
+        Task<ResettlementProject?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
+        Task<ResettlementProject?> FindByNameAndIsDeletedStatus(string code, bool isDeleted);
     }
 }

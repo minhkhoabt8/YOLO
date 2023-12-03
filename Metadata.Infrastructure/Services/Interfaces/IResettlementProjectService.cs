@@ -16,5 +16,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<ResettlementProjectReadDTO>> ResettlementProjectQueryAsync(ResettlementProjectQuery query);
         Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId);
         Task<ResettlementProjectReadDTO> CreateResettlementProjectDocumentsAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documentDtos);
+        Task<bool> CheckCodeResettlementProjectNotDuplicateAsync(string code);
+        Task<bool> CheckNameResettlementProjectNotDuplicateAsync(string name);
     }
 }

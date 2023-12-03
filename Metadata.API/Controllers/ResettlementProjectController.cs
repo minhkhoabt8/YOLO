@@ -132,5 +132,22 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
+        //api check not allow duplicate resettle ment project code
+        [HttpGet("check-duplicate-code")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCodeAsync(string code)
+        {
+            var isDuplicate = await _resettlementProjectService.CheckCodeResettlementProjectNotDuplicateAsync(code);
+            return ResponseFactory.Ok(isDuplicate);
+        }
+
+        //api check not allow duplicate resettle ment project cname
+        [HttpGet("check-duplicate-name")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicateCnameAsync(string cname)
+        {
+            var isDuplicate = await _resettlementProjectService.CheckNameResettlementProjectNotDuplicateAsync(cname);
+            return ResponseFactory.Ok(isDuplicate);
+        }
     }
 }

@@ -58,5 +58,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
             return await Task.FromResult(enumeratedresettlementProjects);
         }
+        //FindByCode And IsDeletedStatus
+        public async Task<ResettlementProject?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted)
+        {
+            return await _context.ResettlementProjects.FirstOrDefaultAsync(x => x.Code.ToLower() == code.ToLower() && x.IsDeleted == isDeleted);
+        }
+        //FindByName And IsDeletedStatus
+        public async Task<ResettlementProject?> FindByNameAndIsDeletedStatus(string name, bool isDeleted)
+        {
+            return await _context.ResettlementProjects.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
+        }
     }
 }
