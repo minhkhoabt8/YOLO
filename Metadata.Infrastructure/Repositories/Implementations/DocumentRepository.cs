@@ -39,6 +39,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                     .ToListAsync();
         }
 
+        public async Task<Document?> CheckDuplicateDocumentAsync(int number, string notation, string epitome)
+        {
+            return await _context.Documents.FirstOrDefaultAsync(c => c.Number == number.ToString() && c.Notation.ToLower() == notation.ToLower() && c.Epitome.ToLower() == epitome.ToLower() && c.IsDeleted == false);
+        }
+
         public async Task<IEnumerable<Document>> QueryAsync(DocumentQuery query, bool trackChanges = false)
         {
             IQueryable<Document> documents = _context.Documents.Include(c=>c.DocumentType).Where(c => c.IsDeleted == false);

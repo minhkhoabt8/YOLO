@@ -665,6 +665,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
+            var duplicateOwner = await _unitOfWork.OwnerRepository.CheckDuplicateOwnerAsync(dto.OwnerCode, dto.OwnerName, dto.OwnerTaxCode, dto.OwnerIdCode);
+
+            if(duplicateOwner != null)
+            {
+                throw new UniqueConstraintException("Có một chủ sở hữu khác đã tồn tại trong hệ thống.");
+            }
+
             _mapper.Map(dto, owner);
 
             owner.OwnerCreatedBy = _userContextService.Username!

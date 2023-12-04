@@ -21,5 +21,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
 
         Task<ResettlementProject?> FindByCodeAndIsDeletedStatus(string code, bool isDeleted);
         Task<ResettlementProject?> FindByNameAndIsDeletedStatus(string code, bool isDeleted);
+        Task<ResettlementProject?> CheckDuplicateResettlementProjectAsync(string code, string name);
     }
 }

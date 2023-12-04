@@ -327,15 +327,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             //    }
             //}
 
+            var duplicateProject = await _unitOfWork.ProjectRepository.CheckDuplicateProjectAsync(dto.ProjectCode, dto.ProjectName);
+
+            if(duplicateProject != null)
+            {
+                throw new UniqueConstraintException("Có một dự án khác đã tồn tại trong hệ thống");
+            }
+
             if(project.Owners != null)
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
-                    throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
-                }
-                if(project.UnitPriceLands != null)
-                {
-                    
+                    throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có chủ sở hữu.");
                 }
             }
 

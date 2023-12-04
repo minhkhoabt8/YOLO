@@ -68,5 +68,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.ResettlementProjects.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower() && x.IsDeleted == isDeleted);
         }
+        public async Task<ResettlementProject?> CheckDuplicateResettlementProjectAsync(string code, string name)
+        {
+            return await _context.ResettlementProjects.FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower()&& x.Code.ToLower() == code.ToLower() && x.IsDeleted == false);
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                projects = projects.Where(c => c.ProjectName.Contains(query.SearchText));
+                projects = projects.Where(c => c.ProjectName.Contains(query.SearchText) || c.ProjectCode.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
@@ -68,6 +68,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<IEnumerable<Project>> GetProjectsOfOwnerAsync(string ownerId)
         {
             return await _context.Projects.Where(p => p.ProjectCode == ownerId).ToListAsync();
+        }
+
+
+        public async Task<Project?> CheckDuplicateProjectAsync(string projectCode, string projectName)
+        {
+            return await _context.Projects.Where(p => p.ProjectName.ToLower() == projectName.ToLower() && p.ProjectCode.ToLower() ==projectCode.ToLower() && p.IsDeleted == false).FirstOrDefaultAsync();
         }
     }
 }

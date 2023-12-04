@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<Document?>> GetDocumentsOfProjectAsync(string projectId);
         Task<IEnumerable<Document?>> GetDocumentsOfResettlemtProjectAsync(string resettlementProjectId);
+        Task<Document?> CheckDuplicateDocumentAsync(int number, string notation, string epitome);
     }
 }
