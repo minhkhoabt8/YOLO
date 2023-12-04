@@ -6,6 +6,7 @@ using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.AssetCompensation;
+using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
@@ -205,9 +206,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PriceAppliedCodeReadDTO> GetPriceAppliedCodeAsync(string Id)
         {
-            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include: "UnitPriceAssets");
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include: "UnitPriceAssets, PriceAppliedCodeDocuments");
 
-            return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
+            var priceAppliedCodeDTO =  _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
+
+            priceAppliedCodeDTO.Documents = _mapper.Map<IEnumerable<DocumentReadDTO>>(await _unitOfWork.DocumentRepository.GetDocumentsOfPriceAppliedCodeAsync(priceAppliedCode.PriceAppliedCodeId));
+
+            return priceAppliedCodeDTO;
         }
 
         public async Task<PaginatedResponse<PriceAppliedCodeReadDTO>> QueryPriceAppliedCodeAsync(PriceAppliedCodeQuery paginationQuery)
