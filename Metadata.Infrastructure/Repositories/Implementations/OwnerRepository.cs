@@ -38,7 +38,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                owners = owners.Where(c => c.OwnerName.Contains(query.SearchText)); ;
+                owners = owners.Where(c => c.OwnerName.Contains(query.SearchText) || c.OwnerCode.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
@@ -122,11 +122,24 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerTaxCode == taxCode && x.IsDeleted == false);
         }
 
+        public async Task<Owner?> CheckDuplicateOwnerAsync(string code, string name, string taxCode, string ownerIdCode)
+        {
+            IQueryable<Owner> owners = _context.Owners.Where(o => o.OwnerCode.ToLower() == code.ToLower() && o.OwnerName.ToLower() == name.ToLower() && o.IsDeleted == false);
 
+            if (taxCode != null)
+            {
+                owners = owners.Where(x => x.OwnerTaxCode == taxCode);
+            }
+
+            if (ownerIdCode != null)
+            {
+                owners = owners.Where(x => x.OwnerIdCode == ownerIdCode);
+            }
+
+            var result = await owners.FirstOrDefaultAsync();
+
+            return result;
+        }
        
-       
-
-
-
     }
 }

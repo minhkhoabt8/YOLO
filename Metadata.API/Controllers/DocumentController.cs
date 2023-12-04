@@ -48,6 +48,22 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
+        /// Check Duplicate Document
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="notation"></param>
+        /// <param name="epitome"></param>
+        /// <returns></returns>
+        [HttpGet("duplicate")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DocumentReadDTO>))]
+        public async Task<IActionResult> CheckDuplicateDocumentAsync(int number, string notation, string epitome)
+        {
+            var document = await _documentService.CheckDuplicateDocumentAsync(number, notation, epitome);
+            return ResponseFactory.Ok(document);
+        }
+
+
+        /// <summary>
         /// Get Excel File Import Template
         /// </summary>
         /// <param name="name"></param>
@@ -70,7 +86,7 @@ namespace Metadata.API.Controllers
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<DocumentReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CreateDocumentAsync([FromForm] DocumentWriteDTO dtos)
+        public async Task<IActionResult> CreateDocumentAsync(DocumentWriteDTO dtos)
         {
 
             var documents = await _documentService.CreateDocumentAsync(dtos);
@@ -89,7 +105,7 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DocumentReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> UpdateDocument(string id,[FromForm] DocumentWriteDTO writeDTO)
+        public async Task<IActionResult> UpdateDocument(string id, DocumentWriteDTO writeDTO)
         {
             var document = await _documentService.UpdateDocumentAsync(id, writeDTO);
             return ResponseFactory.Ok(document);

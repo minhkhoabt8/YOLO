@@ -158,6 +158,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(planId);
 
+            var duplicatePlan = await _unitOfWork.PlanRepository.GetPlanByPlanCodeAsync(dto.PlanCode!);
+
+            if(duplicatePlan != null)
+            {
+                throw new UniqueConstraintException("Có một phương án khác đã tồn tại trong hệ thống");
+            }
+
             if (plan.PlanStatus == PlanStatusEnum.REJECTED.ToString()
                 || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString()
                 || plan.PlanStatus == PlanStatusEnum.APPROVED.ToString())

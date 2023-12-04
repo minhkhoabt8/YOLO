@@ -145,7 +145,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetUnit.Code), code);
             }
-            var assetUnitByName = await _unitOfWork.AssetUnitRepository.FindByCodeAndIsDeletedStatusForUpdate(name, id, false);
+            var assetUnitByName = await _unitOfWork.AssetUnitRepository.FindByNameAndIsDeletedStatusForUpdate(name, id, false);
             if (assetUnitByName != null && assetUnitByName.Name == name && assetUnitByName.AssetUnitId != id)
             {
                 throw new UniqueConstraintException<AssetGroup>(nameof(assetUnitByName.Name), name);

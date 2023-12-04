@@ -197,6 +197,7 @@ public static class ServiceExtensions
         services.AddScoped<IResettlementProjectRepository, ResettlementProjectRepository>();
         services.AddScoped<ILandResettlementRepository, LandResettlementRepository>();
         services.AddScoped<IResettlementDocumentRepository, ResettlementDocumentRepository>();
+        services.AddScoped<IPriceAppliedCodeDocumentRepository, PriceAppliedCodeDocumentRepository>();
     }
 
     public static void AddUOW(this IServiceCollection services)

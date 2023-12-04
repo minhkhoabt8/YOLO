@@ -22,8 +22,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
 
         Task<IEnumerable<Project>> GetProjectsOfOwnerAsync(string ownerId);
         Task<Project?> GetProjectByProjectCodeAsync(string projectCode);
-
-
+        Task<Project?> CheckDuplicateProjectAsync(string projectCode, string projectName);
         Task<Project?> GetProjectByNameAsync(string projectName);
     }
 }

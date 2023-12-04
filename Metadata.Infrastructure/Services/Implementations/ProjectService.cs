@@ -20,6 +20,7 @@ using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
 using Xceed.Document.NET;
+using Document = Metadata.Core.Entities.Document;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -182,31 +183,52 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 foreach(var documentDto  in projectDto.ProjectDocuments!)
                 {
-                    var fileUpload = new UploadFileDTO
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
                     {
-                        File = documentDto.FileAttach!,
-                        FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                        FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                    };
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
 
-                    var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                        if(existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
+                            
+                        //Assign Document To Project
+                        var projectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, existDocument.DocumentId);
 
-                    var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                        await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
+                    }
+                    //Else documentDTO.Id null => create new Document with New Project
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
 
-                    document.ReferenceLink = returnUrl;
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                    document.FileName = documentDto.FileName!;
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                    document.FileSize = documentDto.FileAttach.Length;
+                        document.ReferenceLink = returnUrl;
 
-                    document.CreatedBy = _userContextService.Username! ??
-                        throw new CanNotAssignUserException();
+                        document.FileName = documentDto.FileName!;
 
-                    await _unitOfWork.DocumentRepository.AddAsync(document);
+                        document.FileSize = documentDto.FileAttach.Length;
 
-                    var projectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, document.DocumentId);
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
 
-                    await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
+                        await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                        var projectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, document.DocumentId);
+
+                        await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
+                    }
+
                 }
 
             }
@@ -327,15 +349,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             //    }
             //}
 
+            var duplicateProject = await _unitOfWork.ProjectRepository.CheckDuplicateProjectAsync(dto.ProjectCode, dto.ProjectName);
+
+            if(duplicateProject != null)
+            {
+                throw new UniqueConstraintException("Có một dự án khác đã tồn tại trong hệ thống");
+            }
+
             if(project.Owners != null)
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
-                    throw new InvalidActionException("Cannot Update Price Apply Code In Project That Aldready Have Owners");
-                }
-                if(project.UnitPriceLands != null)
-                {
-                    
+                    throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có chủ sở hữu.");
                 }
             }
 

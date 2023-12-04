@@ -253,7 +253,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
         }
 
+        public async Task<DocumentReadDTO> CheckDuplicateDocumentAsync(int number, string notation, string epitome)
+        {
+            var document = await _unitOfWork.DocumentRepository.CheckDuplicateDocumentAsync(number, notation, epitome);
 
+            return _mapper.Map<DocumentReadDTO>(document);
+        }
 
 
     }

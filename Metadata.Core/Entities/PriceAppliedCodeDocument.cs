@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace Metadata.Core.Entities
 {
     public class PriceAppliedCodeDocument
     {
-        public string PriceAppliedCodeDocumentId { get; set; }
+        [Key]
+        public string PriceAppliedCodeDocumentId { get; set; } =  null!;
 
         public string PriceAppliedCodeId { get; set; } = null!;
 
