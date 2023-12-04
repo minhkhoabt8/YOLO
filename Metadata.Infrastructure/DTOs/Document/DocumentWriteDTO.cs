@@ -15,9 +15,9 @@ namespace Metadata.Infrastructure.DTOs.Document
         [Required]
         [MaxLength(50)]
         public string DocumentTypeId { get; set; }
-        [Required]
-        [MaxLength(10)]
-        public string Number { get; set; }
+        [Range(0, 9999)]
+        [DefaultValue(0)]
+        public int Number { get; set; } = 0;
         [Required]
         [MaxLength(10)]
         public string Notation { get; set; }

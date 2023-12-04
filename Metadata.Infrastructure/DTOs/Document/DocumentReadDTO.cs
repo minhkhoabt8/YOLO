@@ -15,7 +15,7 @@ namespace Metadata.Infrastructure.DTOs.Document
 
         public string DocumentTypeId { get; set; }
 
-        public string Number { get; set; }
+        public int Number { get; set; }
 
         public string Notation { get; set; }
 
