@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SharedLib.Core.Attributes;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -37,6 +38,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         [InputType(typeof(DateTime))]
         public DateTime ProjectCreatedTime { get; set; }
         [Range(0, 9999)]
+        [DefaultValue(2023)]
         public int ImplementationYear { get; set; } = 2023;
         [MaxLength(20)]
         public string? RegulatedUnitPrice { get; set; }

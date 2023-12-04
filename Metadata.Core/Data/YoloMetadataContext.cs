@@ -72,6 +72,8 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<UnitPriceLand> UnitPriceLands { get; set; }
 
+    public virtual DbSet<PriceAppliedCodeDocument> PriceAppliedCodeDocuments { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetCompensation>(entity =>
@@ -300,7 +302,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnName("notation");
             entity.Property(e => e.Note).HasColumnName("note");
             entity.Property(e => e.Number)
-                .HasMaxLength(10)
                 .HasColumnName("number");
             entity.Property(e => e.Pen).HasColumnName("pen");
             entity.Property(e => e.PublishedDate)
@@ -834,7 +835,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(200)
                 .HasColumnName("project_location");
             entity.Property(e => e.ProjectName)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .HasColumnName("project_name");
             entity.Property(e => e.ProjectNote)
                 .HasMaxLength(50)
