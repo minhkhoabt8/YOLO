@@ -60,7 +60,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                     foreach (var asset in item.UnitPriceAssets)
                     {
                         var assetDto = _mapper.Map<UnitPriceAsset>(asset);
+
                         assetDto.PriceAppliedCodeId = priceAppliedCode.PriceAppliedCodeId;
+
                         priceAppliedCode.UnitPriceAssets.Add(assetDto);
                     }
                 }
@@ -101,9 +103,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 //await _unitOfWork.PriceAppliedCodeRepository.AddAsync(priceAppliedCode);
 
                 var priceAppliedCodeReadDTO = _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
+
                 priceAppliedCodes.Add(priceAppliedCodeReadDTO);
             }
+
             await _unitOfWork.CommitAsync();
+
             return priceAppliedCodes;
         }
 

@@ -72,6 +72,8 @@ public partial class YoloMetadataContext : DbContext
 
     public virtual DbSet<UnitPriceLand> UnitPriceLands { get; set; }
 
+    public virtual DbSet<PriceAppliedCodeDocument> PriceAppliedCodeDocuments { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AssetCompensation>(entity =>
