@@ -360,11 +360,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             //    }
             //}
 
-            var duplicateProject = await _unitOfWork.ProjectRepository.CheckDuplicateProjectAsync(dto.ProjectCode, dto.ProjectName);
-
-            if(duplicateProject != null)
+            if(dto.ProjectCode.ToLower() != project.ProjectCode.ToLower() && dto.ProjectName.ToLower() != project.ProjectName.ToLower())
             {
-                throw new UniqueConstraintException("Có một dự án khác đã tồn tại trong hệ thống");
+                var duplicateProject = await _unitOfWork.ProjectRepository.CheckDuplicateProjectAsync(dto.ProjectCode, dto.ProjectName);
+
+                if (duplicateProject != null)
+                {
+                    throw new UniqueConstraintException("Có một dự án khác đã tồn tại trong hệ thống");
+                }
             }
 
             if(project.Owners != null)

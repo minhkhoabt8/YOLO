@@ -151,13 +151,16 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new EntityWithIDNotFoundException<ResettlementProject>(id);
             }
 
-            var duplicateResettlement = await _unitOfWork.ResettlementProjectRepository.CheckDuplicateResettlementProjectAsync(dto.Code, dto.Name);
-
-            if(duplicateResettlement != null)
+            if (dto.Code!.ToLower() != resettlement.Code.ToLower() && dto.Name!.ToLower() != resettlement.Name.ToLower())
             {
-                throw new UniqueConstraintException("Có một dự án tái định cư khác đã tồn tại trong hệ thống");
-            }
+                var duplicateResettlement = await _unitOfWork.ResettlementProjectRepository.CheckDuplicateResettlementProjectAsync(dto.Code, dto.Name);
 
+                if (duplicateResettlement != null)
+                {
+                    throw new UniqueConstraintException("Có một dự án tái định cư khác đã tồn tại trong hệ thống");
+                }
+            }
+            
             _mapper.Map(dto, resettlement);
 
             await _unitOfWork.CommitAsync();
