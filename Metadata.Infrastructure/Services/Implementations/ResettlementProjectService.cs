@@ -1,28 +1,17 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
-using Metadata.Infrastructure.DTOs.LandType;
-using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
-using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Document = Metadata.Core.Entities.Document;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -60,27 +49,47 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 foreach (var documentDto in dto.ResettlementDocuments!)
                 {
-                    var fileUpload = new UploadFileDTO
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
                     {
-                        File = documentDto.FileAttach!,
-                        FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                        FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                    };
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
 
-                    var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                        if (existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
 
-                    var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                        //Assign Document To Project
+                        var currResettlementDocument = ResettlementDocument.CreateResettlementDocument(resettlement.ResettlementProjectId, existDocument.DocumentId);
 
-                    document.ReferenceLink = returnUrl;
+                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(currResettlementDocument);
+                    }
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
 
-                    document.FileName = documentDto.FileName!;
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                    document.FileSize = documentDto.FileAttach.Length;
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                    document.CreatedBy = _userContextService.Username! ??
-                        throw new CanNotAssignUserException();
+                        document.ReferenceLink = returnUrl;
 
-                    await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                        document.FileName = documentDto.FileName!;
+
+                        document.FileSize = documentDto.FileAttach.Length;
+
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
+
+                        await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                    }
+
                 }
             }
 
@@ -177,11 +186,49 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (!documentDtos.IsNullOrEmpty())
             {
 
-                var documents = await _documentService.CreateDocumentsAsync(documentDtos);
-
-                foreach (var document in documents)
+                foreach (var documentDto in documentDtos!)
                 {
-                    await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
+                    {
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
+
+                        if (existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
+
+                        //Assign Document To Project
+                        var currResettlementDocument = ResettlementDocument.CreateResettlementDocument(resettlement.ResettlementProjectId, existDocument.DocumentId);
+
+                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(currResettlementDocument);
+                    }
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
+
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                        document.ReferenceLink = returnUrl;
+
+                        document.FileName = documentDto.FileName!;
+
+                        document.FileSize = documentDto.FileAttach.Length;
+
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
+
+                        await _documentService.AssignDocumentsToResettlementProjectAsync(resettlement.ResettlementProjectId, document.DocumentId);
+                    }
+
                 }
 
             }
@@ -200,6 +247,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             return true;
         }
+
         public async Task<bool> CheckCodeResettlementProjectNotDuplicateAsync(string code)
         {
             var resettlement = await _unitOfWork.ResettlementProjectRepository.FindByCodeAndIsDeletedStatus(code, false);

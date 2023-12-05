@@ -1,25 +1,17 @@
-﻿using Amazon.Runtime.Internal.Auth;
-using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.Word;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Google.Api.Gax.ResourceNames;
+﻿using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.Project;
-using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
-using SharedLib.Core.Enums;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using SharedLib.Infrastructure.Services.Implementations;
 using SharedLib.Infrastructure.Services.Interfaces;
-using Xceed.Document.NET;
 using Document = Metadata.Core.Entities.Document;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -108,7 +100,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<Project>(projectCodeDuplicate.ProjectCode , project.ProjectCode);
             }
-            ///
 
             await _unitOfWork.ProjectRepository.AddAsync(project);
 
@@ -126,8 +117,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var projectResetlement = new ResettlementProject
                 {
-                    Code = projectDto.ResettlementProject.Code,
-                    Name = projectDto.ResettlementProject.Name,
+                    Code = projectDto.ResettlementProject.Code!,
+                    Name = projectDto.ResettlementProject.Name!,
                     LimitToResettlement = projectDto.ResettlementProject.LimitToResettlement,
                     LimitToConsideration = projectDto.ResettlementProject.LimitToConsideration,
                     Position = projectDto.ResettlementProject.Position,
@@ -147,33 +138,54 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (!projectDto.ResettlementProject.ResettlementDocuments.IsNullOrEmpty())
                 {
+
                     foreach (var documentDto in projectDto.ResettlementProject.ResettlementDocuments!)
                     {
-                        var fileUpload = new UploadFileDTO
+                        //If documentDTO.Id not null => assign exist document to new project
+                        if (!documentDto.Id.IsNullOrEmpty())
                         {
-                            File = documentDto.FileAttach!,
-                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                        };
+                            //check document exist
+                            var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
 
-                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                            if (existDocument == null || existDocument.IsDeleted)
+                            {
+                                throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                            }
 
-                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                            //Assign Document To Project
+                            var currResettlementDocument = ProjectDocument.CreateProjectDocument(projectResetlement.ResettlementProjectId, existDocument.DocumentId);
 
-                        document.ReferenceLink = returnUrl;
+                            await _unitOfWork.ProjectDocumentRepository.AddAsync(currResettlementDocument);
+                        }
+                        else
+                        {
+                            var fileUpload = new UploadFileDTO
+                            {
+                                File = documentDto.FileAttach!,
+                                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                                FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                            };
 
-                        document.FileName = documentDto.FileName!;
+                            var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                        document.FileSize = documentDto.FileAttach.Length;
+                            var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                        document.CreatedBy = _userContextService.Username! ??
-                            throw new CanNotAssignUserException();
+                            document.ReferenceLink = returnUrl;
 
-                        await _unitOfWork.DocumentRepository.AddAsync(document);
+                            document.FileName = documentDto.FileName!;
 
-                        var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
+                            document.FileSize = documentDto.FileAttach!.Length;
 
-                        await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+                            document.CreatedBy = _userContextService.Username! ??
+                                throw new CanNotAssignUserException();
+
+                            await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                            var resettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, document.DocumentId);
+
+                            await _unitOfWork.ResettlementDocumentRepository.AddAsync(resettlementDocument);
+                        }
+
                     }
                 }
             }
@@ -217,7 +229,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         document.FileName = documentDto.FileName!;
 
-                        document.FileSize = documentDto.FileAttach.Length;
+                        document.FileSize = documentDto.FileAttach!.Length;
 
                         document.CreatedBy = _userContextService.Username! ??
                             throw new CanNotAssignUserException();
@@ -232,7 +244,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
 
             }
-
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<ProjectReadDTO>(project);
@@ -381,14 +392,53 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (!documentDtos.IsNullOrEmpty())
             {
 
-                var documents =await _documentService.CreateDocumentsAsync(documentDtos);
-
-                
-                foreach (var document in documents)
+                foreach(var documentDto in documentDtos)
                 {
-                    await _documentService.AssignDocumentsToProjectAsync(project.ProjectId, document.DocumentId);
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
+                    {
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
+
+                        if (existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
+
+                        //Assign Document To Project
+                        var currProjectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, existDocument.DocumentId);
+
+                        await _unitOfWork.ProjectDocumentRepository.AddAsync(currProjectDocument);
+                    }
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
+
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                        document.ReferenceLink = returnUrl;
+
+                        document.FileName = documentDto.FileName!;
+
+                        document.FileSize = documentDto.FileAttach!.Length;
+
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
+
+                        await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                        var projectDocument = ProjectDocument.CreateProjectDocument(project.ProjectId, document.DocumentId);
+
+                        await _unitOfWork.ProjectDocumentRepository.AddAsync(projectDocument);
+                    }
                 }
-                
             }
 
             return _mapper.Map<ProjectReadDTO>(project);

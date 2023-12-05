@@ -1,14 +1,9 @@
 ﻿using Amazon.S3.Model;
 using AutoMapper;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.EMMA;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
-using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.DTOs.Document;
-using Metadata.Infrastructure.DTOs.LandGroup;
-using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
@@ -16,11 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -72,31 +62,51 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     foreach (var documentDto in item.Documents!)
                     {
-                        var fileUpload = new UploadFileDTO
+                        //If documentDTO.Id not null => assign exist document to new project
+                        if (!documentDto.Id.IsNullOrEmpty())
                         {
-                            File = documentDto.FileAttach!,
-                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                        };
+                            //check document exist
+                            var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
 
-                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                            if (existDocument == null || existDocument.IsDeleted)
+                            {
+                                throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                            }
 
-                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                            //Assign Document To Project
+                            var currResettlementDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, existDocument.DocumentId);
 
-                        document.ReferenceLink = returnUrl;
+                            await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(currResettlementDocument);
+                        }
+                        else
+                        {
+                            var fileUpload = new UploadFileDTO
+                            {
+                                File = documentDto.FileAttach!,
+                                FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                                FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                            };
 
-                        document.FileName = documentDto.FileName!;
+                            var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                        document.FileSize = documentDto.FileAttach.Length;
+                            var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                        document.CreatedBy = _userContextService.Username! ??
-                            throw new CanNotAssignUserException();
+                            document.ReferenceLink = returnUrl;
 
-                        await _unitOfWork.DocumentRepository.AddAsync(document);
+                            document.FileName = documentDto.FileName!;
 
-                        var priceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, document.DocumentId);
+                            document.FileSize = documentDto.FileAttach.Length;
 
-                        await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(priceAppliedCodeDocument);
+                            document.CreatedBy = _userContextService.Username! ??
+                                throw new CanNotAssignUserException();
+
+                            await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                            var priceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, document.DocumentId);
+
+                            await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(priceAppliedCodeDocument);
+
+                        }
 
                     }
                 }
@@ -142,32 +152,51 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 foreach(var documentDto in dto.Documents!)
                 {
-                    var fileUpload = new UploadFileDTO
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
                     {
-                        File = documentDto.FileAttach!,
-                        FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
-                        FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
-                    };
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
 
-                    var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+                        if (existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
 
-                    var document = _mapper.Map<Core.Entities.Document>(documentDto);
+                        //Assign Document To Project
+                        var currResettlementDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, existDocument.DocumentId);
 
-                    document.ReferenceLink = returnUrl;
+                        await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(currResettlementDocument);
+                    }
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
 
-                    document.FileName = documentDto.FileName!;
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
 
-                    document.FileSize = documentDto.FileAttach.Length;
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
 
-                    document.CreatedBy = _userContextService.Username! ??
-                        throw new CanNotAssignUserException();
+                        document.ReferenceLink = returnUrl;
 
-                    await _unitOfWork.DocumentRepository.AddAsync(document);
+                        document.FileName = documentDto.FileName!;
 
-                    var priceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, document.DocumentId);
+                        document.FileSize = documentDto.FileAttach.Length;
 
-                    await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(priceAppliedCodeDocument);
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
 
+                        await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                        var priceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, document.DocumentId);
+
+                        await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(priceAppliedCodeDocument);
+                    }
+                    
                 }
             }
 
@@ -227,11 +256,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id)
                 ??throw new EntityWithIDNotFoundException<PriceAppliedCode>(Id);
 
-            var existPriceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetPriceAppliedCodeByCodeAsync(dto.UnitPriceCode);
+            if(dto.UnitPriceCode.ToLower() != priceAppliedCode.UnitPriceCode.ToLower())
+            {
+                var existPriceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetPriceAppliedCodeByCodeAsync(dto.UnitPriceCode);
 
-            if (existPriceAppliedCode != null) 
-                throw new UniqueConstraintException<PriceAppliedCode>(nameof(PriceAppliedCode.UnitPriceCode), dto.UnitPriceCode);
-
+                if (existPriceAppliedCode != null)
+                    throw new UniqueConstraintException<PriceAppliedCode>(nameof(PriceAppliedCode.UnitPriceCode), dto.UnitPriceCode);
+            }
+            
             _mapper.Map(dto, priceAppliedCode);
 
             await _unitOfWork.CommitAsync();
@@ -247,6 +279,67 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<PriceAppliedCodeReadDTO>(existPriceAppliedCode);
         }
 
-        
+        public async Task<PriceAppliedCodeReadDTO> CreateProjectDocumentsAsync(string priceAppliedCodeId, IEnumerable<DocumentWriteDTO> documentDtos)
+        {
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(priceAppliedCodeId);
+
+            if (priceAppliedCode == null) throw new EntityWithIDNotFoundException<PriceAppliedCode>(priceAppliedCodeId);
+
+
+            if (!documentDtos.IsNullOrEmpty())
+            {
+
+                foreach (var documentDto in documentDtos)
+                {
+                    //If documentDTO.Id not null => assign exist document to new project
+                    if (!documentDto.Id.IsNullOrEmpty())
+                    {
+                        //check document exist
+                        var existDocument = await _unitOfWork.DocumentRepository.FindAsync(documentDto.Id!);
+
+                        if (existDocument == null || existDocument.IsDeleted)
+                        {
+                            throw new EntityWithIDNotFoundException<Document>(documentDto.Id!);
+                        }
+
+                        //Assign Document To Project
+                        var currPriceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, existDocument.DocumentId);
+
+                        await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(currPriceAppliedCodeDocument);
+                    }
+                    else
+                    {
+                        var fileUpload = new UploadFileDTO
+                        {
+                            File = documentDto.FileAttach!,
+                            FileName = $"{documentDto.Number}-{documentDto.Notation}-{Guid.NewGuid()}",
+                            FileType = FileTypeExtensions.ToFileMimeTypeString(documentDto.FileType),
+                        };
+
+                        var returnUrl = await _uploadFileService.UploadFileAsync(fileUpload);
+
+                        var document = _mapper.Map<Core.Entities.Document>(documentDto);
+
+                        document.ReferenceLink = returnUrl;
+
+                        document.FileName = documentDto.FileName!;
+
+                        document.FileSize = documentDto.FileAttach!.Length;
+
+                        document.CreatedBy = _userContextService.Username! ??
+                            throw new CanNotAssignUserException();
+
+                        await _unitOfWork.DocumentRepository.AddAsync(document);
+
+                        var currPriceAppliedCodeDocument = PriceAppliedCodeDocument.CreatePriceAppliedCodeDocument(priceAppliedCode.PriceAppliedCodeId, document.DocumentId);
+
+                        await _unitOfWork.PriceAppliedCodeDocumentRepository.AddAsync(currPriceAppliedCodeDocument);
+                    }
+                }
+            }
+
+            return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
+
+        }
     }
 }

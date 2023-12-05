@@ -9,9 +9,9 @@ namespace Metadata.Infrastructure.DTOs.ResettlementProject
 {
     public class ResettlementProjectWriteDTO
     {
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public decimal LimitToResettlement { get; set; } = 0;
 
