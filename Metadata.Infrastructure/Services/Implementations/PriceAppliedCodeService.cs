@@ -279,7 +279,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<PriceAppliedCodeReadDTO>(existPriceAppliedCode);
         }
 
-        public async Task<PriceAppliedCodeReadDTO> CreateProjectDocumentsAsync(string priceAppliedCodeId, IEnumerable<DocumentWriteDTO> documentDtos)
+        public async Task<PriceAppliedCodeReadDTO> CreatePriceAplliedDocumentsAsync(string priceAppliedCodeId, IEnumerable<DocumentWriteDTO> documentDtos)
         {
             var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(priceAppliedCodeId);
 

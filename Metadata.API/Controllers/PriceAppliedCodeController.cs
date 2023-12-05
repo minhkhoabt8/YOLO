@@ -1,5 +1,7 @@
 ﻿using Metadata.Infrastructure.DTOs.AssetUnit;
+using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.PriceAppliedCode;
+using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +89,22 @@ namespace Metadata.API.Controllers
         public async Task<IActionResult> CreatePriceAplliedCodesAsync(IEnumerable<PriceAppliedCodeWriteDTO> dto)
         {
             var priceAppliedCode = await _priceAppliedCodeService.CreatePriceAppliedCodesAsync(dto);
+            return ResponseFactory.Created(priceAppliedCode);
+        }
+
+        /// <summary>
+        /// Create Price Applied Code Document
+        /// </summary>
+        /// <param name="priceAppliedCodeId"></param>
+        /// <param name="documentDtos"></param>
+        /// <returns></returns>
+        [HttpPost("create/document")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CreatePriceAplliedDocumentsAsync(string priceAppliedCodeId, IEnumerable<DocumentWriteDTO> documentDtos)
+        {
+            var priceAppliedCode = await _priceAppliedCodeService.CreatePriceAplliedDocumentsAsync(priceAppliedCodeId, documentDtos);
             return ResponseFactory.Created(priceAppliedCode);
         }
 
