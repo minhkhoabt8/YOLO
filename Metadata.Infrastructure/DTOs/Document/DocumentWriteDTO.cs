@@ -15,20 +15,17 @@ namespace Metadata.Infrastructure.DTOs.Document
     {
         public string? Id { get; set; }
 
-        [Required]
         [MaxLength(50)]
-        public string DocumentTypeId { get; set; }
+        public string? DocumentTypeId { get; set; }
         [Range(0, 9999)]
         [DefaultValue(0)]
-        public int Number { get; set; } = 0;
-        [Required]
+        public int? Number { get; set; } = 0;
         [MaxLength(10)]
-        public string Notation { get; set; }
-        [Required]
-        public DateTime PublishedDate { get; set; }
+        public string? Notation { get; set; }
+        public DateTime? PublishedDate { get; set; }
 
         public DateTime? EffectiveDate { get; set; }
-        [Required]
+
         public string? Epitome { get; set; }
 
         public string? SignInfo { get; set; }
