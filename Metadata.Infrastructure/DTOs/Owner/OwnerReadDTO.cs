@@ -64,6 +64,8 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string? OrganizationTypeId { get; set; }
 
+        public string? RejectReason { get; set; }
+
         //public  OrganizationType? OrganizationType { get; set; }
         public OrganizationTypeReadDTO? OrganizationType { get; set; }
 

@@ -13,7 +13,7 @@ namespace Auth.Infrastructure.DTOs.Authentication
         [Required] public string OldPassword { get; set; }
         [Required] public string NewPassword { get; set; }
         [Required]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Password cũ không khớp với password mới.")]
         public string ConfirmPassword { get; set; }
         
     }
