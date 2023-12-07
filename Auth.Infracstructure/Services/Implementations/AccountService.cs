@@ -26,7 +26,6 @@ namespace Auth.Infrastructure.Services.Implementations
         public async Task<IEnumerable<AccountReadDTO>> GetAllAccountsAsync()
         {
             var accounts = await _unitOfWork.AccountRepository.GetAllAsync(include: "Role");
-
             return _mapper.Map<IEnumerable<AccountReadDTO>>(accounts);
         }
         

@@ -7,7 +7,7 @@ namespace Metadata.Core.Entities;
 public partial class ProjectDocument
 {
     [Key]
-    public string ProjectDocumentId { get; set; }
+    public string ProjectDocumentId { get; set; } = null!;
 
     public string ProjectId { get; set; } = null!;
 

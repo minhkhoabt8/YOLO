@@ -153,9 +153,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                             }
 
                             //Assign Document To Project
-                            var currResettlementDocument = ProjectDocument.CreateProjectDocument(projectResetlement.ResettlementProjectId, existDocument.DocumentId);
+                            var currResettlementDocument = ResettlementDocument.CreateResettlementDocument(projectResetlement.ResettlementProjectId, existDocument.DocumentId);
 
-                            await _unitOfWork.ProjectDocumentRepository.AddAsync(currResettlementDocument);
+                            await _unitOfWork.ResettlementDocumentRepository.AddAsync(currResettlementDocument);
                         }
                         else
                         {
