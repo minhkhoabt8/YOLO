@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SharedLib.ResponseWrapper;
+using Signature.Infrastructure.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
@@ -7,65 +9,61 @@ namespace Metadata.API.Controllers
     /// 
     /// </summary>
     [ApiController]
-    [Route("storage/certificate")]
+    [Route("signature/digital-certificate")]
     public class CertificateStorageController : ControllerBase
     {
         private readonly string _storagePath;
+        private readonly IDigitalSignatureService _digitalSignatureService;
 
-        public CertificateStorageController(IConfiguration configuration)
+        public CertificateStorageController(IConfiguration configuration, IDigitalSignatureService digitalSignatureService)
         {
             _storagePath = configuration["StoragePath"]!;
+            _digitalSignatureService = digitalSignatureService;
         }
 
-        [HttpPost]
-        public string UploadFile([Required] UploadDTO dto)
+        /// <summary>
+        /// Sign Document Async
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="documentFile"></param>
+        /// <param name="signaturePassword"></param>
+        /// <param name="replaceSignatureWithPicture"></param>
+        /// <returns></returns>
+        [HttpPost("signPicture")]
+        public async Task<IActionResult> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = false)
         {
-            var filePath = Path.Combine(_storagePath, dto.Name);
+            var signedDocument = await _digitalSignatureService.SignDocumentWithPictureAsync(userId, documentFile, signaturePassword, replaceSignatureWithPicture);
 
-            if (System.IO.File.Exists(filePath))
-            {
-                throw new Exception("File already exists");
-            }
-
-            System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(dto.Data));
-
-            return Url.Action(nameof(GetFile), new { name = dto.Name })!;
+            return File(signedDocument.FileByte, signedDocument.FileType, signedDocument.FileName);
         }
 
 
-        [HttpGet("{name}")]
-        public IActionResult GetFile(string name)
+        /// <summary>
+        /// Create Signer Signature Async
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <param name="secretPassword"></param>
+        /// <returns></returns>
+        [HttpPost("generate/certificate")]
+        public async Task<IActionResult> CreateSignatureAsync([Required] string signerId, [Required] string secretPassword)
         {
-            var filePath = Path.Combine(_storagePath, name);
+            await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
 
-            if (!System.IO.File.Exists(filePath))
-            {
-                return NotFound();
-            }
-
-            return File(System.IO.File.ReadAllBytes(filePath), "application/octet-stream");
+            return ResponseFactory.NoContent();
         }
 
 
-
-        [HttpDelete("{name}")]
-        public NoContentResult DeleteFile(string name)
+        /// <summary>
+        /// Verify Signer Signature Exist
+        /// </summary>
+        /// <param name="signerId"></param>
+        /// <returns></returns>
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifySignerSignatureExistAsync([Required] string signerId)
         {
-            var filePath = Path.Combine(_storagePath, name);
+            var result = await _digitalSignatureService.VerifySignerSignatureExistAsync(signerId);
 
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            return NoContent();
+            return ResponseFactory.Accepted(result.ToString());
         }
-
-        public struct UploadDTO
-        {
-            [Required] public string Name { get; set; }
-            [Required] public string Data { get; set; }
-        }
-
     }
 }

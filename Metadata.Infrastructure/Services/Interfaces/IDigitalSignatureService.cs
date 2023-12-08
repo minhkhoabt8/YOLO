@@ -1,5 +1,4 @@
-﻿using Metadata.Infrastructure.DTOs.AttachFile;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;

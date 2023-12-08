@@ -17,9 +17,6 @@ using Metadata.Infrastructure.Mappers;
 using SharedLib.Infrastructure.Attributes;
 using Polly.Extensions.Http;
 using Polly;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
-using Microsoft.Extensions.Configuration;
 using Metadata.Core.Extensions;
 
 namespace Metadata.API.Extensions;
@@ -57,7 +54,7 @@ public static class ServiceExtensions
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "YOLO Metatdata",
+                Title = "YOLO Metadata",
                 Version = "v1.0.0",
                 Description = "YOLO Project",
             });

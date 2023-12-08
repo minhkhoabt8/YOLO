@@ -28,20 +28,20 @@
       "UpstreamPathTemplate": "/metadata/{everything}",
       "SwaggerKey": "metadata"
     },
-    {
-      "DownstreamPathTemplate": "/document/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": "8008"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/document/{everything}",
-      "SwaggerKey": "document"
-    },
+    //{
+    //  "DownstreamPathTemplate": "/document/{everything}",
+    //  "DownstreamScheme": "http",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": "8008"
+    //    }
+    //  ],
+    //  "UpstreamHttpMethod": [
+    //  ],
+    //  "UpstreamPathTemplate": "/document/{everything}",
+    //  "SwaggerKey": "document"
+    //},
     {
       "DownstreamPathTemplate": "/signature/{everything}",
       "DownstreamScheme": "http",
@@ -78,16 +78,16 @@
         }
       ]
     },
-    {
-      "Key": "document",
-      "Config": [
-        {
-          "Name": "Document API",
-          "Version": "v1",
-          "Url": "http://localhost:8008/swagger/v1/swagger.json"
-        }
-      ]
-    },
+    //{
+    //  "Key": "document",
+    //  "Config": [
+    //    {
+    //      "Name": "Document API",
+    //      "Version": "v1",
+    //      "Url": "http://localhost:8008/swagger/v1/swagger.json"
+    //    }
+    //  ]
+    //},
     {
       "Key": "signature",
       "Config": [

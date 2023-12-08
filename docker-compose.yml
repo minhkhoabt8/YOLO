@@ -13,20 +13,11 @@ services:
       context: .
       dockerfile: Auth.API/Dockerfile
 
-
-  document.api:
-    image: ${DOCKER_REGISTRY-}documentapi
-    build:
-      context: .
-      dockerfile: Document.API/Dockerfile
-
-
   metadata.api:
     image: ${DOCKER_REGISTRY-}metadataapi
     build:
       context: .
       dockerfile: Metadata.API/Dockerfile
-
 
   signature.api:
     image: ${DOCKER_REGISTRY-}signatureapi

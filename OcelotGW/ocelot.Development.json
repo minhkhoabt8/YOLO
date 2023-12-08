@@ -29,20 +29,20 @@
       "SwaggerKey": "metadata"
     },
 
-    {
-      "DownstreamPathTemplate": "/document/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": "8003"
-        }
-      ],
-      "UpstreamHttpMethod": [
-      ],
-      "UpstreamPathTemplate": "/document/{everything}",
-      "SwaggerKey": "document"
-    },
+    //{
+    //  "DownstreamPathTemplate": "/document/{everything}",
+    //  "DownstreamScheme": "http",
+    //  "DownstreamHostAndPorts": [
+    //    {
+    //      "Host": "localhost",
+    //      "Port": "8003"
+    //    }
+    //  ],
+    //  "UpstreamHttpMethod": [
+    //  ],
+    //  "UpstreamPathTemplate": "/document/{everything}",
+    //  "SwaggerKey": "document"
+    //},
     {
       "DownstreamPathTemplate": "/signature/{everything}",
       "DownstreamScheme": "http",
@@ -81,18 +81,17 @@
         }
       ]
     },
-
-    {
-      "Key": "document",
-      "TransformByOcelotConfig": false,
-      "Config": [
-        {
-          "Name": "Document API",
-          "Version": "v1",
-          "Url": "http://localhost:8003/swagger/v1/swagger.json"
-        }
-      ]
-    },
+    //{
+    //  "Key": "document",
+    //  "TransformByOcelotConfig": false,
+    //  "Config": [
+    //    {
+    //      "Name": "Document API",
+    //      "Version": "v1",
+    //      "Url": "http://localhost:8003/swagger/v1/swagger.json"
+    //    }
+    //  ]
+    //},
     {
       "Key": "signature",
       "TransformByOcelotConfig": false,
