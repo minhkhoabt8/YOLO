@@ -231,7 +231,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         document.CreatedBy = _userContextService.Username! ??
                             throw new CanNotAssignUserException();
 
-                        var currResettlementDocument = ResettlementDocument.CreateResettlementDocument(resettlement.ResettlementProjectId, existDocument.DocumentId);
+                        var currResettlementDocument = ResettlementDocument.CreateResettlementDocument(resettlement.ResettlementProjectId, document.DocumentId);
 
                         await _unitOfWork.ResettlementDocumentRepository.AddAsync(currResettlementDocument);
                     }
