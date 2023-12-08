@@ -180,11 +180,11 @@ namespace Metadata.Infrastructure.Services.Implementations
                     var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 5].Value?.ToString() ?? string.Empty, false)
                         ?? throw new EntityInputExcelException<LandType>(nameof(UnitPriceLand.LandType), worksheet.Cells[row, 5].Value.ToString()!, row);
 
-                    var unitPriecLand = new UnitPriceLandFileImportWriteDTO
+                    var unitPriceLand = new UnitPriceLandFileImportWriteDTO
                     {
                         ProjectId = project.ProjectId,
                         StreetAreaName = worksheet.Cells[row, 4].Value?.ToString()!,
-                        LandTypeId = worksheet.Cells[row, 5].Value?.ToString()!,
+                        LandTypeId = landType.LandTypeId!,
                         LandUnit = worksheet.Cells[row, 6].Value?.ToString()!,
                         LandPosition1 = decimal.Parse(worksheet.Cells[row, 7].Value?.ToString() ?? "0"),
                         LandPosition2 = decimal.Parse(worksheet.Cells[row, 8].Value?.ToString() ?? "0"),
@@ -194,7 +194,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                     };
 
-                    importedUnitPriceLands.Add(unitPriecLand);
+                    importedUnitPriceLands.Add(unitPriceLand);
 
                 }
                 package.Dispose();

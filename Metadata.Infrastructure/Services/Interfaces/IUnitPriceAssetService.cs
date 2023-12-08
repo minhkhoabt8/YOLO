@@ -2,6 +2,7 @@
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<UnitPriceAssetReadDTO> UpdateUnitPriceAssetAsync(string unitPriceAssetId, UnitPriceAssetWriteDTO dto);
         Task<IEnumerable<UnitPriceAssetReadDTO>> CreateUnitPriceAssetsAsync(IEnumerable<UnitPriceAssetWriteDTO> dtos);
         Task DeleteUnitPriceAsset(string unitPriceAssetId);
-
+        Task<IEnumerable<UnitPriceAssetReadDTO>> ImportUnitPriceAssetFromExcelFileAsync(IFormFile file);
         Task<IEnumerable<UnitPriceAssetReadDTO>> GetUnitPriceAssetsOfProjectAsync(string projectId);
     }
 }

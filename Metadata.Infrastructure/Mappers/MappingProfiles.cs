@@ -54,7 +54,7 @@ namespace Metadata.Infrastructure.Mappers
             CreateMap<Owner, OwnerReadDTO>();
             CreateMap<OwnerWriteDTO, Owner>();
             CreateMap<Owner, OwnersInProjectDTO>();
-            CreateMap<UnitPriceLandFileImportWriteDTO, OwnerWriteDTO>();
+            CreateMap<OwnerFileImportWriteDTO, OwnerWriteDTO>();
 
             //Plan
             CreateMap<Plan, PlanReadDTO>();
@@ -142,11 +142,13 @@ namespace Metadata.Infrastructure.Mappers
             //UnitPriceAsset
             CreateMap<UnitPriceAsset, UnitPriceAssetReadDTO>();
             CreateMap<UnitPriceAssetWriteDTO, UnitPriceAsset>();
+            CreateMap<UnitPriceAssetFileImportWriteDTO, UnitPriceAssetWriteDTO>();
 
             //UnitPriceLand
             CreateMap<UnitPriceLand, UnitPriceLandReadDTO>();
             CreateMap<UnitPriceLandWriteDTO, UnitPriceLand>();
             CreateMap<UnitPriceLandInProjectWriteDTO, UnitPriceLand>();
+            CreateMap<UnitPriceLandFileImportWriteDTO, UnitPriceLandWriteDTO>();
 
             //Resettlement project
             CreateMap<ResettlementProject, ResettlementProjectReadDTO>()

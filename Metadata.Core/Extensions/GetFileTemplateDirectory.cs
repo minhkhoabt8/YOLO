@@ -113,7 +113,12 @@ namespace Metadata.Core.Extensions
                 case "SupportTypeTemplate":
 
                     return Path.Combine(templateDirectory, "SupportTypeTemplate.xlsx");
+                case "UnitPriceLandTemplate":
 
+                    return Path.Combine(templateDirectory, "UnitPriceLandTemplate.xlsx");
+                case "UnitPriceAssetTemplate":
+
+                    return Path.Combine(templateDirectory, "UnitPriceAssetTemplate.xlsx");
                 default:
                     return "File not found";
             }

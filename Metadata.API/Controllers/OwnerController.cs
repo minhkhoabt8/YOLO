@@ -178,7 +178,7 @@ namespace Metadata.API.Controllers
         /// <summary>
         /// Import Owner From File
         /// </summary>
-        /// <param name="attachFile"></param>
+        /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("import")]
         [ServiceFilter(typeof(AutoValidateModelState))]

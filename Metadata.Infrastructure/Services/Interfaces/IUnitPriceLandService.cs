@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
+using Microsoft.AspNetCore.Http;
 using SharedLib.Infrastructure.DTOs;
 
 
@@ -13,6 +14,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<UnitPriceLandReadDTO> UpdateUnitPriceLandAsync(string unitPriceLandId, UnitPriceLandWriteDTO dto);
         Task<IEnumerable<UnitPriceLandReadDTO>> CreateUnitPriceLandsAsync(IEnumerable<UnitPriceLandWriteDTO> dtos);
         Task<IEnumerable<UnitPriceLandReadDTO>> GetUnitPriceLandOfProjectAsync(string projectId);
+        Task<IEnumerable<UnitPriceLandReadDTO>> ImportUnitPriceLandFromExcelFileAsync(IFormFile file);
         Task DeleteUnitPriceLand(string unitPriceLandId);
     }
 }

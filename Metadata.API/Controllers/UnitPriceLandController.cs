@@ -1,8 +1,10 @@
 ﻿using Metadata.Infrastructure.DTOs.UnitPriceLand;
+using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -94,6 +96,21 @@ namespace Metadata.API.Controllers
             var unitPriceLands = await _unitPriceLandService.CreateUnitPriceLandsAsync(writeDTO);
 
             return ResponseFactory.Created(unitPriceLands);
+        }
+
+        /// <summary>
+        /// Import Unit Price Land From File
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("import")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> ImportUnitPriceLandFromExcelFileAsync([Required] IFormFile file)
+        {
+            var result = await _unitPriceLandService.ImportUnitPriceLandFromExcelFileAsync(file);
+            return ResponseFactory.Created(result);
         }
 
         /// <summary>

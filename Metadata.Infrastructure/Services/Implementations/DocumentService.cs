@@ -42,7 +42,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
         }
-
+        /// <summary>
+        /// Map user file name input to system file name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithAttributeNotFoundException{ExportFileDTO}"></exception>
         public async Task<ExportFileDTO> GetFileImportExcelTemplateAsync(string name)
         {
             string fileName = "";
@@ -54,42 +59,52 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (name.ToLower().Replace(" ", "").Equals("assetgroup"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("AssetGroupTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("AssetGroupTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("assetunit"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("AssetUnitTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("AssetUnitTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("deductiontype"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("DeductionTypeTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("DeductionTypeTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("documenttype"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("DocumentType");
+                fileName = _getFileTemplateDirectory.GetImport("DocumentType");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("landgroup"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("LandGroupTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("LandGroupTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("landtype"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("LandTypeTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("LandTypeTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("organizationtype"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("OrganizationTypeTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("OrganizationTypeTemplate");
             }
 
             if (name.ToLower().Replace(" ", "").Equals("supporttype"))
             {
-                fileName = _getFileTemplateDirectory.GetExport("SupportTypeTemplate");
+                fileName = _getFileTemplateDirectory.GetImport("SupportTypeTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("unitpriceland"))
+            {
+                fileName = _getFileTemplateDirectory.GetImport("UnitPriceLandTemplate");
+            }
+
+            if (name.ToLower().Replace(" ", "").Equals("unitpriceasset"))
+            {
+                fileName = _getFileTemplateDirectory.GetImport("UnitPriceAssetTemplate");
             }
 
             if (!File.Exists(fileName))

@@ -1,8 +1,10 @@
 ﻿using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -96,7 +98,20 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Created(unitPriceAssets);
         }
 
-
+        /// <summary>
+        /// Import Unit Price Asset From File
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("import")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> ImportUnitPriceAssetFromExcelFileAsync([Required] IFormFile file)
+        {
+            var result = await _unitPriceAssetService.ImportUnitPriceAssetFromExcelFileAsync(file);
+            return ResponseFactory.Created(result);
+        }
 
         /// <summary>
         /// Update Unit Price Asset

@@ -22,7 +22,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<PriceAppliedCode?> GetPriceAppliedCodeByCodeAsync(string code)
         {
-            return await _context.PriceAppliedCodes.Include(c=>c.UnitPriceAssets).Where(c=>c.UnitPriceCode == code).FirstOrDefaultAsync();
+            return await _context.PriceAppliedCodes.Include(c=>c.UnitPriceAssets).Where(c=>c.UnitPriceCode == code && c.IsDeleted == false).FirstOrDefaultAsync();
         }
 
         //get UnitPriceCode in PriceAppliedCode through price_applied_code_id 
