@@ -114,7 +114,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return new ExportFileDTO
             {
-                FileName = Path.GetFileName(fileName) + DateTime.Now.SetKindUtc(),
+                FileName = Path.GetFileName(fileName),
                 FileByte = File.ReadAllBytes(fileName),
                 FileType = FileTypeExtensions.ToFileMimeTypeString(FileTypeEnum.xlsx)
             };
