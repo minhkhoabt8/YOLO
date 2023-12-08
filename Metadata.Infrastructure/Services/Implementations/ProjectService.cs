@@ -113,7 +113,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if(projectDto.ResettlementProject != null )
+            if(!projectDto.ResettlementProject.Code.IsNullOrEmpty())
             {
                 var projectResetlement = new ResettlementProject
                 {
