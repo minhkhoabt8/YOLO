@@ -338,6 +338,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
+            await _unitOfWork.CommitAsync();
+
             return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
 
         }
