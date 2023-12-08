@@ -244,6 +244,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
 
             }
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<ProjectReadDTO>(project);
@@ -443,6 +444,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                     }
                 }
             }
+
+            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<ProjectReadDTO>(project);
 
