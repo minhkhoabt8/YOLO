@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Polly;
 using Microsoft.Extensions.DependencyInjection;
+using Signature.Infrastructure.Services.Implementations;
 
 namespace Signature.API.Extensions
 {
@@ -86,6 +87,7 @@ namespace Signature.API.Extensions
 
         public static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IDigitalSignatureService, DigitalSignatureService>();
         }
         public static void AddRepositories(this IServiceCollection services)
         {

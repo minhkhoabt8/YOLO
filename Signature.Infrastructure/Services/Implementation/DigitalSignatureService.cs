@@ -3,8 +3,8 @@ using Aspose.Pdf.Facades;
 using Aspose.Pdf.Forms;
 using Aspose.Pdf.Text;
 using Metadata.Core.Exceptions;
-using Metadata.Infrastructure.DTOs.AccountMapping;
-using Metadata.Infrastructure.Services.Interfaces;
+using Signature.Infrastructure.DTOs.AccountMapping;
+using Signature.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using SharedLib.Core.Enums;
@@ -13,7 +13,7 @@ using SharedLib.Infrastructure.DTOs;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Metadata.Infrastructure.Services.Implementations
+namespace Signature.Infrastructure.Services.Implementations
 {
     public class DigitalSignatureService : IDigitalSignatureService
     {
