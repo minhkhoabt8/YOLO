@@ -13,6 +13,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [MaxLength(20)]
         public string OwnerCode { get; set; }
         [Required]
+        [MaxLength(50)]
         public string OwnerName { get; set; }
         [MaxLength(20)]
         public string OwnerIdCode { get; set; }
@@ -25,7 +26,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public string OwnerNational { get; set; }
         [MaxLength(200)]
         public string OwnerAddress { get; set; }
-        [MaxLength(10)]
+        [MaxLength(13)]
         public string OwnerTaxCode { get; set; }
         [MaxLength(20)]
         public string OwnerType { get; set; }

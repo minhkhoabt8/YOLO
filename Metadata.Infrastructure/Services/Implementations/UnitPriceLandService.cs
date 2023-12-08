@@ -1,12 +1,16 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Metadata.Core.Entities;
-using Metadata.Infrastructure.DTOs.UnitPriceAsset;
+using Metadata.Core.Exceptions;
+using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -44,7 +48,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             var list = new List<UnitPriceLand>();
 
-            foreach(var item in dtos)
+            foreach (var item in dtos)
             {
                 var project = await _unitOfWork.ProjectRepository.FindAsync(item.ProjectId)
                 ?? throw new EntityWithIDNotFoundException<Project>(item.ProjectId);
@@ -109,7 +113,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
-            if(project.Owners.Count() > 0)
+            if (project.Owners.Count() > 0)
             {
                 throw new InvalidActionException("Cannot Update Unit Price Land In Project That Aldready Have Owners");
             }
@@ -123,7 +127,79 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<UnitPriceLandReadDTO>> GetUnitPriceLandOfProjectAsync(string projectId)
         {
-            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>( await _unitOfWork.UnitPriceLandRepository.GetUnitPriceLandsOfProjectAsync(projectId));
+            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(await _unitOfWork.UnitPriceLandRepository.GetUnitPriceLandsOfProjectAsync(projectId));
+        }
+
+        public async Task<IEnumerable<UnitPriceLandReadDTO>> ImportUnitPriceLandFromExcelFileAsync(IFormFile file)
+        {
+            var dtos = await ExtractUnitPriceLandsFromFileAsync(file);
+
+            var unitPriceLandList = new List<UnitPriceLand>();
+
+            foreach (var dto in dtos)
+            {
+                var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId!);
+
+                if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId!);
+
+                var unitPriceLand = _mapper.Map<UnitPriceLand>(dto);
+
+                await _unitOfWork.UnitPriceLandRepository.AddAsync(unitPriceLand);
+
+                unitPriceLandList.Add(unitPriceLand);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(unitPriceLandList);
+        }
+
+        public async Task<IEnumerable<UnitPriceLandReadDTO>> ExtractUnitPriceLandsFromFileAsync(IFormFile file)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (file == null || file.Length <= 0)
+            {
+                throw new InvalidActionException();
+            }
+
+            var importedUnitPriceLands = new List<UnitPriceLandFileImportWriteDTO>();
+            using (var package = new ExcelPackage(file.OpenReadStream()))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+
+                string[] parts = worksheet.Cells["D6"].Text.Split(':');
+
+                var project = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(parts[1].Trim());
+
+                if (project == null)
+                    throw new EntityWithAttributeNotFoundException<Project>(nameof(Project.ProjectName), parts[1].Trim());
+                
+                for (int row = 11; row <= worksheet.Dimension.End.Row; row++)
+                {
+
+                    var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 5].Value?.ToString() ?? string.Empty, false)
+                        ?? throw new EntityInputExcelException<LandType>(nameof(UnitPriceLand.LandType), worksheet.Cells[row, 5].Value.ToString()!, row);
+
+                    var unitPriecLand = new UnitPriceLandFileImportWriteDTO
+                    {
+                        ProjectId = project.ProjectId,
+                        StreetAreaName = worksheet.Cells[row, 4].Value?.ToString()!,
+                        LandTypeId = worksheet.Cells[row, 5].Value?.ToString()!,
+                        LandUnit = worksheet.Cells[row, 6].Value?.ToString()!,
+                        LandPosition1 = decimal.Parse(worksheet.Cells[row, 7].Value?.ToString() ?? "0"),
+                        LandPosition2 = decimal.Parse(worksheet.Cells[row, 8].Value?.ToString() ?? "0"),
+                        LandPosition3 = decimal.Parse(worksheet.Cells[row, 9].Value?.ToString() ?? "0"),
+                        LandPosition4 = decimal.Parse(worksheet.Cells[row, 10].Value?.ToString() ?? "0"),
+                        LandPosition5 = decimal.Parse(worksheet.Cells[row, 11].Value?.ToString() ?? "0"),
+
+                    };
+
+                    importedUnitPriceLands.Add(unitPriecLand);
+
+                }
+                package.Dispose();
+            }
+            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(importedUnitPriceLands);
         }
     }
 }

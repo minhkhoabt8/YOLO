@@ -627,7 +627,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("owner_status");
             entity.Property(e => e.OwnerTaxCode)
-                .HasMaxLength(10)
+                .HasMaxLength(13)
                 .HasColumnName("owner_tax_code");
             entity.Property(e => e.OwnerType)
                 .HasMaxLength(20)

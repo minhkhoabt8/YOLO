@@ -548,10 +548,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 await _unitOfWork.OwnerRepository.AddAsync(owner);
 
-                await _unitOfWork.CommitAsync();
-
                 ownersList.Add(owner);
             }
+
+            await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownersList);  
         }

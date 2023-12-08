@@ -18,7 +18,7 @@ namespace Metadata.Core.Exceptions
     public class EntityInputExcelException<T> : FileInputException
     {
         public EntityInputExcelException(string attribute, string value, int row) : base(
-            $"{typeof(T).Name} with attribute ({attribute}) value ({value}) on row ({row}) is invalid")
+            $"{typeof(T).Name} với thuộc tính ({attribute}) có giá trị ({value}) ở cột ({row}) không hợp lệ.")
         {
         }
     }
