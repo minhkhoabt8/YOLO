@@ -21,7 +21,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [Required]
         public string OwnerName { get; set; }
         [MaxLength(20)]
-        public string OwnerIdCode { get; set; }
+        public string? OwnerIdCode { get; set; }
         [MaxLength(10)]
         public string? OwnerGender { get; set; } = "";
         public DateTime? OwnerDateOfBirth { get; set; }

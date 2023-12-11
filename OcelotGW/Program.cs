@@ -6,7 +6,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(opt => opt.Limits.MaxRequestBodySize = uint.MaxValue);
-builder.Configuration.AddJsonFile($"ocelot.json", true, true);
+builder.Configuration.AddJsonFile($"ocelot.Docker.json", true, true);
 builder.Services.AddCors();
 builder.Services.AddOcelot().AddPolly();
 builder.Services.AddHttpClient();

@@ -38,6 +38,53 @@ public static class IncludeQueryExtensions
         return (IQueryable<T>) curQuery;
     }
 
+    public static IQueryable<T> IncludeDynamic<T>(this IQueryable<T> query, string include, bool isActive = false) where T : class
+    {
+        var allIncludePathSpecs = ParseInlude<T>(include);
+        object curQuery = query;
+
+        foreach (var includePathSpecs in allIncludePathSpecs)
+        {
+            var isFirstInclude = true;
+            var prevCollection = false;
+            Type prevType = typeof(T);
+
+            foreach (var (type, propName, isCollection) in includePathSpecs)
+            {
+                if (isActive)
+                {
+                    // Check if the current property is marked as IsDelete or IsDeleted
+                    var isDeleteProperty = prevType.GetProperty("IsDeleted") ?? prevType.GetProperty("IsDeleted");
+                    if (isDeleteProperty != null)
+                    {
+                        var isDeleteValue = (bool)isDeleteProperty.GetValue(GenerateGetterExpression(prevType, propName));
+                        if (isDeleteValue)
+                        {
+                            // Skip including this property if IsActive is true and IsDelete/IsDeleted is true
+                            continue;
+                        }
+                    }
+                }
+
+                var includeMethod = isFirstInclude
+                    ? GetIncludeMethodInfo(typeof(T), propName)
+                    : prevCollection
+                        ? GetThenIncludeAfterEnumerableMethodInfo(typeof(T), prevType, propName)
+                        : GetThenIncludeAfterReferenceMethodInfo(typeof(T), prevType, propName);
+
+                curQuery = includeMethod.Invoke(null,
+                    new[] { curQuery, GenerateGetterExpression(prevType, propName) })!;
+
+                prevType = type;
+                prevCollection = isCollection;
+                isFirstInclude = false;
+            }
+        }
+
+        return (IQueryable<T>)curQuery;
+    }
+
+
     private static IEnumerable<ICollection<(Type Type, string PropertyName, bool IsCollection)>> ParseInlude<T>(
         string include)
     {

@@ -94,7 +94,31 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
             //1.Add Owner
-            var owner = _mapper.Map<Owner>(dto);
+            var owner1 = _mapper.Map<Owner>(dto);
+
+            var owner = new Owner
+            {
+                OwnerCode  = dto.OwnerCode,
+                OwnerName = dto.OwnerName,
+                OwnerIdCode = dto.OwnerIdCode,
+                OwnerGender = dto.OwnerGender,
+                OwnerDateOfBirth = dto.OwnerDateOfBirth,
+                OwnerEthnic  = dto.OwnerEthnic,
+                OwnerNational = dto.OwnerNational,
+                OwnerAddress = dto.OwnerAddress,
+                OwnerTaxCode = dto.OwnerTaxCode,
+                OwnerType = dto.OwnerType,
+                ProjectId = dto.ProjectId,
+                PlanId = dto.PlanId,
+                OwnerStatus = dto.OwnerStatus.ToString(),
+                PublishedDate = dto.PublishedDate,
+                PublishedPlace = dto.PublishedPlace,
+                HusbandWifeName = dto.HusbandWifeName,
+                RepresentPerson = dto.RepresentPerson,
+                TaxPublishedDate = dto.TaxPublishedDate,
+                OrganizationTypeId = dto.OrganizationTypeId,
+            };
+
 
             owner.OwnerCreatedBy = _userContextService.Username!
                 ?? throw new CanNotAssignUserException();
@@ -184,7 +208,30 @@ namespace Metadata.Infrastructure.Services.Implementations
             decimal ownerMeasuredPlotArea = 0;
 
             //1.Add Owner
-            var owner = _mapper.Map<Owner>(dto);
+            var owner1 = _mapper.Map<Owner>(dto);
+
+            var owner = new Owner
+            {
+                OwnerCode = dto.OwnerCode,
+                OwnerName = dto.OwnerName,
+                OwnerIdCode = dto.OwnerIdCode,
+                OwnerGender = dto.OwnerGender,
+                OwnerDateOfBirth = dto.OwnerDateOfBirth,
+                OwnerEthnic = dto.OwnerEthnic,
+                OwnerNational = dto.OwnerNational,
+                OwnerAddress = dto.OwnerAddress,
+                OwnerTaxCode = dto.OwnerTaxCode,
+                OwnerType = dto.OwnerType,
+                ProjectId = dto.ProjectId,
+                PlanId = dto.PlanId,
+                OwnerStatus = dto.OwnerStatus.ToString(),
+                PublishedDate = dto.PublishedDate,
+                PublishedPlace = dto.PublishedPlace,
+                HusbandWifeName = dto.HusbandWifeName,
+                RepresentPerson = dto.RepresentPerson,
+                TaxPublishedDate = dto.TaxPublishedDate,
+                OrganizationTypeId = dto.OrganizationTypeId,
+            };
 
             owner.OwnerCreatedBy = _userContextService.Username!
                 ?? throw new CanNotAssignUserException();
@@ -299,11 +346,25 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         foreach(var measuredLandDto in  item.MeasuredLandInfos!)
                         {
-                            measuredLandDto.OwnerId = owner.OwnerId;
+                        
+                            var measuredLand = new MeasuredLandInfo
+                            {
 
-                            measuredLandDto.GcnLandInfoId = landInfo.GcnLandInfoId;
-
-                            var measuredLand = _mapper.Map<MeasuredLandInfo>(measuredLandDto);
+                                MeasuredPageNumber = measuredLandDto.MeasuredPageNumber,
+                                MeasuredPlotNumber = measuredLandDto.MeasuredPlotNumber,
+                                MeasuredPlotAddress = measuredLandDto.MeasuredPlotAddress,
+                                LandTypeId = measuredLandDto.LandTypeId,
+                                MeasuredPlotArea = measuredLandDto.MeasuredPlotArea,
+                                WithdrawArea = measuredLandDto.WithdrawArea,
+                                CompensationPrice = measuredLandDto.CompensationPrice,
+                                CompensationRate = measuredLandDto.CompensationRate,
+                                CompensationNote = measuredLandDto.CompensationNote,
+                                UnitPriceLandCost = measuredLandDto.UnitPriceLandCost ?? 0,
+                                OwnerId = owner.OwnerId,
+                                UnitPriceLandId = measuredLandDto.UnitPriceLandId,
+                                GcnLandInfoId = landInfo.GcnLandInfoId
+                    
+                            };
 
                             //measuredLand.OwnerId = owner.OwnerId;
 
@@ -313,7 +374,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                             await _unitOfWork.MeasuredLandInfoRepository.AddAsync(measuredLand);
 
-                            foreach (var file in item.AttachFiles!)
+                            foreach (var file in measuredLandDto.AttachFiles!)
                             {
                                 var fileUpload = new UploadFileDTO
                                 {
@@ -624,10 +685,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, 
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId,
                 include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
                 " AssetCompensations, Supports, Deductions, Deductions.DeductionType, AttachFiles," +
-                " LandResettlements, LandResettlements.ResettlementProject");
+                " LandResettlements, LandResettlements.ResettlementProject", trackChanges: false);
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 

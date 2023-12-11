@@ -43,6 +43,19 @@ public class GenericRepository<TEntity, TContext> :
         return await entries.IncludeDynamic(include).FirstOrDefaultAsync(GenerateFindByIDExpression(key));
     }
 
+    public virtual async Task<TEntity?> FindIncludeIsActiveAsync(object key, string include, bool trackChanges = true, bool isActive = false)
+    {
+        IQueryable<TEntity> entries = _context.Set<TEntity>();
+
+        if (!trackChanges)
+        {
+            entries = entries.AsNoTracking();
+        }
+
+        return await entries.IncludeDynamic(include, isActive).FirstOrDefaultAsync(GenerateFindByIDExpression(key));
+    }
+
+
     public virtual async Task<TEntity?> FindAsync(params object[] keys)
     {
         return await _context.Set<TEntity>().FindAsync(keys);
