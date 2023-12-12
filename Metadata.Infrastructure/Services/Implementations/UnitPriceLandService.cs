@@ -154,7 +154,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(unitPriceLandList);
         }
 
-        public async Task<IEnumerable<UnitPriceLandReadDTO>> ExtractUnitPriceLandsFromFileAsync(IFormFile file)
+        public async Task<IEnumerable<UnitPriceLandWriteDTO>> ExtractUnitPriceLandsFromFileAsync(IFormFile file)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             if (file == null || file.Length <= 0)
@@ -199,7 +199,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 package.Dispose();
             }
-            return _mapper.Map<IEnumerable<UnitPriceLandReadDTO>>(importedUnitPriceLands);
+            return _mapper.Map<IEnumerable<UnitPriceLandWriteDTO>>(importedUnitPriceLands);
         }
     }
 }

@@ -3,6 +3,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -76,6 +77,24 @@ namespace Metadata.API.Controllers
 
             return ResponseFactory.Created(gcnLandInfo);
         }
+
+        /// <summary>
+        /// Check Duplicate GCN Land Info
+        /// </summary>
+        /// <param name="pageNumber"></param>
+        /// <param name="plotNumber"></param>
+        /// <returns></returns>
+        [HttpPost("duplicate")]
+        [ServiceFilter(typeof(AutoValidateModelState))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<GCNLandInfoReadDTO>>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+        public async Task<IActionResult> CheckDuplicateGCNLandInfoAsync([Required] string pageNumber, [Required] string plotNumber )
+        {
+            var gcnLandInfo = await _gcnLandInfoService.CheckDuplicateGCNLandInfoAsync(pageNumber, plotNumber);
+
+            return ResponseFactory.Ok(gcnLandInfo);
+        }
+
 
         /// <summary>
         /// Update GCN Land Info

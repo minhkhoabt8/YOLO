@@ -46,9 +46,9 @@ namespace Metadata.Infrastructure.Services.Interfaces
 
         Task<bool> CheckDuplicateOwnerCodeAsync(string ownerCode);
 
-        Task<bool> CheckDuplicateOwnerIdCodeAsync(string ownerIdCode);
+        Task<bool> CheckDuplicateOwnerIdCodeAsync(string projectId, string ownerIdCode);
 
-        Task<bool> CheckDuplicateOwnerTaxCodeAsync(string ownerTaxCode);
+        Task<bool> CheckDuplicateOwnerTaxCodeAsync(string projectId, string ownerTaxCode);
 
         Task<PaginatedResponse<OwnerReadDTO>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query);
     }

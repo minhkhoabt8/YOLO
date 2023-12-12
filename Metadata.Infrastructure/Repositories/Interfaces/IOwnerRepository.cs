@@ -1,11 +1,6 @@
 ﻿using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Owner;
 using SharedLib.Infrastructure.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Metadata.Infrastructure.Repositories.Interfaces
 {
@@ -24,6 +19,10 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<Owner?> FindByCodeAndIsDeletedStatus(string code);
         Task<Owner?> FindByOwnerIdCodeAsync(string iDcode);
         Task<Owner?> FindByTaxCodeAsync(string taxCode);
+
+        Task<Owner?> FindByOwnerIdCodeInProjectAsync(string projectId, string iDcode);
+        Task<Owner?> FindByTaxCodeInProjectAsync(string projectId, string taxCode);
+
         Task<IEnumerable<Owner>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query, bool trackChanges = false);
         Task<Owner?> CheckDuplicateOwnerAsync(string code, string name, string taxCode, string ownerIdCode);
     }

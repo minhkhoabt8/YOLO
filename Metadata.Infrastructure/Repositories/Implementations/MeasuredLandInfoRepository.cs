@@ -81,5 +81,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
             return await Task.FromResult(enumeratedMeasuredLandInfos);
         }
+
+        public async Task<MeasuredLandInfo?> CheckDuplicateMeasuredLandInfo(string pageNumber, string plotNumber)
+        {
+            return await _context.MeasuredLandInfos
+                .FirstOrDefaultAsync(c => c.MeasuredPageNumber == pageNumber && c.MeasuredPlotNumber == plotNumber && !c.IsDeleted);
+        }
     }
 }

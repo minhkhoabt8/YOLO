@@ -152,7 +152,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<UnitPriceAssetReadDTO>>(unitPriceAssetList);
         }
 
-        public async Task<IEnumerable<UnitPriceAssetReadDTO>> ExtractUnitPriceAssetsFromFileAsync(IFormFile file)
+        public async Task<IEnumerable<UnitPriceAssetWriteDTO>> ExtractUnitPriceAssetsFromFileAsync(IFormFile file)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             if (file == null || file.Length <= 0)
@@ -195,7 +195,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 package.Dispose();
             }
-            return _mapper.Map<IEnumerable<UnitPriceAssetReadDTO>>(importedUnitPriceAssets);
+            return _mapper.Map<IEnumerable<UnitPriceAssetWriteDTO>>(importedUnitPriceAssets);
         }
 
         private static AssetOnLandTypeEnum MapAssetTypeEnumWithUserInput(string typeName)

@@ -140,6 +140,19 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
             return result;
         }
-       
+
+        public async Task<Owner?> FindByOwnerIdCodeInProjectAsync(string projectId, string iDcode)
+        {
+            return await _context.Owners
+            .Where(o => o.ProjectId == projectId && o.OwnerIdCode == iDcode)
+            .FirstOrDefaultAsync();
+        }
+
+        public async Task<Owner?> FindByTaxCodeInProjectAsync(string projectId, string taxCode)
+        {
+            return await _context.Owners
+            .Where(o => o.ProjectId == projectId && o.OwnerTaxCode == taxCode)
+            .FirstOrDefaultAsync();
+        }
     }
 }

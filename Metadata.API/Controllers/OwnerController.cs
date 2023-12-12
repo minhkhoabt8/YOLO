@@ -254,7 +254,11 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
-        //api check duplicate owner code
+        /// <summary>
+        /// api check duplicate owner code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-code")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -264,23 +268,33 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(result);
         }
 
-        //api check duplicate owner id code
+        /// <summary>
+        /// api check duplicate owner id code
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="idCode"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-id-code")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CheckDuplicateOwnerIdCode(string idCode)
+        public async Task<IActionResult> CheckDuplicateOwnerIdCode([Required] string projectId, [Required] string idCode)
         {
-            var result = await _ownerService.CheckDuplicateOwnerIdCodeAsync(idCode);
+            var result = await _ownerService.CheckDuplicateOwnerIdCodeAsync(projectId, idCode);
             return ResponseFactory.Ok(result);
         }
 
-        //api check duplicate owner tax code
+        /// <summary>
+        /// api check duplicate owner tax code
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="taxCode"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-tax-code")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
-        public async Task<IActionResult> CheckDuplicateOwnerTaxCode(string taxCode)
+        public async Task<IActionResult> CheckDuplicateOwnerTaxCode([Required] string projectId, [Required] string taxCode)
         {
-            var result = await _ownerService.CheckDuplicateOwnerTaxCodeAsync(taxCode);
+            var result = await _ownerService.CheckDuplicateOwnerTaxCodeAsync(projectId, taxCode);
             return ResponseFactory.Ok(result);
         }
     }

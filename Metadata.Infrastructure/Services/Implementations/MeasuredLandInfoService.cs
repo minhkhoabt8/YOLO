@@ -183,5 +183,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<MeasuredLandInfoReadDTO>(measuredLandInfo);
         }
+
+        public async Task<MeasuredLandInfoReadDTO?> CheckDuplicateMeasuredLandInfoAsync(string pageNumber, string plotNumber)
+        {
+            return _mapper.Map<MeasuredLandInfoReadDTO>(await _unitOfWork.MeasuredLandInfoRepository.CheckDuplicateMeasuredLandInfo(pageNumber, plotNumber));
+        }
     }
 }
