@@ -54,7 +54,7 @@ public static class IncludeQueryExtensions
                 if (isActive)
                 {
                     // Check if the current property is marked as IsDelete or IsDeleted
-                    var isDeleteProperty = prevType.GetProperty("IsDeleted") ?? prevType.GetProperty("IsDeleted");
+                    var isDeleteProperty = prevType.GetProperty("IsDeleted") ?? prevType.GetProperty("IsDelete");
                     if (isDeleteProperty != null)
                     {
                         var isDeleteValue = (bool)isDeleteProperty.GetValue(GenerateGetterExpression(prevType, propName));

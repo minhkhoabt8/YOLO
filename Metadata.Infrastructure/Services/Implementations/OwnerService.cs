@@ -523,7 +523,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 for (int row = 11; row <= worksheet.Dimension.End.Row; row++)
                 {
                     var organizationType = await _unitOfWork.OrganizationTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 16].Value?.ToString() ?? string.Empty, false)
-                        ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OrganizationType), worksheet.Cells[row, 16].Value.ToString()!, row);
+                        ?? throw new EntityInputExcelException<OrganizationType>(nameof(Owner.OrganizationType), worksheet.Cells[row, 16].Value.ToString()!, row);
 
                     var user = new OwnerFileImportWriteDTO
                     {
@@ -546,7 +546,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         OwnerAddress = worksheet.Cells[row, 12].Value?.ToString() ?? string.Empty,
 
                         OwnerType = MapUsertypeEnumWithUserInput(worksheet.Cells[row, 13].Value?.ToString()!).ToString()
-                            ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OwnerType), worksheet.Cells[row, 13].Value.ToString()!, row),
+                            ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OwnerType), worksheet.Cells[row, 13].ToString()!, row),
 
 
                         ProjectId = project.ProjectId,
@@ -685,10 +685,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId,
+            var owner = await _unitOfWork.OwnerRepository.FindIncludeIsActiveAsync(ownerId,
                 include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
                 " AssetCompensations, Supports, Deductions, Deductions.DeductionType, AttachFiles," +
-                " LandResettlements, LandResettlements.ResettlementProject", trackChanges: false);
+                " LandResettlements, LandResettlements.ResettlementProject", trackChanges: false, isActive: false);
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
