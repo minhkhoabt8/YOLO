@@ -59,6 +59,8 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landResettlement = await _unitOfWork.LandResettlementRepository.FindAsync(id)
                 ?? throw new EntityWithIDNotFoundException<LandResettlement>(id);
 
+            if (landResettlement.OwnerId != null) throw new InvalidActionException("Không thể xóa Đất tái định cư đã tồn tại Chủ sở hữu.");
+
             _unitOfWork.LandResettlementRepository.Delete(landResettlement);
 
             await _unitOfWork.CommitAsync();

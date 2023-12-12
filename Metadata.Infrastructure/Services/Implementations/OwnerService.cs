@@ -672,9 +672,17 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// Delete Owner then delete its GCN and Measured Land Info
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Owner}"></exception>
+        /// <exception cref="InvalidActionException"></exception>
+        /// <exception cref="EntityWithIDNotFoundException{MeasuredLandInfo}"></exception>
         public async Task DeleteOwner(string ownerId)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
+            var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId, include: "GcnlandInfos");
 
             if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
@@ -682,6 +690,28 @@ namespace Metadata.Infrastructure.Services.Implementations
                 || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString()
                 || owner.PlanId != null)
                 throw new InvalidActionException();
+
+            if (owner.GcnlandInfos.Any())
+            {
+                foreach (var item in owner.GcnlandInfos)
+                {
+                    item.IsDeleted = true;
+                }
+            }
+
+            var ownerMeasuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(ownerId);
+
+            if (ownerMeasuredLandInfos.Any())
+            {
+                foreach (var item in ownerMeasuredLandInfos)
+                {
+                    var ownerMeasuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(item.MeasuredLandInfoId);
+                    
+                    if (ownerMeasuredLandInfo == null) throw new EntityWithIDNotFoundException<MeasuredLandInfo>(item.MeasuredLandInfoId);
+                    
+                    ownerMeasuredLandInfo.IsDeleted = true;
+                }
+            }
 
             owner.IsDeleted = true;
 
@@ -694,6 +724,28 @@ namespace Metadata.Infrastructure.Services.Implementations
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId);
 
             if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+            if (owner.GcnlandInfos.Any())
+            {
+                foreach (var item in owner.GcnlandInfos)
+                {
+                    item.IsDeleted = true;
+                }
+            }
+
+            var ownerMeasuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(ownerId);
+
+            if (ownerMeasuredLandInfos.Any())
+            {
+                foreach (var item in ownerMeasuredLandInfos)
+                {
+                    var ownerMeasuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(item.MeasuredLandInfoId);
+
+                    if (ownerMeasuredLandInfo == null) throw new EntityWithIDNotFoundException<MeasuredLandInfo>(item.MeasuredLandInfoId);
+
+                    ownerMeasuredLandInfo.IsDeleted = true;
+                }
+            }
 
             owner.IsDeleted = true;
 
