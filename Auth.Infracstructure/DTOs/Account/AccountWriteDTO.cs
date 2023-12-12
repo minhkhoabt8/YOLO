@@ -9,8 +9,13 @@ namespace Auth.Infrastructure.DTOs.Account
     public class AccountWriteDTO
     {
         [Required]
-        [StringLength(30, MinimumLength = 1)]
+        [StringLength(30, MinimumLength = 6)]
         public string Username { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string FullName { get; set; }
+
         [Required]
         [StringLength(12, MinimumLength = 9)]
         public string Phone { get; set; }
@@ -19,4 +24,14 @@ namespace Auth.Infrastructure.DTOs.Account
         [Required]
         public string Email { get; set; }
     }
+
+    public class AccountUpdateDTO
+    {
+
+        [StringLength(30)]
+        public string? FullName { get; set; }
+
+        public string? RoleId { get; set; }
+    }
+
 }

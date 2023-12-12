@@ -132,6 +132,7 @@ public static class ServiceExtensions
         services.AddScoped<ISmsService, SmsService>();
         services.AddScoped<Auth.Infrastructure.Services.Interfaces.INotificationService
             , Auth.Infrastructure.Services.Implementations.NotificationService>();
+        services.AddScoped<IPasswordService, PasswordService>();
         //services.AddScoped<SharedLib.Infrastructure.Services.Interfaces.IFireBaseNotificationService
         //    , SharedLib.Infrastructure.Services.Implementations.FireBaseNotificationService>();
 

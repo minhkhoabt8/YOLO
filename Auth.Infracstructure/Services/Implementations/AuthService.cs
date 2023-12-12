@@ -4,6 +4,7 @@ using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
+using Microsoft.AspNetCore.Components.Forms;
 using SharedLib.Core.Exceptions;
 
 namespace Auth.Infrastructure.Services.Implementations
@@ -14,24 +15,36 @@ namespace Auth.Infrastructure.Services.Implementations
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
         private readonly ISmsService _smsService;
+        private readonly IPasswordService _passwordService;
 
-        public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, ISmsService smsService)
+        public AuthService(IUnitOfWork unitOfWork, IMapper mapper, ITokenService tokenService, ISmsService smsService, IPasswordService passwordService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _tokenService = tokenService;
             _smsService = smsService;
+            _passwordService = passwordService;
         }
 
         public async Task<AccountReadDTO> LoginAsync(LoginInputDTO inputDTO)
         {
             //check account with username and password
-            var account = await _unitOfWork.AccountRepository.LoginAsync(inputDTO);
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(inputDTO.Username);
 
             if (account == null || account.IsDelete)
             {
                 throw new WrongCredentialsException();
             }
+            
+            var hashedPasswordWithSalt = account.Password.ToString().Split("-");
+
+            var isValidPassword = _passwordService.ValidatePassword(inputDTO.Password, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
+
+            if (!isValidPassword)
+            {
+                throw new WrongCredentialsException();
+            }
+
 
             account.GernerateOTP();
 
@@ -173,9 +186,9 @@ namespace Auth.Infrastructure.Services.Implementations
             };
 
             //2.check account exist with username and old password
-            var account = await _unitOfWork.AccountRepository.LoginAsync(login);
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(login.Username);
 
-            if (account == null)
+            if (account == null || account.IsDelete)
             {
                 throw new WrongCredentialsException();
             }
@@ -185,9 +198,19 @@ namespace Auth.Infrastructure.Services.Implementations
             {
                 throw new InvalidActionException();
             }
+            //1.3
+            var hashedPasswordWithSalt = account.Password.ToString().Split("-");
 
-            //2.if account exist then re-assign Password
-            account.Password = resetDTO.NewPassword;
+            var isValidPassword = _passwordService.ValidatePassword(login.Password, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
+
+            if (isValidPassword)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            //2.if account exist and account old password match user input of account then re-assign Password
+            //2.1Generate new hased password
+            account.Password = _passwordService.GenerateHashPassword(resetDTO.NewPassword);
 
             //3.set is active of account
             if (!account.IsActive) account.IsActive = true;

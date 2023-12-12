@@ -259,9 +259,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeleteProjectAsync(string projectId)
         {
-            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId);
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId, include: "Owners, Plans");
 
             if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            if(project.Owners != null || project.Plans != null)
+            {
+                throw new InvalidActionException("Không thể xóa Dự án đã có Chủ sở hữu hoặc Phương án.");
+            }
 
             project.IsDeleted = true;
 
@@ -456,6 +461,25 @@ namespace Metadata.Infrastructure.Services.Implementations
             var project = await _unitOfWork.ProjectRepository.GetProjectsOfOwnerAsync(ownerId);
 
             return _mapper.Map<ProjectReadDTO>(project);
+        }
+
+        /// <summary>
+        /// True If Can Delete, Else False
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public async Task<bool> CheckProjectAvailableForEditOrDelete(string projectId)
+        {
+            var project = await _unitOfWork.ProjectRepository.FindAsync(projectId, include: "Owners, Plans");
+
+            if (project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
+
+            if (project.Owners.Any() || project.Plans.Any())
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

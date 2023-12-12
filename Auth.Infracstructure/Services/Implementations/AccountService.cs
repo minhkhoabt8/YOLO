@@ -3,6 +3,7 @@ using Auth.Infrastructure.DTOs.Account;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
@@ -15,12 +16,14 @@ namespace Auth.Infrastructure.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISmsService _smsService;
+        private readonly IPasswordService _passwordService;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, ISmsService smsService)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, ISmsService smsService, IPasswordService passwordService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _smsService = smsService;
+            _passwordService = passwordService;
         }
 
         public async Task<IEnumerable<AccountReadDTO>> GetAllAccountsAsync()
@@ -42,16 +45,26 @@ namespace Auth.Infrastructure.Services.Implementations
 
             var newAccount = _mapper.Map<Account>(writeDTO);
 
-            newAccount.Name = newAccount.Username;
+            if (writeDTO.FullName.IsNullOrEmpty())
+            {
+                newAccount.Name = writeDTO.Username;
+            }
 
-            newAccount.Password = GeneratePassword();
+            newAccount.Name = writeDTO.FullName;
+            
+            //Generate HasedPassword based on random Password
+            var rawPassword = GeneratePassword();
+
+            newAccount.Password = _passwordService.GenerateHashPassword(rawPassword);
 
             await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
             //call Send SMS
-            await _smsService.SendPasswordSmsAsync(newAccount.Phone!, newAccount.Password!);
+            await _smsService.SendPasswordSmsAsync(newAccount.Phone!, rawPassword);
 
-            await _smsService.SendPasswordEmail(newAccount.Email!, newAccount.Password!);
+            await _smsService.SendPasswordEmail(newAccount.Email!, rawPassword);
+
+            await _unitOfWork.AccountRepository.AddAsync(newAccount);
 
             await _unitOfWork.CommitAsync();
 
@@ -79,11 +92,24 @@ namespace Auth.Infrastructure.Services.Implementations
 
         
 
-        public async Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO)
+        public async Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountUpdateDTO accountUpdateDTO)
         {
             var account = await _unitOfWork.AccountRepository.FindAsync(Id);
+
             if (account == null) throw new EntityWithIDNotFoundException<Account>(Id);
-            _mapper.Map(accountReadDTO, account);
+
+            if (!account.Name.IsNullOrEmpty())
+            {
+                account.Name = accountUpdateDTO.FullName!;
+            }
+
+            if (!account.RoleId.IsNullOrEmpty())
+            {
+                account.RoleId = accountUpdateDTO.RoleId!;
+            }
+
+            await _unitOfWork.CommitAsync();
+
             return _mapper.Map<AccountReadDTO>(account);
         }
 

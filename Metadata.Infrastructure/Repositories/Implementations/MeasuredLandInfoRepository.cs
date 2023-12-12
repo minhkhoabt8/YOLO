@@ -5,6 +5,7 @@ using Metadata.Core.Enums;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
 
@@ -82,10 +83,18 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(enumeratedMeasuredLandInfos);
         }
 
-        public async Task<MeasuredLandInfo?> CheckDuplicateMeasuredLandInfo(string pageNumber, string plotNumber)
+        public async Task<MeasuredLandInfo?> CheckDuplicateMeasuredLandInfo(string pageNumber, string plotNumber, string? landTypeId = null)
         {
-            return await _context.MeasuredLandInfos
-                .FirstOrDefaultAsync(c => c.MeasuredPageNumber == pageNumber && c.MeasuredPlotNumber == plotNumber && !c.IsDeleted);
+            var query = _context.MeasuredLandInfos
+                        .Where(c => c.MeasuredPageNumber == pageNumber && c.MeasuredPlotNumber == plotNumber && !c.IsDeleted);
+
+            if (!landTypeId.IsNullOrEmpty())
+            {
+                query = query.Where(c => c.LandTypeId == landTypeId);
+            }
+
+            return await query.FirstOrDefaultAsync();
+
         }
     }
 }

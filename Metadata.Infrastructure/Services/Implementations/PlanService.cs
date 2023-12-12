@@ -119,7 +119,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeletePlan(string planId)
         {
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
@@ -127,7 +127,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 || plan.PlanStatus == PlanStatusEnum.AWAITING.ToString()
                 || plan.PlanStatus == PlanStatusEnum.APPROVED.ToString())
             {
-                throw new InvalidActionException($"Cannot Delete Plan With Status [{plan.PlanStatus}].");
+                throw new InvalidActionException($"Không thể xóa phương án với trạng thái [{plan.PlanStatus}].");
+            }
+
+            if (plan.Owners.Any())
+            {
+                throw new InvalidActionException($"Không thể xóa phương án đã tồn tại Chủ sở hữu.");
             }
 
             plan.IsDeleted = true;

@@ -5,6 +5,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace Metadata.API.Controllers
 {
@@ -111,6 +112,23 @@ namespace Metadata.API.Controllers
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Check Project Available For Edit Or Delete
+        /// True If Can Delete, Else False
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        [HttpPost("check-availble")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> CheckProjectAvailableForEditOrDelete([Required]string projectId)
+        {
+            var result = await _projectService.CheckProjectAvailableForEditOrDelete(projectId);
+
+            return ResponseFactory.Ok(result);
+        }
+
 
         /// <summary>
         /// Update Project

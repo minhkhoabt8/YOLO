@@ -22,7 +22,7 @@ public partial class GcnlandInfo : ITextSearchableEntity
 
     public string? GcnOwnerCertificate { get; set; }
 
-    public string OwnerId { get; set; } = null!;
+    public string? OwnerId { get; set; }
 
     public bool IsDeleted { get; set; } = false;
 
