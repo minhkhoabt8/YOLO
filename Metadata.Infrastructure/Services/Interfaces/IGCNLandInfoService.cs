@@ -20,5 +20,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<GCNLandInfoReadDTO>> GCNLandInfoQueryAsync(GCNLandInfoQuery query);
         Task<IEnumerable<GCNLandInfoReadDTO>> CreateOwnerGcnLandInfosAsync(string ownerId, IEnumerable<GCNLandInfoWriteDTO> dto);
         Task<IEnumerable<GCNLandInfoReadDTO>> CreateGCNLandInfosAsync(IEnumerable<GCNLandInfoWriteDTO> dtos);
+        Task<GCNLandInfoReadDTO> CheckDuplicateGCNLandInfoAsync(string pageNumber, string plotNumber);
     }
 }

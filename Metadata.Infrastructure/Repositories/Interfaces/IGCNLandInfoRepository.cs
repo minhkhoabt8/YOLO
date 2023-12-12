@@ -14,5 +14,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<GcnlandInfo, GCNLandInfoQuery>
     {
         Task<IEnumerable<GcnlandInfo>> GetAllGcnLandInfosOfOwnerAsync(string ownerId);
+        Task<GcnlandInfo?> CheckDuplicateGCNLandInfo(string pageNumber, string plotNumber);
     }
 }

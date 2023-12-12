@@ -19,6 +19,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await _context.GcnlandInfos.Include(c => c.AttachFiles).Where(c => c.OwnerId == ownerId).ToListAsync();
         }
 
+        public async Task<GcnlandInfo?> CheckDuplicateGCNLandInfo(string pageNumber, string plotNumber)
+        {
+            return await _context.GcnlandInfos
+                .FirstOrDefaultAsync(c => c.GcnPageNumber == pageNumber && c.GcnPlotNumber == plotNumber && !c.IsDeleted);
+        }
 
         public async Task<IEnumerable<GcnlandInfo>> QueryAsync(GCNLandInfoQuery query, bool trackChanges = false)
         {

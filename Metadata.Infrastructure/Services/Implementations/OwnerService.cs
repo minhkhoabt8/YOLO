@@ -43,13 +43,23 @@ namespace Metadata.Infrastructure.Services.Implementations
             _attachFileService = attachFileService;
             _uploadFileService = uploadFileService;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<OwnerReadDTO>> GetAllOwner()
         {
             var owners = await _unitOfWork.OwnerRepository.GetAllOwner();
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(owners);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Project}"></exception>
+        /// <exception cref="EntityWithIDNotFoundException{Plan}"></exception>
+        /// <exception cref="CanNotAssignUserException"></exception>
         public async Task<OwnerReadDTO> CreateOwnerAsync(OwnerWriteDTO dto)
         {
             var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
@@ -72,7 +82,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<OwnerReadDTO>(owner);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Project}"></exception>
+        /// <exception cref="EntityWithIDNotFoundException{Plan}"></exception>
+        /// <exception cref="EntityWithIDNotFoundException{OrganizationType}"></exception>
+        /// <exception cref="CanNotAssignUserException"></exception>
         public async Task<OwnerReadDTO> CreateOwnerWithFullInfomationAsync1(OwnerWriteDTO dto)
         {
             var project = await _unitOfWork.ProjectRepository.FindAsync(dto.ProjectId);
@@ -885,7 +903,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<OwnerReadDTO>(owner);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="planId"></param>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Plan}"></exception>
+        /// <exception cref="EntityWithIDNotFoundException{Project}"></exception>
         public async Task<PaginatedResponse<OwnerReadDTO>> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync(PaginatedQuery query, string planId, string projectId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId)
@@ -905,7 +931,16 @@ namespace Metadata.Infrastructure.Services.Implementations
             return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(allOwners, query, _mapper);
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="ownerStatus"></param>
+        /// <param name="rejectReason"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        /// <exception cref="EntityWithIDNotFoundException{Owner}"></exception>
+        /// <exception cref="CanNotAssignUserException"></exception>
         public async Task<OwnerReadDTO> UpdateOwnerStatusAsync(string ownerId, OwnerStatusEnum ownerStatus, string? rejectReason, AttachFileWriteDTO? file)
         {
             var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
@@ -946,7 +981,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<OwnerReadDTO>(owner);
         }
-        // api check duplicate owner code
+        /// <summary>
+        /// api check duplicate owner code
+        /// </summary>
+        /// <param name="ownerCode"></param>
+        /// <returns></returns>
+        /// <exception cref="UniqueConstraintException{Project}"></exception>
         public async Task<bool> CheckDuplicateOwnerCodeAsync(string ownerCode)
         {
             var owner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(ownerCode);
@@ -957,10 +997,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
-        // api check duplicate owner id code
-        public async Task<bool> CheckDuplicateOwnerIdCodeAsync(string ownerIdCode)
+        /// <summary>
+        /// api check duplicate owner id code in nproject
+        /// </summary>
+        /// <param name="ownerIdCode"></param>
+        /// <returns></returns>
+        /// <exception cref="UniqueConstraintException{Project}"></exception>
+        public async Task<bool> CheckDuplicateOwnerIdCodeAsync(string projectId, string ownerIdCode)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(ownerIdCode);
+            var owner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeInProjectAsync(projectId, ownerIdCode);
             if (owner != null)
             {
                 throw new UniqueConstraintException<Project>(nameof(owner.OwnerIdCode), ownerIdCode);
@@ -968,17 +1013,27 @@ namespace Metadata.Infrastructure.Services.Implementations
             return true;
         }
 
-        //api check duplicate owner tax code
-        public async Task<bool> CheckDuplicateOwnerTaxCodeAsync(string ownerTaxCode)
+        /// <summary>
+        /// api check duplicate owner tax code in nproject
+        /// </summary>
+        /// <param name="ownerTaxCode"></param>
+        /// <returns></returns>
+        /// <exception cref="UniqueConstraintException{Project}"></exception>
+        public async Task<bool> CheckDuplicateOwnerTaxCodeAsync(string projectId, string ownerTaxCode)
         {
-            var owner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(ownerTaxCode);
+            var owner = await _unitOfWork.OwnerRepository.FindByTaxCodeInProjectAsync(projectId, ownerTaxCode);
             if (owner != null)
             {
                 throw new UniqueConstraintException<Project>(nameof(owner.OwnerTaxCode), ownerTaxCode);
             }
             return true;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public async Task<PaginatedResponse<OwnerReadDTO>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query)
         {
             var owner = await _unitOfWork.OwnerRepository.QueryOwnersOfProjectAsync(projectId, query);

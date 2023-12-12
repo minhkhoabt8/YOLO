@@ -282,7 +282,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<IEnumerable<GCNLandInfoReadDTO>>(landInfoList);
         }
 
-        
-
+        public async Task<GCNLandInfoReadDTO> CheckDuplicateGCNLandInfoAsync(string pageNumber, string plotNumber)
+        {
+            return _mapper.Map<GCNLandInfoReadDTO>(await _unitOfWork.GCNLandInfoRepository.CheckDuplicateGCNLandInfo(pageNumber, plotNumber));
+        }
     }
 }
