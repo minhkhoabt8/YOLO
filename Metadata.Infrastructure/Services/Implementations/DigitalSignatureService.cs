@@ -325,7 +325,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
 
                 // Create a self-signed certificate with user information
-                X509Certificate2 certificate = CreateSelfSignedCertificate(rsa, signer.Name, signer.Email ?? "", "YOLO", "Binh Dinh", "Binh Dinh", "Viet Nam");
+                X509Certificate2 certificate = CreateSelfSignedCertificate(rsa, signer.Username, signer.Email ?? "", "YOLO", "Binh Dinh", "Binh Dinh", "Viet Nam");
 
                 // Export certificate to the folder
                 string certFileName = Path.Combine(folderPath, $"{signer.Id}.crt");

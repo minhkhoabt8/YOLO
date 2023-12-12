@@ -29,7 +29,7 @@ namespace Auth.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
         {
-            IQueryable<Account> acounts = _context.Accounts.Include(a => a.Role);
+            IQueryable<Account> acounts = _context.Accounts.Include(a => a.Role).Where(c=>c.IsDelete == false);
 
             if(!trackChanges)
             {

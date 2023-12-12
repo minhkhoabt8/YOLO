@@ -1,4 +1,3 @@
-
 using Auth.API.Extensions;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;

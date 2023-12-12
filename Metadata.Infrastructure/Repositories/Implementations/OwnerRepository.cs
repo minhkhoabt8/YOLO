@@ -49,16 +49,16 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         }
 
-
         public async Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId)
         {
-            return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projectId && o.IsDeleted == false));
+            return await Task.FromResult(_context.Owners.Include(c => c.Plan).Where(o => o.ProjectId == projectId && o.IsDeleted == false));
         }
 
         public async Task<IEnumerable<Owner>> GetOwnersOfPlanAsync(string planId)
         {
             return await Task.FromResult(_context.Owners.Where(o => o.PlanId == planId && o.IsDeleted == false));
         }
+
         public async Task<IEnumerable<Owner>> GetAllOwner()
         {
             return await Task.FromResult(_context.Owners.Where(o => o.IsDeleted == false));
