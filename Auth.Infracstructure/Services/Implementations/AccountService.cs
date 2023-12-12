@@ -92,11 +92,24 @@ namespace Auth.Infrastructure.Services.Implementations
 
         
 
-        public async Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO)
+        public async Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountUpdateDTO accountUpdateDTO)
         {
             var account = await _unitOfWork.AccountRepository.FindAsync(Id);
+
             if (account == null) throw new EntityWithIDNotFoundException<Account>(Id);
-            _mapper.Map(accountReadDTO, account);
+
+            if (!account.Name.IsNullOrEmpty())
+            {
+                account.Name = accountUpdateDTO.FullName!;
+            }
+
+            if (!account.RoleId.IsNullOrEmpty())
+            {
+                account.RoleId = accountUpdateDTO.RoleId!;
+            }
+
+            await _unitOfWork.CommitAsync();
+
             return _mapper.Map<AccountReadDTO>(account);
         }
 

@@ -166,11 +166,21 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task DeleteGCNLandInfoAsync(string id)
         {
-            var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(id);
+            var gcnLandInfo = await _unitOfWork.GCNLandInfoRepository.FindAsync(id, include: "MeasuredLandInfos");
 
             if (gcnLandInfo == null) throw new EntityWithIDNotFoundException<GcnlandInfo>(id);
 
+            foreach(var item in gcnLandInfo.MeasuredLandInfos)
+            {
+                if (!item.IsDeleted)
+                {
+                    throw new InvalidActionException("Không thể xóa GCN đất.");
+                }
+            }
+
             gcnLandInfo.IsDeleted = true;
+
+            gcnLandInfo.OwnerId = null;
 
             await _unitOfWork.CommitAsync();
         }

@@ -22,6 +22,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<MeasuredLandInfoReadDTO>> MeasuredLandInfoQueryAsync(MeasuredLandInfoQuery query);
 
         Task<IEnumerable<MeasuredLandInfoReadDTO>> CreateOwnerMeasuredLandInfosAsync(string ownerId, IEnumerable<MeasuredLandInfoWriteDTO> dto);
-        Task<MeasuredLandInfoReadDTO?> CheckDuplicateMeasuredLandInfoAsync(string pageNumber, string plotNumber);
+        Task<MeasuredLandInfoReadDTO?> CheckDuplicateMeasuredLandInfoAsync(string pageNumber, string plotNumber, string? landTypeId = null);
     }
 }

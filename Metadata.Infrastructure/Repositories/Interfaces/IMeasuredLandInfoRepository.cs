@@ -17,6 +17,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<MeasuredLandInfo>> GetAllMeasuredLandInfosOfOwnerAsync(string ownerId);
         Task<decimal> CaculateTotalLandCompensationPriceOfOwnerAsync(string ownerId, bool? reCheck = false);
         Task<decimal> CaculateTotalLandRecoveryAreaOfOwnerAsync(string ownerId);
-        Task<MeasuredLandInfo?> CheckDuplicateMeasuredLandInfo(string pageNumber, string plotNumber);
+        Task<MeasuredLandInfo?> CheckDuplicateMeasuredLandInfo(string pageNumber, string plotNumber, string? landTypeId = null);
     }
 }

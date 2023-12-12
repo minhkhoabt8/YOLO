@@ -9,7 +9,7 @@ namespace Auth.Infrastructure.Services.Interfaces
 
         Task<AccountReadDTO> CreateAccountAsync(AccountWriteDTO writeDTO);
 
-        Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountWriteDTO accountReadDTO);
+        Task<AccountReadDTO> UpdateAccountAsync(string Id, AccountUpdateDTO accountUpdateDTO);
 
         Task DeleteAccountAsync(string id);
 

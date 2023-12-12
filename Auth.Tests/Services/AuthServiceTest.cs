@@ -71,7 +71,7 @@ namespace Auth.Tests.Services
             };
 
             var mockUOW = new Mock<IUnitOfWork>();
-            var authService = new AuthService(mockUOW.Object, null!,  null!, null!);
+            var authService = new AuthService(mockUOW.Object, null!,  null!, null!, null!);
 
             mockUOW.Setup(uow => uow.RefreshTokenRepository.FindByTokenIncludeAccountAsync(token.Token))
                 .ReturnsAsync(token);
@@ -114,7 +114,7 @@ namespace Auth.Tests.Services
             var invalidOtpCode = "invalid-otp-code";
 
             var mockUOW = new Mock<IUnitOfWork>();
-            var authService = new AuthService(mockUOW.Object, null!, null!, null!);
+            var authService = new AuthService(mockUOW.Object, null!, null!, null!, null!);
 
             mockUOW.Setup(uow => uow.AccountRepository.LoginAsync(login))
             .ReturnsAsync(mockAccount);
@@ -138,7 +138,7 @@ namespace Auth.Tests.Services
                 .Callback<string, string>((phone, otp) => capturedOtp = otp)
                 .Returns(Task.CompletedTask);
 
-            var authService = new AuthService(mockUOW.Object, null! , null! , mockSmsService.Object);
+            var authService = new AuthService(mockUOW.Object, null! , null! , mockSmsService.Object, null!);
 
             var mockAccount = new Account
             {

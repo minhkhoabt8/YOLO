@@ -89,7 +89,7 @@ public class AcccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-    public async Task<IActionResult> UpdateAccount(string id, AccountWriteDTO writeDTO)
+    public async Task<IActionResult> UpdateAccount(string id, AccountUpdateDTO writeDTO)
     {
         var account = await _accountService.UpdateAccountAsync(id, writeDTO);
         return ResponseFactory.Ok(account);

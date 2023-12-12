@@ -70,14 +70,15 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="pageNumber"></param>
         /// <param name="plotNumber"></param>
+        /// <param name="landTypeId"></param>
         /// <returns></returns>
         [HttpPost("duplicate")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<GCNLandInfoReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CheckDuplicateMeasuredLandInfoAsync([Required] string pageNumber, [Required] string plotNumber)
+        public async Task<IActionResult> CheckDuplicateMeasuredLandInfoAsync([Required] string pageNumber, [Required] string plotNumber, string landTypeId)
         {
-            var measuredLandInfo = await _measuredLandInfoService.CheckDuplicateMeasuredLandInfoAsync(pageNumber, plotNumber);
+            var measuredLandInfo = await _measuredLandInfoService.CheckDuplicateMeasuredLandInfoAsync(pageNumber, plotNumber, landTypeId);
 
             return ResponseFactory.Ok(measuredLandInfo);
         }
