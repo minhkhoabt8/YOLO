@@ -32,7 +32,7 @@ public partial class MeasuredLandInfo : ITextSearchableEntity
 
     public string GcnLandInfoId { get; set; } = null!;
 
-    public string OwnerId { get; set; } = null!;
+    public string? OwnerId { get; set; }
 
     public string UnitPriceLandId { get; set; } = null!;
 

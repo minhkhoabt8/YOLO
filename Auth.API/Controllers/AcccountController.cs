@@ -1,4 +1,5 @@
 ﻿using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.DTOs.Role;
 using Auth.Infrastructure.Services.Implementations;
 using Auth.Infrastructure.Services.Interfaces;
@@ -94,6 +95,25 @@ public class AcccountController : ControllerBase
         var account = await _accountService.UpdateAccountAsync(id, writeDTO);
         return ResponseFactory.Ok(account);
     }
+
+    /// <summary>
+    /// Update account password
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="writeDTO"></param>
+    /// <returns></returns>
+    [HttpPut("password")]
+    [ServiceFilter(typeof(AutoValidateModelState))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+    public async Task<IActionResult> UpdateAccountPassword(ResetPasswordInputDTO writeDTO)
+    {
+        await _accountService.UpdatePasswordAsync(writeDTO);
+        return ResponseFactory.NoContent();
+    }
+
+
 
     /// <summary>
     /// Delete account
