@@ -139,6 +139,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             measuredLandInfo.IsDeleted = true;
 
+            measuredLandInfo.OwnerId = null;
+
             await _unitOfWork.CommitAsync();
         }
 

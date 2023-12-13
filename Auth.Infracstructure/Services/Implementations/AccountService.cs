@@ -1,5 +1,7 @@
 ﻿using Auth.Core.Entities;
+using Auth.Core.Exceptions;
 using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
@@ -8,6 +10,8 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
 using System;
 using System.Data;
+using System.Security.Principal;
+using LoginInputDTO = Auth.Infrastructure.DTOs.Authentication.LoginInputDTO;
 
 namespace Auth.Infrastructure.Services.Implementations
 {
@@ -131,6 +135,40 @@ namespace Auth.Infrastructure.Services.Implementations
             var accounts = await _unitOfWork.AccountRepository.QueryAsync(query);
 
             return PaginatedResponse<AccountReadDTO>.FromEnumerableWithMapping(accounts, query, _mapper);
+        }
+
+        public async Task UpdatePasswordAsync(ResetPasswordInputDTO dto)
+        {
+            //1.try log in using old password
+            //var login = new LoginInputDTO
+            //{
+            //    Username = dto.Username,
+            //    Password = dto.OldPassword
+            //};
+
+            //2.check account exist with username and old password
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(dto.Username);
+
+            if (account == null || account.IsDelete)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            //2.1.Verify user input password and system hashed password
+            var hashedPasswordWithSalt = account.Password.ToString().Split("-");
+
+            var isValidPassword = _passwordService.ValidatePassword(dto.OldPassword, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
+
+            if (isValidPassword)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            //2.2.Update Password
+            account.Password = _passwordService.GenerateHashPassword(dto.NewPassword);
+
+
+            await _unitOfWork.CommitAsync();
         }
     }
 }

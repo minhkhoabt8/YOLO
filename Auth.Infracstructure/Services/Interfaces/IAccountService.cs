@@ -1,4 +1,5 @@
 ﻿using Auth.Infrastructure.DTOs.Account;
+using Auth.Infrastructure.DTOs.Authentication;
 using SharedLib.Infrastructure.DTOs;
 
 namespace Auth.Infrastructure.Services.Interfaces
@@ -16,5 +17,7 @@ namespace Auth.Infrastructure.Services.Interfaces
         Task<AccountReadDTO> GetAccountByIdAsync(string id);
 
         Task<PaginatedResponse<AccountReadDTO>> QueryAccount(AccountQuery query);
+
+        Task UpdatePasswordAsync(ResetPasswordInputDTO dto);
     }
 }
