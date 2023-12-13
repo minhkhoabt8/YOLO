@@ -18,6 +18,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<LandResettlement>> GetLandResettlementsOfOwnerIncludeResettlementProjectAsync(string ownerId);
         Task<IEnumerable<LandResettlement>> GetLandResettlementsOfResettlementProjectIncludeOwnerAsync(string resettlementProjectId);
-
+        Task<decimal> CaculateTotalLandPricesOfOwnerAsync(string ownerId);
     }
 }

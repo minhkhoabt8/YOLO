@@ -46,7 +46,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public decimal SumTreeCompensationPrice { get; set; }
         public decimal SumArchitectureCompensationPrice { get; set; }
 
-
+        //Land resettlement
+        public decimal SumLandResettlementPrice { get; set; }
         //Support
         public decimal SumSupportPrice { get; set; }
         //Deduction
