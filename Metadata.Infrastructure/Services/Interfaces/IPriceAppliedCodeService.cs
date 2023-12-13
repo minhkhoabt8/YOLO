@@ -16,5 +16,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PriceAppliedCodeReadDTO> CheckDuplicateCodeAsync(string code);
         Task<PriceAppliedCodeReadDTO> CreatePriceAppliedCodeAsync(PriceAppliedCodeWriteDTO dto);
         Task<PriceAppliedCodeReadDTO> CreatePriceAplliedDocumentsAsync(string priceAppliedCodeId, IEnumerable<DocumentWriteDTO> documentDtos);
+        Task<bool> IsPriceAppliedCodeInAnyProjectAsync(string priceAppliedCodeId);
     }
 }

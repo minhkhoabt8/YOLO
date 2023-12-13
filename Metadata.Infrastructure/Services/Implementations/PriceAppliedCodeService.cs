@@ -217,7 +217,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             //Cannot Delete Price Applied Code that existed in Project
             if (priceAppliedCode.Projects.Count() > 0)
             {
-                throw new InvalidActionException();
+                throw new InvalidActionException("Không thể xóa Mã áp giá tài sản đã tồn tại trong Dự án.");
             }
 
             
@@ -253,10 +253,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PriceAppliedCodeReadDTO> UpdatePriceAppliedCodeAsync(string Id, PriceAppliedCodeWriteDTO dto)
         {
-            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id)
+            var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.FindAsync(Id, include: "UnitPriceAssets, Projects")
                 ??throw new EntityWithIDNotFoundException<PriceAppliedCode>(Id);
 
-            if(dto.UnitPriceCode.ToLower() != priceAppliedCode.UnitPriceCode.ToLower())
+            
+            if (dto.UnitPriceCode.ToLower() != priceAppliedCode.UnitPriceCode.ToLower())
             {
                 var existPriceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetPriceAppliedCodeByCodeAsync(dto.UnitPriceCode);
 
@@ -343,5 +344,18 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<PriceAppliedCodeReadDTO>(priceAppliedCode);
 
         }
+        public async Task<bool> IsPriceAppliedCodeInAnyProjectAsync(string priceAppliedCodeId)
+        {
+            var project = await _unitOfWork.ProjectRepository.GetProjectOfPricaAppliedCodeAsync(priceAppliedCodeId);
+
+            if (!project.Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
     }
 }

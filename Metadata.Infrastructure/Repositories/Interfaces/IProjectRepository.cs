@@ -24,5 +24,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<Project?> GetProjectByProjectCodeAsync(string projectCode);
         Task<Project?> CheckDuplicateProjectAsync(string projectCode, string projectName);
         Task<Project?> GetProjectByNameAsync(string projectName);
+        Task<IEnumerable<Project?>> GetProjectOfPricaAppliedCodeAsync(string priceAppliedCodeId);
+
     }
 }

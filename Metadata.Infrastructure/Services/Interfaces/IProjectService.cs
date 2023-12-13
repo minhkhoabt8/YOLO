@@ -17,7 +17,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<ProjectReadDTO>> ProjectQueryAsync(ProjectQuery query);
         Task<ExportFileDTO> ExportProjectFileAsync();
         Task<ProjectReadDTO> CreateProjectDocumentsAsync(string projectId, IEnumerable<DocumentWriteDTO> documents);
-        Task<ProjectReadDTO> GetProjectOfOwnerAsync(string ownerId);
+        Task<IEnumerable<ProjectReadDTO>> GetProjectOfOwnerAsync(string ownerId);
         Task<bool> CheckDuplicateProjectCodeAsync(string projectCode);
         Task<bool> CheckDuplicateProjectNameAsync(string projectName);
         Task<bool> CheckProjectAvailableForEditOrDelete(string projectId);

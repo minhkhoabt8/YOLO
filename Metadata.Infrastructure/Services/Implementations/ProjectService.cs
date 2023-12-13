@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Exceptions;
 using Metadata.Core.Extensions;
@@ -456,11 +457,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<ProjectReadDTO> GetProjectOfOwnerAsync(string ownerId)
+        public async Task<IEnumerable<ProjectReadDTO>> GetProjectOfOwnerAsync(string ownerId)
         {
             var project = await _unitOfWork.ProjectRepository.GetProjectsOfOwnerAsync(ownerId);
 
-            return _mapper.Map<ProjectReadDTO>(project);
+            return _mapper.Map<IEnumerable<ProjectReadDTO>>(project);
         }
 
         /// <summary>

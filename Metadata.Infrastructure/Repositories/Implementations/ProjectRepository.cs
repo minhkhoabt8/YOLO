@@ -1,4 +1,5 @@
-﻿using Metadata.Core.Data;
+﻿using Amazon.S3.Model;
+using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Repositories.Interfaces;
@@ -74,6 +75,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public async Task<Project?> CheckDuplicateProjectAsync(string projectCode, string projectName)
         {
             return await _context.Projects.Where(p => p.ProjectName.ToLower() == projectName.ToLower() && p.ProjectCode.ToLower() ==projectCode.ToLower() && p.IsDeleted == false).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Project?>> GetProjectOfPricaAppliedCodeAsync(string priceAppliedCodeId)
+        {
+            return await _context.Projects.Where(p => p.PriceAppliedCodeId == priceAppliedCodeId && !p.IsDeleted).ToListAsync();
         }
     }
 }

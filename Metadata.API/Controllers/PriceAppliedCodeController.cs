@@ -61,6 +61,16 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Accepted();
         }
 
+        /// <summary>
+        /// Check if PriceApplied Code In Any Project
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkCanEdit")]
+        public async Task<IActionResult> IsPriceAppliedCodeInAnyProjectAsync(string code)
+        {
+            var result = await _priceAppliedCodeService.IsPriceAppliedCodeInAnyProjectAsync(code);
+            return ResponseFactory.Ok(result);
+        }
 
         /// <summary>
         /// Create New Price Applied Code
