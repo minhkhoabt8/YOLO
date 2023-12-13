@@ -76,7 +76,7 @@ namespace Metadata.API.Controllers
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<GCNLandInfoReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
-        public async Task<IActionResult> CheckDuplicateMeasuredLandInfoAsync([Required] string pageNumber, [Required] string plotNumber, string landTypeId)
+        public async Task<IActionResult> CheckDuplicateMeasuredLandInfoAsync([Required] string pageNumber, [Required] string plotNumber, string? landTypeId)
         {
             var measuredLandInfo = await _measuredLandInfoService.CheckDuplicateMeasuredLandInfoAsync(pageNumber, plotNumber, landTypeId);
 
