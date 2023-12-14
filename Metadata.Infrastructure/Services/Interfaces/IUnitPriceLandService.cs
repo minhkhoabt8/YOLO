@@ -13,7 +13,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<UnitPriceLandReadDTO> CreateUnitPriceLandAsync(UnitPriceLandWriteDTO dto);
         Task<UnitPriceLandReadDTO> UpdateUnitPriceLandAsync(string unitPriceLandId, UnitPriceLandWriteDTO dto);
         Task<IEnumerable<UnitPriceLandReadDTO>> CreateUnitPriceLandsAsync(IEnumerable<UnitPriceLandWriteDTO> dtos);
-        Task<IEnumerable<UnitPriceLandReadDTO>> GetUnitPriceLandOfProjectAsync(string projectId);
+        Task<PaginatedResponse<UnitPriceLandReadDTO>> QueryUnitPriceLandOfProjectAsync(string projectId, UnitPriceLandQuery query);
         Task<IEnumerable<UnitPriceLandReadDTO>> ImportUnitPriceLandFromExcelFileAsync(IFormFile file);
         Task DeleteUnitPriceLand(string unitPriceLandId);
     }

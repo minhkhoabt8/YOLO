@@ -43,6 +43,31 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<UnitPriceLand> enumeratedUnitPriceLands = unitPriceLands.AsEnumerable();
             return await Task.FromResult(enumeratedUnitPriceLands);
         }
+
+
+        public async Task<IEnumerable<UnitPriceLand>> QueryUnitPriceLandOfProjectAsync(string projectId, UnitPriceLandQuery query, bool trackChanges = false)
+        {
+            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Where(e => e.ProjectId ==projectId && e.IsDeleted == false);
+
+            if (!trackChanges)
+            {
+                unitPriceLands = unitPriceLands.AsNoTracking();
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                unitPriceLands = unitPriceLands.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                unitPriceLands = unitPriceLands.Where(c => c.StreetAreaName.Contains(query.SearchText)); ;
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                unitPriceLands = unitPriceLands.OrderByDynamic(query.OrderBy);
+            }
+            IEnumerable<UnitPriceLand> enumeratedUnitPriceLands = unitPriceLands.AsEnumerable();
+            return await Task.FromResult(enumeratedUnitPriceLands);
+        }
     }
     }
     

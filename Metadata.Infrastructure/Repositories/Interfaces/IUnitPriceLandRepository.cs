@@ -11,5 +11,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IQueryAsync<UnitPriceLand, UnitPriceLandQuery>
     {
         Task<IEnumerable<UnitPriceLand>> GetUnitPriceLandsOfProjectAsync(string projectId);
+        Task<IEnumerable<UnitPriceLand>> QueryUnitPriceLandOfProjectAsync(string projectId, UnitPriceLandQuery query, bool trackChanges = false);
     }
 }

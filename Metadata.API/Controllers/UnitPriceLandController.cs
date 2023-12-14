@@ -57,13 +57,13 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("project")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<UnitPriceLandReadDTO>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ApiPaginatedOkResponse<UnitPriceLandReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> GetUnitPriceLandsOfProjectAsync(string projectId)
+        public async Task<IActionResult> GetUnitPriceLandsOfProjectAsync([Required][FromQuery]string projectId, [FromQuery] UnitPriceLandQuery query )
         {
-            var unitPriceLand = await _unitPriceLandService.GetUnitPriceLandOfProjectAsync(projectId);
+            var unitPriceLands = await _unitPriceLandService.QueryUnitPriceLandOfProjectAsync(projectId, query);
 
-            return ResponseFactory.Ok(unitPriceLand);
+            return ResponseFactory.Ok(unitPriceLands);
         }
 
         /// <summary>

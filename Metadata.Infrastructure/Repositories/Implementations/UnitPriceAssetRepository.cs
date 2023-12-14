@@ -26,11 +26,15 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<UnitPriceAsset>> QueryAsync(UnitPriceAssetQuery query, bool trackChanges = false)
         {
-            IQueryable<UnitPriceAsset> unitPriceAssets = _context.UnitPriceAssets.Where(e => e.IsDeleted == false);
+            IQueryable<UnitPriceAsset> unitPriceAssets = _context.UnitPriceAssets.Where(e => e.PriceAppliedCodeId == query.PriceAppliedCodeId && e.IsDeleted == false);
 
             if (!trackChanges)
             {
                 unitPriceAssets = unitPriceAssets.AsNoTracking();
+            }
+            if (query.Type != null)
+            {
+                unitPriceAssets = unitPriceAssets.Where(e => e.AssetType.ToLower() == query.Type.ToString()!.ToLower());
             }
             if (!string.IsNullOrWhiteSpace(query.Include))
             {
