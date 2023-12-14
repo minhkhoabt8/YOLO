@@ -69,7 +69,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         //public  OrganizationType? OrganizationType { get; set; }
         public OrganizationTypeReadDTO? OrganizationType { get; set; }
 
-        //public PlanReadDTO? Plan { get; set; }
+        public PlanInOwnerReadDTO? PlanCode { get; set; }
 
         //public ProjectReadDTO? Project { get; set; }
         public IEnumerable<SupportReadDTO>? Supports { get; set; }

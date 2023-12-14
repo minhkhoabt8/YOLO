@@ -127,7 +127,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PaginatedResponse<UnitPriceLandReadDTO>> QueryUnitPriceLandOfProjectAsync(string projectId, UnitPriceLandQuery query)
         {
-            return _mapper.Map<PaginatedResponse<UnitPriceLandReadDTO>>(await _unitOfWork.UnitPriceLandRepository.QueryUnitPriceLandOfProjectAsync(projectId, query));
+            var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.QueryUnitPriceLandOfProjectAsync(projectId, query);
+            return PaginatedResponse<UnitPriceLandReadDTO>.FromEnumerableWithMapping(unitPriceLand, query, _mapper);
         }
 
         public async Task<IEnumerable<UnitPriceLandReadDTO>> ImportUnitPriceLandFromExcelFileAsync(IFormFile file)
