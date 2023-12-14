@@ -4,7 +4,6 @@ using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
-using Microsoft.AspNetCore.Components.Forms;
 using SharedLib.Core.Exceptions;
 
 namespace Auth.Infrastructure.Services.Implementations
@@ -203,7 +202,7 @@ namespace Auth.Infrastructure.Services.Implementations
 
             var isValidPassword = _passwordService.ValidatePassword(resetDTO.OldPassword, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
 
-            if (isValidPassword)
+            if (!isValidPassword)
             {
                 throw new WrongCredentialsException();
             }

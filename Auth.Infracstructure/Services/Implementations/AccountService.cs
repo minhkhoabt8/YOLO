@@ -156,7 +156,7 @@ namespace Auth.Infrastructure.Services.Implementations
 
             var isValidPassword = _passwordService.ValidatePassword(dto.OldPassword, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
 
-            if (isValidPassword)
+            if (!isValidPassword)
             {
                 throw new WrongCredentialsException();
             }
