@@ -63,7 +63,7 @@ namespace Metadata.API.Controllers
         {
             var unitPriceLands = await _unitPriceLandService.QueryUnitPriceLandOfProjectAsync(projectId, query);
 
-            return ResponseFactory.Ok(unitPriceLands);
+            return ResponseFactory.PaginatedOk(unitPriceLands);
         }
 
         /// <summary>
