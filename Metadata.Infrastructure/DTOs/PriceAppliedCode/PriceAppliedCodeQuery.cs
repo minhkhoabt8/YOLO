@@ -1,5 +1,5 @@
 ﻿using SharedLib.Infrastructure.DTOs;
-
+using System.ComponentModel;
 
 namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
 {
@@ -8,6 +8,7 @@ namespace Metadata.Infrastructure.DTOs.PriceAppliedCode
         public string? Include { get; set; }
         public string? SearchText { get; set; }
         public string? OrderBy { get; set; }
-        public bool? IsExpired { get; set; }
+        [DefaultValue(false)]
+        public bool? IsExpired { get; set; } = false;
     }
 }

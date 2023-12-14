@@ -236,6 +236,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 document.ReferenceLink =  await _uploadFileService.UploadFileAsync(fileUpload);
             }
 
+            if(dto.Number != document.Number || dto.Epitome != document.Epitome || dto.Notation != document.Notation)
+            {
+                var duplicateDocument = await _unitOfWork.DocumentRepository.CheckDuplicateDocumentAsync(dto.Number, dto.Notation, dto.Epitome) 
+                    ?? throw new UniqueConstraintException("Có một tài liệu khác đã tồn tại trong hệ thống."); ;
+            }
+
             _mapper.Map(dto, document);
 
             document.CreatedBy = _userContextService.Username!

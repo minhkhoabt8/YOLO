@@ -17,7 +17,13 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         public OwnerRepository(YoloMetadataContext context) : base(context)
         {
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="query"></param>
+        /// <param name="trackChanges"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query, bool trackChanges = false)
         {
             IQueryable<Owner> owners = _context.Owners
@@ -49,27 +55,47 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(enumeratedOwner);
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> GetOwnersOfProjectAsync(string projectId)
         {
             return await Task.FromResult(_context.Owners.Include(c => c.Plan).Where(o => o.ProjectId == projectId && o.IsDeleted == false));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> GetOwnersOfPlanAsync(string planId)
         {
             return await Task.FromResult(_context.Owners.Where(o => o.PlanId == planId && o.IsDeleted == false));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> GetAllOwner()
         {
             return await Task.FromResult(_context.Owners.Where(o => o.IsDeleted == false));
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
         public async Task<int> GetTotalOwnerInPlanAsync(string planId)
         {
             return await Task.FromResult(_context.Owners.Where(o => o.PlanId == planId && o.IsDeleted == false).Count());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="trackChanges"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> QueryAsync(OwnerQuery query, bool trackChanges = false)
         {
             IQueryable<Owner> owners = _context.Owners
@@ -99,40 +125,64 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             IEnumerable<Owner> enumeratedOwner = owners.AsEnumerable();
             return await Task.FromResult(enumeratedOwner);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projecId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Owner>> GetOwnerInProjectThatNotInAnyPlanAsync(string projecId)
         {
             return await Task.FromResult(_context.Owners.Where(o => o.ProjectId == projecId && o.PlanId == null));
         }
 
-        //get owner by code and is deleted status 
+        /// <summary>
+        /// get owner by code and is deleted status 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task<Owner?> FindByCodeAndIsDeletedStatus(string code)
         {
             return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerCode.ToLower() == code.ToLower() && x.IsDeleted == false);
         }
 
-        //get owner by  only OwnerIdCode property and is delete status
+        /// <summary>
+        /// get owner by  only OwnerIdCode property and is delete status
+        /// </summary>
+        /// <param name="iDcode"></param>
+        /// <returns></returns>
         public async Task<Owner?> FindByOwnerIdCodeAsync(string iDcode)
         {
             return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerIdCode == iDcode && x.IsDeleted == false);
         }
 
-        //get owner by  only ownertaxcode property and is delete status
+        /// <summary>
+        /// get owner by  only ownertaxcode property and is delete status
+        /// </summary>
+        /// <param name="taxCode"></param>
+        /// <returns></returns>
         public async Task<Owner?> FindByTaxCodeAsync(string taxCode)
         {
             return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerTaxCode == taxCode && x.IsDeleted == false);
         }
-        //TODO:api check duplicate id code, tax code in a project
-        public async Task<Owner?> CheckDuplicateOwnerAsync(string code, string taxCode, string ownerIdCode)
-        {
-            IQueryable<Owner> owners = _context.Owners.Where(o => o.OwnerCode.ToLower() == code.ToLower() && o.IsDeleted == false);
 
-            if (taxCode != null)
+        /// <summary>
+        /// api check duplicate id code, tax code in a project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="ownerTaxCode"></param>
+        /// <param name="ownerIdCode"></param>
+        /// <returns></returns>
+        public async Task<Owner?> CheckDuplicateOwnerAsync(string projectId, string? ownerTaxCode, string? ownerIdCode)
+        {
+            IQueryable<Owner> owners = _context.Owners
+                    .Where(o => o.ProjectId == projectId && !o.IsDeleted);
+
+            if (!string.IsNullOrEmpty(ownerTaxCode))
             {
-                owners = owners.Where(x => x.OwnerTaxCode == taxCode);
+                owners = owners.Where(x => x.OwnerTaxCode == ownerTaxCode);
             }
 
-            if (ownerIdCode != null)
+            if (!string.IsNullOrEmpty(ownerIdCode))
             {
                 owners = owners.Where(x => x.OwnerIdCode == ownerIdCode);
             }

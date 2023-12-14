@@ -96,5 +96,44 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await query.FirstOrDefaultAsync();
 
         }
+
+        /// <summary>
+        /// Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress but different LandTypeId
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="measuredPlotNumber"></param>
+        /// <param name="measuredPlotAddress"></param>
+        /// <param name="landTypeId"></param>
+        /// <returns></returns>
+        public async Task<bool> HasDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress, string landTypeId)
+        {
+            var otherOwnersWithSamePlot = await _context.MeasuredLandInfos
+                .Where(info => info.OwnerId != ownerId &&
+                               info.MeasuredPlotNumber == measuredPlotNumber &&
+                               info.MeasuredPlotAddress == measuredPlotAddress &&
+                               info.LandTypeId != landTypeId)
+                .AnyAsync();
+
+            return otherOwnersWithSamePlot;
+        }
+
+        /// <summary>
+        /// Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress
+        /// </summary>
+        /// <param name="ownerId"></param>
+        /// <param name="measuredPlotNumber"></param>
+        /// <param name="measuredPlotAddress"></param>
+        /// <returns></returns>
+        public async Task<bool> HasDuplicateMeasuredPlotAndAddressAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress)
+        {
+            var otherOwnersWithSamePlotAndAddress = await _context.MeasuredLandInfos
+                .Where(info => info.OwnerId != ownerId &&
+                               info.MeasuredPlotNumber == measuredPlotNumber &&
+                               info.MeasuredPlotAddress == measuredPlotAddress)
+                .AnyAsync();
+
+            return otherOwnersWithSamePlotAndAddress;
+        }
+
     }
 }

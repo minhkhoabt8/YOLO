@@ -1,14 +1,9 @@
-﻿using Amazon.S3.Model;
-using Metadata.Core.Data;
+﻿using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Metadata.Infrastructure.Repositories.Implementations
 {
@@ -27,5 +22,16 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await Task.FromResult(_context.LandResettlements.Include(lr => lr.Owner).Where(lr => lr.ResettlementProjectId == resettlementProjectId));
         }
+
+        public async Task<LandResettlement?> CheckDuplicateLandResettlement(string pageNumber, string plotNumber)
+        {
+            var query = _context.LandResettlements
+                        .Where(c => c.PageNumber == pageNumber && c.PlotNumber == plotNumber);
+
+            return await query.FirstOrDefaultAsync();
+
+        }
+
+
     }
 }

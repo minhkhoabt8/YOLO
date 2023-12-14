@@ -161,7 +161,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.QueryAsync(query);
             return PaginatedResponse<MeasuredLandInfoReadDTO>.FromEnumerableWithMapping(measuredLandInfo, query, _mapper);
         }
-        //TODO:
         public async Task<MeasuredLandInfoReadDTO> UpdateMeasuredLandInfoAsync(string id, MeasuredLandInfoWriteDTO dto)
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
@@ -173,6 +172,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
                 if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException("Gcn Land Info And Measured Land Info Owner Mismatch.");
+
+                // Verify duplicate MeasuredPlot
+                await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPlotAddress, dto.LandTypeId);
+
             }
 
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
@@ -184,6 +187,25 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<MeasuredLandInfoReadDTO>(measuredLandInfo);
+        }
+
+        private async Task VerifyDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress, string landTypeId)
+        {
+            // Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress but different LandTypeId
+            var hasDifferentLandTypeId = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAsync(ownerId, measuredPlotNumber, measuredPlotAddress, landTypeId);
+
+            if (hasDifferentLandTypeId)
+            {
+                throw new InvalidOperationException("Một chủ sở hữu khác có cùng số tờ và số thửa nhưng cùng loại đất đã tồn tại.");
+            }
+
+            // Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress
+            var hasDuplicatePlotAndAddress = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAndAddressAsync(ownerId, measuredPlotNumber, measuredPlotAddress);
+
+            if (hasDuplicatePlotAndAddress)
+            {
+                throw new InvalidOperationException("Đã tồn tại một chủ sở hữu khác có cùng số tờ và số thửa.");
+            }
         }
 
         public async Task<MeasuredLandInfoReadDTO?> CheckDuplicateMeasuredLandInfoAsync(string pageNumber, string plotNumber, string? landTypeId = null)

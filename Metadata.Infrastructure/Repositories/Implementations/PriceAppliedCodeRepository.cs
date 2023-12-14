@@ -27,19 +27,16 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         //get UnitPriceCode in PriceAppliedCode through price_applied_code_id 
        public async Task<PriceAppliedCode?> GetUnitPriceCodeByProjectAsync(string priceAppliedCodeID)
-        {
+       {
             return await _context.PriceAppliedCodes.Include(c => c.Projects).Where(c => c.PriceAppliedCodeId == priceAppliedCodeID).FirstOrDefaultAsync();
-        }
+       }
        
-
-
-
 
         public async Task<IEnumerable<PriceAppliedCode>> QueryAsync(PriceAppliedCodeQuery query, bool trackChanges = false)
         {
             IQueryable<PriceAppliedCode> priceAppliedCodes = _context.PriceAppliedCodes
                 //.Include(c=>c.UnitPriceAssets)
-                .Where(c => c.IsDeleted == false && c.ExpriredTime >= DateTime.UtcNow);
+                .Where(c => c.IsDeleted == false);
 
             if (!trackChanges)
             {
@@ -57,6 +54,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 priceAppliedCodes = priceAppliedCodes.OrderByDynamic(query.OrderBy);
             }
+
+            if(query.IsExpired == true)
+            {
+                priceAppliedCodes = priceAppliedCodes.Where(c => c.ExpriredTime >= DateTime.UtcNow);
+            }
+
             IEnumerable<PriceAppliedCode> enumeratedPriceAppliedCodes = priceAppliedCodes.AsEnumerable();
 
             return await Task.FromResult(enumeratedPriceAppliedCodes);

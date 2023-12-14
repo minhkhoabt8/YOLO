@@ -1,15 +1,10 @@
 ﻿using Metadata.Core.Data;
-using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Document = Metadata.Core.Entities.Document;
 
 namespace Metadata.Infrastructure.Repositories.Implementations
 {
@@ -49,7 +44,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                     .ToListAsync();
         }
 
-        public async Task<Document?> CheckDuplicateDocumentAsync(int number, string notation, string epitome)
+        public async Task<Document?> CheckDuplicateDocumentAsync(int? number, string notation, string epitome)
         {
             return await _context.Documents.FirstOrDefaultAsync(c => c.Number == number && c.Notation.ToLower() == notation.ToLower() && c.Epitome.ToLower() == epitome.ToLower() && c.IsDeleted == false);
         }
@@ -78,6 +73,5 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(enumeratedDocument);
         }
 
-        
     }
 }

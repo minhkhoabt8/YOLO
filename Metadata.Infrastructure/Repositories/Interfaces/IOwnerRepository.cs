@@ -24,6 +24,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<Owner?> FindByTaxCodeInProjectAsync(string projectId, string taxCode);
 
         Task<IEnumerable<Owner>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query, bool trackChanges = false);
-        Task<Owner?> CheckDuplicateOwnerAsync(string code, string taxCode, string ownerIdCode);
+        Task<Owner?> CheckDuplicateOwnerAsync(string projectId, string? ownerTaxCode, string? ownerIdCode);
     }
 }

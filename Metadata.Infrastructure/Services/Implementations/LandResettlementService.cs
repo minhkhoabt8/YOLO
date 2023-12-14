@@ -100,6 +100,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (landResettlement == null) throw new EntityWithIDNotFoundException<LandResettlement>(id);
 
+            if(landResettlement.PageNumber!= dto.PageNumber || landResettlement.PlotNumber != dto.PlotNumber)
+            {
+                var duplicateLandResettlement = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(dto.PageNumber!, dto.PlotNumber!)??
+                    throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {dto.PageNumber} và số thửa {dto.PlotNumber} khác đã tồn tại trong hệ thống.");
+            }
+
             _mapper.Map(dto, landResettlement);
 
             await _unitOfWork.CommitAsync();
