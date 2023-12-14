@@ -20,7 +20,7 @@ public partial class LandResettlement : ITextSearchableEntity
 
     public decimal? LandSize { get; set; } = 0;
 
-    public decimal? TotalLandPrice { get; set; } = 0;
+    public decimal TotalLandPrice { get; set; } = 0;
 
     public string? ResettlementReason { get; set; }
 

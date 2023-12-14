@@ -22,6 +22,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await Task.FromResult(_context.LandResettlements.Include(lr => lr.Owner).Where(lr => lr.ResettlementProjectId == resettlementProjectId));
         }
+        public async Task<decimal> CaculateTotalLandPricesOfOwnerAsync(string ownerId)
+        {
+            return await _context.LandResettlements.Where(c => c.OwnerId == ownerId).SumAsync(c => c.TotalLandPrice);
+        }
 
         public async Task<LandResettlement?> CheckDuplicateLandResettlement(string pageNumber, string plotNumber)
         {

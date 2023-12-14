@@ -322,41 +322,58 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithAttributeNotFoundException<Core.Entities.Owner>(nameof(Plan.PlanId), planId);
             var priceAppliedCode = await _unitOfWork.PriceAppliedCodeRepository.GetUnitPriceCodeByProjectAsync(project.PriceAppliedCodeId)
                 ?? throw new EntityWithAttributeNotFoundException<PriceAppliedCode>(nameof(Project.PriceAppliedCodeId), project.PriceAppliedCodeId);
-
+            int stt = 0;
             foreach (var item in owners)
             {
                 var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
                 ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Core.Entities.Owner.OwnerId), item.OwnerId);
-                int stt = 0;
+
+
+
+
+
+                string measuredPageNumbers = "";
+                string measuredPlotNumbers = "";
+                string codeLandTypes = "";
                 foreach (var i in measuredLandInfos)
                 {
-                    DetailBTHChiPhiReadDTO detail = new DetailBTHChiPhiReadDTO();
-                    detail.Stt = stt + 1;
-                    detail.ProjectCode = project.ProjectCode;
-                    detail.OwnerCode = item.OwnerCode;
-                    detail.OwnerName = item.OwnerName;
-                    detail.Province = project.Province;
-                    detail.District = project.District;
-                    detail.Ward = project.Ward;
-                    detail.ProjectName = project.ProjectName;
-                    //
-                    detail.UnitPriceCode = priceAppliedCode.UnitPriceCode;
-                    //
-                    detail.MeasuredPageNumber = i.MeasuredPageNumber;
-                    detail.MeasuredPlotNumber = i.MeasuredPlotNumber;
-                    detail.MeasuredPlotArea = i.MeasuredPlotArea.ToString();
-                    detail.WithdrawArea = i.WithdrawArea;
+                    measuredPageNumbers += (measuredPageNumbers.Length > 0 ? ", " : "") + i.MeasuredPageNumber;
+                    measuredPlotNumbers += (measuredPlotNumbers.Length > 0 ? ", " : "") + i.MeasuredPlotNumber;
+
                     var laneType = await _unitOfWork.LandTypeRepository.GetLandTypesOfMeasureLandInfoAsync(i.LandTypeId);
-                    detail.CodeLandType = laneType.Code;
-                    detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId, true);
-                    detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.House);
-                    detail.SumTreeCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Plants);
-                    detail.SumArchitectureCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Architecture);
-                    detail.SumSupportPrice = await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(item.OwnerId);
-                    detail.SumDeductionPrice = await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(item.OwnerId);
-                    detail.SumBTHT = (decimal)(detail.SumLandCompensation + detail.SumHouseCompensationPrice + detail.SumTreeCompensationPrice + detail.SumArchitectureCompensationPrice + detail.SumSupportPrice - detail.SumDeductionPrice);
-                    details.Add(detail);
+                    codeLandTypes += (codeLandTypes.Length > 0 ? ", " : "") + laneType.Code;
+
                 }
+                DetailBTHChiPhiReadDTO detail = new DetailBTHChiPhiReadDTO();
+                detail.Stt = ++stt;
+                detail.ProjectCode = project.ProjectCode;
+                detail.OwnerCode = item.OwnerCode;
+                detail.OwnerName = item.OwnerName;
+                detail.Province = project.Province;
+                detail.District = project.District;
+                detail.Ward = project.Ward;
+                detail.ProjectName = project.ProjectName;
+                //
+                detail.UnitPriceCode = priceAppliedCode.UnitPriceCode;
+                //
+                detail.SumLandResettlementPrice = await _unitOfWork.LandResettlementRepository.CaculateTotalLandPricesOfOwnerAsync(item.OwnerId);
+                //
+                detail.MeasuredPageNumber = measuredPageNumbers;
+                detail.MeasuredPlotNumber = measuredPlotNumbers;
+
+                detail.CodeLandType = codeLandTypes;
+                //
+
+
+                detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId, true);
+                detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.House);
+                detail.SumTreeCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Plants);
+                detail.SumArchitectureCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.Architecture);
+                detail.SumSupportPrice = await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(item.OwnerId);
+                detail.SumDeductionPrice = await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(item.OwnerId);
+                detail.SumBTHT = (decimal)(detail.SumLandCompensation + detail.SumHouseCompensationPrice + detail.SumTreeCompensationPrice + detail.SumArchitectureCompensationPrice
+                    + detail.SumSupportPrice - detail.SumDeductionPrice - detail.SumLandResettlementPrice);
+                details.Add(detail);
             }
             return details;
         }
