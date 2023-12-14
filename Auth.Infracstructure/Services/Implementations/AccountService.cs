@@ -8,9 +8,6 @@ using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using System;
-using System.Data;
-using System.Security.Principal;
 using LoginInputDTO = Auth.Infrastructure.DTOs.Authentication.LoginInputDTO;
 
 namespace Auth.Infrastructure.Services.Implementations

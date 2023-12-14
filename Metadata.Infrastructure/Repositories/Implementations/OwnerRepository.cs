@@ -26,6 +26,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
                 .Include(o => o.GcnlandInfos)
                 .Include(o => o.AssetCompensations)
                 .Include(o => o.AttachFiles)
+                .Include(o=> o.Plan)
                 .Where(e => e.IsDeleted == false && e.ProjectId == projectId);
 
             if (!trackChanges)
@@ -121,10 +122,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.Owners.FirstOrDefaultAsync(x => x.OwnerTaxCode == taxCode && x.IsDeleted == false);
         }
-
-        public async Task<Owner?> CheckDuplicateOwnerAsync(string code, string name, string taxCode, string ownerIdCode)
+        //TODO:api check duplicate id code, tax code in a project
+        public async Task<Owner?> CheckDuplicateOwnerAsync(string code, string taxCode, string ownerIdCode)
         {
-            IQueryable<Owner> owners = _context.Owners.Where(o => o.OwnerCode.ToLower() == code.ToLower() && o.OwnerName.ToLower() == name.ToLower() && o.IsDeleted == false);
+            IQueryable<Owner> owners = _context.Owners.Where(o => o.OwnerCode.ToLower() == code.ToLower() && o.IsDeleted == false);
 
             if (taxCode != null)
             {

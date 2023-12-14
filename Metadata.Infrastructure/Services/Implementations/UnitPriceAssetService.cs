@@ -200,7 +200,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         private static AssetOnLandTypeEnum MapAssetTypeEnumWithUserInput(string typeName)
         {
-            var input = typeName.ToLower().Split(" ");
+            var input = typeName.ToLower().Replace(" ","");
             if (input.Equals("nhà")) return AssetOnLandTypeEnum.House;
             if (input.Equals("kiếntrúc")) return AssetOnLandTypeEnum.Architecture;
             if (input.Equals("câytrồng")) return AssetOnLandTypeEnum.Plants;

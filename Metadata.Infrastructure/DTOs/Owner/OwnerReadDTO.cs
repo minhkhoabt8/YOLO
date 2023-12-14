@@ -79,6 +79,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public IEnumerable<MeasuredLandInfoReadDTO>? MeasuredLandInfos { get; set; }
         public IEnumerable<AssetCompensationReadDTO>? AssetCompensations { get; set; }
         public IEnumerable<AttachFileReadDTO>? AttachFiles { get; set; }
+
     }
 
     public class LandResettlementInProjectReadDTO
@@ -101,5 +102,10 @@ namespace Metadata.Infrastructure.DTOs.Owner
 
         public string? OwnerId { get; set; }
         public ResettlementProjectReadDTO? ResettlementProject { get; set; }
+    }
+
+    public class PlanInOwnerReadDTO
+    {
+        public string? PlanCode { get; set; }
     }
 }

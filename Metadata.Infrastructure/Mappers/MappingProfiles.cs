@@ -58,8 +58,9 @@ namespace Metadata.Infrastructure.Mappers
 
             //Plan
             CreateMap<Plan, PlanReadDTO>();
+            CreateMap<Plan, PlanInOwnerReadDTO>();
             CreateMap<PlanWriteDTO, Plan>();
-            CreateMap<Plan, PlansInProjectDTO>();   
+            CreateMap<Plan, PlansInProjectDTO>();
 
             //LandPositionInfos
             CreateMap<LandPositionInfo, LandPositionInfoReadDTO>();

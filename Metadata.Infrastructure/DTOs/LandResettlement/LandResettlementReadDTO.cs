@@ -23,6 +23,7 @@ namespace Metadata.Infrastructure.DTOs.LandResettlement
         public decimal? LandSize { get; set; }
 
         public decimal? TotalLandPrice { get; set; }
+        public string? ResettlementReason { get; set; }
 
         public string? ResettlementProjectId { get; set; } 
 

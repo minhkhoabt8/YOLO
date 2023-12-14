@@ -81,7 +81,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (project.Owners.Count() > 0)
             {
-                throw new InvalidActionException("Cannot Update Unit Price Land In Project That Aldready Have Owners");
+                throw new InvalidActionException("Không Xóa Được Đơn Giá Đất Do Dự Án Đã Có Chủ Sở Hữu");
             }
 
             unitPriceLand.IsDeleted = true;
@@ -115,7 +115,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (project.Owners.Count() > 0)
             {
-                throw new InvalidActionException("Cannot Update Unit Price Land In Project That Aldready Have Owners");
+                throw new InvalidActionException("Không Cập Nhật Được Đơn Giá Đất Do Dự Án Đã Có Chủ Sở Hữu");
             }
 
             _mapper.Map(dto, unitPriceLand);

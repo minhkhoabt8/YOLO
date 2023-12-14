@@ -22,6 +22,8 @@ public partial class LandResettlement : ITextSearchableEntity
 
     public decimal? TotalLandPrice { get; set; } = 0;
 
+    public string? ResettlementReason { get; set; }
+
     public string? ResettlementProjectId { get; set; } 
 
     public string? OwnerId { get; set; } 

@@ -366,10 +366,10 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("owner_id");
 
-            entity.HasOne(d => d.LandType).WithMany(p => p.GcnlandInfos)
-                .HasForeignKey(d => d.LandTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_GCNLandInfos_LandTypes");
+            //entity.HasOne(d => d.LandType).WithMany(p => p.GcnlandInfos)
+            //    .HasForeignKey(d => d.LandTypeId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_GCNLandInfos_LandTypes");
 
             entity.HasOne(d => d.Owner).WithMany(p => p.GcnlandInfos)
                 .HasForeignKey(d => d.OwnerId)
@@ -440,6 +440,10 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.Position)
                 .HasMaxLength(50)
                 .HasColumnName("position");
+
+            entity.Property(e => e.ResettlementReason)
+                .HasColumnName("resettlement_reason");
+
             entity.Property(e => e.ResettlementProjectId)
                 .HasMaxLength(50)
                 .HasColumnName("resettlement_project_id");

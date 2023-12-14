@@ -797,7 +797,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 || !Equals(dto.OwnerTaxCode, owner.OwnerTaxCode)
                 || !Equals(dto.OwnerIdCode, owner.OwnerIdCode))
             {
-                var duplicateOwner = await _unitOfWork.OwnerRepository.CheckDuplicateOwnerAsync(dto.OwnerCode, dto.OwnerName, dto.OwnerTaxCode, dto.OwnerIdCode);
+                //TODO:
+                var duplicateOwner = await _unitOfWork.OwnerRepository.CheckDuplicateOwnerAsync(dto.OwnerCode, dto.OwnerTaxCode, dto.OwnerIdCode);
 
                 if (duplicateOwner != null)
                 {

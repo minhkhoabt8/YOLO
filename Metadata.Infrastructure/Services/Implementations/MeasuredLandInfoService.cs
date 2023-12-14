@@ -161,7 +161,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.QueryAsync(query);
             return PaginatedResponse<MeasuredLandInfoReadDTO>.FromEnumerableWithMapping(measuredLandInfo, query, _mapper);
         }
-
+        //TODO:
         public async Task<MeasuredLandInfoReadDTO> UpdateMeasuredLandInfoAsync(string id, MeasuredLandInfoWriteDTO dto)
         {
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
