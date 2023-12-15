@@ -88,7 +88,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         }
 
 
-        public async Task<IEnumerable<Plan>> QueryPlanOfCreatorAsync(PlanQuery query, string creatorName, PlanStatusEnum? planStatus, bool trackChanges = false)
+        public async Task<IEnumerable<Plan>> QueryPlanOfCreatorAsync(PlanQuery query, string creatorName, PlanStatusEnum? planStatus = null, bool trackChanges = false)
         {
             IQueryable<Plan> plans = _context.Plans.Where(e => e.PlanCreatedBy == creatorName && e.IsDeleted == false);
 
@@ -97,7 +97,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 plans = plans.AsNoTracking();
             }
-            if (planStatus.HasValue)
+            if (planStatus != null)
             {
                 plans = plans.Where(e => e.PlanStatus == planStatus.ToString());
             }
@@ -107,7 +107,37 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                plans = plans.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                plans = plans.Where(c => c.PlanCode.Contains(query.SearchText));
+            }
+            if (!string.IsNullOrWhiteSpace(query.OrderBy))
+            {
+                plans = plans.OrderByDynamic(query.OrderBy);
+            }
+            IEnumerable<Plan> enumeratedPlan = plans.AsEnumerable();
+
+            return await Task.FromResult(enumeratedPlan);
+        }
+
+        public async Task<IEnumerable<Plan>> QueryPlanOfApprovalAsync(PlanQuery query, string approvalName, PlanStatusEnum? planStatus = null, bool trackChanges = false)
+        {
+            IQueryable<Plan> plans = _context.Plans.Where(e => e.PlanApprovedBy == approvalName && e.IsDeleted == false);
+
+
+            if (!trackChanges)
+            {
+                plans = plans.AsNoTracking();
+            }
+            if (planStatus != null)
+            {
+                plans = plans.Where(e => e.PlanStatus == planStatus.ToString());
+            }
+            if (!string.IsNullOrWhiteSpace(query.Include))
+            {
+                plans = plans.IncludeDynamic(query.Include);
+            }
+            if (!string.IsNullOrWhiteSpace(query.SearchText))
+            {
+                plans = plans.Where(c => c.PlanCode.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

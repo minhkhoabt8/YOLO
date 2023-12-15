@@ -4,7 +4,6 @@ using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
-using Microsoft.AspNetCore.Components.Forms;
 using SharedLib.Core.Exceptions;
 
 namespace Auth.Infrastructure.Services.Implementations
@@ -179,14 +178,14 @@ namespace Auth.Infrastructure.Services.Implementations
         public async Task<AccountReadDTO> FirstTimeResetPasswordAsync(ResetPasswordInputDTO resetDTO)
         {
             //1.try log in using old password
-            var login = new LoginInputDTO 
-            {
-                Username = resetDTO.Username,
-                Password = resetDTO.OldPassword
-            };
+            //var login = new LoginInputDTO 
+            //{
+            //    Username = resetDTO.Username,
+            //    Password = resetDTO.OldPassword
+            //};
 
             //2.check account exist with username and old password
-            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(login.Username);
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(resetDTO.Username);
 
             if (account == null || account.IsDelete)
             {
@@ -201,15 +200,15 @@ namespace Auth.Infrastructure.Services.Implementations
             //1.3
             var hashedPasswordWithSalt = account.Password.ToString().Split("-");
 
-            var isValidPassword = _passwordService.ValidatePassword(login.Password, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
+            var isValidPassword = _passwordService.ValidatePassword(resetDTO.OldPassword, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
 
-            if (isValidPassword)
+            if (!isValidPassword)
             {
                 throw new WrongCredentialsException();
             }
 
             //2.if account exist and account old password match user input of account then re-assign Password
-            //2.1Generate new hased password
+            //2.1Generate new hased password based on old password
             account.Password = _passwordService.GenerateHashPassword(resetDTO.NewPassword);
 
             //3.set is active of account

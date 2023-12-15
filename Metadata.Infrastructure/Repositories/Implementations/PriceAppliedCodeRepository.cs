@@ -48,7 +48,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                priceAppliedCodes = priceAppliedCodes.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                priceAppliedCodes = priceAppliedCodes.Where(c => c.UnitPriceCode.Contains(query.SearchText) || c.PriceContent.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {

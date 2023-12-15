@@ -58,7 +58,8 @@ namespace Metadata.Infrastructure.Mappers
 
             //Plan
             CreateMap<Plan, PlanReadDTO>();
-            CreateMap<Plan, PlanInOwnerReadDTO>();
+            CreateMap<Plan, PlanInOwnerReadDTO>()
+                .ForMember(des => des.PlanCode, act => act.MapFrom(src => src.PlanCode));
             CreateMap<PlanWriteDTO, Plan>();
             CreateMap<Plan, PlansInProjectDTO>();
 
