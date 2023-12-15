@@ -26,16 +26,20 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(_context.Plans.Include(c => c.AttachFiles).Include(c => c.Owners).Where(c => c.ProjectId == projectId));
         }
 
-        public async Task<IEnumerable<Plan>> QueryPlansOfProjectAsync(string projectId, PlanQuery query, bool trackChanges = false)
+        public async Task<IEnumerable<Plan>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query, bool trackChanges = false)
         {
             IQueryable<Plan> plans = _context.Plans
                 .Include(c => c.AttachFiles)
                 .Include(c => c.Owners)
-                .Where(e => e.IsDeleted == false && e.ProjectId == projectId);
+                .Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {
                 plans = plans.AsNoTracking();
+            }
+            if(!string.IsNullOrEmpty(projectId))
+            {
+                plans = plans.Where(e => e.ProjectId == projectId);
             }
             if (!string.IsNullOrWhiteSpace(query.Include))
             {

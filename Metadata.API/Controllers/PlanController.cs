@@ -97,7 +97,7 @@ namespace Metadata.API.Controllers
         [HttpGet("project")]
         [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> QueryPlansOfProjectAsync([FromQuery] string projectId, [FromQuery] PlanQuery query)
+        public async Task<IActionResult> QueryPlansOfProjectAsync([FromQuery] string? projectId, [FromQuery] PlanQuery query)
         {
             var plans = await _planService.QueryPlansOfProjectAsync(projectId, query);
 

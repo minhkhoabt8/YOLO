@@ -775,7 +775,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query)
         {
             var plan = await _unitOfWork.PlanRepository.QueryPlansOfProjectAsync(projectId, query);
 

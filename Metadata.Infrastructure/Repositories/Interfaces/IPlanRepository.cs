@@ -20,7 +20,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         IDelete<Plan>,
         IQueryAsync<Plan, PlanQuery>
     {
-        Task <IEnumerable<Plan>> QueryPlansOfProjectAsync(string projectId, PlanQuery query, bool trackChanges = false);
+        Task <IEnumerable<Plan>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query, bool trackChanges = false);
         Task<IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId);
         Task<Plan?> GetPlanByPlanCodeAsync(string planCode);
         Task<IEnumerable<Plan>> QueryPlanOfCreatorAsync(PlanQuery query, string creatorName, PlanStatusEnum? planStatus = null, bool trackChanges = false);
