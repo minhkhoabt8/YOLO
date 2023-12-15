@@ -1,4 +1,5 @@
 ﻿using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.ResponseWrapper;
 using System.ComponentModel.DataAnnotations;
@@ -30,6 +31,7 @@ namespace Metadata.API.Controllers
         /// <param name="replaceSignatureWithPicture"></param>
         /// <returns></returns>
         [HttpPost("signPicture")]
+        [Authorize(Roles = "Approval")]
         public async Task<IActionResult> SignDocumentWithPictureAsync(string userId, IFormFile documentFile, string signaturePassword, bool replaceSignatureWithPicture = false)
         {
             var signedDocument = await _digitalSignatureService.SignDocumentWithPictureAsync(userId, documentFile, signaturePassword, replaceSignatureWithPicture);
@@ -45,6 +47,7 @@ namespace Metadata.API.Controllers
         /// <param name="secretPassword"></param>
         /// <returns></returns>
         [HttpPost("generate/certificate")]
+        [Authorize(Roles = "Approval,Admin")]
         public async Task<IActionResult> CreateSignatureAsync([Required]string signerId, [Required]string secretPassword)
         {
             await _digitalSignatureService.GenerateSignerCertificateAsync(signerId, secretPassword);
@@ -59,6 +62,7 @@ namespace Metadata.API.Controllers
         /// <param name="signerId"></param>
         /// <returns></returns>
         [HttpGet("verify")]
+        [Authorize(Roles = "Approval,Admin")]
         public async Task<IActionResult> VerifySignerSignatureExistAsync([Required] string signerId)
         {
             var result = await _digitalSignatureService.VerifySignerSignatureExistAsync(signerId);

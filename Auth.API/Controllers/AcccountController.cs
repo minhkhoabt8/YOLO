@@ -27,6 +27,7 @@ public class AcccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("all")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AccountReadDTO>>))]
     public async Task<IActionResult> GetAll()
     {
@@ -41,6 +42,7 @@ public class AcccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("query")]
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
@@ -69,6 +71,7 @@ public class AcccountController : ControllerBase
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AccountReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -121,6 +124,7 @@ public class AcccountController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
     public async Task<IActionResult> DeleteAccount(string id)

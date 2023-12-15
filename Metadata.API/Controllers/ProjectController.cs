@@ -2,6 +2,7 @@
 using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -29,6 +30,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<ProjectReadDTO>))]
         public async Task<IActionResult> QueryProjects([FromQuery] ProjectQuery query)
         {
@@ -44,6 +46,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("{projectId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         public async Task<IActionResult> GetProjectDetails(string projectId)
         {
@@ -57,6 +60,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("export")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportProjectFile()
         {
@@ -70,6 +74,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectDto"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -88,6 +93,7 @@ namespace Metadata.API.Controllers
         /// <param name="documents"></param>
         /// <returns></returns>
         [HttpPost("create/document")]
+        [Authorize(Roles = "Creator,Approval")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -105,6 +111,7 @@ namespace Metadata.API.Controllers
         /// <param name="attachFile"></param>
         /// <returns></returns>
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<ProjectReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -120,6 +127,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpPost("check-availble")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> CheckProjectAvailableForEditOrDelete([Required]string projectId)
@@ -137,6 +145,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -153,6 +162,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteProject(string id)
@@ -161,8 +171,13 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
-        //check duplicate project name
+        /// <summary>
+        /// check duplicate project name
+        /// </summary>
+        /// <param name="projectName"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-name")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateProjectName(string projectName)
         {
@@ -170,8 +185,13 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(result);
         }
 
-        //check duplicate project code
+        /// <summary>
+        /// check duplicate project code
+        /// </summary>
+        /// <param name="projectCode"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-code")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateProjectCode(string projectCode)
         {
