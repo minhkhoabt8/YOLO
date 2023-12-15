@@ -37,7 +37,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 plans = plans.AsNoTracking();
             }
-            if(!string.IsNullOrEmpty(projectId))
+            if(!string.IsNullOrWhiteSpace(projectId))
             {
                 plans = plans.Where(e => e.ProjectId == projectId);
             }
