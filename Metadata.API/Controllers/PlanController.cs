@@ -47,9 +47,24 @@ namespace Metadata.API.Controllers
         /// <returns></returns>
         [HttpGet("creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum planStatus)
+        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum? planStatus = null)
         {
             var plans = await _planService.QueryPlansOfCreatorAsync(query, planStatus);
+
+            return ResponseFactory.PaginatedOk(plans);
+        }
+
+        /// <summary>
+        /// Query Plans Of Approval
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="planStatus"></param>
+        /// <returns></returns>
+        [HttpGet("approval")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
+        public async Task<IActionResult> QueryPlansOfApprovalAsync([FromQuery] PlanQuery query, PlanStatusEnum? planStatus = null)
+        {
+            var plans = await _planService.QueryPlanOfApprovalAsync(query, planStatus);
 
             return ResponseFactory.PaginatedOk(plans);
         }

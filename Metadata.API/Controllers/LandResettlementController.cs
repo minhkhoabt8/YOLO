@@ -1,4 +1,5 @@
-﻿using Metadata.Infrastructure.DTOs.LandResettlement;
+﻿using System.ComponentModel.DataAnnotations;
+using Metadata.Infrastructure.DTOs.LandResettlement;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -68,12 +69,12 @@ namespace Metadata.API.Controllers
         /// <summary>
         /// Calculate Owner Total Land Resettlement Cost In Plan
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="planId"></param>
         /// <returns></returns>
-        [HttpGet("owner")]
+        [HttpGet("caculate-resettlement")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<decimal>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
-        public async Task<IActionResult> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId)
+        public async Task<IActionResult> CalculateOwnerTotalLandResettlementPriceInPlanAsync([Required] string planId)
         {
             var price = await _landResettlementService.CalculateOwnerTotalLandResettlementPriceInPlanAsync(planId);
             return ResponseFactory.Ok(price);
