@@ -3,6 +3,7 @@ using Metadata.Infrastructure.DTOs.LandResettlement;
 using Metadata.Infrastructure.DTOs.ResettlementProject;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -29,6 +30,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandResettlementReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetLandResettlementsAsync(string id)
@@ -44,6 +46,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("owner")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandResettlementReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetLandResettlementsOfOwnerAsync(string ownerId)
@@ -58,6 +61,7 @@ namespace Metadata.API.Controllers
         /// <param name="resettlementProjectId"></param>
         /// <returns></returns>
         [HttpGet("resettlementProject")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandResettlementReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetLandResettlementsOfResettlementProjectAsync(string resettlementProjectId)
@@ -72,6 +76,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <returns></returns>
         [HttpGet("caculate-resettlement")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<decimal>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> CalculateOwnerTotalLandResettlementPriceInPlanAsync([Required] string planId)
@@ -86,6 +91,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<LandResettlementReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -104,6 +110,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("update")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandResettlementReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -121,6 +128,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandResettlementReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteResettlementProjectAsync(string id)
