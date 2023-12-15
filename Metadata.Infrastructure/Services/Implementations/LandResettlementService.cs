@@ -7,11 +7,7 @@ using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -111,6 +107,15 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<LandResettlementReadDTO>(landResettlement);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task<decimal> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId)
+        {
+            return await _unitOfWork.LandResettlementRepository.CalculateOwnerTotalLandResettlementPriceInPlanAsync(planId);
         }
     }
 }

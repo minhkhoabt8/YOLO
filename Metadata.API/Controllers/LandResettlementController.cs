@@ -65,6 +65,19 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(resettlements);
         }
 
+        /// <summary>
+        /// Calculate Owner Total Land Resettlement Cost In Plan
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("owner")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<decimal>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+        public async Task<IActionResult> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId)
+        {
+            var price = await _landResettlementService.CalculateOwnerTotalLandResettlementPriceInPlanAsync(planId);
+            return ResponseFactory.Ok(price);
+        }
 
         /// <summary>
         /// Create New Land Resettlement
