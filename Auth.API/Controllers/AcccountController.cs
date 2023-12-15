@@ -42,7 +42,7 @@ public class AcccountController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("query")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Approval,Creator")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<AccountReadDTO>))]
     public async Task<IActionResult> QueryAccounts([FromQuery] AccountQuery query)
