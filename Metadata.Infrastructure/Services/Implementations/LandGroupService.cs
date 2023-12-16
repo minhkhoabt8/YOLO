@@ -179,7 +179,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     string code = worksheet.Cells[row, 1].Text;
                     string name = worksheet.Cells[row, 2].Text;
+                    if (string.IsNullOrEmpty(code) ||
+                        string.IsNullOrEmpty(name))
+                    {
 
+                        continue;
+                    }
                     landGroups.Add(new LandGroupWriteDTO { Code = code, Name = name });
                 }
             }

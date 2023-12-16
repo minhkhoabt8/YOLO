@@ -170,7 +170,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     string code = worksheet.Cells[row, 1].Text;
                     string name = worksheet.Cells[row, 2].Text;
+                    if (string.IsNullOrEmpty(code) ||
+                        string.IsNullOrEmpty(name))
+                    {
 
+                        continue;
+                    }
                     documentType.Add(new DocumentTypeWriteDTO { Code = code, Name = name });
                 }
             }

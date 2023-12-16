@@ -164,7 +164,12 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     string code = worksheet.Cells[row, 1].Text;
                     string name = worksheet.Cells[row, 2].Text;
+                    if (string.IsNullOrEmpty(code) ||
+                        string.IsNullOrEmpty(name))
+                    {
 
+                        continue;
+                    }
                     supportTypes.Add(new SupportTypeWriteDTO { Code = code, Name = name });
                 }
             }
