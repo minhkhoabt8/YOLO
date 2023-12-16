@@ -5,6 +5,7 @@ using Auth.Infrastructure.Services.Interfaces;
 using Auth.Infrastructure.UOW;
 using AutoMapper;
 using SharedLib.Core.Exceptions;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace Auth.Infrastructure.Services.Implementations
 {
@@ -218,6 +219,74 @@ namespace Auth.Infrastructure.Services.Implementations
 
             return _mapper.Map<AccountReadDTO>(account);
 
+        }
+
+
+        public async Task SendResetPasswordOtp(string username)
+        {
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(username);
+
+            if (account == null || account.IsDelete)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            account.GernerateOTP();
+
+            account.IsActive = false;
+
+            //call Send SMS
+            await _unitOfWork.CommitAsync();
+
+            ////call Send SMS
+            await _smsService.SendOtpSmsAsync(account.Phone!, account.Otp!);
+
+            await _smsService.SendOtpEmail(account.Email!, account.Otp!);
+
+        }
+
+        public async Task VerifyOtpToCreateNewPasswordAsync(string userName, string otp)
+        {
+            var account = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(userName);
+
+            if (account == null || account.IsDelete == true)
+            {
+                throw new WrongCredentialsException();
+            }
+
+            if (string.IsNullOrEmpty(otp) || !account.IsOtpValid(otp))
+            {
+                throw new InvalidOtpException();
+            }
+
+            account.Password = _passwordService.GenerateHashPassword(GeneratePassword());
+
+            //3.set is active of account
+            if (!account.IsActive) account.IsActive = true;
+
+            await _unitOfWork.CommitAsync();
+
+            ////call Send SMS
+            await _smsService.SendPasswordSmsAsync(account.Phone!, account.Password!);
+
+            await _smsService.SendPasswordEmail(account.Email!, account.Password!);
+
+        }
+
+        private string GeneratePassword()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+
+            char[] password = new char[12];
+
+            Random random = new Random();
+
+            for (int i = 0; i < 12; i++)
+            {
+                password[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string(password);
         }
 
     }

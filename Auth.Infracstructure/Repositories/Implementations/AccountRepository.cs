@@ -16,6 +16,16 @@ namespace Auth.Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task<Account?> FindAccountByEmailAsync(string email)
+        {
+            return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Email == email);
+        }
+
+        public async Task<Account?> FindAccountByPhoneAsync(string phone)
+        {
+            return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Phone == phone);
+        }
+
         public async Task<Account?> FindAccountByUsernameAsync(string username)
         {
             return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Username == username);

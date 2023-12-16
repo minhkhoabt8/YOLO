@@ -51,7 +51,6 @@ public class AcccountController : ControllerBase
         return ResponseFactory.PaginatedOk(accounts);
     }
 
-
     /// <summary>
     /// Get account
     /// </summary>
@@ -62,6 +61,19 @@ public class AcccountController : ControllerBase
     public async Task<IActionResult> GetAccount(string id)
     {
         var account = await _accountService.GetAccountByIdAsync(id);
+        return ResponseFactory.Ok(account);
+    }
+
+    /// <summary>
+    /// Get Account By User Input
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("input")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AccountReadDTO>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
+    public async Task<IActionResult> GetAccountByPhoneEmailUserNameAsync(string input)
+    {
+        var account = await _accountService.GetAccountByPhoneEmailUserNameAsync(input);
         return ResponseFactory.Ok(account);
     }
 

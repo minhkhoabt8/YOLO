@@ -14,5 +14,7 @@ namespace Auth.Infrastructure.Repositories.Interfaces
         Task<Account?> LoginAsync(LoginInputDTO inputDTO);
 
         Task<Account?> FindAccountByUsernameAsync(string username);
+        Task<Account?> FindAccountByPhoneAsync(string phone);
+        Task<Account?> FindAccountByEmailAsync(string email);
     }
 }
