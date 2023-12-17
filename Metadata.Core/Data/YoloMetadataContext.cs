@@ -851,7 +851,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("province");
             entity.Property(e => e.RegulatedUnitPrice)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("regulated_unit_price");
             entity.Property(e => e.ReportNumber).HasColumnName("report_number");
             entity.Property(e => e.ReportSignal)
