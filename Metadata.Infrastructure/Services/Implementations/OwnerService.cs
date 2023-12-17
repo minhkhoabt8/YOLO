@@ -802,9 +802,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             // Check if the Owner Code in the DTO is different from the Owner Code in the existing owner,
             // considering case-insensitive comparison and handling null or empty values.
-            if ((string.IsNullOrEmpty(dto.OwnerCode) || string.Compare(owner.OwnerCode, dto.OwnerCode, StringComparison.OrdinalIgnoreCase) != 0)
+            if ((string.IsNullOrEmpty(dto.OwnerCode) || string.Compare(owner.OwnerCode, dto.OwnerCode, StringComparison.OrdinalIgnoreCase) != 0 
+                || (string.IsNullOrEmpty(dto.OwnerTaxCode)) || string.Compare(owner.OwnerTaxCode, dto.OwnerTaxCode, StringComparison.OrdinalIgnoreCase) != 0
                 || !Equals(dto.OwnerTaxCode, owner.OwnerTaxCode)
-                || !Equals(dto.OwnerIdCode, owner.OwnerIdCode))
+                || !Equals(dto.OwnerIdCode, owner.OwnerIdCode)))
             {
                 var duplicateOwner = await _unitOfWork.OwnerRepository.CheckDuplicateOwnerAsync(project.ProjectId, dto.OwnerTaxCode, dto.OwnerIdCode);
 
