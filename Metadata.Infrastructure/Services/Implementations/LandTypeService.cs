@@ -15,7 +15,7 @@ using SharedLib.Infrastructure.DTOs;
 namespace Metadata.Infrastructure.Services.Implementations
 {
     public class LandTypeService : ILandTypeService
-    {   
+    {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
@@ -28,10 +28,10 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<LandTypeReadDTO?> CreateLandTypeAsync(LandTypeWriteDTO landTypeWriteDTO)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeWriteDTO.LandGroupId!)
-                ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeWriteDTO.LandGroupId);
+                ?? throw new EntityWithIDNotFoundException<LandType>(landTypeWriteDTO.LandGroupId);
 
-            await EnsureLandGroupCodeNotDuplicate(landTypeWriteDTO.Code , landTypeWriteDTO.Name);
-            
+            await EnsureLandTypeCodeNotDuplicate(landTypeWriteDTO.Code, landTypeWriteDTO.Name);
+
             var landType = _mapper.Map<LandType>(landTypeWriteDTO);
             await _unitOfWork.LandTypeRepository.AddAsync(landType);
             await _unitOfWork.CommitAsync();
@@ -40,10 +40,10 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<LandTypeReadDTO?> CreateLandTypeForImportAsync(LandTypeWriteForImportDTO landTypeWriteDTO)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAsync(landTypeWriteDTO.LandGroupCode!)
-                ?? throw new EntityWithIDNotFoundException<LandGroup>("LandGroup not found with provided code");
+                ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeWriteDTO.LandGroupCode);
 
 
-            await EnsureLandGroupCodeNotDuplicate(landTypeWriteDTO.Code, landTypeWriteDTO.Name);
+            await EnsureLandTypeCodeNotDuplicate(landTypeWriteDTO.Code, landTypeWriteDTO.Name);
 
             var landType = _mapper.Map<LandType>(landTypeWriteDTO);
             landType.LandGroupId = landGroup.LandGroupId;
@@ -60,7 +60,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeDTO.LandGroupId!)
                     ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeDTO.LandGroupId);
-                await EnsureLandGroupCodeNotDuplicate(landTypeDTO.Code, landTypeDTO.Name);
+                await EnsureLandTypeCodeNotDuplicate(landTypeDTO.Code, landTypeDTO.Name);
 
                 var landType = _mapper.Map<LandType>(landTypeDTO);
 
@@ -78,7 +78,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var landType = await _unitOfWork.LandTypeRepository.FindAsync(id);   
+            var landType = await _unitOfWork.LandTypeRepository.FindAsync(id);
             if (landType == null)
             {
                 throw new EntityWithIDNotFoundException<LandType>(id);
@@ -118,13 +118,13 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeUpdateDTO.LandGroupId!)
                 ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeUpdateDTO.LandGroupId);
             _mapper.Map(landTypeUpdateDTO, existLandType);
-             await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(existLandType);
         }
 
-        private async Task EnsureLandGroupCodeNotDuplicate(string code,  string name)
+        private async Task EnsureLandTypeCodeNotDuplicate(string code, string name)
         {
-            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatus(code,false);
+            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatus(code, false);
             if (landType != null && landType.Code == code)
             {
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
@@ -136,22 +136,22 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
-       /* //EnsureLandTypeCodeNotDuplicateForUpdate
-        public async Task EnsureLandTypeCodeNotDuplicateForUpdate(string id, string code, string name)
-        {
-            var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id, false);
-            if (landType != null && landType.Code == code && landType.LandTypeId != id)
-            {
-                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
-            }
-            var landType2 = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name,id, false);
-            if (landType2 != null && landType2.Name == name && landType2.LandTypeId != id)
-            {
-                throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
-            }
-        }*/
+        /* //EnsureLandTypeCodeNotDuplicateForUpdate
+         public async Task EnsureLandTypeCodeNotDuplicateForUpdate(string id, string code, string name)
+         {
+             var landType = await _unitOfWork.LandTypeRepository.FindByCodeAndIsDeletedStatusForUpdate(code,id, false);
+             if (landType != null && landType.Code == code && landType.LandTypeId != id)
+             {
+                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
+             }
+             var landType2 = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatusForUpdate(name,id, false);
+             if (landType2 != null && landType2.Name == name && landType2.LandTypeId != id)
+             {
+                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType2.Name), name);
+             }
+         }*/
 
-        public async Task CheckNameLandGroupNotDuplicate (string name)
+        public async Task CheckNameLandGroupNotDuplicate(string name)
         {
             var landType = await _unitOfWork.LandTypeRepository.FindByNameAndIsDeletedStatus(name, false);
             if (landType != null && landType.Name == name)
@@ -167,10 +167,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new UniqueConstraintException<LandTypeReadDTO>(nameof(landType.Code), code);
             }
-            
+
         }
-        
-        
+
+
 
         public async Task<PaginatedResponse<LandTypeReadDTO>> QueryLandTypeAsync(LandTypeQuery paginationQuery)
         {
@@ -238,6 +238,15 @@ namespace Metadata.Infrastructure.Services.Implementations
                     string code = worksheet.Cells[row, 1].Text;
                     string name = worksheet.Cells[row, 2].Text;
                     string landGroupCode = worksheet.Cells[row, 3].Text;
+
+                    if (string.IsNullOrEmpty(code) ||
+                        string.IsNullOrEmpty(name) ||
+                        string.IsNullOrEmpty(landGroupCode))
+                    {
+
+                        continue;
+                    }
+
                     landTypes.Add(new LandTypeWriteForImportDTO { Code = code, Name = name, LandGroupCode = landGroupCode });
                 }
             }
