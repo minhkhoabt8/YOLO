@@ -541,10 +541,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 string[] parts = worksheet.Cells["D6"].Text.Split(':');
 
-                var project = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(parts[1].Trim());
+                var project = await _unitOfWork.ProjectRepository.GetProjectByProjectCodeAsync(parts[1].Trim());
 
                 if (project == null) 
-                    throw new EntityWithAttributeNotFoundException<Project>(nameof(Project.ProjectName), parts[1].Trim());
+                    throw new EntityWithAttributeNotFoundException<Project>(nameof(Project.ProjectCode), parts[1].Trim());
 
                 for (int row = 11; row <= worksheet.Dimension.End.Row; row++)
                 {

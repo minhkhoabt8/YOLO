@@ -53,14 +53,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 assetUnits = assetUnits.IncludeDynamic(query.Include);
             }
-            if (!string.IsNullOrWhiteSpace(query.SearchText))
-            {
-                assetUnits = assetUnits.Where(c => c.Name.Contains(query.SearchText)); ;
-            }
             //search by code
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                assetUnits = assetUnits.Where(c => c.Code.Contains(query.SearchText)); ;
+                assetUnits = assetUnits.Where(c => c.Code.Contains(query.SearchText) || c.Name.Contains(query.SearchText));
             }
 
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
