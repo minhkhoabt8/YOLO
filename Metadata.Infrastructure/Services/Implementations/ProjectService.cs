@@ -377,13 +377,22 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if(project.Owners != null)
+            if(!project.Owners.IsNullOrEmpty())
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
                     throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có chủ sở hữu.");
                 }
             }
+
+            if (!project.Plans.IsNullOrEmpty())
+            {
+                if (project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
+                {
+                    throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có phương án.");
+                }
+            }
+
 
             _mapper.Map(dto, project);
 
