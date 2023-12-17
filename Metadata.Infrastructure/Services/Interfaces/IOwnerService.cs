@@ -51,5 +51,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<bool> CheckDuplicateOwnerTaxCodeAsync(string projectId, string ownerTaxCode);
 
         Task<PaginatedResponse<OwnerReadDTO>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query);
+
+        Task<IEnumerable<OwnerReadDTO>> GetOwnersHaveLandResettlementInProjectAsync(string projectId);
     }
 }

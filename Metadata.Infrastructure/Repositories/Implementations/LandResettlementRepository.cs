@@ -1,4 +1,5 @@
-﻿using Metadata.Core.Data;
+﻿using DocumentFormat.OpenXml.InkML;
+using Metadata.Core.Data;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,14 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         }
 
+        public async Task<decimal> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId)
+        {
+            return await Task.FromResult( _context.Owners
+                .Where(owner => owner.PlanId == planId && owner.IsDeleted == false)
+                .SelectMany(owner => _context.LandResettlements
+                    .Where(lr => lr.OwnerId == owner.OwnerId))
+                .Sum(lr => lr.TotalLandPrice ?? 0));
+        }
 
     }
 }

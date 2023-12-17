@@ -264,7 +264,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
 
-            if(project.Owners != null || project.Plans != null)
+            if(!project.Owners.IsNullOrEmpty() || !project.Plans.IsNullOrEmpty())
             {
                 throw new InvalidActionException("Không thể xóa Dự án đã có Chủ sở hữu hoặc Phương án.");
             }
@@ -377,13 +377,22 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
             }
 
-            if(project.Owners != null)
+            if(!project.Owners.IsNullOrEmpty())
             {
                 if(project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
                 {
                     throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có chủ sở hữu.");
                 }
             }
+
+            if (!project.Plans.IsNullOrEmpty())
+            {
+                if (project.PriceAppliedCodeId != dto.PriceAppliedCodeId)
+                {
+                    throw new InvalidActionException("Không thể cập nhật mã áp giá của dự án đã có phương án.");
+                }
+            }
+
 
             _mapper.Map(dto, project);
 

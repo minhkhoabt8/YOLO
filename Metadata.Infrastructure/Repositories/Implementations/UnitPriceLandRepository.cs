@@ -22,7 +22,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<UnitPriceLand>> QueryAsync(UnitPriceLandQuery query, bool trackChanges = false)
         {
-            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Where(e => e.IsDeleted == false);
+            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Include(c => c.LandType).Where(e => e.IsDeleted == false);
 
             if (!trackChanges)
             {
@@ -47,7 +47,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<UnitPriceLand>> QueryUnitPriceLandOfProjectAsync(string projectId, UnitPriceLandQuery query, bool trackChanges = false)
         {
-            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Where(e => e.ProjectId ==projectId && e.IsDeleted == false);
+            IQueryable<UnitPriceLand> unitPriceLands = _context.UnitPriceLands.Include(c=>c.LandType).Where(e => e.ProjectId ==projectId && e.IsDeleted == false);
 
             if (!trackChanges)
             {

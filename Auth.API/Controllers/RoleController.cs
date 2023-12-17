@@ -1,5 +1,6 @@
 ﻿using Auth.Infrastructure.DTOs.Role;
 using Auth.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -23,6 +24,7 @@ public class RoleController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<RoleReadDTO>>))]
     public async Task<IActionResult> GetAllRoles()
     {
@@ -37,6 +39,7 @@ public class RoleController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
     public async Task<IActionResult> GetRoleDetailsAsync(string id)
@@ -52,6 +55,7 @@ public class RoleController : ControllerBase
     /// <param name="writeDTO"></param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<RoleReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -70,6 +74,7 @@ public class RoleController : ControllerBase
     /// <param name="writeDTO"></param>
     /// <returns></returns>
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     [ServiceFilter(typeof(AutoValidateModelState))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<RoleReadDTO>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -87,6 +92,7 @@ public class RoleController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
     public async Task<IActionResult> DeleteRole(string id)

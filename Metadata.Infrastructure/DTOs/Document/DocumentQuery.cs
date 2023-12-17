@@ -1,4 +1,5 @@
-﻿using SharedLib.Infrastructure.DTOs;
+﻿using System.ComponentModel;
+using SharedLib.Infrastructure.DTOs;
 
 namespace Metadata.Infrastructure.DTOs.Document
 {
@@ -7,5 +8,7 @@ namespace Metadata.Infrastructure.DTOs.Document
         public string? Include { get; set; }
         public string? SearchText { get; set; }
         public string? OrderBy { get; set; }
+        [DefaultValue(false)]
+        public bool? IsUnitPriceLand { get; set; } = false;
     }
 }

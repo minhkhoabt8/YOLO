@@ -25,7 +25,7 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<ExportFileDTO> ExportSummaryOfRecoveryExcelAsync(string planId);
         Task<PlanReadDTO> ReCheckPricesOfPlanAsync(string planId, bool applyChanged = false);
         Task<IEnumerable<PlanReadDTO>> GetPlansOfProjectAsync(string projectId);
-        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query);
+        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query);
         //Bảng tổng hợp chi phí
         Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId);
 
@@ -41,7 +41,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
 
         Task<PlanReadDTO> SendPlanApproveRequestAsync(string planId);
 
-        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus);
+        Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus = null);
+        Task<PaginatedResponse<PlanReadDTO>> QueryPlanOfApprovalAsync(PlanQuery query, PlanStatusEnum? planStatus = null);
         Task<ExportFileDTO> ExportBTHChiPhiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.docx);
         Task<ExportFileDTO> ExportBTHThuHoiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx);
 

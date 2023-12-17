@@ -19,5 +19,7 @@ namespace Auth.Infrastructure.Services.Interfaces
         Task<PaginatedResponse<AccountReadDTO>> QueryAccount(AccountQuery query);
 
         Task UpdatePasswordAsync(ResetPasswordInputDTO dto);
+
+        Task<AccountReadDTO?> GetAccountByPhoneEmailUserNameAsync(string userInput);
     }
 }

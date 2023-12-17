@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
+using System.Security.Principal;
 using LoginInputDTO = Auth.Infrastructure.DTOs.Authentication.LoginInputDTO;
 
 namespace Auth.Infrastructure.Services.Implementations
@@ -42,6 +43,20 @@ namespace Auth.Infrastructure.Services.Implementations
             if (existAccount != null)
             {
                 throw new UniqueConstraintException<Account>(nameof(Account.Username), writeDTO.Username);
+            }
+
+            var existAccountPhone = await _unitOfWork.AccountRepository.FindAccountByPhoneAsync(writeDTO.Phone);
+
+            if (existAccountPhone != null)
+            {
+                throw new UniqueConstraintException<Account>(nameof(Account.Phone), writeDTO.Phone);
+            }
+
+            var existEmailAccount = await _unitOfWork.AccountRepository.FindAccountByEmailAsync(writeDTO.Email);
+
+            if (existEmailAccount != null)
+            {
+                throw new UniqueConstraintException<Account>(nameof(Account.Email), writeDTO.Email);
             }
 
             var newAccount = _mapper.Map<Account>(writeDTO);
@@ -117,8 +132,15 @@ namespace Auth.Infrastructure.Services.Implementations
         public async Task DeleteAccountAsync(string id)
         {
             var account = await _unitOfWork.AccountRepository.FindAsync(id);
+
             if (account == null) throw new EntityWithIDNotFoundException<Account>(id);
+
+            account.Phone = "";
+
+            account.Email = "";
+
             account.IsDelete = true;
+
             await _unitOfWork.CommitAsync();
         }
 
@@ -156,7 +178,7 @@ namespace Auth.Infrastructure.Services.Implementations
 
             var isValidPassword = _passwordService.ValidatePassword(dto.OldPassword, hashedPasswordWithSalt[0], hashedPasswordWithSalt[1]);
 
-            if (isValidPassword)
+            if (!isValidPassword)
             {
                 throw new WrongCredentialsException();
             }
@@ -167,5 +189,34 @@ namespace Auth.Infrastructure.Services.Implementations
 
             await _unitOfWork.CommitAsync();
         }
+
+        public async Task<AccountReadDTO?> GetAccountByPhoneEmailUserNameAsync(string userInput)
+        {
+            var existPhone = await _unitOfWork.AccountRepository.FindAccountByPhoneAsync(userInput);
+
+            if (existPhone != null)
+            {
+                return _mapper.Map<AccountReadDTO>(existPhone);
+            }
+
+            var existEmail = await _unitOfWork.AccountRepository.FindAccountByEmailAsync(userInput);
+
+            if (existEmail != null)
+            {
+                return _mapper.Map<AccountReadDTO>(existEmail);
+            }
+
+            var existUserName = await _unitOfWork.AccountRepository.FindAccountByUsernameAsync(userInput);
+
+            if (existUserName != null)
+            {
+                return _mapper.Map<AccountReadDTO>(existUserName);
+            }
+
+            return null;
+            
+        }
+
+        
     }
 }

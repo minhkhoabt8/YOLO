@@ -57,6 +57,10 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 documents = documents.AsNoTracking();
             }
+            if (query.IsUnitPriceLand == true)
+            {
+                documents = documents.Where(c => c.IsUnitPriceLand == true);
+            }
             if (!string.IsNullOrWhiteSpace(query.Include))
             {
                 documents = documents.IncludeDynamic(query.Include);

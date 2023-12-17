@@ -781,7 +781,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query)
         {
             var plan = await _unitOfWork.PlanRepository.QueryPlansOfProjectAsync(projectId, query);
 
@@ -1080,7 +1080,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
+        {
+            var currentCreatorName = _userContextService.Username!
+                ?? throw new InvalidActionException("Cannot Define Creator From Context");
+
+            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlanOfApprovalAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
         {
             var currentCreatorName = _userContextService.Username!
                 ?? throw new InvalidActionException("Cannot Define Creator From Context");

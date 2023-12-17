@@ -1,6 +1,7 @@
 ﻿using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -22,6 +23,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
         public async Task<IActionResult> GetAllSupportTypes()
         {
@@ -34,6 +36,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getAllActived")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
         public async Task<IActionResult> getAllActivedSupportTypes()
         {
@@ -46,6 +49,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         public async Task<IActionResult> GetSupportType(string id)
         {
@@ -59,6 +63,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -74,6 +79,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("createList")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -90,6 +96,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("updateId")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -106,6 +113,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<SupportTypeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteSupportType(string id)
@@ -119,6 +127,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateName")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateName(string name)
         {
@@ -131,6 +140,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateCode")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateCode(string code)
         {
@@ -144,6 +154,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<SupportTypeReadDTO>>))]
         public async Task<IActionResult> QuerySupportType([FromQuery] SupportTypeQuery query)
         {
@@ -151,8 +162,13 @@ namespace Metadata.API.Controllers
             return ResponseFactory.PaginatedOk(supportTypes);
         }
 
-        //import data from excel
+        /// <summary>
+        /// import data from excel
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> ImportSupportTypes(IFormFile file)
         {
             if (file == null || file.Length == 0)

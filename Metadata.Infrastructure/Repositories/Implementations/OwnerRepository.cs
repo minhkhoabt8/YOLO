@@ -205,5 +205,26 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             .Where(o => o.ProjectId == projectId && o.OwnerTaxCode == taxCode)
             .FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Owner>> GetOwnersHaveLandResettlementInProjectAsync(string projectId)
+        {
+            return await _context.Owners
+                .Where(o => o.IsDeleted == false && o.ProjectId == projectId)
+                .Include(o => o.LandResettlements)
+                    .Where(o => o.LandResettlements
+                        .Any(lr => lr.ResettlementProjectId == projectId))
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalLandResettlementsOfOwnersInProjectAsync(string projectId)
+        {
+            var totalLandResettlements = await _context.Owners
+                .Where(o => o.IsDeleted == false && o.ProjectId == projectId)
+                .Include(o => o.LandResettlements)
+                .SelectMany(o => o.LandResettlements)
+                .CountAsync();
+
+            return totalLandResettlements;
+        }
     }
 }

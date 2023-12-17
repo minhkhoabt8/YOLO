@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.AssetCompensation;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
@@ -24,6 +25,7 @@ namespace Metadata.API.Controllers
          /// <param name="ownerId</param>
         /// <returns></returns>
         [HttpGet("all")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetCompensationReadDTO>>))]
         public async Task<IActionResult> GetAllAssetCompensations(string ownerId)
         {
@@ -37,6 +39,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("createList")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiCreatedResponse<AssetCompensationReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -54,6 +57,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("updateId")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetCompensationReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -71,6 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetCompensationReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteAssetCompensation(string id)
@@ -85,6 +90,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetCompensationReadDTO>>))]
         public async Task<IActionResult> QueryAssetCompensation([FromQuery] AssetCompensationQuery query)
         {

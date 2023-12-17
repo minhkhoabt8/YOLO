@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.Support;
 using Metadata.Infrastructure.DTOs.UnitPriceAsset;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -30,6 +31,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<ResettlementProjectReadDTO>))]
         public async Task<IActionResult> QueryResettlementProjectsAsync([FromQuery] ResettlementProjectQuery query)
         {
@@ -43,6 +45,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetResettlementProjectsAsync(string id)
@@ -57,6 +60,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("project")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetResettlementProjectByProjectIdAsync(string projectId)
@@ -71,6 +75,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -88,6 +93,7 @@ namespace Metadata.API.Controllers
         /// <param name="documents"></param>
         /// <returns></returns>
         [HttpPost("create/document")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -107,6 +113,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("update")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -123,6 +130,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<ResettlementProjectReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteResettlementProjectAsync(string id)
@@ -132,8 +140,13 @@ namespace Metadata.API.Controllers
             return ResponseFactory.NoContent();
         }
 
-        //api check not allow duplicate resettle ment project code
+        /// <summary>
+        /// api check not allow duplicate resettle ment project code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-code")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateCodeAsync(string code)
         {
@@ -141,8 +154,13 @@ namespace Metadata.API.Controllers
             return ResponseFactory.Ok(isDuplicate);
         }
 
-        //api check not allow duplicate resettle ment project cname
+        /// <summary>
+        /// api check not allow duplicate resettle ment project cname
+        /// </summary>
+        /// <param name="cname"></param>
+        /// <returns></returns>
         [HttpGet("check-duplicate-name")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateCnameAsync(string cname)
         {
