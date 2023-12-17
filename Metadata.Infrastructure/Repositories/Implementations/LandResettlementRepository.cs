@@ -25,7 +25,8 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
         public async Task<decimal> CaculateTotalLandPricesOfOwnerAsync(string ownerId)
         {
-            return await _context.LandResettlements.Where(c => c.OwnerId == ownerId).SumAsync(c => c.TotalLandPrice ?? 0);
+            var query = await _context.LandResettlements.Where(c => c.OwnerId == ownerId).SumAsync(c => c.TotalLandPrice);
+            return query;
         }
 
         public async Task<LandResettlement?> CheckDuplicateLandResettlement(string pageNumber, string plotNumber)
