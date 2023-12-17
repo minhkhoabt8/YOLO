@@ -24,6 +24,6 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<Plan>> GetPlansOfProjectAsync(string projectId);
         Task<Plan?> GetPlanByPlanCodeAsync(string planCode);
         Task<IEnumerable<Plan>> QueryPlanOfCreatorAsync(PlanQuery query, string creatorName, PlanStatusEnum? planStatus = null, bool trackChanges = false);
-        Task<IEnumerable<Plan>> QueryPlanOfApprovalAsync(PlanQuery query, string approvalName, PlanStatusEnum? planStatus = null, bool trackChanges = false);
+        Task<IEnumerable<Plan>> QueryPlanOfApprovalAsync(PlanQuery query, string approvalId, PlanStatusEnum? planStatus = null, bool trackChanges = false);
     }
 }

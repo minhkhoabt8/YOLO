@@ -122,9 +122,9 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             return await Task.FromResult(enumeratedPlan);
         }
 
-        public async Task<IEnumerable<Plan>> QueryPlanOfApprovalAsync(PlanQuery query, string approvalName, PlanStatusEnum? planStatus = null, bool trackChanges = false)
+        public async Task<IEnumerable<Plan>> QueryPlanOfApprovalAsync(PlanQuery query, string approvalId, PlanStatusEnum? planStatus = null, bool trackChanges = false)
         {
-            IQueryable<Plan> plans = _context.Plans.Where(e => e.PlanApprovedBy == approvalName && e.IsDeleted == false);
+            IQueryable<Plan> plans = _context.Plans.Where(e => e.PlanApprovedBy == approvalId && e.IsDeleted == false);
 
 
             if (!trackChanges)
