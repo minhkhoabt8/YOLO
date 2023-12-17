@@ -1,4 +1,5 @@
 ﻿using Amazon.S3.Model;
+using Aspose.Pdf.Operators;
 using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AttachFile;
@@ -102,7 +103,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<IEnumerable<LandResettlementReadDTO>> GetLandResettlementsOfResettlementProjectAsync(string resettlementProjectId)
         {
-            var resettlementProject = await _unitOfWork.LandResettlementRepository.FindAsync(resettlementProjectId)
+            var resetlementProject  = await _unitOfWork.ResettlementProjectRepository.FindAsync(resettlementProjectId)
                 ?? throw new EntityWithIDNotFoundException<LandResettlement>(resettlementProjectId);
 
             return _mapper.Map<IEnumerable<LandResettlementReadDTO>>(await _unitOfWork.LandResettlementRepository.GetLandResettlementsOfResettlementProjectIncludeOwnerAsync(resettlementProjectId));
@@ -114,9 +115,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (landResettlement == null) throw new EntityWithIDNotFoundException<LandResettlement>(id);
 
-            if(landResettlement.PageNumber!= dto.PageNumber || landResettlement.PlotNumber != dto.PlotNumber)
+            if(landResettlement.PageNumber != dto.PageNumber || landResettlement.PlotNumber != dto.PlotNumber)
             {
-                var duplicateLandResettlement = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(dto.PageNumber!, dto.PlotNumber!)??
+                var duplicateLandResettlement = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(dto.PageNumber!, dto.PlotNumber!) ??
                     throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {dto.PageNumber} và số thửa {dto.PlotNumber} khác đã tồn tại trong hệ thống.");
             }
 
@@ -134,6 +135,13 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<decimal> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId)
         {
             return await _unitOfWork.LandResettlementRepository.CalculateOwnerTotalLandResettlementPriceInPlanAsync(planId);
+        }
+
+        public async Task<LandResettlementReadDTO> CheckDuplicateLandResettlementAsync(string pageNumber, string plotNumber)
+        {
+            var landResettlemtnt = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(pageNumber!, plotNumber!)
+                ?? throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {pageNumber} và số thửa {plotNumber} khác đã tồn tại trong hệ thống.");
+            return _mapper.Map<LandResettlementReadDTO>(landResettlemtnt);
         }
     }
 }

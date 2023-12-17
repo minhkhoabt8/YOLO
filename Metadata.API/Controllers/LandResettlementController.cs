@@ -56,7 +56,7 @@ namespace Metadata.API.Controllers
         }
 
         /// <summary>
-        /// Get Land Resettlement Of Owner
+        /// Get Land Resettlement Of Resetlement Project 
         /// </summary>
         /// <param name="resettlementProjectId"></param>
         /// <returns></returns>
@@ -66,7 +66,7 @@ namespace Metadata.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> GetLandResettlementsOfResettlementProjectAsync(string resettlementProjectId)
         {
-            var resettlements = await _landResettlementService.GetLandResettlementsOfOwnerAsync(resettlementProjectId);
+            var resettlements = await _landResettlementService.GetLandResettlementsOfResettlementProjectAsync(resettlementProjectId);
             return ResponseFactory.Ok(resettlements);
         }
 
@@ -83,6 +83,19 @@ namespace Metadata.API.Controllers
         {
             var price = await _landResettlementService.CalculateOwnerTotalLandResettlementPriceInPlanAsync(planId);
             return ResponseFactory.Ok(price);
+        }
+
+        /// <summary>
+        /// Check Duplicate
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("checkDuplicate")]
+        [Authorize(Roles = "Creator")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
+        public async Task<IActionResult> CheckDuplicate([Required] string pageNumber, [Required] string plotNumber)
+        {
+            await _landResettlementService.CheckDuplicateLandResettlementAsync(pageNumber, plotNumber);
+            return ResponseFactory.Accepted();
         }
 
         /// <summary>
