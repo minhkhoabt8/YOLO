@@ -163,7 +163,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Core.Entities.Owner>(planId);
 
-            if (dto.PlanCode! != plan.PlanCode.ToLower()) 
+            if (dto.PlanCode!.ToLower() != plan.PlanCode.ToLower()) 
             {
                 var duplicatePlan = await _unitOfWork.PlanRepository.GetPlanByPlanCodeAsync(dto.PlanCode!);
 
