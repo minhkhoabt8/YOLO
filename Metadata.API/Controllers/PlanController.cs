@@ -46,13 +46,14 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <param name="query"></param>
         /// <param name="planStatus"></param>
+        /// <param name="creatorId"></param>
         /// <returns></returns>
         [HttpGet("creator")]
         [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum? planStatus = null)
+        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, string? creatorName = null, PlanStatusEnum? planStatus = null)
         {
-            var plans = await _planService.QueryPlansOfCreatorAsync(query, planStatus);
+            var plans = await _planService.QueryPlansOfCreatorAsync(query, creatorName, planStatus);
 
             return ResponseFactory.PaginatedOk(plans);
         }

@@ -1080,14 +1080,21 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query,string? creatorName = null, PlanStatusEnum? planStatus = null)
         {
-            var currentCreatorName = _userContextService.Username!
+            if (creatorName != null) 
+            {
+                var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, creatorName, planStatus);
+                return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+            }
+            else
+            {
+                var currentCreatorName = _userContextService.Username!
                 ?? throw new InvalidActionException("Cannot Define Creator From Context");
 
-            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
-
-            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+                var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+                return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+            }
         }
 
         public async Task<PaginatedResponse<PlanReadDTO>> QueryPlanOfApprovalAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
