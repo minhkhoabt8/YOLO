@@ -38,6 +38,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(landType);
         }
+
         public async Task<LandTypeReadDTO?> CreateLandTypeForImportAsync(LandTypeWriteForImportDTO landTypeWriteDTO)
         {
             var landGroup = await _unitOfWork.LandGroupRepository.FindByCodeAsync(landTypeWriteDTO.LandGroupCode!)

@@ -802,19 +802,34 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             // Check if the Owner Code in the DTO is different from the Owner Code in the existing owner,
             // considering case-insensitive comparison and handling null or empty values.
-            if ((string.IsNullOrEmpty(dto.OwnerCode) || string.Compare(owner.OwnerCode, dto.OwnerCode, StringComparison.OrdinalIgnoreCase) != 0 
-                || (string.IsNullOrEmpty(dto.OwnerTaxCode)) || string.Compare(owner.OwnerTaxCode, dto.OwnerTaxCode, StringComparison.OrdinalIgnoreCase) != 0
-                || !Equals(dto.OwnerTaxCode, owner.OwnerTaxCode)
-                || !Equals(dto.OwnerIdCode, owner.OwnerIdCode)))
+
+            if(dto.OwnerCode!.ToLower() != owner.OwnerCode!.ToLower())
             {
-                var duplicateOwner = await _unitOfWork.OwnerRepository.CheckDuplicateOwnerAsync(project.ProjectId, dto.OwnerTaxCode, dto.OwnerIdCode);
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(owner.OwnerCode);
 
                 if (duplicateOwner != null)
                 {
-                    throw new UniqueConstraintException("Có một chủ sở hữu khác đã tồn tại trong hệ thống.");
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với Mã chủ sở hữu: [{owner.OwnerCode}] đã tồn tại trong hệ thống.");
                 }
             }
+            if (dto.OwnerIdCode!.ToLower() != owner.OwnerIdCode!.ToLower())
+            {
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(owner.OwnerIdCode);
 
+                if (duplicateOwner != null)
+                {
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với CCCD: [{owner.OwnerCode}] đã tồn tại trong hệ thống.");
+                }
+            }
+            if (dto.OwnerTaxCode!.ToLower() != owner.OwnerTaxCode!.ToLower())
+            {
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(owner.OwnerTaxCode);
+
+                if (duplicateOwner != null)
+                {
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với MST: [{owner.OwnerTaxCode}] đã tồn tại trong hệ thống.");
+                }
+            }
 
             _mapper.Map(dto, owner);
 
