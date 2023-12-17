@@ -31,8 +31,26 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             if (!dto.OwnerId.IsNullOrEmpty())
             {
-                var owner = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId!)
+                var owner = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId!, include: "LandResettlements", trackChanges:false)
                  ?? throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.OwnerId!);
+
+                var ownerProject = await _unitOfWork.ProjectRepository.FindAsync(owner.ProjectId!)
+                    ?? throw new EntityWithIDNotFoundException<Project>(owner.ProjectId!);
+
+                if (ownerProject.IsDeleted)
+                {
+                    throw new InvalidActionException("Không thể thêm đất tái định cư vào dự án đã bị xóa.");
+                }
+
+                //check if Project Resettlent still have enough land to resettlemt
+
+                var numberofResettlementOwner = await _unitOfWork.OwnerRepository.GetTotalLandResettlementsOfOwnersInProjectAsync(ownerProject.ProjectId);
+
+                if (ownerProject.ResettlementProject!.LandNumber <= numberofResettlementOwner + owner.LandResettlements.Count())
+                {
+                    throw new InvalidActionException($"Không thể thêm mới đất tái định cư cho chủ sở hữu: [{owner.OwnerCode}] vì đã vượt quá số lượng lô đất tái định cư: [{ownerProject.ResettlementProject.LandNumber}] có trong dự án: [{ownerProject.ProjectCode}].");
+                }
+
             }
 
             var resettlement = _mapper.Map<LandResettlement>(dto);

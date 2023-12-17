@@ -25,5 +25,9 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
 
         Task<IEnumerable<Owner>> QueryOwnersOfProjectAsync(string projectId, OwnerQuery query, bool trackChanges = false);
         Task<Owner?> CheckDuplicateOwnerAsync(string projectId, string? ownerTaxCode, string? ownerIdCode);
+
+        Task<IEnumerable<Owner>> GetOwnersHaveLandResettlementInProjectAsync(string projectId);
+
+        Task<int> GetTotalLandResettlementsOfOwnersInProjectAsync(string projectId);
     }
 }
