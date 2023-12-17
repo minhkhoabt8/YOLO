@@ -803,7 +803,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             // Check if the Owner Code in the DTO is different from the Owner Code in the existing owner,
             // considering case-insensitive comparison and handling null or empty values.
             if ((string.IsNullOrEmpty(dto.OwnerCode) || string.Compare(owner.OwnerCode, dto.OwnerCode, StringComparison.OrdinalIgnoreCase) != 0)
-                || (string.IsNullOrEmpty(dto.OwnerName) || string.Compare(owner.OwnerName, dto.OwnerName, StringComparison.OrdinalIgnoreCase) != 0)
                 || !Equals(dto.OwnerTaxCode, owner.OwnerTaxCode)
                 || !Equals(dto.OwnerIdCode, owner.OwnerIdCode))
             {

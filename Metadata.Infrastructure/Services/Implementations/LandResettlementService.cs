@@ -117,8 +117,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(landResettlement.PageNumber!.ToLower() != dto.PageNumber!.ToLower() || landResettlement.PlotNumber!.ToLower() != dto.PlotNumber!.ToLower())
             {
-                var duplicateLandResettlement = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(dto.PageNumber!, dto.PlotNumber!) ??
+                var duplicateLandResettlement = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(dto.PageNumber!, dto.PlotNumber!);
+                if(duplicateLandResettlement != null)
+                {
                     throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {dto.PageNumber} và số thửa {dto.PlotNumber} khác đã tồn tại trong hệ thống.");
+
+                }
             }
 
             _mapper.Map(dto, landResettlement);
@@ -139,8 +143,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<LandResettlementReadDTO> CheckDuplicateLandResettlementAsync(string pageNumber, string plotNumber)
         {
-            var landResettlemtnt = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(pageNumber!, plotNumber!)
-                ?? throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {pageNumber} và số thửa {plotNumber} khác đã tồn tại trong hệ thống.");
+            var landResettlemtnt = await _unitOfWork.LandResettlementRepository.CheckDuplicateLandResettlement(pageNumber!, plotNumber!);
+            if (landResettlemtnt != null) 
+            {
+                throw new UniqueConstraintException($"Có một đất tái định cư với số tờ {pageNumber} và số thửa {plotNumber} khác đã tồn tại trong hệ thống.");
+            } 
             return _mapper.Map<LandResettlementReadDTO>(landResettlemtnt);
         }
     }
