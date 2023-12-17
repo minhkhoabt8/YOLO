@@ -220,10 +220,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
                 ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
 
-            var duplicateGCN = await CheckDuplicateGCNLandInfoAsync(dto.GcnPageNumber, dto.GcnPlotNumber);
+            if(dto.GcnPageNumber.ToLower() != gcnLandInfo.GcnPageNumber.ToLower() || dto.GcnPlotNumber.ToLower() != gcnLandInfo.GcnPlotNumber.ToLower())
+            {
+                var duplicateGCN = await CheckDuplicateGCNLandInfoAsync(dto.GcnPageNumber, dto.GcnPlotNumber);
 
-            if (duplicateGCN != null) throw new InvalidActionException($"GCN đất với số tờ: {dto.GcnPageNumber} và số thửa: {dto.GcnPlotNumber} đã tồn tại trong hệ thống.");
-
+                if (duplicateGCN != null) throw new InvalidActionException($"GCN đất với số tờ: {dto.GcnPageNumber} và số thửa: {dto.GcnPlotNumber} đã tồn tại trong hệ thống.");
+            }
 
             _mapper.Map(dto, gcnLandInfo);
 

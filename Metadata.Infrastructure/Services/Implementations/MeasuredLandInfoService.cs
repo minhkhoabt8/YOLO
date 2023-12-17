@@ -163,8 +163,13 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
         public async Task<MeasuredLandInfoReadDTO> UpdateMeasuredLandInfoAsync(string id, MeasuredLandInfoWriteDTO dto)
         {
+            var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
+
+            if (measuredLandInfo == null) throw new EntityWithIDNotFoundException<MeasuredLandInfo>(id);
+
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
-                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+               ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
+
 
             if (!dto.GcnLandInfoId.IsNullOrEmpty())
             {
@@ -173,14 +178,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException("Gcn Land Info And Measured Land Info Owner Mismatch.");
 
-                // Verify duplicate MeasuredPlot
-                await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPlotAddress, dto.LandTypeId);
+                if(dto.OwnerId != gcnLandInfo.OwnerId || dto.MeasuredPlotNumber!.ToLower() != measuredLandInfo.MeasuredPlotNumber!.ToLower() || dto.MeasuredPlotAddress!.ToLower() != measuredLandInfo.MeasuredPlotAddress!.ToLower())
+                {
+                    // Verify duplicate MeasuredPlot
+                    await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPlotAddress, dto.LandTypeId);
+                }
 
             }
-
-            var measuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.FindAsync(id);
-
-            if (measuredLandInfo == null) throw new EntityWithIDNotFoundException<MeasuredLandInfo>(id);
 
             _mapper.Map(dto, measuredLandInfo);
 
