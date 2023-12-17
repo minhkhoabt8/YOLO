@@ -1093,9 +1093,9 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<PaginatedResponse<PlanReadDTO>> QueryPlanOfApprovalAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
         {
             var currentCreatorName = _userContextService.Username!
-                ?? throw new InvalidActionException("Cannot Define Creator From Context");
+                ?? throw new InvalidActionException("Cannot Define Approval From Context");
 
-            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+            var plan = await _unitOfWork.PlanRepository.QueryPlanOfApprovalAsync(query, currentCreatorName, planStatus);
 
             return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
         }
