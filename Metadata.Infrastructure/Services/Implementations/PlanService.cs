@@ -307,7 +307,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-
+        //API mới
         public async Task<List<DetailBTHChiPhiReadDTO>> getDataForBTHChiPhiAsync(string planId)
         {
             List<DetailBTHChiPhiReadDTO> details = new List<DetailBTHChiPhiReadDTO>();
@@ -334,15 +334,19 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 string measuredPageNumbers = "";
                 string measuredPlotNumbers = "";
+                decimal mesuredPlotArea =0;
+                decimal withDrawalArea =0;
                 string codeLandTypes = "";
                 foreach (var i in measuredLandInfos)
                 {
                     measuredPageNumbers += (measuredPageNumbers.Length > 0 ? ", " : "") + i.MeasuredPageNumber;
                     measuredPlotNumbers += (measuredPlotNumbers.Length > 0 ? ", " : "") + i.MeasuredPlotNumber;
+                    
 
                     var laneType = await _unitOfWork.LandTypeRepository.GetLandTypesOfMeasureLandInfoAsync(i.LandTypeId);
                     codeLandTypes += (codeLandTypes.Length > 0 ? ", " : "") + laneType.Code;
-
+                    mesuredPlotArea = i.MeasuredPlotArea ?? 0 ;
+                    withDrawalArea = i.WithdrawArea ?? 0;
                 }
                 DetailBTHChiPhiReadDTO detail = new DetailBTHChiPhiReadDTO();
                 detail.Stt = ++stt;
@@ -360,10 +364,11 @@ namespace Metadata.Infrastructure.Services.Implementations
                 //
                 detail.MeasuredPageNumber = measuredPageNumbers;
                 detail.MeasuredPlotNumber = measuredPlotNumbers;
-
+                
                 detail.CodeLandType = codeLandTypes;
                 //
-
+                detail.MeasuredPlotArea = mesuredPlotArea.ToString();
+                detail.WithdrawArea = withDrawalArea;
 
                 detail.SumLandCompensation = await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(item.OwnerId, true);
                 detail.SumHouseCompensationPrice = await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(item.OwnerId, AssetOnLandTypeEnum.House);
@@ -372,8 +377,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                 detail.SumSupportPrice = await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(item.OwnerId);
                 detail.SumDeductionPrice = await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(item.OwnerId);
                 detail.SumBTHT = (decimal)(detail.SumLandCompensation + detail.SumHouseCompensationPrice + detail.SumTreeCompensationPrice + detail.SumArchitectureCompensationPrice
-                    + detail.SumSupportPrice - detail.SumDeductionPrice - detail.SumLandResettlementPrice);
+                    + detail.SumSupportPrice - detail.SumDeductionPrice);
                 details.Add(detail);
+
             }
             return details;
         }
@@ -775,7 +781,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         }
 
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string projectId, PlanQuery query)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfProjectAsync(string? projectId, PlanQuery query)
         {
             var plan = await _unitOfWork.PlanRepository.QueryPlansOfProjectAsync(projectId, query);
 
@@ -1074,7 +1080,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         }
 
-        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus)
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
+        {
+            var currentCreatorName = _userContextService.Username!
+                ?? throw new InvalidActionException("Cannot Define Creator From Context");
+
+            var plan = await _unitOfWork.PlanRepository.QueryPlanOfCreatorAsync(query, currentCreatorName, planStatus);
+
+            return PaginatedResponse<PlanReadDTO>.FromEnumerableWithMapping(plan, query, _mapper);
+        }
+
+        public async Task<PaginatedResponse<PlanReadDTO>> QueryPlanOfApprovalAsync(PlanQuery query, PlanStatusEnum? planStatus = null)
         {
             var currentCreatorName = _userContextService.Username!
                 ?? throw new InvalidActionException("Cannot Define Creator From Context");

@@ -18,5 +18,8 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<LandResettlementReadDTO> GetLandResettlementAsync(string id);
         Task<IEnumerable<LandResettlementReadDTO>> GetLandResettlementsOfOwnerAsync(string ownerId);
         Task<IEnumerable<LandResettlementReadDTO>> GetLandResettlementsOfResettlementProjectAsync(string resettlementProjectId);
+        Task<decimal> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId);
+
+        Task<LandResettlementReadDTO> CheckDuplicateLandResettlementAsync(string pageNumber, string plotNumber);
     }
 }

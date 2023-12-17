@@ -10,5 +10,7 @@ namespace Auth.Infrastructure.Services.Interfaces
         Task<LoginOutputDTO> LoginWithRefreshTokenAsync(string? token);
         Task<LoginOutputDTO> LoginWithOtpAsync(string userName, string? code);
         Task<string> ResendOtpAsync(LoginInputDTO input);
+        Task SendResetPasswordOtp(string username);
+        Task VerifyOtpToCreateNewPasswordAsync(string userName, string otp);
     }
 }

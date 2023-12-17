@@ -3,6 +3,7 @@ using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.DTOs.Plan;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -31,6 +32,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
         public async Task<IActionResult> QueryPlans([FromQuery] PlanQuery query)
         {
@@ -46,10 +48,26 @@ namespace Metadata.API.Controllers
         /// <param name="planStatus"></param>
         /// <returns></returns>
         [HttpGet("creator")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum planStatus)
+        public async Task<IActionResult> QueryPlansOfCreatorAsync([FromQuery] PlanQuery query, PlanStatusEnum? planStatus = null)
         {
             var plans = await _planService.QueryPlansOfCreatorAsync(query, planStatus);
+
+            return ResponseFactory.PaginatedOk(plans);
+        }
+
+        /// <summary>
+        /// Query Plans Of Approval
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="planStatus"></param>
+        /// <returns></returns>
+        [HttpGet("approval")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<PlanReadDTO>))]
+        public async Task<IActionResult> QueryPlansOfApprovalAsync([FromQuery] PlanQuery query, PlanStatusEnum? planStatus = null)
+        {
+            var plans = await _planService.QueryPlanOfApprovalAsync(query, planStatus);
 
             return ResponseFactory.PaginatedOk(plans);
         }
@@ -61,6 +79,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <returns></returns>
         [HttpGet("{planId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         public async Task<IActionResult> GetPlanDetails(string planId)
         {
@@ -76,8 +95,9 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("project")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
-        public async Task<IActionResult> QueryPlansOfProjectAsync([FromQuery] string projectId, [FromQuery] PlanQuery query)
+        public async Task<IActionResult> QueryPlansOfProjectAsync([FromQuery] string? projectId, [FromQuery] PlanQuery query)
         {
             var plans = await _planService.QueryPlansOfProjectAsync(projectId, query);
 
@@ -90,6 +110,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <returns></returns>
         [HttpGet("recheck")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         public async Task<IActionResult> ReCheckPricesOfPlanAsync([Required] string planId, bool applyChanged = false)
         {
@@ -105,6 +126,7 @@ namespace Metadata.API.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -121,6 +143,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <returns></returns>
         [HttpPost("create/copy")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -138,6 +161,7 @@ namespace Metadata.API.Controllers
         /// <param name="attachFile"></param>
         /// <returns></returns>
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -152,6 +176,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("export/test/{projectId}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportProjectFile(string projectId)
         {
@@ -166,6 +191,7 @@ namespace Metadata.API.Controllers
         /// <param name="filetype">default: .docx, 0: .pdf</param>
         /// <returns></returns>
         [HttpGet("export/planReport/{planId}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportPlanReportsWordAsync([Required] string planId, FileTypeEnum filetype = FileTypeEnum.docx)
         {
@@ -182,6 +208,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -199,6 +226,7 @@ namespace Metadata.API.Controllers
         /// <param name="planId"></param>
         /// <returns></returns>
         [HttpPut("request-approve")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -220,6 +248,7 @@ namespace Metadata.API.Controllers
         /// <param name="signingFile">File need sign</param>
         /// <returns></returns>
         [HttpPut("approve")]
+        [Authorize(Roles = "Approval")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -239,6 +268,7 @@ namespace Metadata.API.Controllers
         /// <param name="signedFile">File that have signature</param>
         /// <returns></returns>
         [HttpPut("approve/signed")]
+        [Authorize(Roles = "Approval")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -258,6 +288,7 @@ namespace Metadata.API.Controllers
         /// <param name="reason"></param>
         /// <returns></returns>
         [HttpPut("reject")]
+        [Authorize(Roles = "Approval")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PlanReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -275,6 +306,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeletePlan(string id)
@@ -286,6 +318,7 @@ namespace Metadata.API.Controllers
 
         //get bth chi phi
         [HttpGet("bthchiphi/{planId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<DetailBTHChiPhiReadDTO>))]
         public async Task<IActionResult> getDataForBTHChiPhiAsync(string planId)
         {
@@ -296,6 +329,7 @@ namespace Metadata.API.Controllers
 
         // Bảng Tổng Hợp Chi Phí Report Excel
         [HttpGet("export/bthchiphi/{planId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportBTHChiPhiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
         {
@@ -306,6 +340,7 @@ namespace Metadata.API.Controllers
 
         //ExportBTHThuHoiToExcelAsync
         [HttpGet("export/bththuhoi/{planId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportBTHThuHoiToExcelAsync(string planId, FileTypeEnum filetype = FileTypeEnum.xlsx)
         {
@@ -316,6 +351,7 @@ namespace Metadata.API.Controllers
 
         //api check not allow duplicate plan code
         [HttpGet("checknotallowduplicateplan/{planCode}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckNotAllowDuplicatePlanCode(string planCode)
         {

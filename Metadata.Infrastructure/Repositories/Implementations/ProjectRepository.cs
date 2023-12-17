@@ -70,8 +70,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         {
             return await _context.Projects.Where(p => p.ProjectCode == ownerId).ToListAsync();
         }
-
-
+        
         public async Task<Project?> CheckDuplicateProjectAsync(string projectCode, string projectName)
         {
             return await _context.Projects.Where(p => p.ProjectName.ToLower() == projectName.ToLower() && p.ProjectCode.ToLower() ==projectCode.ToLower() && p.IsDeleted == false).FirstOrDefaultAsync();

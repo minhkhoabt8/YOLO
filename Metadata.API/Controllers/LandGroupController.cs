@@ -1,6 +1,7 @@
 ﻿using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -24,6 +25,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
         public async Task<IActionResult> GetAllLandGroups()
         {
@@ -36,6 +38,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getAllActived")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
         public async Task<IActionResult> getAllActivedLandGroups()
         {
@@ -48,6 +51,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         public async Task<IActionResult> GetLandGroup(string id)
         {
@@ -61,6 +65,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -76,6 +81,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("createList")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<LandGroupReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -92,6 +98,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("updateId")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -108,6 +115,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<LandGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteLandGroup(string id)
@@ -121,6 +129,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateName")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateName(string name)
         {
@@ -133,6 +142,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateCode")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateCode(string code)
         {
@@ -154,8 +164,13 @@ namespace Metadata.API.Controllers
         }
 
 
-        //import data from excel
+        /// <summary>
+        /// import data from excel
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> ImportLandGroup(IFormFile file)
         {
             if (file == null || file.Length == 0)

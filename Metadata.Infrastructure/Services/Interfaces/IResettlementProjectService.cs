@@ -18,5 +18,6 @@ namespace Metadata.Infrastructure.Services.Interfaces
         Task<ResettlementProjectReadDTO> CreateResettlementProjectDocumentsAsync(string resettlementId, IEnumerable<DocumentWriteDTO> documentDtos);
         Task<bool> CheckCodeResettlementProjectNotDuplicateAsync(string code);
         Task<bool> CheckNameResettlementProjectNotDuplicateAsync(string name);
+
     }
 }

@@ -421,7 +421,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
 
             //6.Add Owner Land Resettlement
-
+            //6.1 check if project support any resettlement
             if (project.ResettlementProject == null && !dto.OwnersLandResettlements.IsNullOrEmpty())
             {
                 throw new InvalidOperationException("Cannot Create Owner Land Resettlement Because Project Does Not Support Any Resettlement");
@@ -443,6 +443,14 @@ namespace Metadata.Infrastructure.Services.Implementations
                     //    throw new InvalidActionException($"Cannot Create Land Resettlement Because Owner Resettlement Limit Value: {limitResettlementValue}% < Project LimitToConsideration: {associateResettlement.LimitToConsideration}% < Project LimitToResettlement: {associateResettlement.LimitToResettlement}%.");
                     //}
 
+                    //check if Project Resettlent still have enough land to resettlemt
+
+                    var numberofResettlementOwner = await _unitOfWork.OwnerRepository.GetTotalLandResettlementsOfOwnersInProjectAsync(project.ProjectId);
+
+                    if(project.ResettlementProject!.LandNumber <= numberofResettlementOwner + dto.OwnersLandResettlements.Count())
+                    {
+                        throw new InvalidActionException($"Không thể thêm đất tái định cư với số lượng: [{dto.OwnersLandResettlements.Count()}] cho chủ sở hữu: [{owner.OwnerCode}] vì đã vượt quá số lượng lô đất tái định cư: [{project.ResettlementProject.LandNumber}] có trong dự án: [{project.ProjectCode}].");
+                    }
 
                     landResettlementDto.OwnerId = owner.OwnerId;
 
@@ -1090,6 +1098,15 @@ namespace Metadata.Infrastructure.Services.Implementations
         {
             var owner = await _unitOfWork.OwnerRepository.QueryOwnersOfProjectAsync(projectId, query);
             return PaginatedResponse<OwnerReadDTO>.FromEnumerableWithMapping(owner, query, _mapper);
+        }
+        /// <summary>
+        /// Get Owners Have Land Resettlement In Project
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<OwnerReadDTO>> GetOwnersHaveLandResettlementInProjectAsync(string projectId)
+        {
+            return _mapper.Map<IEnumerable<OwnerReadDTO>>(await _unitOfWork.OwnerRepository.GetOwnersHaveLandResettlementInProjectAsync(projectId));
         }
 
     }

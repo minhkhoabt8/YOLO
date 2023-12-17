@@ -1,11 +1,10 @@
 ﻿using Auth.Core.Data;
 using Auth.Core.Entities;
+using Auth.Core.Enum;
 using Auth.Infrastructure.DTOs.Account;
 using Auth.Infrastructure.DTOs.Authentication;
 using Auth.Infrastructure.Repositories.Interfaces;
-using Metadata.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Quartz.Util;
 using SharedLib.Infrastructure.Repositories.Implementations;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
 
@@ -15,6 +14,16 @@ namespace Auth.Infrastructure.Repositories.Implementations
     {
         public AccountRepository(YoloAuthContext context) : base(context)
         {
+        }
+
+        public async Task<Account?> FindAccountByEmailAsync(string email)
+        {
+            return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Email == email);
+        }
+
+        public async Task<Account?> FindAccountByPhoneAsync(string phone)
+        {
+            return await _context.Accounts.Include(acc => acc.Role).FirstOrDefaultAsync(acc => acc.Phone == phone);
         }
 
         public async Task<Account?> FindAccountByUsernameAsync(string username)
@@ -29,25 +38,29 @@ namespace Auth.Infrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Account>> QueryAsync(AccountQuery query, bool trackChanges = false)
         {
-            IQueryable<Account> acounts = _context.Accounts.Include(a => a.Role).Where(c=>c.IsDelete == false);
+            IQueryable<Account> accounts = _context.Accounts.Include(a => a.Role).Where(c=>c.IsDelete == false && c.RoleId != "1");
 
             if(!trackChanges)
             {
-                acounts = acounts.AsNoTracking();
+                accounts = accounts.AsNoTracking();
+            }
+            if (!string.IsNullOrEmpty(query.RoleId) && query.RoleId != ((int)RoleEnum.Admin).ToString())
+            {
+                accounts = accounts.Where(c => c.RoleId == query.RoleId);
             }
             if (!string.IsNullOrWhiteSpace(query.Include))
             {
-                acounts = acounts.IncludeDynamic(query.Include);
+                accounts = accounts.IncludeDynamic(query.Include);
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                acounts = acounts.FilterAndOrderByTextSimilarity(query.SearchText, 50);
+                accounts = accounts.Where(c=>c.Username.Contains(query.SearchText) || c.Name.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
-                acounts = acounts.OrderByDynamic(query.OrderBy);
+                accounts = accounts.OrderByDynamic(query.OrderBy);
             }
-            IEnumerable<Account> enumeratedAccounts = acounts.AsEnumerable();
+            IEnumerable<Account> enumeratedAccounts = accounts.AsEnumerable();
 
             return await Task.FromResult(enumeratedAccounts);
         }

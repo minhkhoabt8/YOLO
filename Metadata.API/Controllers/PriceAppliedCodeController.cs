@@ -4,6 +4,7 @@ using Metadata.Infrastructure.DTOs.PriceAppliedCode;
 using Metadata.Infrastructure.DTOs.Project;
 using Metadata.Infrastructure.Services.Implementations;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -30,6 +31,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<PriceAppliedCodeReadDTO>>))]
         public async Task<IActionResult> QueryPriceAplliedCode([FromQuery] PriceAppliedCodeQuery query)
         {
@@ -43,6 +45,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("{Id}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<PriceAppliedCodeReadDTO>>))]
         public async Task<IActionResult> GetAllPriceAplliedCode(string Id)
         {
@@ -55,6 +58,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateCode")]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> CheckDuplicateCode(string code)
         {
             await _priceAppliedCodeService.CheckDuplicateCodeAsync(code);
@@ -66,6 +70,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkCanEdit")]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> IsPriceAppliedCodeInAnyProjectAsync(string code)
         {
             var result = await _priceAppliedCodeService.IsPriceAppliedCodeInAnyProjectAsync(code);
@@ -78,6 +83,7 @@ namespace Metadata.API.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -93,6 +99,7 @@ namespace Metadata.API.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("creates")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -109,6 +116,7 @@ namespace Metadata.API.Controllers
         /// <param name="documentDtos"></param>
         /// <returns></returns>
         [HttpPost("create/document")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -125,6 +133,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("updateId")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PriceAppliedCodeReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -141,6 +150,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeletePriceAplliedCode(string id)
         {

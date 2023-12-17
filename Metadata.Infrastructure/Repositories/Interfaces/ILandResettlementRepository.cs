@@ -20,6 +20,7 @@ namespace Metadata.Infrastructure.Repositories.Interfaces
         Task<IEnumerable<LandResettlement>> GetLandResettlementsOfResettlementProjectIncludeOwnerAsync(string resettlementProjectId);
         Task<decimal> CaculateTotalLandPricesOfOwnerAsync(string ownerId);
         Task<LandResettlement?> CheckDuplicateLandResettlement(string pageNumber, string plotNumber);
+        Task<decimal> CalculateOwnerTotalLandResettlementPriceInPlanAsync(string planId);
 
     }
 }

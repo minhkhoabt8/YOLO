@@ -92,6 +92,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Resend OTP
     /// </summary>
+    /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost("resend-otp")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -101,6 +102,37 @@ public class AuthController : ControllerBase
         var result = await _authService.ResendOtpAsync(input);
 
         return ResponseFactory.Ok(result);
+    }
+
+    /// <summary>
+    /// Send Reset Password OTP
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    [HttpPost("reset-password/otp")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    public async Task<IActionResult> SendResetPasswordOtp(string userName)
+    {
+        await _authService.SendResetPasswordOtp(userName);
+
+        return ResponseFactory.Accepted();
+    }
+
+    /// <summary>
+    /// Verify Otp To Create New Password
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <param name="otp"></param>
+    /// <returns></returns>
+    [HttpPost("verify-otp")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
+    public async Task<IActionResult> VerifyOtpToCreateNewPasswordAsync(string userName, string otp)
+    {
+        await _authService.VerifyOtpToCreateNewPasswordAsync(userName, otp);
+
+        return ResponseFactory.Accepted();
     }
 
 }

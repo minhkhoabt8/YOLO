@@ -11,6 +11,7 @@ using SharedLib.Core.Exceptions;
 using SharedLib.Core.Extensions;
 using SharedLib.Infrastructure.DTOs;
 using SharedLib.Infrastructure.Services.Interfaces;
+using System.Numerics;
 using Document = Metadata.Core.Entities.Document;
 
 namespace Metadata.Infrastructure.Services.Implementations
@@ -174,11 +175,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<ResettlementProjectReadDTO> GetResettlementProjectByProjectIdAsync(string projectId)
         {
-            var resettlement = await _unitOfWork.ResettlementProjectRepository.GetResettlementProjectInProjectAsync(projectId);
+            var resettlement = await _unitOfWork.ResettlementProjectRepository.GetResettlementProjectInProjectAsync(projectId)
+                ?? throw new EntityWithAttributeNotFoundException<ResettlementProject>(nameof(Project.ProjectId), projectId);
             
             var result = _mapper.Map<ResettlementProjectReadDTO>(resettlement);
 
-            result.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(result.ResettlementProjectId!));
+            if (result.ResettlementProjectId != null)
+            {
+                result.ResettlementDocuments = _mapper.Map<IEnumerable<DocumentReadDTO>>(await _unitOfWork.DocumentRepository.GetDocumentsOfResettlemtProjectAsync(result.ResettlementProjectId!));
+            }
 
             return result;
         }
@@ -271,6 +276,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
             return true;
         }
-
+        
     }
 }

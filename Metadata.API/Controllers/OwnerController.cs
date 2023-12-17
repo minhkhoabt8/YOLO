@@ -2,6 +2,7 @@
 using Metadata.Infrastructure.DTOs.AttachFile;
 using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using SharedLib.Filters;
@@ -31,6 +32,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("query")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiPaginatedOkResponse<OwnerReadDTO>))]
         public async Task<IActionResult> QueryOwners([FromQuery] OwnerQuery query)
         {
@@ -46,6 +48,7 @@ namespace Metadata.API.Controllers
         /// <param name="ownerId"></param>
         /// <returns></returns>
         [HttpGet("{ownerId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         public async Task<IActionResult> GetOwnerDetails(string ownerId)
         {
@@ -61,6 +64,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("project")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
         public async Task<IActionResult> QueryOwnersOfProjectAsync([FromQuery] string projectId, [FromQuery] OwnerQuery query)
         {
@@ -78,6 +82,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet("plan/{planId}/project/{projectId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<PaginatedResponse<OwnerReadDTO>>))]
         public async Task<IActionResult> GetOwnerInPlanByPlanIdAndOwnerInProjectThatNotInAnyPlanByProjectIdAsync([FromQuery] PaginatedQuery query, string planId, string projectId)
         {
@@ -93,6 +98,7 @@ namespace Metadata.API.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -111,6 +117,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpPost("assign/project")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -128,6 +135,7 @@ namespace Metadata.API.Controllers
         /// <param name="ownerIds"></param>
         /// <returns></returns>
         [HttpPost("assign/plan")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<OwnerReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -146,6 +154,7 @@ namespace Metadata.API.Controllers
         /// <param name="ownerIds"></param>
         /// <returns></returns>
         [HttpPost("remove/plan")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -163,6 +172,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpPost("project/remove")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -181,6 +191,7 @@ namespace Metadata.API.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ApiUnauthorizedResponse))]
@@ -196,6 +207,7 @@ namespace Metadata.API.Controllers
         /// <param name="projectId"></param>
         /// <returns></returns>
         [HttpGet("export/{projectId}")]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ExportOwnerFile(string projectId)
         {
@@ -210,6 +222,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -229,6 +242,7 @@ namespace Metadata.API.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [HttpPut("update/status")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<OwnerReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -246,6 +260,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteOwner(string id)
@@ -260,6 +275,7 @@ namespace Metadata.API.Controllers
         /// <param name="code"></param>
         /// <returns></returns>
         [HttpGet("check-duplicate-code")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> CheckDuplicateOwnerCode(string code)
@@ -275,6 +291,7 @@ namespace Metadata.API.Controllers
         /// <param name="idCode"></param>
         /// <returns></returns>
         [HttpGet("check-duplicate-id-code")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> CheckDuplicateOwnerIdCode([Required] string projectId, [Required] string idCode)
@@ -290,6 +307,7 @@ namespace Metadata.API.Controllers
         /// <param name="taxCode"></param>
         /// <returns></returns>
         [HttpGet("check-duplicate-tax-code")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
         public async Task<IActionResult> CheckDuplicateOwnerTaxCode([Required] string projectId, [Required] string taxCode)

@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.ResponseWrapper;
@@ -22,6 +23,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("all")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
         public async Task<IActionResult> GetAllAssetGroups()
         {
@@ -34,6 +36,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getAllActived")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
         public async Task<IActionResult> GetAllDeletedAssetGroups()
         {
@@ -47,6 +50,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         public async Task<IActionResult> GetAssetGroup(string id)
         {
@@ -60,6 +64,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("create")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -75,6 +80,7 @@ namespace Metadata.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("createList")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -91,6 +97,7 @@ namespace Metadata.API.Controllers
         /// <param name="writeDTO"></param>
         /// <returns></returns>
         [HttpPut("updateId")]
+        [Authorize(Roles = "Creator")]
         [ServiceFilter(typeof(AutoValidateModelState))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiBadRequestResponse))]
@@ -107,6 +114,7 @@ namespace Metadata.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<AssetGroupReadDTO>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ApiNotFoundResponse))]
         public async Task<IActionResult> DeleteAssetGroup(string id)
@@ -121,6 +129,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateName")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateName(string name)
         {
@@ -134,6 +143,7 @@ namespace Metadata.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("checkDuplicateCode")]
+        [Authorize(Roles = "Creator")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<bool>))]
         public async Task<IActionResult> CheckDuplicateCode(string code)
         {
@@ -147,6 +157,7 @@ namespace Metadata.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "Creator,Approval")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiOkResponse<IEnumerable<AssetGroupReadDTO>>))]
         public async Task<IActionResult> QueryAssetGroup([FromQuery] AssetGroupQuery query)
         {
@@ -156,6 +167,7 @@ namespace Metadata.API.Controllers
 
         //import data from excel
         [HttpPost("import")]
+        [Authorize(Roles = "Creator")]
         public async Task<IActionResult> ImportAssetGroups(IFormFile file)
         {
             if (file == null || file.Length == 0)
