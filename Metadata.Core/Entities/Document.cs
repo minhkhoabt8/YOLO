@@ -19,7 +19,7 @@ public partial class Document : ITextSearchableEntity
 
     public string CreatedBy { get; set; } = null!;
 
-    public DateTime CreatedTime { get; set; } = DateTime.Now.SetKindUtc();
+    public DateTime CreatedTime { get; set; } = DateTime.Now.SetKindUtc().AddHours(7);
 
     public DateTime PublishedDate { get; set; }
 

@@ -41,7 +41,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             resettlement.LastPersonEdit = _userContextService.Username! ??
                 throw new CanNotAssignUserException();
-            resettlement.LastDateEdit = DateTime.Now.SetKindUtc();
+            resettlement.LastDateEdit = DateTime.Now.SetKindUtc().AddHours(7);
 
             await _unitOfWork.ResettlementProjectRepository.AddAsync(resettlement);
 
@@ -119,7 +119,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             resettlement.LastPersonEdit = _userContextService.Username! ??
                throw new CanNotAssignUserException();
 
-            resettlement.LastDateEdit = DateTime.Now.SetKindUtc();
+            resettlement.LastDateEdit = DateTime.Now.SetKindUtc().AddHours(7);
 
             await _unitOfWork.CommitAsync();
         }

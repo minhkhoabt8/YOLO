@@ -1066,7 +1066,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 newOwner.PlanId = newPlan.PlanId;
                 newOwner.OwnerCode = newOwner.OwnerCode + "- Copy from " + newPlan.PlanCode;
                 newOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
-                newOwner.OwnerCreatedTime = DateTime.Now.SetKindUtc();
+                newOwner.OwnerCreatedTime = DateTime.Now.SetKindUtc().AddHours(7);
                 newOwner.IsDeleted = false;
                 newOwner.OwnerCreatedBy = _userContextService.Username!
                     ?? throw new CanNotAssignUserException();

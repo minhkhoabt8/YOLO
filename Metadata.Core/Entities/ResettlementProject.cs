@@ -29,7 +29,7 @@ public partial class ResettlementProject : ITextSearchableEntity
 
     public string? Note { get; set; }
 
-    public DateTime? LastDateEdit { get; set; } = DateTime.Now.SetKindUtc();
+    public DateTime? LastDateEdit { get; set; } = DateTime.Now.SetKindUtc().AddHours(7);
 
     public string? LastPersonEdit { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AssetGroup;
 using Metadata.Infrastructure.DTOs.AssetUnit;
@@ -115,8 +116,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             {
                 throw new EntityWithIDNotFoundException<LandType>(id);
             }
+
             var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(landTypeUpdateDTO.LandGroupId!)
                 ?? throw new EntityWithIDNotFoundException<LandGroup>(landTypeUpdateDTO.LandGroupId);
+
+            await EnsureLandTypeCodeNotDuplicate(landTypeUpdateDTO.Code!, landTypeUpdateDTO.Name!);
+
             _mapper.Map(landTypeUpdateDTO, existLandType);
             await _unitOfWork.CommitAsync();
             return _mapper.Map<LandTypeReadDTO>(existLandType);

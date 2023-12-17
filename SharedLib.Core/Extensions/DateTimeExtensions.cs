@@ -4,7 +4,7 @@ public static class DateTimeExtensions
 {
     public static DateTime? SetKindUtc(this DateTime? dateTime)
     {
-        return dateTime?.SetKindUtc();
+        return dateTime?.SetKindUtc().AddHours(7);
     }
 
     public static DateTime SetKindUtc(this DateTime dateTime)
