@@ -737,14 +737,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
 
+                plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                            + plan.TotalDeduction) * 0.02);
             }
 
-
-            plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
-                + plan.TotalPriceHouseSupportCompensation
-                + plan.TotalPriceArchitectureSupportCompensation
-                + plan.TotalPricePlantSupportCompensation + plan.TotalDeduction;
-
+            //plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
+            //    + plan.TotalPriceHouseSupportCompensation
+            //    + plan.TotalPriceArchitectureSupportCompensation
+            //    + plan.TotalPricePlantSupportCompensation + plan.TotalDeduction;
 
             if (!applyChanged)
             {

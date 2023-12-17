@@ -487,21 +487,23 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null)
                 + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
-
+                //Boi Thuong Ho Tro Dat
+                //TotalPriceOtherSupportCompensation = TotalPriceLandSupportCompensation
                 plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
 
                 plan.TotalPriceHouseSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House);
 
                 plan.TotalPriceArchitectureSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture);
-
+                
                 plan.TotalPricePlantSupportCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants);
 
                 plan.TotalDeduction += await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(owner.OwnerId);
 
                 plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId);
 
-                //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+                plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                            + plan.TotalDeduction) * 0.02);
 
             }
 
@@ -883,11 +885,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
+                plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                            + plan.TotalDeduction) * 0.02);
+
+
                 ownerList.Add(owner);
             }
-
-            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-            plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
 
             await _unitOfWork.CommitAsync();
 
@@ -934,11 +938,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
+                plan.TotalGpmbServiceCost -= (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                            + plan.TotalDeduction) * 0.02);
+
                 ownerList.Add(owner);
 
             }
             //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-            plan.TotalGpmbServiceCost -= plan.TotalPriceCompensation - plan.TotalDeduction;
+            
 
             await _unitOfWork.CommitAsync();
 

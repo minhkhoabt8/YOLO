@@ -132,7 +132,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         /// <returns></returns>
         public async Task<IEnumerable<Owner>> GetOwnerInProjectThatNotInAnyPlanAsync(string projecId)
         {
-            return await Task.FromResult(_context.Owners.Include(o => o.GcnlandInfos).ThenInclude(g => g.MeasuredLandInfos).Where(o => o.ProjectId == projecId && o.PlanId == null));
+            return await Task.FromResult(_context.Owners.Include(o => o.GcnlandInfos).ThenInclude(g => g.MeasuredLandInfos).Where(o => o.ProjectId == projecId && o.PlanId == null && o.IsDeleted == false));
         }
 
         /// <summary>
