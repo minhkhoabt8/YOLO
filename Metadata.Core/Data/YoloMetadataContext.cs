@@ -646,7 +646,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("published_date");
             entity.Property(e => e.PublishedPlace)
-                .HasMaxLength(50)
+                .HasMaxLength(500)
                 .HasColumnName("published_place");
             entity.Property(e => e.RepresentPerson)
                 .HasMaxLength(50)

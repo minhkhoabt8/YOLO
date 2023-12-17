@@ -43,7 +43,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         [JsonConverter(typeof(StringEnumConverter))]
         public OwnerStatusEnum OwnerStatus { get; set; }
         public DateTime? PublishedDate { get; set; }
-        [MaxLength(50)]
+        [MaxLength(500)]
         public string? PublishedPlace { get; set; } = "";
         [MaxLength(50)]
         public string? HusbandWifeName { get; set; } = "";
