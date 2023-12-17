@@ -805,29 +805,29 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(dto.OwnerCode!.ToLower() != owner.OwnerCode!.ToLower())
             {
-                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(owner.OwnerCode);
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(dto.OwnerCode);
 
                 if (duplicateOwner != null)
                 {
-                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với Mã chủ sở hữu: [{owner.OwnerCode}] đã tồn tại trong hệ thống.");
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với Mã chủ sở hữu: [{dto.OwnerCode}] đã tồn tại trong hệ thống.");
                 }
             }
             if (dto.OwnerIdCode!.ToLower() != owner.OwnerIdCode!.ToLower())
             {
-                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(owner.OwnerIdCode);
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(dto.OwnerIdCode);
 
                 if (duplicateOwner != null)
                 {
-                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với CCCD: [{owner.OwnerCode}] đã tồn tại trong hệ thống.");
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với CCCD: [{dto.OwnerCode}] đã tồn tại trong hệ thống.");
                 }
             }
             if (dto.OwnerTaxCode!.ToLower() != owner.OwnerTaxCode!.ToLower())
             {
-                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(owner.OwnerTaxCode);
+                var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(dto.OwnerTaxCode);
 
                 if (duplicateOwner != null)
                 {
-                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với MST: [{owner.OwnerTaxCode}] đã tồn tại trong hệ thống.");
+                    throw new UniqueConstraintException($"Có một chủ sở hữu khác với MST: [{dto.OwnerTaxCode}] đã tồn tại trong hệ thống.");
                 }
             }
 
