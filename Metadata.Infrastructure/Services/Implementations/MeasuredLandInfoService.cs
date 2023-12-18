@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Aspose.Pdf.Facades;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
 using Metadata.Infrastructure.Services.Interfaces;
@@ -32,6 +33,10 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
             if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException();
+
+            var duplicateMeasuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.CheckDuplicateMeasuredLandInfo(dto.MeasuredPageNumber, dto.MeasuredPlotNumber, dto.LandTypeId)
+                ?? throw new InvalidActionException($"Đất đo đạc có số tờ: [{dto.MeasuredPageNumber}], số thửa [{dto.MeasuredPlotNumber}] đã tồn tại trong hệ thống.");
+
 
             var measuredLandInfo = new MeasuredLandInfo()
             {
@@ -110,6 +115,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 landInfo.OwnerId = ownerId;
 
+                var duplicateMeasuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.CheckDuplicateMeasuredLandInfo(landInfo.MeasuredPageNumber, landInfo.MeasuredPlotNumber, landInfo.LandTypeId)
+                ?? throw new InvalidActionException($"Đất đo đạc có số tờ: [{landInfo.MeasuredPageNumber}], số thửa [{landInfo.MeasuredPlotNumber}] đã tồn tại trong hệ thống.");
+
                 await _unitOfWork.MeasuredLandInfoRepository.AddAsync(landInfo);
 
 
@@ -166,6 +174,12 @@ namespace Metadata.Infrastructure.Services.Implementations
             var unitPriceLand = await _unitOfWork.UnitPriceLandRepository.FindAsync(dto.UnitPriceLandId)
                ?? throw new EntityWithIDNotFoundException<MeasuredLandInfo>(dto.UnitPriceLandId);
 
+            if(dto.MeasuredPageNumber.ToLower() != measuredLandInfo.MeasuredPageNumber.ToLower() || dto.MeasuredPlotNumber.ToLower() != measuredLandInfo.MeasuredPlotNumber.ToLower() || dto.LandTypeId != measuredLandInfo.LandTypeId)
+            {
+                var duplicateMeasuredLandInfo = await _unitOfWork.MeasuredLandInfoRepository.CheckDuplicateMeasuredLandInfo(dto.MeasuredPageNumber, dto.MeasuredPlotNumber, dto.LandTypeId)
+                    ?? throw new InvalidActionException($"Đất đo đạc có số tờ: [{dto.MeasuredPageNumber}], số thửa [{dto.MeasuredPlotNumber}] đã tồn tại trong hệ thống.");
+            }
+
 
             if (!dto.GcnLandInfoId.IsNullOrEmpty())
             {
@@ -173,12 +187,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 ?? throw new EntityWithIDNotFoundException<GcnlandInfo>(dto.GcnLandInfoId);
 
                 if (gcnLandInfo.OwnerId != dto.OwnerId) throw new InvalidActionException("Gcn Land Info And Measured Land Info Owner Mismatch.");
-
-                if(dto.OwnerId != gcnLandInfo.OwnerId || dto.MeasuredPlotNumber!.ToLower() != measuredLandInfo.MeasuredPlotNumber!.ToLower() || dto.MeasuredPlotAddress!.ToLower() != measuredLandInfo.MeasuredPlotAddress!.ToLower())
-                {
-                    // Verify duplicate MeasuredPlot
-                    await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPageNumber, dto.LandTypeId);
-                }
 
             }
 
@@ -188,6 +196,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             return _mapper.Map<MeasuredLandInfoReadDTO>(measuredLandInfo);
         }
+
+
+
 
         private async Task VerifyDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPageNumber, string landTypeId)
         {

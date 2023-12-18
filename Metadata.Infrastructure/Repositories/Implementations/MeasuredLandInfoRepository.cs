@@ -35,7 +35,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
 
             if(reCheck == false)
             {
-                total = await totalLandCompensationPrice.SumAsync(c => c.UnitPriceLandCost);
+                total = await totalLandCompensationPrice.SumAsync(c => c.CompensationPrice ?? 0);
             }
             else
             {

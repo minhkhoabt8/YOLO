@@ -1024,6 +1024,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
+
                 plan.TotalGpmbServiceCost -= ((decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
                                             + plan.TotalDeduction) * 0.02));
