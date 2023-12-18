@@ -6,6 +6,7 @@ using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -31,10 +32,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteAsync(string delete)
         {
-            var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(delete);
+            var assetUnit = await _unitOfWork.AssetUnitRepository.FindAsync(delete, include: "UnitPriceAssets,Supports,AssetCompensations");
             if (assetUnit == null)
             {
                 throw new EntityWithIDNotFoundException<AssetUnit>(delete);
+            }
+
+            if(!assetUnit.UnitPriceAssets.IsNullOrEmpty() || !assetUnit.Supports.IsNullOrEmpty() || !assetUnit.AssetCompensations.IsNullOrEmpty())
+            {
+                throw new InvalidActionException($"Không thể xóa Đơn vị tính: [{assetUnit.Code}].");
             }
             assetUnit.IsDeleted = true;
             await _unitOfWork.CommitAsync();

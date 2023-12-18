@@ -13,12 +13,10 @@ namespace Metadata.Infrastructure.DTOs.UnitPriceAsset
     public class UnitPriceAssetWriteDTO
     {
         [Required]
-        [MaxLength(200)]
         public string AssetName { get; set; }
 
         public decimal AssetPrice { get; set; }
         [Required]
-        [MaxLength(20)]
         public string? AssetRegulation { get; set; }
         [Required]
         [EnumDataType(typeof(AssetOnLandTypeEnum))]

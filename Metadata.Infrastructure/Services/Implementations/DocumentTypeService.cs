@@ -6,6 +6,7 @@ using Metadata.Infrastructure.DTOs.DeductionType;
 using Metadata.Infrastructure.DTOs.DocumentType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -55,11 +56,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteDocumentTypeAsync(string id)
         {
-            var documentType = await _unitOfWork.DocumentTypeRepository.FindAsync(id);
+            var documentType = await _unitOfWork.DocumentTypeRepository.FindAsync(id, include:"Documents");
             if (documentType == null)
             {
                 throw new EntityWithIDNotFoundException<DocumentType>(id);
             }
+
+            if (!documentType.Documents.IsNullOrEmpty())
+            {
+                throw new InvalidActionException($"Không thể xóa Loại văn bản: [{documentType.Code}].");
+            }
+
             documentType.IsDeleted = true;
             await _unitOfWork.CommitAsync();
             return true;

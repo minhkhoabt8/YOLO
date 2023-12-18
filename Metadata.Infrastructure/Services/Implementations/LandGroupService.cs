@@ -5,6 +5,7 @@ using Metadata.Infrastructure.DTOs.AssetUnit;
 using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -31,13 +32,21 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteAsync(string delete)
         {
-            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(delete);
+            var landGroup = await _unitOfWork.LandGroupRepository.FindAsync(delete, include: "LandTypes");
             if (landGroup == null)
             {
                 throw new EntityWithIDNotFoundException<LandGroup>(delete);
             }
-             landGroup.IsDeleted = true;
+
+            if (!landGroup.LandTypes.IsNullOrEmpty())
+            {
+                throw new InvalidActionException($"Không thể xóa Nhóm đất: [{landGroup.Code}].");
+            }
+
+            landGroup.IsDeleted = true;
+
             await _unitOfWork.CommitAsync();
+
             return true;
 
         }

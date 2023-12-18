@@ -7,6 +7,7 @@ using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.DTOs.SupportType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -42,10 +43,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteDeductionTypeAsync(string id)
         {
-            var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindAsync(id);
+            var existDeductionType = await _unitOfWork.DeductionTypeRepository.FindAsync(id, include: "Deductions");
             if (existDeductionType == null)
             {
                 throw new EntityWithIDNotFoundException<DeductionType>(id);
+            }
+            if (!existDeductionType.Deductions.IsNullOrEmpty())
+            {
+                throw new InvalidActionException($"Không thể xóa Loại khấu trừ: [{existDeductionType.Code}].");
             }
             existDeductionType.IsDeleted = true;
             await _unitOfWork.CommitAsync();

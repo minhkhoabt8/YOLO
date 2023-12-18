@@ -6,6 +6,7 @@ using Metadata.Infrastructure.DTOs.LandGroup;
 using Metadata.Infrastructure.DTOs.OrganizationType;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -95,11 +96,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<bool> DeleteAsync(string delete)
         {
-            var organizationType = await _unitOfWork.OrganizationTypeRepository.FindAsync(delete);
+            var organizationType = await _unitOfWork.OrganizationTypeRepository.FindAsync(delete, include: "Owners");
             if (organizationType == null)
             {
                 throw new EntityWithIDNotFoundException<OrganizationType>(delete);
             }
+
+            if (!organizationType.Owners.IsNullOrEmpty())
+            {
+                throw new InvalidActionException($"Không thể xóa Lọai tổ chức: [{organizationType.Code}].");
+            }
+
             organizationType.IsDeleted = true;
             await _unitOfWork.CommitAsync();
             return true;
