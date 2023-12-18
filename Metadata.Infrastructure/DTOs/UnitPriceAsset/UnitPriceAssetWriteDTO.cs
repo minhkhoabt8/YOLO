@@ -13,7 +13,7 @@ namespace Metadata.Infrastructure.DTOs.UnitPriceAsset
     public class UnitPriceAssetWriteDTO
     {
         [Required]
-        [MaxLength(20)]
+        [MaxLength(200)]
         public string AssetName { get; set; }
 
         public decimal AssetPrice { get; set; }

@@ -19,7 +19,6 @@ namespace Metadata.Infrastructure.DTOs.GCNLandInfo
         [MaxLength(10)]
         public string GcnPlotNumber { get; set; }
         [Required]
-        [MaxLength(100)]
         public string GcnPlotAddress { get; set; }
         [Required]
         public string LandTypeId { get; set; }

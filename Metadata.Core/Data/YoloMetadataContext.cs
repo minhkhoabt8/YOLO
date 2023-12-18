@@ -350,7 +350,6 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(10)
                 .HasColumnName("GCN_page_number");
             entity.Property(e => e.GcnPlotAddress)
-                .HasMaxLength(100)
                 .HasColumnName("GCN_plot_address");
             entity.Property(e => e.GcnPlotArea)
                 .HasColumnType("decimal(18, 0)")
@@ -405,7 +404,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("land_info_type");
             entity.Property(e => e.LocationName)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("location_name");
             entity.Property(e => e.ProjectId)
                 .HasMaxLength(50)
@@ -429,16 +428,14 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("owner_id");
             entity.Property(e => e.PageNumber)
-                .HasMaxLength(10)
+                .HasMaxLength(100)
                 .HasColumnName("page_number");
             entity.Property(e => e.PlotAddress)
-                .HasMaxLength(100)
                 .HasColumnName("plot_address");
             entity.Property(e => e.PlotNumber)
-                .HasMaxLength(10)
+                .HasMaxLength(100)
                 .HasColumnName("plot_number");
             entity.Property(e => e.Position)
-                .HasMaxLength(50)
                 .HasColumnName("position");
 
             entity.Property(e => e.ResettlementReason)
@@ -530,10 +527,9 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("land_type_id");
             entity.Property(e => e.MeasuredPageNumber)
-                .HasMaxLength(10)
+                .HasMaxLength(100)
                 .HasColumnName("measured_page_number");
             entity.Property(e => e.MeasuredPlotAddress)
-                .HasMaxLength(100)
                 .HasColumnName("measured_plot_address");
             entity.Property(e => e.MeasuredPlotArea)
                 .HasColumnType("decimal(18, 0)")
@@ -622,7 +618,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("owner_id_code");
             entity.Property(e => e.OwnerName)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasColumnName("owner_name");
             entity.Property(e => e.OwnerNational)
                 .HasMaxLength(50)
@@ -839,7 +835,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(200)
                 .HasColumnName("project_location");
             entity.Property(e => e.ProjectName)
-                .HasMaxLength(100)
+                .HasMaxLength(500)
                 .HasColumnName("project_name");
             entity.Property(e => e.ProjectNote)
                 .HasMaxLength(50)
@@ -925,7 +921,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("resettlement_project_id");
             entity.Property(e => e.Code)
-                .HasMaxLength(50)
+                .HasMaxLength(500)
                 .HasColumnName("code");
             entity.Property(e => e.ImplementYear)
                 .HasColumnName("implement_year");
@@ -947,7 +943,7 @@ public partial class YoloMetadataContext : DbContext
             .HasColumnType("decimal(18, 0)")
             .HasColumnName("limit_to_resettlement");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(500)
                 .HasColumnName("name");
             entity.Property(e => e.Note).HasColumnName("note");
             entity.Property(e => e.Position)
@@ -1020,7 +1016,7 @@ public partial class YoloMetadataContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("asset_group_id");
             entity.Property(e => e.AssetName)
-                .HasMaxLength(20)
+                .HasMaxLength(200)
                 .HasColumnName("asset_name");
             entity.Property(e => e.AssetPrice)
                 .HasColumnType("decimal(18, 0)")

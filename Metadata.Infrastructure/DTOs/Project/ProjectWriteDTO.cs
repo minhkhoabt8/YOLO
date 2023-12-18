@@ -18,7 +18,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         [MaxLength(50)]
         public string ProjectCode { get; set; }
         [Required]
-        [MaxLength(50)]
+        [MaxLength(500)]
         public string ProjectName { get; set; }
         [MaxLength(200)]
         public string ProjectLocation { get; set; }
