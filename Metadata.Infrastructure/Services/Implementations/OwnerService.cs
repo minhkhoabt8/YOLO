@@ -960,6 +960,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (owner == null) throw new EntityWithIDNotFoundException<Owner>(ownerId);
 
+                var serviceCostOfOwner = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId)
+                   + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House)
+                   + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
+                   + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture)
+                   + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants))
+                   * 0.02);
+
                 owner.PlanId = planId;
 
                 plan.TotalOwnerSupportCompensation += 1;
@@ -981,20 +988,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
 
-                ownerList.Add(owner);
-            }
+                plan.TotalGpmbServiceCost += serviceCostOfOwner;
 
-            plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
-                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalOwnerSupportPrice) * 0.02);
-
-            plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
+                plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
                 + plan.TotalPriceHouseSupportCompensation
                 + plan.TotalPriceArchitectureSupportCompensation
                 + plan.TotalPricePlantSupportCompensation
                 + plan.TotalOwnerSupportPrice
                 + plan.TotalGpmbServiceCost;
 
+                ownerList.Add(owner);
+            }
 
             await _unitOfWork.CommitAsync();
 
@@ -1025,19 +1029,19 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalOwnerSupportCompensation -= 1;
 
-                var serviceCost = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId)
+                var serviceCostOfOwner = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId)
                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.House)
                     + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Architecture)
                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, AssetOnLandTypeEnum.Plants))
                     * 0.02);
 
-                plan.TotalGpmbServiceCost -= serviceCost;
+                plan.TotalGpmbServiceCost -= serviceCostOfOwner;
 
                 plan.TotalPriceCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
                     + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId)
                     + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
-                    + serviceCost;
+                    + serviceCostOfOwner;
 
                 plan.TotalPriceLandSupportCompensation -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
