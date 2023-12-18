@@ -301,8 +301,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 TotalPriceArchitectureSupportCompensation = plan.TotalPriceArchitectureSupportCompensation,
                 TotalPricePlantSupportCompensation = plan.TotalPricePlantSupportCompensation,
                 TotalPriceOtherSupportCompensation = plan.TotalPriceLandSupportCompensation,
-                TotalGpmbServiceCost = plan.TotalGpmbServiceCost// needd updated
-
+                TotalGpmbServiceCost = plan.TotalGpmbServiceCost,// needd updated
+                TotalOwnerSupportPrice = plan.TotalOwnerSupportPrice
             };
         }
 
@@ -603,7 +603,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                             if (text.Text.Contains("boithuongcay"))
                                 text.Text = text.Text.Replace("boithuongcay", string.Format("{0:#,##0đ}", dataBTHT.TotalPricePlantSupportCompensation));
                             if (text.Text.Contains("boithuongkhac"))
-                                text.Text = text.Text.Replace("boithuongkhac", string.Format("{0:#,##0đ}", dataBTHT.TotalPriceOtherSupportCompensation));
+                                text.Text = text.Text.Replace("boithuongkhac", string.Format("{0:#,##0đ}", dataBTHT.TotalOwnerSupportPrice));
                             if (text.Text.Contains("chiphiphucvu"))
                                 text.Text = text.Text.Replace("chiphiphucvu", string.Format("{0:#,##0đ}", dataBTHT.TotalGpmbServiceCost));
                         }
