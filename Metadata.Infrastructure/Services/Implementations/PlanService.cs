@@ -2,6 +2,7 @@
 using Aspose.Pdf.Operators;
 using AutoMapper;
 using BitMiracle.LibTiff.Classic;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Google.Api.Gax.ResourceNames;
@@ -720,9 +721,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach (var owner in owners)
             {
-                plan.TotalPriceCompensation = plan.TotalPriceCompensation + _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null, true).Result
-                                    + _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
-
+                
                 plan.TotalPriceLandSupportCompensation += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
 
                 plan.TotalPriceHouseSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
@@ -741,7 +740,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalOwnerSupportPrice - plan.TotalDeduction) * 0.02);
+                                            + plan.TotalOwnerSupportPrice) * 0.02);
+
+            plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
+                + plan.TotalPriceHouseSupportCompensation
+                + plan.TotalPriceArchitectureSupportCompensation
+                + plan.TotalPricePlantSupportCompensation
+                + plan.TotalOwnerSupportPrice
+                + plan.TotalGpmbServiceCost;
+
             //plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
             //    + plan.TotalPriceHouseSupportCompensation
             //    + plan.TotalPriceArchitectureSupportCompensation
