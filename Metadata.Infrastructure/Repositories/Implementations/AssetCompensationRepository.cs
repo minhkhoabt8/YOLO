@@ -61,7 +61,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (assetType == null && reCheck == true)
             {
-                total = await totalAssetCompensation.SumAsync(c => c.QuantityArea * c.CompensationRate * c.UnitPriceAsset.AssetPrice);
+                total = await totalAssetCompensation.SumAsync(c => c.QuantityArea * c.CompensationRate * 0.01m * c.UnitPriceAsset.AssetPrice);
             }
             if (assetType != null && reCheck == false)
             {
@@ -73,7 +73,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 total = await totalAssetCompensation
                     .Where(c => c.CompensationType == assetType.ToString())
-                    .SumAsync(c => c.QuantityArea * c.CompensationRate * c.UnitPriceAsset.AssetPrice);
+                    .SumAsync(c => c.QuantityArea * c.CompensationRate * 0.01m * c.UnitPriceAsset.AssetPrice);
             }
 
             return total;

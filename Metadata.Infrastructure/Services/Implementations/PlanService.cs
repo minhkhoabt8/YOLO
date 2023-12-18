@@ -328,10 +328,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 var measuredLandInfos = await _unitOfWork.MeasuredLandInfoRepository.GetAllMeasuredLandInfosOfOwnerAsync(item.OwnerId)
                 ?? throw new EntityWithAttributeNotFoundException<MeasuredLandInfo>(nameof(Core.Entities.Owner.OwnerId), item.OwnerId);
 
-
-
-
-
                 string measuredPageNumbers = "";
                 string measuredPlotNumbers = "";
                 decimal mesuredPlotArea =0;

@@ -486,7 +486,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalOwnerSupportCompensation += 1;
 
                 plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null)
-                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
+                                            + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
                 //Boi Thuong Ho Tro Dat
                 //TotalPriceOtherSupportCompensation = TotalPriceLandSupportCompensation
                 plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
@@ -957,7 +957,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalOwnerSupportCompensation += 1;
 
                 plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
-                + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+                                            + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
                 plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
@@ -1009,8 +1009,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalOwnerSupportCompensation -= 1;
 
                 //Tong Cong Gia Den Bu =  (Dat + Tai San) cua Owner
-                plan.TotalPriceCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
-                    + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
+                plan.TotalPriceCompensation -= ( await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
+                    + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId));
 
                 plan.TotalPriceLandSupportCompensation -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
 
@@ -1024,16 +1024,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
-                plan.TotalGpmbServiceCost -= (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                plan.TotalGpmbServiceCost -= ((decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalDeduction) * 0.02);
+                                            + plan.TotalDeduction) * 0.02));
 
                 ownerList.Add(owner);
 
             }
-            //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
             
-
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);

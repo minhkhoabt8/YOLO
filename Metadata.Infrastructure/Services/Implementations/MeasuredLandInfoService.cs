@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using Metadata.Core.Entities;
-using Metadata.Core.Exceptions;
-using Metadata.Infrastructure.DTOs.GCNLandInfo;
 using Metadata.Infrastructure.DTOs.MeasuredLandInfo;
-using Metadata.Infrastructure.DTOs.Owner;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
-using SharedLib.Infrastructure.Services.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {

@@ -37,9 +37,11 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             {
                 total = await totalLandCompensationPrice.SumAsync(c => c.UnitPriceLandCost);
             }
+            else
+            {
+                total = await totalLandCompensationPrice.SumAsync(c => (decimal?)c.WithdrawArea * c.CompensationRate * 0.01m * c.UnitPriceLandCost) ?? 0;
+            }
 
-            total = await totalLandCompensationPrice.SumAsync(c => c.WithdrawArea * c.CompensationRate * c.UnitPriceLandCost) ?? 0;
-             
             return total;
         }
         /// <summary>
