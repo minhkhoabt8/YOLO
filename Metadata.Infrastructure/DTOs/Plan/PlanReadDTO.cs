@@ -64,9 +64,11 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public decimal? TotalDeduction { get; set; }
 
         //Tong dien tich thu hoi dat
-        public decimal TotalLandRecoveryArea { get; set; }
+        public decimal? TotalLandRecoveryArea { get; set; }
 
-        public decimal TotalGpmbServiceCost { get; set; } 
+        public decimal? TotalOwnerSupportPrice { get; set; }
+
+        public decimal? TotalGpmbServiceCost { get; set; } 
 
         public bool? IsDeleted { get; set; }
 

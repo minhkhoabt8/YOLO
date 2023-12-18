@@ -53,7 +53,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         //Deduction
         public decimal SumDeductionPrice { get; set; }
 
-
+        public decimal TotalOwnerSupportPrice { get; set; }
         public decimal SumBTHT { get; set; }
 
 

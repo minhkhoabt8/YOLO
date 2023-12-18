@@ -714,6 +714,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             plan.TotalLandRecoveryArea = 0;
 
+            plan.TotalOwnerSupportPrice = 0;
+
             plan.TotalGpmbServiceCost = 0;
 
             foreach (var owner in owners)
@@ -733,11 +735,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
 
+                plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
                 
             }
+
             plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalDeduction) * 0.02);
+                                            + plan.TotalOwnerSupportPrice - plan.TotalDeduction) * 0.02);
             //plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
             //    + plan.TotalPriceHouseSupportCompensation
             //    + plan.TotalPriceArchitectureSupportCompensation

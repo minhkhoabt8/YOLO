@@ -19,7 +19,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         }
         public async Task<decimal> CaculateTotalSupportOfOwnerAsync(string ownerId)
         {
-            return await _context.Supports.Where(c => c.OwnerId == ownerId).SumAsync(c => c.SupportPrice);
+            return await _context.Supports.Where(c => c.OwnerId == ownerId).SumAsync(c => c.SupportPrice * c.SupportNumber);
         }
 
         public async Task<IEnumerable<Support>> QueryAsync(SupportQuery query, bool trackChanges = false)

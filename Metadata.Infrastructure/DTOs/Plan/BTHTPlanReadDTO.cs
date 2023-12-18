@@ -43,6 +43,8 @@ namespace Metadata.Infrastructure.DTOs.Plan
 
         public decimal TotalPriceOtherSupportCompensation { get; set; }
 
+        public decimal TotalOwnerSupportPrice { get; set; }
+
         //Tong chi phi phuc vu GPMB
         public decimal TotalGpmbServiceCost {  get; set; }
     }

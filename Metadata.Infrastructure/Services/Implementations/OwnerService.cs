@@ -165,7 +165,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalLandRecoveryArea = plan.TotalLandRecoveryArea;
 
                 //Tong Cong Chi phi den bu = (Tong Cong Gia Den Bu cua Owner - Deduction Owner)
-                plan.TotalGpmbServiceCost += plan.TotalPriceCompensation - plan.TotalDeduction;
+                plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                           + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                           - plan.TotalDeduction) * 0.02);
 
             }
 
@@ -501,9 +503,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId);
 
+                plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
+
                 plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalDeduction) * 0.02);
+                                            + plan.TotalOwnerSupportPrice - plan.TotalDeduction) * 0.02);
 
             }
 
@@ -971,9 +975,11 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalLandRecoveryArea += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
+                plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
+
                 plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
                                             + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalDeduction) * 0.02);
+                                            + plan.TotalOwnerSupportPrice - plan.TotalDeduction) * 0.02);
 
 
                 ownerList.Add(owner);
@@ -1008,6 +1014,10 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalOwnerSupportCompensation -= 1;
 
+                plan.TotalGpmbServiceCost -= ((decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
+                                           + plan.TotalOwnerSupportPrice + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
+                                           - plan.TotalDeduction) * 0.02));
+
                 //Tong Cong Gia Den Bu =  (Dat + Tai San) cua Owner
                 plan.TotalPriceCompensation -= ( await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
                     + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId));
@@ -1022,15 +1032,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
+                plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
+
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
 
 
-                plan.TotalGpmbServiceCost -= ((decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
-                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalDeduction) * 0.02));
-
                 ownerList.Add(owner);
-
             }
             
             await _unitOfWork.CommitAsync();

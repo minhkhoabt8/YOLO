@@ -52,6 +52,8 @@ namespace Metadata.Core.Entities;
         public decimal TotalDeduction { get; set; } = 0;
 
         public decimal TotalLandRecoveryArea { get; set; } = 0;
+    
+        public decimal TotalOwnerSupportPrice { get; set; } = 0;
 
         public decimal TotalGpmbServiceCost { get; set; } = 0;
 

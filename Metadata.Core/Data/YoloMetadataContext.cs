@@ -736,6 +736,9 @@ public partial class YoloMetadataContext : DbContext
             entity.Property(e => e.TotalPricePlantSupportCompensation)
                 .HasColumnType("decimal(18, 0)")
                 .HasColumnName("total_price_plant_support_compensation");
+            entity.Property(e => e.TotalOwnerSupportPrice)
+               .HasColumnType("decimal(18, 0)")
+               .HasColumnName("total_owner_support_price");
 
             entity.HasOne(d => d.Project).WithMany(p => p.Plans)
                 .HasForeignKey(d => d.ProjectId)
