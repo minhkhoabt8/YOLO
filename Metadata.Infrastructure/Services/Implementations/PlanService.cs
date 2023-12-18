@@ -721,7 +721,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             foreach (var owner in owners)
             {
-                
+                var serviceCostOfOwner = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId)
+                 + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House)
+                 + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
+                 + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture)
+                 + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants))
+                 * 0.02);
+
+
                 plan.TotalPriceLandSupportCompensation += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId, true).Result;
 
                 plan.TotalPriceHouseSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
@@ -735,19 +742,17 @@ namespace Metadata.Infrastructure.Services.Implementations
                 plan.TotalLandRecoveryArea += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(owner.OwnerId).Result;
 
                 plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
-                
-            }
 
-            plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
-                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalOwnerSupportPrice) * 0.02);
+                plan.TotalGpmbServiceCost += serviceCostOfOwner;
 
-            plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
+                plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
                 + plan.TotalPriceHouseSupportCompensation
                 + plan.TotalPriceArchitectureSupportCompensation
                 + plan.TotalPricePlantSupportCompensation
                 + plan.TotalOwnerSupportPrice
                 + plan.TotalGpmbServiceCost;
+
+            }
 
             //plan.TotalGpmbServiceCost += plan.TotalGpmbServiceCost += plan.TotalPriceLandSupportCompensation
             //    + plan.TotalPriceHouseSupportCompensation

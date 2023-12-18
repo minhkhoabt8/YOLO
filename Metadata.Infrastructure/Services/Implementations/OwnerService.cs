@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Amazon.S3.Model;
+using AutoMapper;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
@@ -487,7 +488,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalOwnerSupportCompensation += 1;
 
-               
+                var serviceCostOfOwner = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId)
+                  + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.House)
+                  + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
+                  + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Architecture)
+                  + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, AssetOnLandTypeEnum.Plants))
+                  * 0.02);
+
+
                 //Boi Thuong Ho Tro Dat
                 //TotalPriceOtherSupportCompensation = TotalPriceLandSupportCompensation
                 plan.TotalPriceLandSupportCompensation += await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId);
@@ -504,14 +512,14 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
 
-                plan.TotalGpmbServiceCost += (decimal)((double)(plan.TotalPriceLandSupportCompensation + plan.TotalPriceHouseSupportCompensation
-                                            + plan.TotalPriceArchitectureSupportCompensation + plan.TotalPricePlantSupportCompensation
-                                            + plan.TotalOwnerSupportPrice) * 0.02);
+                plan.TotalGpmbServiceCost += serviceCostOfOwner;
 
-                plan.TotalPriceCompensation += await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(owner.OwnerId, null)
-                                           + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(owner.OwnerId)
-                                           + plan.TotalOwnerSupportPrice
-                                           + plan.TotalGpmbServiceCost;
+                plan.TotalPriceCompensation = plan.TotalPriceLandSupportCompensation
+                + plan.TotalPriceHouseSupportCompensation
+                + plan.TotalPriceArchitectureSupportCompensation
+                + plan.TotalPricePlantSupportCompensation
+                + plan.TotalOwnerSupportPrice
+                + plan.TotalGpmbServiceCost;
 
             }
 
