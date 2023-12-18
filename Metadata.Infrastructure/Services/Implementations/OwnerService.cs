@@ -596,12 +596,58 @@ namespace Metadata.Infrastructure.Services.Implementations
                         PublishedPlace = worksheet.Cells[row, 19].Value?.ToString() ?? string.Empty
 
                     };
+
                     importedUsers.Add(user);
                 }
                 package.Dispose();
             }
+
+            await CheckDuplicateOwnersInImportFile(importedUsers);
+
+
             return _mapper.Map<IEnumerable<OwnerWriteDTO>>(importedUsers);
         }
+
+        private async Task CheckDuplicateOwnersInImportFile(IEnumerable<OwnerFileImportWriteDTO> dtos)
+        {
+            var seenOwnerCodes = new Dictionary<string, int>();
+            var seenOwnerIdCodes = new Dictionary<string, int>();
+            var seenOwnerTaxCodes = new Dictionary<string, int>();
+
+
+            for (int i = 0; i < dtos.Count(); i++)
+            {
+                var dto = dtos.ElementAt(i);
+
+                if (!string.IsNullOrEmpty(dto.OwnerCode))
+                {
+                    if (seenOwnerCodes.TryGetValue(dto.OwnerCode, out var existingPosition))
+                    {
+                        throw new InvalidActionException($"Đã tìm thấy mục nhập trùng lặp của Mã chủ sở hữu '{dto.OwnerCode}' tại vị trí {existingPosition + 1} và {i + 1}");
+                    }
+                    seenOwnerCodes.Add(dto.OwnerCode, i);
+                }
+
+                if (!string.IsNullOrEmpty(dto.OwnerIdCode))
+                {
+                    if (seenOwnerIdCodes.TryGetValue(dto.OwnerIdCode, out var existingPosition))
+                    {
+                        throw new InvalidActionException($"Đã tìm thấy mục nhập trùng lặp của CCCD chủ sở hữu '{dto.OwnerIdCode}' tại vị trí {existingPosition + 1} và {i + 1}");
+                    }
+                    seenOwnerIdCodes.Add(dto.OwnerIdCode, i);
+                }
+
+                if (!string.IsNullOrEmpty(dto.OwnerTaxCode))
+                {
+                    if (seenOwnerTaxCodes.TryGetValue(dto.OwnerTaxCode, out var existingPosition))
+                    {
+                        throw new InvalidActionException($"Đã tìm thấy mục nhập trùng lặp của MST chủ sở hữu '{dto.OwnerTaxCode}' tại vị trí {existingPosition + 1} và {i + 1}");
+                    }
+                    seenOwnerTaxCodes.Add(dto.OwnerTaxCode, i);
+                }
+            }
+        }
+
 
         private static ProjectOwnerTypeEnum MapUsertypeEnumWithUserInput(string name)
         {
@@ -626,11 +672,36 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (project == null) throw new EntityWithIDNotFoundException<Project>(dto.ProjectId);
 
-                //var plan = await _unitOfWork.PlanRepository.FindAsync(dto.PlanId);
 
-                //if (plan == null) throw new EntityWithIDNotFoundException<Plan>(dto.PlanId);
+                if (!string.IsNullOrEmpty(dto.OwnerCode))
+                {
+                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByCodeAndIsDeletedStatus(dto.OwnerCode);
 
+                    if (duplicateOwner != null)
+                    {
+                        throw new UniqueConstraintException($"Có một chủ sở hữu khác với Mã chủ sở hữu: [{dto.OwnerCode}] đã tồn tại trong hệ thống.");
+                    }
+                }
+                if (!string.IsNullOrEmpty(dto.OwnerIdCode))
+                {
+                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(dto.OwnerIdCode);
+
+                    if (duplicateOwner != null)
+                    {
+                        throw new UniqueConstraintException($"Có một chủ sở hữu khác với CCCD: [{dto.OwnerCode}] đã tồn tại trong hệ thống.");
+                    }
+                }
+                if (!string.IsNullOrEmpty(dto.OwnerTaxCode))
+                {
+                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(dto.OwnerTaxCode);
+
+                    if (duplicateOwner != null)
+                    {
+                        throw new UniqueConstraintException($"Có một chủ sở hữu khác với MST: [{dto.OwnerTaxCode}] đã tồn tại trong hệ thống.");
+                    }
+                }
                 var owner = _mapper.Map<Owner>(dto);
+
 
                 owner.OwnerCreatedBy = _userContextService.Username!
                     ?? throw new CanNotAssignUserException();
