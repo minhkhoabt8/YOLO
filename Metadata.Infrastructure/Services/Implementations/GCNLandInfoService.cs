@@ -217,9 +217,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             var ownerId = await _unitOfWork.OwnerRepository.FindAsync(dto.OwnerId)
                 ?? throw new EntityWithIDNotFoundException<Core.Entities.Owner>(dto.OwnerId);
 
-            var landType = await _unitOfWork.LandTypeRepository.FindAsync(dto.LandTypeId)
-                ?? throw new EntityWithIDNotFoundException<LandType>(dto.LandTypeId);
-
             if(dto.GcnPageNumber.ToLower() != gcnLandInfo.GcnPageNumber.ToLower() || dto.GcnPlotNumber.ToLower() != gcnLandInfo.GcnPlotNumber.ToLower())
             {
                 var duplicateGCN = await CheckDuplicateGCNLandInfoAsync(dto.GcnPageNumber, dto.GcnPlotNumber);

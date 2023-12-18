@@ -12,7 +12,7 @@ namespace Metadata.Infrastructure.DTOs.Support
 
         public string? AssetUnitId { get; set; }
 
-        public string? SupportNumber { get; set; }
+        public int? SupportNumber { get; set; }
 
         public decimal? SupportUnitPrice { get; set; }
 
