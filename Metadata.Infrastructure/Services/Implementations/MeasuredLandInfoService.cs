@@ -181,7 +181,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 if(dto.OwnerId != gcnLandInfo.OwnerId || dto.MeasuredPlotNumber!.ToLower() != measuredLandInfo.MeasuredPlotNumber!.ToLower() || dto.MeasuredPlotAddress!.ToLower() != measuredLandInfo.MeasuredPlotAddress!.ToLower())
                 {
                     // Verify duplicate MeasuredPlot
-                    await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPlotAddress, dto.LandTypeId);
+                    await VerifyDuplicateMeasuredPlotAsync(dto.OwnerId, dto.MeasuredPlotNumber, dto.MeasuredPageNumber, dto.LandTypeId);
                 }
 
             }
@@ -193,10 +193,10 @@ namespace Metadata.Infrastructure.Services.Implementations
             return _mapper.Map<MeasuredLandInfoReadDTO>(measuredLandInfo);
         }
 
-        private async Task VerifyDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress, string landTypeId)
+        private async Task VerifyDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPageNumber, string landTypeId)
         {
             // Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress but different LandTypeId
-            var hasDifferentLandTypeId = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAsync(ownerId, measuredPlotNumber, measuredPlotAddress, landTypeId);
+            var hasDifferentLandTypeId = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAsync(ownerId, measuredPlotNumber, measuredPageNumber, landTypeId);
 
             if (hasDifferentLandTypeId)
             {
@@ -204,7 +204,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
 
             // Check if there are other owners with the same MeasuredPlotNumber and MeasuredPlotAddress
-            var hasDuplicatePlotAndAddress = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAndAddressAsync(ownerId, measuredPlotNumber, measuredPlotAddress);
+            var hasDuplicatePlotAndAddress = await _unitOfWork.MeasuredLandInfoRepository.HasDuplicateMeasuredPlotAndAddressAsync(ownerId, measuredPlotNumber, measuredPageNumber);
 
             if (hasDuplicatePlotAndAddress)
             {

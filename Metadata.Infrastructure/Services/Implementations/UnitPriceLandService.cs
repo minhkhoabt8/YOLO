@@ -8,6 +8,7 @@ using Metadata.Infrastructure.DTOs.UnitPriceLand;
 using Metadata.Infrastructure.Services.Interfaces;
 using Metadata.Infrastructure.UOW;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using SharedLib.Core.Exceptions;
 using SharedLib.Infrastructure.DTOs;
@@ -79,7 +80,7 @@ namespace Metadata.Infrastructure.Services.Implementations
             var project = await _unitOfWork.ProjectRepository.FindAsync(unitPriceLand.ProjectId, include: "Owners")
               ?? throw new EntityWithIDNotFoundException<Project>(unitPriceLand.ProjectId);
 
-            if (project.Owners.Count() > 0)
+            if (!project.Owners.IsNullOrEmpty())
             {
                 throw new InvalidActionException("Không Xóa Được Đơn Giá Đất Do Dự Án Đã Có Chủ Sở Hữu");
             }
@@ -170,7 +171,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 string[] parts = worksheet.Cells["D6"].Text.Split(':');
 
-                var project = await _unitOfWork.ProjectRepository.GetProjectByNameAsync(parts[1].Trim());
+                var project = await _unitOfWork.ProjectRepository.GetProjectByProjectCodeAsync(parts[1].Trim());
 
                 if (project == null)
                     throw new EntityWithAttributeNotFoundException<Project>(nameof(Project.ProjectName), parts[1].Trim());

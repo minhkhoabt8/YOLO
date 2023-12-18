@@ -24,7 +24,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public string? PlanCode { get; set; } = null ?? GeneratePlanCode();
 
         public string? PlanDescription { get; set; }
-        [MaxLength(50)]
+
         public string? PlanCreateBase { get; set; }
 
         [Required]

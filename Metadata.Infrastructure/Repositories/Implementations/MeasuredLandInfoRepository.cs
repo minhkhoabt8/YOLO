@@ -105,12 +105,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         /// <param name="measuredPlotAddress"></param>
         /// <param name="landTypeId"></param>
         /// <returns></returns>
-        public async Task<bool> HasDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress, string landTypeId)
+        public async Task<bool> HasDuplicateMeasuredPlotAsync(string ownerId, string measuredPlotNumber, string measuredPageNumber, string landTypeId)
         {
             var otherOwnersWithSamePlot = await _context.MeasuredLandInfos
                 .Where(info => info.OwnerId != ownerId &&
                                info.MeasuredPlotNumber == measuredPlotNumber &&
-                               info.MeasuredPlotAddress == measuredPlotAddress &&
+                               info.MeasuredPageNumber == measuredPageNumber &&
                                info.LandTypeId != landTypeId)
                 .AnyAsync();
 
@@ -124,12 +124,12 @@ namespace Metadata.Infrastructure.Repositories.Implementations
         /// <param name="measuredPlotNumber"></param>
         /// <param name="measuredPlotAddress"></param>
         /// <returns></returns>
-        public async Task<bool> HasDuplicateMeasuredPlotAndAddressAsync(string ownerId, string measuredPlotNumber, string measuredPlotAddress)
+        public async Task<bool> HasDuplicateMeasuredPlotAndAddressAsync(string ownerId, string measuredPlotNumber, string measuredPageNumber)
         {
             var otherOwnersWithSamePlotAndAddress = await _context.MeasuredLandInfos
                 .Where(info => info.OwnerId != ownerId &&
                                info.MeasuredPlotNumber == measuredPlotNumber &&
-                               info.MeasuredPlotAddress == measuredPlotAddress)
+                               info.MeasuredPageNumber == measuredPageNumber)
                 .AnyAsync();
 
             return otherOwnersWithSamePlotAndAddress;
