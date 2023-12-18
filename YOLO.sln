@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.API", "Signature.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Signature.Infrastructure", "Signature.Infrastructure\Signature.Infrastructure.csproj", "{2E042DC2-72BF-4387-98CF-75FE565A866F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata.Test", "Metadata.Test\Metadata.Test.csproj", "{0AFBCD79-6B7C-4258-AF66-1A09352E6E01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{2E042DC2-72BF-4387-98CF-75FE565A866F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E042DC2-72BF-4387-98CF-75FE565A866F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E042DC2-72BF-4387-98CF-75FE565A866F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AFBCD79-6B7C-4258-AF66-1A09352E6E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AFBCD79-6B7C-4258-AF66-1A09352E6E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AFBCD79-6B7C-4258-AF66-1A09352E6E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AFBCD79-6B7C-4258-AF66-1A09352E6E01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{416A8A4E-3FBD-4F18-8067-8ECD0963A6B2} = {798E10B6-6CAA-4A82-883B-9DB022FA6762}
 		{6C5D7A96-F524-4174-B0B6-F842130C17C0} = {416A8A4E-3FBD-4F18-8067-8ECD0963A6B2}
 		{2E042DC2-72BF-4387-98CF-75FE565A866F} = {416A8A4E-3FBD-4F18-8067-8ECD0963A6B2}
+		{0AFBCD79-6B7C-4258-AF66-1A09352E6E01} = {9C7FD3A9-6EF9-4B30-8B47-89881D802D8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {335E15B0-30C8-417D-97A2-97A797FE5B2C}

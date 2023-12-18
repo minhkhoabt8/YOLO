@@ -118,7 +118,7 @@ namespace Auth.Tests.Services
 
             mockUOW.Setup(uow => uow.AccountRepository.LoginAsync(login))
             .ReturnsAsync(mockAccount);
-            await Assert.ThrowsAsync<InvalidOtpException>(() => authService.LoginWithOtpAsync(login.Username, invalidOtpCode));
+            await Assert.ThrowsAsync<WrongCredentialsException>(() => authService.LoginWithOtpAsync(login.Username, invalidOtpCode));
         }
         [Fact]
         public async Task ResendOtpAsync_Is_Return_New_OTP()
