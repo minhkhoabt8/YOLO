@@ -995,6 +995,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 + plan.TotalOwnerSupportPrice
                 + plan.TotalGpmbServiceCost;
 
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
@@ -1035,6 +1036,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalPriceCompensation -= await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(ownerId, null)
                     + await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId)
+                    + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId)
                     + serviceCost;
 
                 plan.TotalPriceLandSupportCompensation -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(ownerId);
@@ -1047,10 +1049,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 plan.TotalDeduction -= await _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(ownerId);
 
-                plan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
+                plan.TotalOwnerSupportPrice -= _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(owner.OwnerId).Result;
 
                 plan.TotalLandRecoveryArea -= await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(ownerId);
-
 
                 ownerList.Add(owner);
             }
