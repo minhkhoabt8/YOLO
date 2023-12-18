@@ -822,16 +822,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
             foreach (var owner in plan.Owners)
             {
-                //if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                //    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                {
-                    if (plan.PlanEndedTime < DateTime.Now.SetKindUtc().AddHours(7))
-                    {
-                        throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: {owner.OwnerStatus} không hợp lệ.");
-                    }
+                    throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
 
-                }
             }
             var signerId = _userContextService.AccountID!
                 ?? throw new CanNotAssignUserException();
@@ -888,16 +881,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
             foreach (var owner in plan.Owners)
             {
-                //if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                //    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                {
-                    if (plan.PlanEndedTime < DateTime.Now.SetKindUtc().AddHours(7))
-                    {
-                        throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: {owner.OwnerStatus} không hợp lệ.");
-                    }
+                    throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
 
-                }
             }
 
 
@@ -946,16 +932,9 @@ namespace Metadata.Infrastructure.Services.Implementations
             //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
             foreach (var owner in plan.Owners)
             {
-                //if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                //    throw new InvalidActionException($"Owner {owner.OwnerId} with Name: {owner.OwnerName} who have Status: {owner.OwnerStatus} that is invalid to approve plan");
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                {
-                    if (plan.PlanEndedTime < DateTime.Now.SetKindUtc().AddHours(7))
-                    {
-                        throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: [{owner.OwnerStatus}] không hợp lệ.");
-                    }
+                    throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
 
-                }
             }
 
             plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
