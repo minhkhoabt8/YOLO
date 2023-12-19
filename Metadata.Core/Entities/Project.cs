@@ -49,7 +49,7 @@ public partial class Project : ITextSearchableEntity
 
     public string? AssetCompensationBasis { get; set; }
 
-    public DateTime ProjectCreatedTime { get; set; } = DateTime.Now.SetKindUtc().AddHours(7);
+    public DateTime ProjectCreatedTime { get; set; } = DateTime.Now.SetKindUtc();
 
     public string ProjectCreatedBy { get; set; } = null!;
 
