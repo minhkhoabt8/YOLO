@@ -1,5 +1,6 @@
 ﻿using Metadata.Infrastructure.DTOs.Document;
 using Metadata.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedLib.Filters;
 using SharedLib.Infrastructure.DTOs;
@@ -12,6 +13,7 @@ namespace Metadata.API.Controllers
     /// </summary>
     [Route("metadata/document")]
     [ApiController]
+    [Authorize(Roles = "Creator,Approval,Creator")]
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService _documentService;
