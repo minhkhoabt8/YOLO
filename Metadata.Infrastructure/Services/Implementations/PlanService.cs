@@ -963,7 +963,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
                 {
-                    if (plan.PlanEndedTime < DateTime.UtcNow.AddHours(7).SetKindUtc())
+                    if (plan.PlanEndedTime < DateTime.UtcNow.AddHours(7))
                     {
                         throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: [{owner.OwnerStatus}] không hợp lệ.");
                     }

@@ -50,7 +50,7 @@ namespace SharedLib.Infrastructure.Services.Implementations
             {
                 BucketName = fileUpload.BucketName,
                 Key = fileUpload.Key,
-                Expires = DateTime.UtcNow.SetKindUtc().AddYears(10),
+                Expires = DateTime.UtcNow.AddYears(10),
             };
             return client.GetPreSignedURL(request);
         }

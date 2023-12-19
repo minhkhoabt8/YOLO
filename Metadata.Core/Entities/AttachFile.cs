@@ -16,7 +16,7 @@ public partial class AttachFile
 
     public string ReferenceLink { get; set; } = null!;
 
-    public DateTime CreatedTime { get; set; } = DateTime.UtcNow.AddHours(7).SetKindUtc();
+    public DateTime CreatedTime { get; set; } = DateTime.UtcNow.AddHours(7);
 
     public string CreatedBy { get; set; } = null!;
 
