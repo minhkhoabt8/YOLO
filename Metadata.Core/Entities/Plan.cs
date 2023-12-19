@@ -59,9 +59,9 @@ namespace Metadata.Core.Entities;
 
         public bool IsDeleted { get; set; } = false;
 
-        public virtual ICollection<AttachFile> AttachFiles { get; } = new List<AttachFile>();
+        public virtual ICollection<AttachFile> AttachFiles { get; set; } = new List<AttachFile>();
 
-        public virtual ICollection<Owner> Owners { get; } = new List<Owner>();
+        public virtual ICollection<Owner> Owners { get; set; } = new List<Owner>();
 
         public virtual Project Project { get; set; } = null!;
 

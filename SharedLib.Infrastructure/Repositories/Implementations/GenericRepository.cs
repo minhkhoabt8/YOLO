@@ -1,9 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Infrastructure.Repositories.Interfaces;
 using SharedLib.Infrastructure.Repositories.QueryExtensions;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
 
 namespace SharedLib.Infrastructure.Repositories.Implementations;
 
@@ -107,5 +113,4 @@ public class GenericRepository<TEntity, TContext> :
         var equalExpr = Expression.Equal(propertyExpr, Expression.Constant(id));
         return Expression.Lambda<Func<TEntity, bool>>(equalExpr, objParameterExpr);
     }
-
 }

@@ -28,8 +28,11 @@ using System.Globalization;
 using System.IO.Packaging;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text;
 using Xceed.Words.NET;
+using SharedLib.Infrastructure.Repositories.Interfaces;
 
 namespace Metadata.Infrastructure.Services.Implementations
 {
@@ -1011,25 +1014,128 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> CreatePlanCopyAsync(string planId)
         {
-            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners", trackChanges: false);
+            var originalPlan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "AttachFiles, Owners");
 
             if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-
-            var newPlan = new Plan();
-
-            newPlan = originalPlan;
-
-            
-            if (originalPlan.PlanCode.Contains(" - Copy"))
+            if(originalPlan.PlanStatus != PlanStatusEnum.REJECTED.ToString())
             {
-                var parts = originalPlan.PlanCode.Split(" - Copy");
+                throw new InvalidActionException($"Phương án [{originalPlan.PlanCode}] với trạng thái: [{originalPlan.PlanStatus}] không thể tạo bản sao.");
+            }
 
+            var newPlan = CreatePlanCopy(originalPlan);
+
+            newPlan.PlanCode = GeneratePlanCode(originalPlan.PlanCode);
+
+            if (newPlan.PlanCode.Count() > 50)
+            {
+                throw new InvalidActionException($"Không thể tạo thêm bản sao. Mã phương án vượt quá 50 kí tự.");
+            }
+
+            newPlan.AttachFiles = originalPlan.AttachFiles.Select(CreateNewAttachFile).ToList();
+
+            //newPlan.AttachFiles = originalPlan.AttachFiles.Select(file =>
+            //{
+            //    var newFile = new AttachFile
+            //    {
+            //        AttachFileId = Guid.NewGuid().ToString(),
+            //        CreatedBy = _userContextService.Username!
+            //                ?? throw new CanNotAssignUserException()
+            //    };
+            //    return newFile;
+            //}).ToList();
+
+            await _unitOfWork.PlanRepository.AddAsync(newPlan);
+
+            foreach (var oldOwner in originalPlan.Owners)
+            {
+                //Only Copy Owner That Not Delete
+                if(!oldOwner.IsDeleted)
+                {
+                    oldOwner.PlanId = newPlan.PlanId;
+                    oldOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
+
+
+                    var serviceCostOfOwner = (decimal)((double)(await _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(oldOwner.OwnerId)
+                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.House)
+                     + await _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(oldOwner.OwnerId)
+                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.Architecture)
+                     + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.Plants))
+                     * 0.02);
+
+
+                    newPlan.TotalPriceLandSupportCompensation += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(oldOwner.OwnerId, true).Result;
+
+                    newPlan.TotalPriceHouseSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.House, true).Result;
+
+                    newPlan.TotalPriceArchitectureSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.Architecture, true).Result;
+
+                    newPlan.TotalPricePlantSupportCompensation += _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.Plants, true).Result;
+
+                    newPlan.TotalDeduction += _unitOfWork.DeductionRepository.CaculateTotalDeductionOfOwnerAsync(oldOwner.OwnerId).Result;
+
+                    newPlan.TotalLandRecoveryArea += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandRecoveryAreaOfOwnerAsync(oldOwner.OwnerId).Result;
+
+                    newPlan.TotalOwnerSupportPrice += _unitOfWork.SupportRepository.CaculateTotalSupportOfOwnerAsync(oldOwner.OwnerId).Result;
+
+                    newPlan.TotalGpmbServiceCost += serviceCostOfOwner;
+
+                    newPlan.TotalPriceCompensation = newPlan.TotalPriceLandSupportCompensation
+                    + newPlan.TotalPriceHouseSupportCompensation
+                    + newPlan.TotalPriceArchitectureSupportCompensation
+                    + newPlan.TotalPricePlantSupportCompensation
+                    + newPlan.TotalOwnerSupportPrice
+                    + newPlan.TotalGpmbServiceCost;
+                }
                
-                var basePlanCode = parts[0].Trim();
+            }
 
-                
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<PlanReadDTO>(newPlan);
+
+        }
+
+        private Plan CreatePlanCopy(Plan originalPlan)
+        {
+            return new Plan
+            {
+                PlanId = Guid.NewGuid().ToString(),
+                ProjectId = originalPlan.ProjectId,
+                PlanReportInfo = originalPlan.PlanReportInfo,
+                PlanCode = originalPlan.PlanCode,
+                PlanDescription = originalPlan.PlanDescription,
+                PlanCreateBase = originalPlan.PlanCreateBase,
+                PlanApprovedBy = originalPlan.PlanApprovedBy,
+                PlanReportSignal = originalPlan.PlanReportSignal,
+                PlanReportDate = originalPlan.PlanReportDate,
+                PlanCreatedTime = originalPlan.PlanCreatedTime,
+                PlanEndedTime = originalPlan.PlanEndedTime,
+                PlanCreatedBy = originalPlan.PlanCreatedBy,
+                PlanStatus = PlanStatusEnum.DRAFT.ToString(),
+                RejectReason = originalPlan.RejectReason ?? "",
+                TotalOwnerSupportCompensation = 0,
+                TotalPriceCompensation = 0,
+                TotalPriceLandSupportCompensation = 0,
+                TotalPriceHouseSupportCompensation = 0,
+                TotalPriceArchitectureSupportCompensation = 0,
+                TotalPricePlantSupportCompensation = 0,
+                TotalDeduction = 0,
+                TotalLandRecoveryArea = 0,
+                TotalOwnerSupportPrice = 0,
+                TotalGpmbServiceCost = 0,
+                IsDeleted = false
+            };
+        }
+        private string GeneratePlanCode(string originalPlanCode)
+        {
+            if (originalPlanCode.Contains(" - Copy"))
+            {
+                var parts = originalPlanCode.Split(" - Copy");
+
+                var basePlanCode = parts[0].Trim();
                 var versionNumber = 1;
+
                 if (parts.Length > 1 && parts[1].Contains("("))
                 {
                     var versionString = parts[1]
@@ -1043,50 +1149,21 @@ namespace Metadata.Infrastructure.Services.Implementations
                     }
                 }
 
-                
-                newPlan.PlanCode = $"{basePlanCode} - Copy ({versionNumber})";
+                return $"{basePlanCode} - Copy ({versionNumber})";
             }
             else
             {
-                newPlan.PlanCode = $"{originalPlan.PlanCode} - Copy";
+                return $"{originalPlanCode} - Copy";
             }
+        }
 
-            if (newPlan.PlanCode.Count() > 50)
+        private AttachFile CreateNewAttachFile(AttachFile originalFile)
+        {
+            return new AttachFile
             {
-                throw new InvalidActionException($"Cannot Create Plan Copy. Plan Code Exceed 50 Characters");
-            }
-
-            newPlan.PlanId = Guid.NewGuid().ToString();
-
-            newPlan.PlanStatus = PlanStatusEnum.DRAFT.ToString();
-
-            newPlan.PlanCreatedBy = _userContextService.Username!
-                ?? throw new CanNotAssignUserException();
-
-            if (!newPlan.RejectReason.IsNullOrEmpty())
-            {
-                newPlan.RejectReason = "";
-            }
-
-            foreach (var file in newPlan.AttachFiles)
-            {
-                file.AttachFileId = Guid.NewGuid().ToString();
-                file.CreatedBy = _userContextService.Username!
-                    ?? throw new CanNotAssignUserException();
-            }
-
-            await _unitOfWork.PlanRepository.AddAsync(newPlan);
-
-            foreach (var oldOwner in originalPlan.Owners)
-            {
-                oldOwner.PlanId = newPlan.PlanId;
-                oldOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
-            }
-
-            await _unitOfWork.CommitAsync();
-
-            return _mapper.Map<PlanReadDTO>(newPlan);
-
+                AttachFileId = Guid.NewGuid().ToString(),
+                CreatedBy = _userContextService.Username! ?? throw new CanNotAssignUserException()
+            };
         }
 
         public async Task<PaginatedResponse<PlanReadDTO>> QueryPlansOfCreatorAsync(PlanQuery query,string? creatorName = null, PlanStatusEnum? planStatus = null)
@@ -1125,5 +1202,28 @@ namespace Metadata.Infrastructure.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// Perform a deep copy of the object via serialization.
+        /// </summary>
+        /// <typeparam name="T">The type of object being copied.</typeparam>
+        /// <param name="source">The object instance to copy.</param>
+        /// <returns>A deep copy of the object.</returns>
+        public T Clone<T>(T source)
+        {
+            if (!typeof(T).IsSerializable)
+            {
+                throw new ArgumentException("The type must be serializable.", nameof(source));
+            }
+
+            if (ReferenceEquals(source, null)) return default;
+
+            using (Stream stream = new MemoryStream())
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(stream, source);
+                stream.Seek(0, SeekOrigin.Begin);
+                return (T)formatter.Deserialize(stream);
+            }
+        }
     }
 }
