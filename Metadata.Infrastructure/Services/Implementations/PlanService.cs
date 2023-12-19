@@ -823,12 +823,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             //check all owner must be status accept compensation before accept plans
             //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
-            foreach (var owner in plan.Owners)
-            {
-                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                    throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
+            //foreach (var owner in plan.Owners)
+            //{
+            //    if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+            //        throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
 
-            }
+            //}
             var signerId = _userContextService.AccountID!
                 ?? throw new CanNotAssignUserException();
 
@@ -954,7 +954,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-            if (plan.PlanStatus != PlanStatusEnum.DRAFT.ToString())
+            if (!plan.PlanStatus.Contains(PlanStatusEnum.DRAFT.ToString()))
             {
                 throw new InvalidActionException($"Phương án với trạng thái [{plan.PlanStatus}] không hợp lệ. Bắt buộc phải là [{PlanStatusEnum.DRAFT}]");
             }
@@ -969,9 +969,8 @@ namespace Metadata.Infrastructure.Services.Implementations
                 {
                     if (plan.PlanEndedTime < DateTime.Now.SetKindUtc())
                     {
-                        throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: {owner.OwnerStatus} không hợp lệ.");
+                        throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: [{owner.OwnerStatus}] không hợp lệ.");
                     }
-                    
                 }
                     
             }
