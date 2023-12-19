@@ -1022,7 +1022,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             var ownerList = new List<Owner>();
 
-            if(plan.PlanStatus.Contains(PlanStatusEnum.REJECTED.ToString()) || plan.PlanStatus.Contains(PlanStatusEnum.APPROVED.ToString()))
+            if(!plan.PlanStatus.Contains(PlanStatusEnum.REJECTED.ToString()))
             {
                 foreach (var ownerId in ownerIds)
                 {
@@ -1034,7 +1034,9 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                     if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
                         throw new InvalidActionException();
+
                     owner.PlanId = null;
+
                     //Update Plan Price Info
 
                     plan.TotalOwnerSupportCompensation -= 1;
@@ -1070,7 +1072,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ownerList.Add(owner);
                 }
             }
-                
+            
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
