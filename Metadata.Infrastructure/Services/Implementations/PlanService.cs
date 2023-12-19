@@ -881,13 +881,12 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             //check all owner must be status accept compensation before accept plans
             //- if performance issue: maybe no need cause SendPlanApproveRequestAsync did check
-            foreach (var owner in plan.Owners)
-            {
-                if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
-                    throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
+            //foreach (var owner in plan.Owners)
+            //{
+            //    if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
+            //        throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
 
-            }
-
+            //}
 
             var isSigned = await _digitalSignatureService.VerifySignedDocument(signedFile);
 
@@ -936,7 +935,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             //{
             //    if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
             //        throw new InvalidActionException($"Chủ sở hữu có mã: [{owner.OwnerCode}] với trạng thái: {owner.OwnerStatus} không hợp lệ.");
-
             //}
 
             plan.PlanStatus = PlanStatusEnum.APPROVED.ToString();
