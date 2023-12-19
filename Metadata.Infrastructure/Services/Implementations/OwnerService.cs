@@ -1,5 +1,7 @@
 ﻿using Amazon.S3.Model;
 using AutoMapper;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Metadata.Core.Entities;
 using Metadata.Core.Enums;
 using Metadata.Core.Exceptions;
@@ -1035,7 +1037,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
                         throw new InvalidActionException();
 
-                    owner.PlanId = null;
+                    
 
                     //Update Plan Price Info
 
@@ -1072,7 +1074,22 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ownerList.Add(owner);
                 }
             }
-            
+            else
+            {
+                foreach (var ownerId in ownerIds)
+                {
+                    var owner = await _unitOfWork.OwnerRepository.FindAsync(ownerId)
+                    ?? throw new EntityWithIDNotFoundException<Owner>(ownerId);
+
+                    if (owner.PlanId != planId)
+                        throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.PlanId), planId);
+
+                    if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
+                        throw new InvalidActionException();
+
+                    owner.PlanId = null;
+                }
+            }
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<IEnumerable<OwnerReadDTO>>(ownerList);
