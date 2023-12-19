@@ -1040,7 +1040,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 throw new InvalidActionException($"Không thể tạo thêm bản sao. Mã phương án vượt quá 50 kí tự.");
             }
 
-            newPlan.AttachFiles = originalPlan.AttachFiles.Select(CreateNewAttachFile).ToList();
+            //newPlan.AttachFiles = originalPlan.AttachFiles.Select(CreateNewAttachFile).ToList();
 
             //newPlan.AttachFiles = originalPlan.AttachFiles.Select(file =>
             //{
