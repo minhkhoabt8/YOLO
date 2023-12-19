@@ -1037,7 +1037,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
                         throw new InvalidActionException();
 
-                    
+                    owner.PlanId = null;
 
                     //Update Plan Price Info
 
