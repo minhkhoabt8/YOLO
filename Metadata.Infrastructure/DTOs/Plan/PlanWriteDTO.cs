@@ -17,7 +17,6 @@ namespace Metadata.Infrastructure.DTOs.Plan
         public string ProjectId { get; set; } = null!;
 
         [Required]
-        [MaxLength(200)]
         public string PlanReportInfo { get; set; }
 
         [MaxLength(50)]

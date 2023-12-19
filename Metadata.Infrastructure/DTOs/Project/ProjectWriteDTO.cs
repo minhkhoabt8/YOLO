@@ -20,7 +20,6 @@ namespace Metadata.Infrastructure.DTOs.Project
         [Required]
         [MaxLength(500)]
         public string ProjectName { get; set; }
-        [MaxLength(200)]
         public string ProjectLocation { get; set; }
         [MaxLength(20)]
         public string? Province { get; set; }
@@ -44,7 +43,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         public string? RegulatedUnitPrice { get; set; }
         [Range(0, int.MaxValue)]
         public int? ProjectBriefNumber { get; set; } = 0;
-        [MaxLength(50)]
+
         public string? ProjectNote { get; set; }
         [MaxLength(50)]
         public string? PriceAppliedCodeId { get; set; }

@@ -1071,6 +1071,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                      + await _unitOfWork.AssetCompensationRepository.CaculateTotalAssetCompensationOfOwnerAsync(oldOwner.OwnerId, AssetOnLandTypeEnum.Plants))
                      * 0.02);
 
+                    newPlan.TotalOwnerSupportCompensation += 1;
 
                     newPlan.TotalPriceLandSupportCompensation += _unitOfWork.MeasuredLandInfoRepository.CaculateTotalLandCompensationPriceOfOwnerAsync(oldOwner.OwnerId, true).Result;
 
