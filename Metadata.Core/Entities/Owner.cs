@@ -31,7 +31,7 @@ public partial class Owner : ITextSearchableEntity
 
     public string? OwnerType { get; set; }
 
-    public DateTime OwnerCreatedTime { get; set; } = DateTime.UtcNow.SetKindUtc();
+    public DateTime OwnerCreatedTime { get; set; } = DateTime.UtcNow.AddHours(7).SetKindUtc();
 
     public string OwnerCreatedBy { get; set; } = null!;
 

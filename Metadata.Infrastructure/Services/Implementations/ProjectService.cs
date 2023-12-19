@@ -264,9 +264,20 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if(project == null) throw new EntityWithIDNotFoundException<Project>(projectId);
 
-            if(!project.Owners.IsNullOrEmpty() || !project.Plans.IsNullOrEmpty())
+            if (!project.Owners.IsNullOrEmpty() || !project.Plans.IsNullOrEmpty())
             {
-                throw new InvalidActionException("Không thể xóa Dự án đã có Chủ sở hữu hoặc Phương án.");
+                // Check if any owner has IsDeleted set to true
+                if (project.Owners!.Any(owner => !owner.IsDeleted))
+                {
+                    throw new InvalidActionException("Không thể xóa Dự án đã có Chủ sở hữu hoặc Phương án.");
+                }
+
+                // Check if any plan has IsDeleted set to true
+                if (project.Plans!.Any(plan => !plan.IsDeleted))
+                {
+                    throw new InvalidActionException("Không thể xóa Dự án đã có Chủ sở hữu hoặc Phương án.");
+                }
+
             }
 
             project.IsDeleted = true;

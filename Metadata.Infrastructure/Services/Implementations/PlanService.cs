@@ -917,7 +917,6 @@ namespace Metadata.Infrastructure.Services.Implementations
             return result;
         }
 
-
         public async Task<PlanReadDTO> ApprovePlanAsync(string planId)
         {
             var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include: "Owners");
@@ -964,14 +963,13 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
                 {
-                    if (plan.PlanEndedTime < DateTime.UtcNow.SetKindUtc())
+                    if (plan.PlanEndedTime < DateTime.UtcNow.AddHours(7).SetKindUtc())
                     {
                         throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: [{owner.OwnerStatus}] không hợp lệ.");
                     }
                 }
                     
             }
-
 
             plan.PlanStatus = PlanStatusEnum.AWAITING.ToString();
 

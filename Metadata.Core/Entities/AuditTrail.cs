@@ -27,7 +27,7 @@ public partial class AuditTrail : ITextSearchableEntity
 
     public string PrimaryKey { get; set; } = null!;
 
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow.SetKindUtc();
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7).SetKindUtc();
 
     public IReadOnlyDictionary<Func<string>, double> SearchTextsWithWeights => new Dictionary<Func<string>, double>
     {
