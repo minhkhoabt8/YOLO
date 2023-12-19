@@ -1022,7 +1022,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             var ownerList = new List<Owner>();
 
-            if(plan.PlanStatus != PlanStatusEnum.REJECTED.ToString() || plan.PlanStatus != PlanStatusEnum.APPROVED.ToString())
+            if(plan.PlanStatus.Contains(PlanStatusEnum.REJECTED.ToString()) || plan.PlanStatus.Contains(PlanStatusEnum.APPROVED.ToString()))
             {
                 foreach (var ownerId in ownerIds)
                 {
@@ -1032,7 +1032,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                     if (owner.PlanId != planId)
                         throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.PlanId), planId);
 
-                    if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
+                    if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
                         throw new InvalidActionException();
                     owner.PlanId = null;
                     //Update Plan Price Info
@@ -1085,10 +1085,11 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (owner.ProjectId != projectId)
                 throw new EntityWithAttributeNotFoundException<Owner>(nameof(Owner.ProjectId), projectId);
 
-            if (owner.OwnerStatus == OwnerStatusEnum.AcceptCompensation.ToString() || owner.OwnerStatus == OwnerStatusEnum.RejectCompensation.ToString())
+            if (owner.OwnerStatus.Contains(OwnerStatusEnum.AcceptCompensation.ToString()) || owner.OwnerStatus.Contains(OwnerStatusEnum.RejectCompensation.ToString()))
                 throw new InvalidActionException();
 
             owner.PlanId = null;
+
 
             await _unitOfWork.CommitAsync();
 

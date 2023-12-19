@@ -1026,7 +1026,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             if (originalPlan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
-            if(originalPlan.PlanStatus != PlanStatusEnum.REJECTED.ToString())
+            if(originalPlan.PlanStatus.Contains(PlanStatusEnum.REJECTED.ToString()))
             {
                 throw new InvalidActionException($"Phương án [{originalPlan.PlanCode}] với trạng thái: [{originalPlan.PlanStatus}] không thể tạo bản sao.");
             }
