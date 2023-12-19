@@ -986,7 +986,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         public async Task<PlanReadDTO> RejectPlanAsync(string planId, string reason)
         {
-            var plan = await _unitOfWork.PlanRepository.FindAsync(planId);
+            var plan = await _unitOfWork.PlanRepository.FindAsync(planId, include:"Owners");
 
             if (plan == null) throw new EntityWithIDNotFoundException<Plan>(planId);
 
@@ -1001,6 +1001,14 @@ namespace Metadata.Infrastructure.Services.Implementations
             if (signerId != plan.PlanApprovedBy)
             {
                 throw new ForbiddenException("Current user is not authorized to perform this action.");
+            }
+
+            if(!plan.Owners.IsNullOrEmpty())
+            {
+                foreach(var owner in plan.Owners)
+                {
+                    owner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
+                }
             }
 
             plan.PlanStatus = PlanStatusEnum.REJECTED.ToString();
