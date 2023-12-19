@@ -20,7 +20,7 @@ namespace Metadata.Infrastructure.DTOs.Plan
         [MaxLength(200)]
         public string PlanReportInfo { get; set; }
 
-        [MaxLength(10)]
+        [MaxLength(50)]
         public string? PlanCode { get; set; } = null ?? GeneratePlanCode();
 
         public string? PlanDescription { get; set; }
