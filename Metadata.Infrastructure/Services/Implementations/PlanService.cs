@@ -1020,15 +1020,15 @@ namespace Metadata.Infrastructure.Services.Implementations
 
             newPlan = originalPlan;
 
-            //Assign Version Copy
+            
             if (originalPlan.PlanCode.Contains(" - Copy"))
             {
                 var parts = originalPlan.PlanCode.Split(" - Copy");
 
-                // Extract the base plan code without the version number
+               
                 var basePlanCode = parts[0].Trim();
 
-                // Extract the version number (if any)
+                
                 var versionNumber = 1;
                 if (parts.Length > 1 && parts[1].Contains("("))
                 {
@@ -1043,12 +1043,11 @@ namespace Metadata.Infrastructure.Services.Implementations
                     }
                 }
 
-                // Create the new plan code with the incremented version number
+                
                 newPlan.PlanCode = $"{basePlanCode} - Copy ({versionNumber})";
             }
             else
             {
-                // If the original plan code doesn't contain " - Copy," simply append it
                 newPlan.PlanCode = $"{originalPlan.PlanCode} - Copy";
             }
 
@@ -1069,7 +1068,6 @@ namespace Metadata.Infrastructure.Services.Implementations
                 newPlan.RejectReason = "";
             }
 
-
             foreach (var file in newPlan.AttachFiles)
             {
                 file.AttachFileId = Guid.NewGuid().ToString();
@@ -1077,28 +1075,13 @@ namespace Metadata.Infrastructure.Services.Implementations
                     ?? throw new CanNotAssignUserException();
             }
 
-
+            await _unitOfWork.PlanRepository.AddAsync(newPlan);
 
             foreach (var oldOwner in originalPlan.Owners)
             {
-                await _ownerService.DeleteOldOwnerWhenCreatePlanCopy(oldOwner.OwnerId);
+                oldOwner.PlanId = newPlan.PlanId;
+                oldOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
             }
-
-
-            foreach (var newOwner in newPlan.Owners)
-            {
-                newOwner.OwnerId = Guid.NewGuid().ToString();
-                newOwner.PlanId = newPlan.PlanId;
-                newOwner.OwnerCode = newOwner.OwnerCode + "- Copy from " + newPlan.PlanCode;
-                newOwner.OwnerStatus = OwnerStatusEnum.Unknown.ToString();
-                newOwner.OwnerCreatedTime = DateTime.Now.SetKindUtc().AddHours(7);
-                newOwner.IsDeleted = false;
-                newOwner.OwnerCreatedBy = _userContextService.Username!
-                    ?? throw new CanNotAssignUserException();
-            }
-
-            await _unitOfWork.PlanRepository.AddAsync(newPlan);
-
 
             await _unitOfWork.CommitAsync();
 
