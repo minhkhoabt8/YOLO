@@ -223,7 +223,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         DocMDPSignature docMdpSignature = new DocMDPSignature(pkcs, DocMDPAccessPermissions.FillingInForms);
                         
                         // Sign the PDF file with the certify method
-                        if (replaceSignatureWithPicture)
+                        if (!replaceSignatureWithPicture)
                         {
                             pdfSignature.BindPdf(pdfDoc);
                             System.Drawing.Rectangle stampRect = new System.Drawing.Rectangle(
