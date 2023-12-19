@@ -13,7 +13,7 @@ namespace Metadata.API.Controllers
     /// </summary>
     [Route("metadata/document")]
     [ApiController]
-    
+    [AllowAnonymous]
     public class DocumentController : ControllerBase
     {
         private readonly IDocumentService _documentService;
