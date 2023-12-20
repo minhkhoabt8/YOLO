@@ -1116,7 +1116,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 PlanEndedTime = originalPlan.PlanEndedTime,
                 PlanCreatedBy = originalPlan.PlanCreatedBy,
                 PlanStatus = PlanStatusEnum.DRAFT.ToString(),
-                RejectReason = originalPlan.RejectReason ?? "",
+                RejectReason = "",
                 TotalOwnerSupportCompensation = 0,
                 TotalPriceCompensation = 0,
                 TotalPriceLandSupportCompensation = 0,
