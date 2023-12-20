@@ -206,7 +206,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 // Specify the name of the field
                 string fieldName = "CỘNG HÒA";
                 // Iterate through all pages in the PDF document
-                for (int pageIndex = 0; pageIndex < pdfDoc.Pages.Count; pageIndex ++)
+                for (int pageIndex = 1; pageIndex <= pdfDoc.Pages.Count; pageIndex++)
                 {
                     // Create TextFragmentAbsorber object to search text
                     TextFragmentAbsorber textFragmentAbsorber = new TextFragmentAbsorber(fieldName);
