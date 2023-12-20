@@ -204,9 +204,9 @@ namespace Metadata.Infrastructure.Services.Implementations
                 memoryStream.Seek(0, SeekOrigin.Begin);
                 pdfDoc = new Document(memoryStream);
                 // Specify the name of the field
-                string fieldName = "Người ký";
+                string fieldName = "CỘNG HÒA";
                 // Iterate through all pages in the PDF document
-                for (int pageIndex = pdfDoc.Pages.Count; pageIndex >= 1; pageIndex--)
+                for (int pageIndex = 0; pageIndex < pdfDoc.Pages.Count; pageIndex ++)
                 {
                     // Create TextFragmentAbsorber object to search text
                     TextFragmentAbsorber textFragmentAbsorber = new TextFragmentAbsorber(fieldName);

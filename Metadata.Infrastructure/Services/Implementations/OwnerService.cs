@@ -597,7 +597,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                             : null,
 
                         OwnerEthnic = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
-                        OwnerNational = worksheet.Cells[row, 11].Value?.ToString() ?? string.Empty,
+                        OwnerNational = "Việt Nam",
                         OwnerAddress = worksheet.Cells[row, 12].Value?.ToString() ?? string.Empty,
 
                         
