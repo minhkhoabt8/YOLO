@@ -669,7 +669,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
         private static ProjectOwnerTypeEnum MapUsertypeEnumWithUserInput(string name)
         {
-            var input = name.Replace(" ", "").ToLower();
+            var input = name.ToLower().Replace(" ", "");
             if (input.Equals("cánhân")) return ProjectOwnerTypeEnum.Individual;
             if (input.Equals("giađình")) return ProjectOwnerTypeEnum.Household;
             if (input.Equals("tổchức")) return ProjectOwnerTypeEnum.Organization;
