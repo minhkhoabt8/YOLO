@@ -330,7 +330,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<ProjectReadDTO> GetProjectAsync(string projectId)
         {
             var project = await _unitOfWork.ProjectRepository
-                .FindAsync(projectId, include: "LandPositionInfos, Owners, Plans, PriceAppliedCode, UnitPriceLands, ProjectDocuments, ResettlementProject");
+                .FindAsync(projectId, include: "LandPositionInfos, PriceAppliedCode, UnitPriceLands, ProjectDocuments, ResettlementProject");
             
             var projectReadDto =  _mapper.Map<ProjectReadDTO>(project);
 
