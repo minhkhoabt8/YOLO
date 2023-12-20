@@ -20,7 +20,7 @@ public partial class LogError
 
     public string? UserName { get; set; }
 
-    public DateTime? CreatedDate { get; set; } = DateTime.UtcNow.SetKindUtc();
+    public DateTime? CreatedDate { get; set; } = DateTime.Now;
 
     public bool? IsDeleted { get; set; } = false;
 }

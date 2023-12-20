@@ -29,7 +29,7 @@ namespace SharedLib.Infrastructure.Utils
             audit.UserName = UserName == null ? "user name is null" : UserName;
             audit.Type = AuditType.ToString();
             audit.TableName = TableName;
-            audit.CreatedDate = DateTime.UtcNow.SetKindUtc();
+            audit.CreatedDate = DateTime.Now;
             audit.PrimaryKey = JsonConvert.SerializeObject(KeyValues);
             audit.OldValue = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues);
             audit.NewValue = NewValues.Count == 0 ? "Completely Deleted" : JsonConvert.SerializeObject(NewValues);
