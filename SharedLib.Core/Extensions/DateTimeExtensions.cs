@@ -9,6 +9,6 @@ public static class DateTimeExtensions
 
     public static DateTime SetKindUtc(this DateTime dateTime)
     {
-        return dateTime.Kind == DateTimeKind.Utc ? dateTime : DateTime.SpecifyKind(dateTime.AddHours(7), DateTimeKind.Utc);
+        return dateTime.Kind == DateTimeKind.Utc ? dateTime : DateTime.SpecifyKind(dateTime.AddHours(14), DateTimeKind.Utc);
     }
 }
