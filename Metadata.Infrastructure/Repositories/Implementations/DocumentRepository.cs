@@ -67,7 +67,7 @@ namespace Metadata.Infrastructure.Repositories.Implementations
             }
             if (!string.IsNullOrWhiteSpace(query.SearchText))
             {
-                documents = documents.Where(c => c.Notation.Contains(query.SearchText));
+                documents = documents.Where(c => c.Notation.Contains(query.SearchText) || c.FileName.Contains(query.SearchText));
             }
             if (!string.IsNullOrWhiteSpace(query.OrderBy))
             {
