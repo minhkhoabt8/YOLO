@@ -1,5 +1,6 @@
 ﻿using Metadata.Core.Entities;
 using Metadata.Infrastructure.DTOs.AttachFile;
+using Metadata.Infrastructure.DTOs.LandType;
 
 namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
 {
@@ -33,6 +34,9 @@ namespace Metadata.Infrastructure.DTOs.MeasuredLandInfo
         public string UnitPriceLandId { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public LandTypeReadDTO LandType { get; set; } = null!;
+
 
         public IEnumerable<AttachFileReadDTO>? AttachFiles { get; set; }
     }

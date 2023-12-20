@@ -864,7 +864,7 @@ namespace Metadata.Infrastructure.Services.Implementations
         public async Task<OwnerReadDTO> GetOwnerAsync(string ownerId)
         {
             var owner = await _unitOfWork.OwnerRepository.FindIncludeIsActiveAsync(ownerId,
-                include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
+                include: "GcnlandInfos, GcnlandInfos.AttachFiles, GcnlandInfos.MeasuredLandInfos, GcnlandInfos.MeasuredLandInfos.LandType, GcnlandInfos.MeasuredLandInfos.AttachFiles," +
                 " AssetCompensations, Supports, Deductions, Deductions.DeductionType, AttachFiles," +
                 " LandResettlements, LandResettlements.ResettlementProject", trackChanges: false, isActive: false);
             return _mapper.Map<OwnerReadDTO>(owner);
