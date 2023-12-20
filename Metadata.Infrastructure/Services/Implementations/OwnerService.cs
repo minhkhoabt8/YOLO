@@ -568,8 +568,17 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 for (int row = 11; row <= worksheet.Dimension.End.Row; row++)
                 {
-                    var organizationType = await _unitOfWork.OrganizationTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 16].Value?.ToString() ?? string.Empty, false)
+                    
+                    var ownerType = MapUsertypeEnumWithUserInput(worksheet.Cells[row, 13].Value?.ToString()!).ToString();
+
+                    string organizationTypeId = "";
+
+                    if (!ownerType.Contains("cánhân") || !ownerType.Contains("giađình"))
+                    {
+                        var organizationType = await _unitOfWork.OrganizationTypeRepository.FindByCodeAndIsDeletedStatus(worksheet.Cells[row, 16].Value?.ToString() ?? string.Empty, false)
                         ?? throw new EntityInputExcelException<OrganizationType>(nameof(Owner.OrganizationType), worksheet.Cells[row, 16].Value.ToString()!, row);
+                        organizationTypeId = organizationType.OrganizationTypeId;
+                    }
 
                     var user = new OwnerFileImportWriteDTO
                     {
@@ -591,6 +600,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                         OwnerNational = worksheet.Cells[row, 11].Value?.ToString() ?? string.Empty,
                         OwnerAddress = worksheet.Cells[row, 12].Value?.ToString() ?? string.Empty,
 
+                        
                         OwnerType = MapUsertypeEnumWithUserInput(worksheet.Cells[row, 13].Value?.ToString()!).ToString()
                             ?? throw new EntityInputExcelException<Owner>(nameof(Owner.OwnerType), worksheet.Cells[row, 13].ToString()!, row),
 
@@ -603,8 +613,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                         RepresentPerson = worksheet.Cells[row, 15].Value?.ToString() ?? string.Empty,
 
-                        
-                        OrganizationTypeId = organizationType.OrganizationTypeId,
+                        OrganizationTypeId = organizationTypeId,
 
                         OwnerTaxCode = worksheet.Cells[row, 17].Value?.ToString() ?? string.Empty,
 
@@ -702,7 +711,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 if (!string.IsNullOrEmpty(dto.OwnerIdCode))
                 {
-                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeAsync(dto.OwnerIdCode);
+                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByOwnerIdCodeInProjectAsync(dto.ProjectId,dto.OwnerIdCode);
 
                     if (duplicateOwner != null)
                     {
@@ -711,7 +720,7 @@ namespace Metadata.Infrastructure.Services.Implementations
                 }
                 if (!string.IsNullOrEmpty(dto.OwnerTaxCode))
                 {
-                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeAsync(dto.OwnerTaxCode);
+                    var duplicateOwner = await _unitOfWork.OwnerRepository.FindByTaxCodeInProjectAsync(dto.ProjectId,dto.OwnerTaxCode);
 
                     if (duplicateOwner != null)
                     {
