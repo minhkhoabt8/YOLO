@@ -14,7 +14,7 @@ public partial class Notification
 
     public string NotificationContent { get; set; } = null!;
 
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(7);
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow.SetKindUtc();
 
     public string PlanId { get; set; } = "";
 

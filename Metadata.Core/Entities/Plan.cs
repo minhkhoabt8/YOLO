@@ -27,7 +27,7 @@ namespace Metadata.Core.Entities;
 
         public DateTime? PlanReportDate { get; set; }
 
-        public DateTime PlanCreatedTime { get; set; } = DateTime.UtcNow.AddHours(7);
+        public DateTime PlanCreatedTime { get; set; } = DateTime.UtcNow.SetKindUtc();
 
     public DateTime PlanEndedTime { get; set; }
 

@@ -24,7 +24,7 @@ public partial class RefreshToken
 
     public string? ReplacedBy { get; set; }
 
-    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow.AddHours(7);
+    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow.SetKindUtc();
 
     public bool IsRevoked { get; set; } = false;
 

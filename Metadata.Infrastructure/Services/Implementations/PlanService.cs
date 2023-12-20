@@ -345,8 +345,8 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                     var laneType = await _unitOfWork.LandTypeRepository.GetLandTypesOfMeasureLandInfoAsync(i.LandTypeId);
                     codeLandTypes += (codeLandTypes.Length > 0 ? ", " : "") + laneType.Code;
-                    mesuredPlotArea = i.MeasuredPlotArea ?? 0 ;
-                    withDrawalArea = i.WithdrawArea ?? 0;
+                    mesuredPlotArea += i.MeasuredPlotArea ?? 0 ;
+                    withDrawalArea += i.WithdrawArea ?? 0;
                 }
                 DetailBTHChiPhiReadDTO detail = new DetailBTHChiPhiReadDTO();
                 detail.Stt = ++stt;
@@ -963,7 +963,7 @@ namespace Metadata.Infrastructure.Services.Implementations
 
                 if (owner.OwnerStatus!.Equals(OwnerStatusEnum.Unknown.ToString()) || owner.OwnerStatus!.Equals(OwnerStatusEnum.RejectCompensation.ToString()))
                 {
-                    if (plan.PlanEndedTime < DateTime.UtcNow.AddHours(7))
+                    if (plan.PlanEndedTime < DateTime.UtcNow.SetKindUtc())
                     {
                         throw new InvalidActionException($"Không thể gửi yêu cầu vì phương án chưa hết hạn và vẫn còn chủ sở hữu: [{owner.OwnerCode}] có trạng thái: [{owner.OwnerStatus}] không hợp lệ.");
                     }
