@@ -37,6 +37,11 @@ namespace Auth.Infrastructure.Services.Implementations
 
             var notifications = await _unitOfWork.NotificationRepository.QueryAsync(query);
 
+            foreach (var notification in notifications)
+            {
+                notification.CreatedDate = notification.CreatedDate.AddHours(7);
+            }
+
             return PaginatedResponse<NotificationReadDTO>.FromEnumerableWithMapping(notifications, query, _mapper);
         }
 
