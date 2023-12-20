@@ -39,7 +39,7 @@ namespace Metadata.Infrastructure.DTOs.Project
         [Range(0, 9999)]
         [DefaultValue(2023)]
         public int ImplementationYear { get; set; } = 2023;
-        [MaxLength(200)]
+
         public string? RegulatedUnitPrice { get; set; }
         [Range(0, int.MaxValue)]
         public int? ProjectBriefNumber { get; set; } = 0;

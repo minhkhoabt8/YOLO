@@ -29,7 +29,7 @@ namespace Metadata.Infrastructure.DTOs.Owner
         public string? OwnerEthnic { get; set; } = "";
         [MaxLength(50)]
         public string? OwnerNational { get; set; } = "";
-        [MaxLength(200)]
+
         public string? OwnerAddress { get; set; } = "";
         [MaxLength(13)]
         public string? OwnerTaxCode { get; set; } = "";
